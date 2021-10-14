@@ -1,0 +1,3 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-lmbdhk-quic-multipath.md miaoji.lym@alibaba-inc.com yunfei.ma@alibaba-inc.com quentin.deconinck@uclouvain.be olivier.bonaventure@uclouvain.be huitema@huitema.net mirja.kuehlewind@ericsson.com

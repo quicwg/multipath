@@ -1,0 +1,7 @@
+<note title="Discussion Venues" removeInRFC="true">
+<t>Discussion of this document takes place on the
+    QUIC Working Group mailing list (quic@ietf.org),
+    which is archived at <eref target="https://mailarchive.ietf.org/arch/browse/quic/"/>.</t>
+<t>Source for this draft and an issue tracker can be found at
+    <eref target="https://github.com/mirjak/draft-lmbdhk-quic-multipath"/>.</t>
+</note>
