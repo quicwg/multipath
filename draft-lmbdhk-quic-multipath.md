@@ -1,11 +1,13 @@
 ---
 title: Multipath Extension for QUIC
-abbrev: Multipath QUIC  
+abbrev: Multipath QUIC
 docname: draft-lmbdhk-quic-multipath-latest
-date:
-category: exp
+date: {DATE}
+category: std
 
 ipr: trust200902
+area: Transport
+workgroup: QUIC Working Group
 keyword: Internet-Draft
 
 stand_alone: yes
@@ -18,30 +20,30 @@ author:
   org: Alibaba Inc.
   email: miaoji.lym@alibaba-inc.com
 -
-  ins: Y. Ma
-  name: Yunfei Ma
-  org: Alibaba Inc.
-  email: yunfei.ma@alibaba-inc.com
-  -
+   ins: Y. Ma
+   name: Yunfei Ma
+   org: Alibaba Inc.
+   email: yunfei.ma@alibaba-inc.com
+-
    ins: Q. De Coninck
    name: Quentin De Coninck
-   organization: UCLouvain
+   org: UCLouvain
    email: quentin.deconinck@uclouvain.be
-  -
+-
    ins: O. Bonaventure
    name: Olivier Bonaventure
-   organization: UCLouvain
+   org: UCLouvain
    email: olivier.bonaventure@uclouvain.be
 -
-  ins: C. Huitema
-  name: Christian Huitema
-  org: Private Octopus Inc.
-  email: huitema@huitema.net
+   ins: C. Huitema
+   name: Christian Huitema
+   org: Private Octopus Inc.
+   email: huitema@huitema.net
 -
-  ins: M. Kuehlewind
-  name: Mirja Kuehlewind
-  org: Ericsson
-  email: mirja.kuehlewind@ericsson.com
+   ins: M. Kuehlewind
+   name: Mirja Kuehlewind
+   org: Ericsson
+   email: mirja.kuehlewind@ericsson.com
 
 
 normative:
@@ -76,11 +78,11 @@ This document specifies multipath extension for the QUIC protocol to enable the 
 # Contributors
 
 This document is a collaboration of authors that combines work from three proposals.
-Further contributors that were also involved in the original proposal are: 
+Further contributors that were also involved in the original proposal are:
 
 * Qing An
-*Zhenyu Li
+* Zhenyu Li
 
 # Acknowledgments
 
-TBD.
+TBD
