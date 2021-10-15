@@ -444,7 +444,7 @@ size of the IV. The exclusive OR of the padded packet number and the IV forms th
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`, the connection ID sequence
 number is `3`, and the packet number is `aead`, the nonce will be set to
-`6b2611489cba2b63a9a873e2`.
+`6b2611489cba2b63a9e873e2`.
 
 ### Key Update for QUIC Multipath {#multipath-key-update}
 
