@@ -230,7 +230,7 @@ When only one path is available, servers MUST follow the
 specifications in {{QUIC-TRANSPORT}}.  When more than one path is
 available, servers shall monitor the arrival of non-probing packets
 on the available paths.  Servers SHOULD stop sending traffic on paths
-through which non-probing packet was received in the last 3 path
+through where no non-probing packet was received in the last 3 path
 RTTs, but MAY ignore that rule if it would disqualify all available
 paths.  Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
