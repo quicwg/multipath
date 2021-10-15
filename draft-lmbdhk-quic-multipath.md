@@ -402,7 +402,7 @@ the 1-RTT packet. Endpoints identify the context of a path by its Connection ID 
 of Connection ID.
 
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames to issue usable connections IDs
-to reach it. Before an endpoint adds a new path, it SHOULD check whether there is at least one unused
+to reach it. Before an endpoint adds a new path, it MUST check whether there is at least one unused
 available Connection ID for each side.
 
 If the transport parameter "active_connection_id_limit" is negotiated as N, the server provided N Connection IDs, and the client is already actively using N paths, the limit is reached. If the client wants to start a new path, it has to retire
