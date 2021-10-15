@@ -634,7 +634,7 @@ the peer should only repeat it if it was the last status sent for that path -- a
 
 ## ACK_MP Frame {#mp-ack-frame}
 
-The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01 or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to acknowledge packets that were sent on different paths. If the frame type is TBD-01, MP_ACK frames also contain the sum of QUIC packets with associated ECN marks received on the connection up to this point.
+The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01 or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to acknowledge packets that were sent on different paths. If the frame type is TBD-01, ACK_MP frames also contain the sum of QUIC packets with associated ECN marks received on the connection up to this point.
 
 ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
 
@@ -657,7 +657,7 @@ Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following field i
 Packet Number Space Identifier: An identifier of the path packet number space, which is the sequence number of 
 Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK_MP frame. If the endpoint receives 
 1-RTT packets with 0-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames. 
-If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it SHOULD treat this 
+If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this 
 as a connection error of type MP_CONNECTION_ERROR and close the connection.
 
 
