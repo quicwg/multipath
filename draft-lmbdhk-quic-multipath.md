@@ -538,9 +538,9 @@ the "PATH_STATUS sequence number" as "PSSN".)
   Client                                                          Server
 
   (client tells server to abandon a path)
-  1-RTT[X]: DCID=S2 PATH_STATUS[id=1, PSSN1, status=abandon, pri.=0] ->
+  1-RTT[X]: DCID=S2 PATH_STATUS[id=1, PSSN1, status=abandon, pri.=0]->
                                  (server tells client to abandon a path)
-  <- 1-RTT[Y]: DCID=C1 PATH_STATUS[id=2, PSSN2, status=abandon, pri.=0],
+   <-1-RTT[Y]: DCID=C1 PATH_STATUS[id=2, PSSN2, status=abandon, pri.=0],
                                                      ACK_MP[Seq=2, PN=X]
   (client abandons the path that it is using)
   1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
@@ -548,7 +548,7 @@ the "PATH_STATUS sequence number" as "PSSN".)
        <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
 
 ~~~
-{: #fig-example-path-close title="Example of closing a path"}
+{: #fig-example-path-close title="Example of closing a path (path id type=0x00)"}
 
 In scenarios such as client detects the network environment change (client's 4G/Wi-Fi is turned off,
 Wi-Fi signal is fading to a threshold), or endpoints detect that the quality of RTT or loss rate is
@@ -621,20 +621,26 @@ Available values of Path Status field are:
 - 1: Standby
 - 2: Available
 
-If the value of Path Status field is 2 ("available"), the receiver side can use the Path Priority field to
-express the priority weight of a path for the peer.
+If the value of Path Status field is 2 ("available"), the receiver side can use
+the Path Priority field to express the priority weight of a path for the peer.
 
-Frames may be received out of order. A peer MUST ignore an incoming PATH_STATUS frame if it previously
-received another PATH_STATUS frame for the same Path Identifier with a sequence number equal to or
-higher than the sequence number of the incoming frame.
+Frames may be received out of order. A peer MUST ignore an incoming PATH_STATUS
+frame if it previously received another PATH_STATUS frame for the same Path
+Identifier with a sequence number equal to or higher than the sequence number
+of the incoming frame.
 
-PATH_STATUS frames SHOULD be acknowledged. If a packet containing a PATH_STATUS frame is considered lost,
-the peer should only repeat it if it was the last status sent for that path -- as indicated by the sequence number.
+PATH_STATUS frames SHOULD be acknowledged. If a packet containing a PATH_STATUS
+frame is considered lost, the peer should only repeat it if it was the last
+status sent for that path -- as indicated by the sequence number.
 
 
 ## ACK_MP Frame {#mp-ack-frame}
 
-The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01 or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to acknowledge packets that were sent on different paths. If the frame type is TBD-01, ACK_MP frames also contain the sum of QUIC packets with associated ECN marks received on the connection up to this point.
+The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01
+or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}.
+It is used to acknowledge packets that were sent on different paths. If the
+frame type is TBD-01, ACK_MP frames also contain the sum of QUIC packets with
+associated ECN marks received on the connection up to this point.
 
 ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
 
@@ -654,10 +660,10 @@ ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
 
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following field is added.
 
-Packet Number Space Identifier: An identifier of the path packet number space, which is the sequence number of 
-Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK_MP frame. If the endpoint receives 
-1-RTT packets with 0-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames. 
-If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this 
+Packet Number Space Identifier: An identifier of the path packet number space, which is the sequence number of
+Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK_MP frame. If the endpoint receives
+1-RTT packets with 0-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
+If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this
 as a connection error of type MP_CONNECTION_ERROR and close the connection.
 
 
