@@ -90,21 +90,21 @@ This proposal is based on several basic design points:
 * Re-use as much as possible mechanisms of QUIC-v1. In particular this proposal uses path validation as specified for QUIC v1 and aims to re-use as much as possible of QUIC's connection migration.
 * Use the same packet header formats as QUIC v1 to avoid the risk of packets being dropped by middleboxes (which may only support QUIC v1)
 * Congestion Control, RTT measurements and PMTU discovery should be per-path (following {{QUIC-TRANSPORT}})
-* A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore there can at maximum be one active paths/connection ID per 4-tuple.
+* A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore there can be at most one active paths/connection ID per 4-tuple.
 
-The path management specified in section 9 of {{QUIC-TRANSPORT}} fulfills multiple goals: it direct a peers to switch sending through a new preferred path, and it allows the peer to release resources associated with the old path.  Multipath requires several changes to that mechanism:
+The path management specified in section 9 of {{QUIC-TRANSPORT}} fulfills multiple goals: it directs a peer to switch sending through a new preferred path, and it allows the peer to release resources associated with the old path. Multipath requires several changes to that mechanism:
 
   *  Allow simultaneous transmission of non probing frames on multiple
      paths.
 
-  *  Continue using an existing path even if non probing frames have
-     been received on another frame.
+  *  Continue using an existing path even if non-probing frames have
+     been received on another path.
 
   *  Manage the removal of paths that have been abandoned.
 
-As such this extension is specifying a departure from the specification of path management in section 9 of {{QUIC-TRANSPORT}} and therefore requires negotiation between the two endpoints using a new transport parameter, as specified in {{nego}}.
+As such this extension specifies a departure from the specification of path management in section 9 of {{QUIC-TRANSPORT}} and therefore requires negotiation between the two endpoints using a new transport parameter, as specified in {{nego}}.
 
-This proposal supports the negotiation of the use of either one packet number space for all paths or the use of separate packet number spaces per path. While separate packet number spaces allow for more efficient ACK encoding especially when different paths have highly difference latencies, it require the use of a connection ID. Therefore both approaches support different use cases as a single number space can be beneficial in highly constraint networks that do not benefit from exposing the connection ID in the header. More evaluation and implementation experience is needed to either only select one of the approaches or decide for one mandatory to implement approach to ensure interoperability.
+This proposal supports the negotiation of either the use of one packet number space for all paths or the use of separate packet number spaces per path. While separate packet number spaces allow for more efficient ACK encoding especially when different paths have highly difference latencies, it requires the use of a connection ID. Therefore both approaches support different use cases as a single number space can be beneficial in highly constrained networks that do not benefit from exposing the connection ID in the header. More evaluation and implementation experience is needed to either only select one of the approaches or decide for one mandatory to implement approach to ensure interoperability.
 
 This proposal does not cover address discovery and management. Addresses and the actual decision process to setup or tear down paths are assumed to be handled by the application that is using the QUIC multipath extension. Further, this proposal only specifies a simple basic packet scheduling algorithm in order to provide some basic implementation guidance. However, more advanced algorithms as well as potential extensions to enhance signaling of the current paths are expected as future work.
 
@@ -133,39 +133,40 @@ The difference between Path Identifier and Packet Number Space Identifier, is th
 is used in multi-path control frames to identify a path, and Packet Number Space Identifier is used
 in 1-RTT packets and ACK_MP frames to distinguish packet number spaces for different paths.
 Both identifiers have the sam value, which is the sequence number of the connection ID, if a
-non-zero connection ID is used. If the connection ID is zero length, the  Packet Number Space
+non-zero connection ID is used. If the connection ID is zero length, the Packet Number Space
 Identifier is 0, while the Path Identifier is selected on path establishment.
 
-# Handshake negotiation and transport parameter {#nego}
+# Handshake Negotiation and Transport Parameter {#nego}
 
 This extension defines a new transport parameter, used to negotiate the use of the multipath extension
 during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follow:
 
 - name: enable_multipath (TBD - experiments use 0xbaba)
-- value: 0 (default) for disabled, 1 for multipath support with multiple packet number spaces, 2 for multipath support with one packet number space (this is compatible to {{?I-D.liu-multipath-quic}})
+- value: 0 (default) for disabled, 1 for multipath support with multiple packet number spaces, 2 for multipath support with one packet number space (this is compatible with {{?I-D.liu-multipath-quic}})
 
-If the peer does not carry the enable_multipath transport parameter, which means the peer does not support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use any MP frames or mechanism defined in this document.
+If the peer does not carry the enable_multipath transport parameter, which means the peer does not support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use any frame or mechanism defined in this document.
 
 Note that the transport parameter "active_connection_id_limit" {{QUIC-TRANSPORT}} limits the number of usable
 Connection IDs, and also limits the number of concurrent paths. For the QUIC multipath extension this limit even applies when no connection ID is exposed in the QUIC header.
 
-# Path setup and removal
+# Path Setup and Removal
 
-After endpoints have negotiated in handshake flow that both endpoints enable multipath feature,
+After completing the handshake and endpoints have agreed to enable multipath feature,
 endpoints can start using multiple paths.
 
-This proposal add one multi-path control frame for path management:
+This proposal adds one multi-path control frame for path management:
 
 - PATH_STATUS frame for the receiver side to claim the path state and preference {{path-status-frame}}
 
-All the new MP frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
+All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
-## Path validation
+
+## Path Initiation
 
 When the multipath option is negotiated, clients that want to use an additional
 path MUST first initiate the Address Validation procedure with PATH_CHALLENGE and PATH_RESPONSE
-frames described in Section 8 of {{QUIC-TRANSPORT}}.  After
+frames described in Section 8 of {{QUIC-TRANSPORT}}. After
 receiving packets from the client on the new paths, the servers MAY
 in turn attempt to validate these paths using the same mechanisms.
 
@@ -175,8 +176,6 @@ server MUST NOT assume that receiving non-probing packets on a new
 path indicates an attempt to migrate to that path.  Instead, servers
 SHOULD consider paths over which non-probing packets have been received as
 available for transmission.
-
-## Path Initiation
 
 ## Path State Management
 
@@ -196,7 +195,7 @@ PATH_STATUS frame can be sent on any path, not only the path identified by the P
 
 ## Path Close
 
-At any time in the connection, each endpoint manages a set of paths that are available for transmission.  At
+At any time in the connection, each endpoint manages a set of paths that are available for transmission. At
 any time, the client can decide to abandon one of these paths,
 following for example changes in local connectivity or changes in
 local preferences.  After a client abandons a path, the server will
@@ -205,13 +204,13 @@ not receive any more non-probing packets on that path.
 An endpoint that wants to close a path SHOULD NOT rely on implicit signals like idle time or packet losses,
 but instead SHOULD use explicit request to terminate path by sending the PATH_STATUS frame.
 
-### Use PATH_STATUS frame to close a path
+### Use PATH_STATUS Frame to Close a Path
 
 Both client and server can close a path, by sending PATH_STATUS frame which
 abandons the path with a corresponding Path Identifier. Once a path is marked
-as "abandon", it means that the resources related to the path can be released.
+as "abandoned", it means that the resources related to the path can be released.
 
-### Effect of RETIRE_CONNECTION_ID frame
+### Effect of RETIRE_CONNECTION_ID Frame
 
 Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard the resources associated with
 that connection ID. If the connection ID was used by the peer to identify a path from the peer to
@@ -219,7 +218,7 @@ this endpoint, the resources include the list of received packets used to send a
 The peer MAY decide to keep sending data using the same IP addresses and UDP ports previously
 associated with the connection ID, but MUST use a different connection ID when doing so.
 
-### Idle timeout
+### Idle Timeout
 
 {{QUIC-TRANSPORT}} allows for closing of connections if they stay idle for too long.
 The connection idle timeout in multipath QUIC is defined as "no packet received on any path for the
@@ -242,13 +241,13 @@ off between keeping resource such as Connection Identifiers in use
 for an excessive time, and having to promptly reestablish a path
 after a spurious estimate of path abandonment by the client.
 
-# Congestion control
+# Congestion Control
 
 Senders MUST manage per-path congestion status, and MUST NOT send more data on a given path than congestion control on that path allows.  This is already a requirement of {{QUIC-TRANSPORT}}.
 
 Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  This scheme can immediately be adapted to Multipath QUIC. Other coupled congestion control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
-# Packet scheduling
+# Packet Scheduling
 
 The simultaneous usage of several sending uniflows introduces new
    algorithms (packet scheduling, path management) whose specifications
@@ -257,42 +256,42 @@ The simultaneous usage of several sending uniflows introduces new
    Multipath TCP, CMT-SCTP and Multipath DCCP.  A companion draft
    {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
    packet schedulers depending on the application goals.  A similar
-   document can be created to discuss path/uniflow management
+   document can be created to discuss path management
    considerations.
 
-# Packet number space and use of connection ID
+# Packet Number Space and Use of Connection ID
 
 Acknowledgements of Initial and Handshake packets MUST be carried using ACK frames, as specified in {{QUIC-TRANSPORT}}.
 The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for some reason ACK frames are
-received in 1RTT packets while the state of multipath negotiation is ambiguous, they MUST be interpreted as acknowledging
-packets sent on path number 0. 
+received in 1-RTT packets while the state of multipath negotiation is ambiguous, they MUST be interpreted as acknowledging
+packets sent on path ID 0.
 
 If endpoints negotiate multipath support with value 1 to use multiple
-packet number space, they SHOULD use ACK_MP frames
-instead of ACK frames to signal acknowledgement of 1-RTT packets, and also 0-RTT packets as specified in {{handling-of-0-rtt-packets}}.
+packet number spaces, they SHOULD use ACK_MP frames
+instead of ACK frames to signal acknowledgement of 1-RTT packets on path number 0, and also 0-RTT packets as specified in {{handling-of-0-rtt-packets}}.
 
 1-RTT packets sent to different paths SHOULD carry different connection identifiers, if a non-zero
 connection ID is used.
 
-## Handling of 0-RTT packets
+## Handling of 0-RTT Packets
 
-The draft specifies a packet number space for each path. Because multi-path is enabled after the handshake negotiation complete,
+Because multi-path is enabled after the handshake negotiation completes,
 there will be a separate context for each Connection ID after multi-path is negotiated.
 0-RTT packets are sent before these per path contexts are established. To avoid confusion, this draft provides a way for
 implementations to deal with 0-RTT packets that is both easy to implement and compatible with {{QUIC-TRANSPORT}}:
 
-- All 0-RTT packet are initially tracked in the "global" application context.
+- All 0-RTT packets are initially tracked in the "global" application context.
 - On the client side, 0-RTT packets are initially sent in the "global" application context. The handshake concludes before
 any 1-RTT packet can be sent or received. When the handshake completes, if multipath is negotiated, the tracking of 0-RTT
-packets moves from the "global" application context to the "path 0" application context. That means the sequence number of
+packets moves from the "global" application context to the "path ID 0" application context. That means the sequence number of
 the first 1-RTT packets sent by the client will follow the sequence number of the last 0-RTT packet.
 - On the server side, the negotiation completes after the client first flight is received and the the server first flight is sent.
-0-RTT packets are received after that. If multipath is negotiated, they are considered received on "path 0".
+0-RTT packets are received after that. If multipath is negotiated, they are considered received on "path ID 0".
 
 In conclusion, 0-RTT packets are tracked and processed with path identifier 0.
 
 
-## Using one packet number space
+## Using One packet Number Space
 
 If the multipath option is negotiated to use one packet number space of all path, the packet sequence numbers are allocated from
 the common number space, so that for example path number number N
@@ -301,14 +300,14 @@ could be sent on one path and packet number N+1 on another.
 ACK frames report the numbers of packets that have been received so
 far, regardless of the path on which they have been received.
 
-If one common packet number space is used for all path, the senders
+If one common packet number space is used for all paths, the senders
 maintain an association between previously sent packet numbers and
 the path over which these packets were sent. This is necessary to implement per path congestion control.
 
 When a packet is newly acknowledged, the delay between the transmission of that packet and
 its first acknowledgement is used to update the RTT statistics for the sending path, and to update the state of the congestion control for that path.
 
-Packet loss detection MUST be adapted to allow for different RTT on
+Packet loss detection MUST be adapted to allow for different RTTs on
 different paths.  For example, timer computations should take into
 account the RTT of the path on which a packet was sent.  Detections
 based on packet numbers shall compare a given packet number to the
@@ -373,7 +372,7 @@ combined paths.  At the same time, early tests show that it is
 desirable to send ACKs through the shortest path, because a shorter
 ACK delay results in a tighter control loop and better performances.
 The tests also showed that it is desirable to send copies of the ACKs
-on multiple paths, for robustness if a path experience sudden losses.
+on multiple paths, for robustness if a path experiences sudden losses.
 
 An early implementation mitigated the delay variation issue by using
 time stamps, as specified in [QUIC-Timestamp].  When the timestamps
@@ -389,24 +388,24 @@ measurements to estimate the one way delay of the terrestrial path to
 about 50ms in each direction, and that of the satellite path to about
 300ms.  Further measurements can then be used to maintain estimates
 of one way delay variations, using logical similar to Kalman filters.
-But statistical processing is error rone, and using time stamps
+But statistical processing is error-prone, and using time stamps
 provides more robust measurements.
 
-## Using multiple packet number spaces
+## Using Multiple Packet Number Spaces
 
-If the multipath option is enabled with a value of 1, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}} which additionally contains a Packet Number Space Identifier (PN Space ID). The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID. Therefore, the packet number space for 1-RTT packets is specific to the connection ID in these packets.
+If the multipath option is enabled with a value of 1, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}} which additionally contains a Packet Number Space Identifier (PN Space ID). The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID. Therefore, the packet number space for 1-RTT packets is specific to the Destination Connection ID in these packets.
 
-Note: Even if use of multiple packet number spaces is negotiated but a peer uses an zero length connection ID, then all packets sent to that peer MUST be numbered in a single number space (as specified in the previous section), because the packet level decryption implementation will only see one Connection ID sequence number (the default number 0).
+Note: Even if the use of multiple packet number spaces is negotiated but a peer uses an zero length connection ID, then all packets sent to that peer MUST be numbered in a single number space (as specified in the previous section), because the packet level decryption implementation will only see one Connection ID sequence number (the default number 0).
 
 Endpoints can find which path a received packet belongs to according to the Destination Connection ID of
-the 1-RTT packet. Endpoints identify find the context of a path by its Connection ID or the Sequence number
+the 1-RTT packet. Endpoints identify the context of a path by its Connection ID or the Sequence number
 of Connection ID.
 
-Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames to claim usable connections IDs
-for itself. Before an endpoint adds a new path, it SHOULD check whether there is at least one unused
+Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames to issue usable connections IDs
+to reach it. Before an endpoint adds a new path, it SHOULD check whether there is at least one unused
 available Connection ID for each side.
 
-If the transport parameter "active_connection_id_limit" is negotiated as N, and the server provides N Connection IDs. If the client is already actively using N paths, the limit is reached. If the client wants to start a new path, it has to retire
+If the transport parameter "active_connection_id_limit" is negotiated as N, the server provided N Connection IDs, and the client is already actively using N paths, the limit is reached. If the client wants to start a new path, it has to retire
 one of the established paths.
 
 ACK_MP frame {{mp-ack-frame}} can be returned via either a different path, or the same path identified
@@ -416,7 +415,7 @@ Using multiple packet number spaces requires changes in the way AEAD is applied 
 protection, as explained in {{multipath-aead}}, and tighter constraints for key
 updates, as explained in {{multipath-key-update}}.
 
-### Packet protection for QUIC Multipath {#multipath-aead}
+### Packet Protection for QUIC Multipath {#multipath-aead}
 
 Packet protection for QUIC v1 is specified is section 5 of {{QUIC-TLS}}. The general principles
 of packet protection are not changed for QUIC Multipath. No changes are needed for setting
@@ -433,7 +432,7 @@ construct the nonce N by combining the packet protection IV with the packet numb
 and with the identifier of the path, which for 1-RTT packets is the Sequence Number of
 the Destination Connection ID present in the packet header, as defined in Section 5.1.1
 of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length. Section 19 of
-{{QUIC-TRANSPORT}} encode this Connection ID Sequence Number as a A variable-length integer,
+{{QUIC-TRANSPORT}} encodes this Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; for QUIC multipath, we require that a range of no more than 2^32-1
 values be used without updating the packet protection key.
 
@@ -483,11 +482,11 @@ Following the Section 5.4. of {{QUIC-TLS}}, the Key Phase bit is protected, so
 sending multiple packets with Key Phase bit flipping at the same time should
 not cause linkability issue.
 
-# Exampes
+# Examples
 
-## Path establishment
+## Path Establishment
 
-{{fig-example-new-path}} illustrates an example of new path establishment.
+{{fig-example-new-path}} illustrates an example of new path establishment using multiple packet number spaces.
 
 ~~~
    Client                                                  Server
@@ -523,7 +522,7 @@ In this example, if the client wants to send a PATH_STATUS frame to tell the ser
 that it prefers the path with CID sequence number 1 (of the server's side), the client should use the identifier
 of the server (sequence 1) in PATH_STATUS frame.
 
-## Path closure
+## Path Closure
 
 {{fig-example-path-close}} illustrates an example of path closing. In this
 case, we are going to close the first path. For the first path, the server's
@@ -555,18 +554,18 @@ In scenarios such as client detects the network environment change (client's 4G/
 Wi-Fi signal is fading to a threshold), or endpoints detect that the quality of RTT or loss rate is
 becoming worse, client or server can terminate a path immediately.
 
-# Implementation considerations
+# Implementation Considerations
 
 TDB
 
-# New frames {#frames}
+# New Frames {#frames}
 
 All the new frames MUST only be sent in 1-RTT packet, and MUST NOT use other encryption levels.
 
-If an endpoint receives MP frames from packets of other encryption levels, it MUST return
+If an endpoint receives multipath-specific frames from packets of other encryption levels, it MUST return
 MP_PROTOCOL_VIOLATION as a connection error and close the connection.
 
-## PATH_STATUS frame {#path-status-frame}
+## PATH_STATUS Frame {#path-status-frame}
 
 PATH_STATUS Frame are used by endpoints to inform the peer of the current status of one path, and the peer
 should send packets according to the preference expressed in these frames. Endpoint use the sequence number of the
@@ -584,7 +583,7 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 ~~~
 {: #fig-path-status-format title="PATH_STATUS Frame Format"}
 
-PATH_STATUS Frames contain the following fields:
+PATH_STATUS frames contain the following fields:
 
 Path Identifier: An identifier of the path, which is formatted as shown in {{fig-path-identifier-format}}.
 
@@ -622,7 +621,7 @@ Available values of Path Status field are:
 - 1: Standby
 - 2: Available
 
-If the value of Path Status field is 2-available, the receiver side can use the Path Priority field to
+If the value of Path Status field is 2 ("available"), the receiver side can use the Path Priority field to
 express the priority weight of a path for the peer.
 
 Frames may be received out of order. A peer MUST ignore an incoming PATH_STATUS frame if it previously
@@ -633,7 +632,7 @@ PATH_STATUS frames SHOULD be acknowledged. If a packet containing a PATH_STATUS 
 the peer should only repeat it if it was the last status sent for that path -- as indicated by the sequence number.
 
 
-## ACK_MP frame {#mp-ack-frame}
+## ACK_MP Frame {#mp-ack-frame}
 
 The MP_ACK frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01 or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to acknowledge packets that were sent on different paths. If the frame type is TBD-01, MP_ACK frames also contain the sum of QUIC packets with associated ECN marks received on the connection up to this point.
 
@@ -660,7 +659,7 @@ Packet Number Space Identifier: An identifier of the path packet number space, w
 # IANA Considerations
 
 This document defines a new transport parameter for the negotiation of enable multiple paths for QUIC,
-and three new frame types. The draft defines provisional values for experiments, but we expect IANA to
+and two new frame types. The draft defines provisional values for experiments, but we expect IANA to
 allocate short values if the draft is approved.
 
 The following entry in {{transport-parameters}} should be added to the "QUIC Transport Parameters" registry
