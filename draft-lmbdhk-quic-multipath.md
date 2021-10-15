@@ -265,7 +265,10 @@ The simultaneous usage of several sending uniflows introduces new
 Acknowledgements of Initial and Handshake packets MUST be carried using ACK frames, as specified in {{QUIC-TRANSPORT}}.
 The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for some reason ACK frames are
 received in 1RTT packets while the state of multipath negotiation is ambiguous, they MUST be interpreted as acknowledging
-packets sent on path number 0. After endpoints successfully negotiate multipath support, they SHOULD use ACK_MP frames
+packets sent on path number 0. 
+
+If endpoints negotiate multipath support with value 1 to use multiple
+packet number space, they SHOULD use ACK_MP frames
 instead of ACK frames to signal acknowledgement of 1-RTT packets, and also 0-RTT packets as specified in {{handling-of-0-rtt-packets}}.
 
 1-RTT packets sent to different paths SHOULD carry different connection identifiers, if a non-zero
@@ -291,14 +294,14 @@ In conclusion, 0-RTT packets are tracked and processed with path identifier 0.
 
 ## Using one packet number space
 
-If the multipath option is negotiated to use one packet number space of all path,   The packet sequence numbers are allocated from
+If the multipath option is negotiated to use one packet number space of all path, the packet sequence numbers are allocated from
 the common number space, so that for example path number number N
 could be sent on one path and packet number N+1 on another.
 
 ACK frames report the numbers of packets that have been received so
 far, regardless of the path on which they have been received.
 
- If one common packet number space is used for all path, the senders
+If one common packet number space is used for all path, the senders
 maintain an association between previously sent packet numbers and
 the path over which these packets were sent. This is necessary to implement per path congestion control.
 
