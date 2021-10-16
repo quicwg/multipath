@@ -245,7 +245,7 @@ Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  
 
 # Packet Scheduling
 
-The simultaneous usage of several sending uniflows introduces new
+The simultaneous usage of several sending paths introduces new
    algorithms (packet scheduling, path management) whose specifications
    are out of scope of this document.  Nevertheless, these algorithms
    are actually present in any multipath-enabled transport protocol like
