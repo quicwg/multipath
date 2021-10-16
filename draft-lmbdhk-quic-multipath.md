@@ -146,12 +146,12 @@ defined as follow:
 - value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more 
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
-Client Option| Definition                                 | Allowed server responses
--------------|--------------------------------------------|--------------------------
-0x0	     | don't support multi-path                        | 0x0
-0x1	     | only support one PN space for multi-path        | 0x0 or 0x1
-0x2	     | only support multiple PN spaces for multi-path  | 0x0 or 0x2
-0x3	     | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
+Client Option| Definition                                     | Allowed server responses
+-------------|------------------------------------------------|--------------------------
+0x0	      | don't support multi-path                        | 0x0
+0x1	      | only support one PN space for multi-path        | 0x0 or 0x1
+0x2	      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
+0x3	      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
 If the peer does not carry the enable_multipath transport parameter, which means the peer does not 
