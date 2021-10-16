@@ -564,7 +564,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
   PATH_ABANDON Frame {
-    Type (i) = TBD-03 (experiments use 0xbaba03),
+    Type (i) = TBD-03 (experiments use 0xbaba05),
     Path Identifier (..),
     Error Code (i),
     Reason Phrase Length (i),
@@ -602,8 +602,20 @@ is using 0-length Connection ID, but the peer is using non-zero length Connectio
 SHOULD use type 0x01 for path identifier. If both endpoints are using 0-length Connection IDs on that path,
 endpoints SHOULD only use type 0x02 for path identifier.
 
-Error code: TBD
-Reason Phrase: TBD
+Error Code:
+: A variable-length integer that indicates the reason for closing this connection.
+
+Reason Phrase Length:
+: A variable-length integer specifying the length of the reason phrase in bytes.
+  Because an PATH_ABANDON frame cannot be split between packets, any limits
+  on packet size will also limit the space available for a reason phrase.
+
+Reason Phrase:
+: Additional diagnostic information for the closure. This can be zero length if
+  the sender chooses not to give details beyond the Error Code value.
+  This SHOULD be a UTF-8 encoded string {{!RFC3629}}, though the frame
+  does not carry information, such as language tags, that would aid comprehension
+  by any entity other than the one that created the text.
 
 PATH_ABANDON frames SHOULD be acknowledged. If a packet containing a PATH_ABANDON
 frame is considered lost, the peer should repeat it.
@@ -664,7 +676,7 @@ under the "QUIC Protocol" heading.
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
 TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-ack-frame}}
-TBD-02 (experiments use 0xbaba03)                  | PATH_ABANDON         | {{path-abandon-frame}}
+TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON         | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 
