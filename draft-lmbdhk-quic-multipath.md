@@ -146,8 +146,8 @@ defined as follow:
 - value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more 
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
-Client Option| Definition                                     | Allowed server responses
--------------|------------------------------------------------|--------------------------
+Client Option| Definition                                      | Allowed server responses
+-------------|-------------------------------------------------|--------------------------
 0x0	      | don't support multi-path                        | 0x0
 0x1	      | only support one PN space for multi-path        | 0x0 or 0x1
 0x2	      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
