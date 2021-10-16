@@ -603,7 +603,7 @@ SHOULD use type 0x01 for path identifier. If both endpoints are using 0-length C
 endpoints SHOULD only use type 0x02 for path identifier.
 
 Error Code:
-: A variable-length integer that indicates the reason for closing this connection.
+: A variable-length integer that indicates the reason for abandoning this path.
 
 Reason Phrase Length:
 : A variable-length integer specifying the length of the reason phrase in bytes.
