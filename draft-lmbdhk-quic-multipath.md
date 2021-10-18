@@ -664,7 +664,17 @@ Packet Number Space Identifier: An identifier of the path packet number space, w
 Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK_MP frame. If the endpoint receives
 1-RTT packets with 0-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
 If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this
-as a connection error of type MP_CONNECTION_ERROR and close the connection.
+as a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
+
+
+# Error Codes {#error-codes}
+Multi-path QUIC transport error codes are 62-bit unsigned integers following {{QUIC-TRANSPORT}}.
+
+This section lists the defined Multi-path QUIC transport error codes that can be 
+used in a CONNECTION_CLOSE frame with a type of 0x1c.  These errors apply to the entire connection.
+
+MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance 
+that was not covered by more specific error codes.
 
 
 # IANA Considerations
@@ -692,6 +702,13 @@ TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-
 TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON         | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
+The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes" 
+registry under the "QUIC Protocol" heading.
+
+Value                       | Code                  | Description                   | Specification
+----------------------------|-----------------------|-------------------------------|-------------------
+TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multi-path protocol violation | {{error-codes}}
+{: #tab-error-code title="Error Code for Multi-path QUIC"}
 
 
 # Security Considerations
