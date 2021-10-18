@@ -638,7 +638,7 @@ frame is considered lost, the peer should repeat it.
 
 The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01
 or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}.
-It is used to acknowledge packets that were sent on different paths. If the
+It is used to acknowledge packets that were sent on different paths when using multiple packet number spaces. If the
 frame type is TBD-01, ACK_MP frames also contain the sum of QUIC packets with
 associated ECN marks received on the connection up to this point.
 
@@ -666,6 +666,9 @@ Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK
 If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this
 as a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
 
+When using a single packet number space, endhosts MUST NOT send ACK_MP frames.
+If an endhost receives an ACK_MP frame while a single packet number space was negotiated, it MUST treat
+this as a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
 
 # Error Codes {#error-codes}
 Multi-path QUIC transport error codes are 62-bit unsigned integers following {{QUIC-TRANSPORT}}.
