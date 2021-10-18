@@ -119,7 +119,7 @@ We assume that the reader is familiar with the terminology used in {{QUIC-TRANSP
 In addition, we define the following terms:
 
 - Path Identifier (Path ID): An identifier that is used to identify a path in a QUIC connection
-  at an endpoint. Path Identifier is used in multi-path control frames (etc. PATH_STATUS frame)
+  at an endpoint. Path Identifier is used in multi-path control frames (etc. PATH_ABANDON frame)
   to identify a path. By default, it is defined as the sequence number of the destination Connection ID
   used for sending packets on that particular path, but alternative definitions can be used
   if the length of that connection ID is zero.
@@ -143,9 +143,22 @@ during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new tra
 defined as follow:
 
 - name: enable_multipath (TBD - experiments use 0xbaba)
-- value: 0 (default) for disabled, 1 for multipath support with multiple packet number spaces, 2 for multipath support with one packet number space (this is compatible with {{?I-D.liu-multipath-quic}})
+- value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more 
+PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
-If the peer does not carry the enable_multipath transport parameter, which means the peer does not support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use any frame or mechanism defined in this document.
+Client Option| Definition                                      | Allowed server responses
+-------------|-------------------------------------------------|--------------------------
+0x0	      | don't support multi-path                        | 0x0
+0x1	      | only support one PN space for multi-path        | 0x0 or 0x1
+0x2	      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
+0x3	      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
+{: #param_value_definition title="Available value for enable_multipath"}
+
+If the peer does not carry the enable_multipath transport parameter, which means the peer does not 
+support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use 
+any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter 
+"enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR 
+and close the connection.
 
 Note that the transport parameter "active_connection_id_limit" {{QUIC-TRANSPORT}} limits the number of usable
 Connection IDs, and also limits the number of concurrent paths. For the QUIC multipath extension this limit even applies when no connection ID is exposed in the QUIC header.
@@ -157,7 +170,7 @@ endpoints can start using multiple paths.
 
 This proposal adds one multi-path control frame for path management:
 
-- PATH_STATUS frame for the receiver side to claim the path state and preference {{path-status-frame}}
+- PATH_ABANDON frame for the receiver side to abandon the path {{path-abandon-frame}}
 
 All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -179,19 +192,15 @@ available for transmission.
 
 ## Path State Management
 
-An endpoint uses PATH_STATUS frames to inform that the peer should send packets in the preference expressed
-by these frames. An endpoint uses the sequence number of the CID used by the peer for PATH_STATUS frames
-(describing the sender's path identifier).
+The current draft defines PATH_ABANDON frame to inform the peer to abandon a
+path, and release the corresponding resources. More complex path management can
+be made possible with additional extensions (e.g., PATH_STATUS frame in
+{{?I-D.liu-multipath-quic}} ). An endpoint uses the sequence number of the CID
+used by the peer for PATH_ABANDON frames (describing the sender's path
+identifier).
 
-PATH_STATUS frame describes 4 kinds of path states:
-
-- Abandon a path, and release the corresponding resource.
-- Mark a path as "available", i.e., allow the peer to use its own logic to split traffic among available paths.
-- Mark a path as "standby", i.e., suggest that no traffic should be sent on that path if another path is available.
-- Mark the priority of a path, i.e, path 1 is weight 8, path 2 is weight 2, suggest that path 1 has higher priority
-than path 2, and peer should try to send more data in path 1.
-
-PATH_STATUS frame can be sent on any path, not only the path identified by the Path Identifier field.
+PATH_ABANDON frame can be sent on any path, not only the path identified by the
+Path Identifier field.
 
 ## Path Close
 
@@ -202,11 +211,11 @@ local preferences.  After a client abandons a path, the server will
 not receive any more non-probing packets on that path.
 
 An endpoint that wants to close a path SHOULD NOT rely on implicit signals like idle time or packet losses,
-but instead SHOULD use explicit request to terminate path by sending the PATH_STATUS frame.
+but instead SHOULD use explicit request to terminate path by sending the PATH_ABANDON frame.
 
-### Use PATH_STATUS Frame to Close a Path
+### Use PATH_ABANDON Frame to Close a Path
 
-Both client and server can close a path, by sending PATH_STATUS frame which
+Both client and server can close a path, by sending PATH_ABANDON frame which
 abandons the path with a corresponding Path Identifier. Once a path is marked
 as "abandoned", it means that the resources related to the path can be released.
 
@@ -249,7 +258,7 @@ Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  
 
 # Packet Scheduling
 
-The simultaneous usage of several sending uniflows introduces new
+The simultaneous usage of several sending paths introduces new
    algorithms (packet scheduling, path management) whose specifications
    are out of scope of this document.  Nevertheless, these algorithms
    are actually present in any multipath-enabled transport protocol like
@@ -518,9 +527,6 @@ starts a new path. For example, if the goal is to maintain 2 paths, each endpoin
 2 in use, and one spare. If the client has used all the allocated CID, it is supposed to retire those that are
 not used anymore, and the server is supposed to provide replacements, as specified in {{QUIC-TRANSPORT}}.
 
-In this example, if the client wants to send a PATH_STATUS frame to tell the server
-that it prefers the path with CID sequence number 1 (of the server's side), the client should use the identifier
-of the server (sequence 1) in PATH_STATUS frame.
 
 ## Path Closure
 
@@ -529,19 +535,16 @@ case, we are going to close the first path. For the first path, the server's
 1-RTT packets use DCID C1, which has a sequence number of 1; the client's 1-RTT
 packets use DCID S2, which has a sequence number of 2.  For the second path,
 the server's 1-RTT packets use DCID C2, which has a sequence number of 2; the
-client's 1-RTT packets use CID S3, which has a sequence number of 3.  Note that
-two paths use different packet number space. (For the convience of
-distinguishing the CID sequence number and PATH_STATUS sequence number, we call
-the "PATH_STATUS sequence number" as "PSSN".)
+client's 1-RTT packets use CID S3, which has a sequence number of 3. Note that
+two paths use different packet number space.
 
 ~~~
   Client                                                          Server
 
   (client tells server to abandon a path)
-  1-RTT[X]: DCID=S2 PATH_STATUS[id=1, PSSN1, status=abandon, pri.=0]->
+  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
                                  (server tells client to abandon a path)
-   <-1-RTT[Y]: DCID=C1 PATH_STATUS[id=2, PSSN2, status=abandon, pri.=0],
-                                                     ACK_MP[Seq=2, PN=X]
+        <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2], ACK_MP[Seq=2, PN=X]
   (client abandons the path that it is using)
   1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
                              (server abandons the path that it is using)
@@ -565,25 +568,25 @@ All the new frames MUST only be sent in 1-RTT packet, and MUST NOT use other enc
 If an endpoint receives multipath-specific frames from packets of other encryption levels, it MUST return
 MP_PROTOCOL_VIOLATION as a connection error and close the connection.
 
-## PATH_STATUS Frame {#path-status-frame}
+## PATH_ABANDON Frame {#path-abandon-frame}
 
-PATH_STATUS Frame are used by endpoints to inform the peer of the current status of one path, and the peer
+PATH_ABANDON Frame are used by endpoints to inform the peer of the current status of one path, and the peer
 should send packets according to the preference expressed in these frames. Endpoint use the sequence number of the
-CID used by the peer for PATH_STATUS frames (describing the sender's path identifier).
-PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
+CID used by the peer for PATH_ABANDON frames (describing the sender's path identifier).
+PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
-  PATH_STATUS Frame {
-    Type (i) = TBD-03 (experiments use 0xbaba03),
+  PATH_ABANDON Frame {
+    Type (i) = TBD-03 (experiments use 0xbaba05),
     Path Identifier (..),
-    Path Status sequence number (i),
-    Path Status (i),
-    Path Priority (i),
+    Error Code (i),
+    Reason Phrase Length (i),
+    Reason Phrase (..),
   }
 ~~~
-{: #fig-path-status-format title="PATH_STATUS Frame Format"}
+{: #fig-path-abandon-format title="PATH_ABANDON Frame Format"}
 
-PATH_STATUS frames contain the following fields:
+PATH_ABANDON frames contain the following fields:
 
 Path Identifier: An identifier of the path, which is formatted as shown in {{fig-path-identifier-format}}.
 
@@ -606,32 +609,29 @@ Path Identifier: An identifier of the path, which is formatted as shown in {{fig
 ~~~
 {: #fig-path-identifier-format title="Path Identifier Format"}
 
-Note: If the receiver of the PATH_STATUS frame is using non-zero length Connection ID on that path,
-endpoint SHOULD use type 0x00 for path identifier in the control frame. If the receiver of the PATH_STATUS frame
+Note: If the receiver of the PATH_ABANDON frame is using non-zero length Connection ID on that path,
+endpoint SHOULD use type 0x00 for path identifier in the control frame. If the receiver of the PATH_ABANDON frame
 is using 0-length Connection ID, but the peer is using non-zero length Connection ID on that path, endpoints
 SHOULD use type 0x01 for path identifier. If both endpoints are using 0-length Connection IDs on that path,
 endpoints SHOULD only use type 0x02 for path identifier.
 
-Path Status sequence number: A variable-length integer specifying the sequence number assigned for this PATH_STATUS frame.
-There is a different path status sequence number space for each path.
+Error Code:
+: A variable-length integer that indicates the reason for abandoning this path.
 
-Available values of Path Status field are:
+Reason Phrase Length:
+: A variable-length integer specifying the length of the reason phrase in bytes.
+  Because an PATH_ABANDON frame cannot be split between packets, any limits
+  on packet size will also limit the space available for a reason phrase.
 
-- 0: Abandon
-- 1: Standby
-- 2: Available
+Reason Phrase:
+: Additional diagnostic information for the closure. This can be zero length if
+  the sender chooses not to give details beyond the Error Code value.
+  This SHOULD be a UTF-8 encoded string {{!RFC3629}}, though the frame
+  does not carry information, such as language tags, that would aid comprehension
+  by any entity other than the one that created the text.
 
-If the value of Path Status field is 2 ("available"), the receiver side can use
-the Path Priority field to express the priority weight of a path for the peer.
-
-Frames may be received out of order. A peer MUST ignore an incoming PATH_STATUS
-frame if it previously received another PATH_STATUS frame for the same Path
-Identifier with a sequence number equal to or higher than the sequence number
-of the incoming frame.
-
-PATH_STATUS frames SHOULD be acknowledged. If a packet containing a PATH_STATUS
-frame is considered lost, the peer should only repeat it if it was the last
-status sent for that path -- as indicated by the sequence number.
+PATH_ABANDON frames SHOULD be acknowledged. If a packet containing a PATH_ABANDON
+frame is considered lost, the peer should repeat it.
 
 
 ## ACK_MP Frame {#mp-ack-frame}
@@ -664,7 +664,17 @@ Packet Number Space Identifier: An identifier of the path packet number space, w
 Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK_MP frame. If the endpoint receives
 1-RTT packets with 0-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
 If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this
-as a connection error of type MP_CONNECTION_ERROR and close the connection.
+as a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
+
+
+# Error Codes {#error-codes}
+Multi-path QUIC transport error codes are 62-bit unsigned integers following {{QUIC-TRANSPORT}}.
+
+This section lists the defined Multi-path QUIC transport error codes that can be 
+used in a CONNECTION_CLOSE frame with a type of 0x1c.  These errors apply to the entire connection.
+
+MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance 
+that was not covered by more specific error codes.
 
 
 # IANA Considerations
@@ -689,9 +699,16 @@ under the "QUIC Protocol" heading.
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
 TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-ack-frame}}
-TBD-02 (experiments use 0xbaba03)                  | PATH_STATUS         | {{path-status-frame}}
+TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON         | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
+The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes" 
+registry under the "QUIC Protocol" heading.
+
+Value                       | Code                  | Description                   | Specification
+----------------------------|-----------------------|-------------------------------|-------------------
+TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multi-path protocol violation | {{error-codes}}
+{: #tab-error-code title="Error Code for Multi-path QUIC"}
 
 
 # Security Considerations
