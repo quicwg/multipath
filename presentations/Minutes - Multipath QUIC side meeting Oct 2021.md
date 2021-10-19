@@ -133,14 +133,14 @@ That's what "way forward" means for QUIC multipath, for now.
 
 Please comment and provide feedback on GitHub for the -00 version!
 
-## Experimental results (Yanmei)
+## Experimental results (Yanmei&Yunfei)
 
-Motivations - verify potential performance gain and understand the challenges of running multipath.
+Motivations - verify potential performance gain and understand the challenges of running multipath. Implemented in separate packet number spaces with QoE control in multi-path scheduling.
 
 Q&A 
 
 * Mirja - what was your experience with multiple number spaces?
-* Yunfei - that was easier for us 
+* Yunfei - that was easier for us (because we don't need to change recovery and rtt measurement logic. Tunning performance can be time consuming). Second benefit was more explicit path management. You can manage the path status of a path or close a path by sending path_status from on another path, which makes further extensions of multi-path features more feasible.  
 * Lucas - thank you for bringing this work to the QUIC working group at IETF 111 (as "if time permits" there), and thank you for presenting it here. It's good that people are seeing it now. 
 
 ## Finishing up
