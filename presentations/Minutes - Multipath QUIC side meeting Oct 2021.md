@@ -58,7 +58,7 @@ Q&A
 
 * Ian - core draft does everything I need to do for now. Multiple numbering spaces could work, but single space is less effort to implement. We need to figure out whether we need it (more discussion later)
 * Apostolis - we have 3GPP requirement for QoS flows. Is that relevant here? 
-* Mirja - all the QUIC packets on a connection have the same QoS
+* Mirja - all the QUIC packets on a connection have the same QoS but different paths could potential get different QoS 
 * Spencer - 3GPP will probably end up with one QUIC connection per QoS, but that's a 3GPP conversation
 
 ## Packet Number Space(s) (Christian)
@@ -87,13 +87,13 @@ Nice slide on pros and cons between single space and multiple spaces. The point 
 
 Many servers require CIDs, so you know which server in the farm the packet goes to, but many clients don't use CIDs, because they can distinguish between endpoints based on four-tuples and reduce the size of each packet. 
 
-Allow for negotiation when the connection is established?
+Current new draft proposal allows for negotiation when the connection is established. Is that a way foward for now?
 
 * Robin - why not use different keys per path? 
 * Christian - Chicken and egg problem: You need keys for probes.
 
-* Martin - I'm pushing QUIC offload, and changing the way crypto works will make it harder to deploy multipath.
-* Mirja - It depends on how you do crypto offload, doesn't it? (Christian agrees - you just need a different IV for each connection)
+* Martin - I'm pushing QUIC offload. Changing the way crypto works will make it harder to deploy multipath.
+* Mirja - It depends on how you do crypto offload, doesn't it? Nonce length need to be flexible. (Christian agrees - you just need a different IV for each connection)
  
 * Ian - definitely prefer single number space, and suggest having the sender be smarter about ranges it sends - if you assign half the ACK space to each path, you don't have to change anything to avoid large numbers of ranges. 
 * Christian - this is in the spirit of what I wrote in the single number space draft, but getting smarter is going to require experience. We want to have a negotiation for this. 
@@ -105,7 +105,7 @@ Allow for negotiation when the connection is established?
 * Ian - I'm suggesting that we keep the single ACK frame. I can allocate 4000 numbers at once, without the receiver knowing that. And I should have read Christian's draft :-) 
 * Christian - Ian's goal is to have the smarts in the sender, and that's a nice goal, but we need experience to know that works.
 
-* Yunfei - what if you have a large number of numbering spaces?
+* Yunfei - what if you have a large number of paths/numbering spaces?
 * Christian - there are reasons to send a large number of packets at once. That's not hard to implement - it's in many stacks today. 
 
 * Christian - expecting Robin to ask what multiple number spaces does to QLOG? 
@@ -130,6 +130,8 @@ Allow for negotiation when the connection is established?
 **We'll work on having one -00 document for core multipath that we can ask the QUIC working group to adopt.**
 
 That's what "way forward" means for QUIC multipath, for now. 
+
+Please comment and provide feedback on GitHub for the -00 version!
 
 ## Experimental results (Yanmei)
 
@@ -159,7 +161,7 @@ Spencer = is there anything that the QUIC working group needs to do, in order to
 
 Lucas - we have a more general QUIC working group charter, now that QUICv1 has been published. No charter update should be required for the scope of multipath that's been discussed today. (Multipath congestion control schemes, for instance, would be a different story!)
 
-Participants:
+Participants (extract based on voluntary sign-up):
 * Mirja Kühlewind
 * Martin duke
 * Spencer Dawkins
