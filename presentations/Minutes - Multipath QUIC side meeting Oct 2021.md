@@ -161,7 +161,7 @@ Spencer = is there anything that the QUIC working group needs to do, in order to
 
 Lucas - we have a more general QUIC working group charter, now that QUICv1 has been published. No charter update should be required for the scope of multipath that's been discussed today. (Multipath congestion control schemes, for instance, would be a different story!)
 
-Participants (extract based on voluntary sign-up):
+Participants (extract based on voluntary sign-up; total count was 40):
 * Mirja Kühlewind
 * Martin duke
 * Spencer Dawkins
