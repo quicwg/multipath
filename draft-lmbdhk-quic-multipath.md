@@ -270,9 +270,10 @@ If endpoints negotiate multipath support with value 1 to use multiple
 packet number spaces, they SHOULD use ACK_MP frames
 instead of ACK frames to signal acknowledgement of 1-RTT packets on path number 0, and also 0-RTT packets as specified in {{handling-of-0-rtt-packets}}.
 
-1-RTT packets sent to different paths MUST carry different connection identifiers, if a non-zero
-connection ID is used. If a packet is received on a new 4-tuple but with an already used connection ID,
-the sender has migrated to that address and the receiver reacts as specfied in Section 9.3 in {{QUIC-TRANSPORT}}.
+An endpoint sending 1-RTT packets MUST use different Connection IDs on different paths, if non-zero-length
+Connection IDs are used. Still, the receiver may observe the same Connection ID used on different 4-tuples
+due to, e.g., NAT rebinding. In such case, the receiver reacts as specified in
+{{Section 9.3 of QUIC-TRANSPORT}}.
 
 ## Handling of 0-RTT Packets
 
