@@ -143,7 +143,7 @@ during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new tra
 defined as follow:
 
 - name: enable_multipath (TBD - experiments use 0xbaba)
-- value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more 
+- value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
 Client Option| Definition                                      | Allowed server responses
@@ -154,10 +154,10 @@ Client Option| Definition                                      | Allowed server 
 0x3	      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
-If the peer does not carry the enable_multipath transport parameter, which means the peer does not 
-support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use 
-any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter 
-"enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR 
+If the peer does not carry the enable_multipath transport parameter, which means the peer does not
+support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use
+any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter
+"enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR
 and close the connection.
 
 Note that the transport parameter "active_connection_id_limit" {{QUIC-TRANSPORT}} limits the number of usable
@@ -495,7 +495,8 @@ not cause linkability issue.
 
 ## Path Establishment
 
-{{fig-example-new-path}} illustrates an example of new path establishment using multiple packet number spaces.
+{{fig-example-new-path}} illustrates an example of new path establishment using
+multiple packet number spaces.
 
 ~~~
    Client                                                  Server
@@ -517,45 +518,111 @@ not cause linkability issue.
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
 
-As shown in {{fig-example-new-path}}, client provides one unused available Connection ID (C1 with sequence number 1),
-and server provides two available Connection IDs (S1 with sequence number 1, and S2 with sequence number 2).
-When client wants to start a new path, it checks whether there is unused available Connection IDs for each side,
-and choose an available Connection ID S2 as the Destination Connection ID in the new path.
+As shown in {{fig-example-new-path}}, client provides one unused available
+Connection ID (C1 with sequence number 1), and server provides two available
+Connection IDs (S1 with sequence number 1, and S2 with sequence number 2).
+When client wants to start a new path, it checks whether there is unused
+available Connection IDs for each side, and choose an available Connection ID
+S2 as the Destination Connection ID in the new path.
 
-Endpoints need to exchange unused available Connection IDs with the NEW_CONNECTION_ID frame before an endpoint
-starts a new path. For example, if the goal is to maintain 2 paths, each endpoint should provide at least 3 CID to its peer:
-2 in use, and one spare. If the client has used all the allocated CID, it is supposed to retire those that are
-not used anymore, and the server is supposed to provide replacements, as specified in {{QUIC-TRANSPORT}}.
+Endpoints need to exchange unused available Connection IDs with the
+NEW_CONNECTION_ID frame before an endpoint starts a new path. For example, if
+the goal is to maintain 2 paths, each endpoint should provide at least 3 CID to
+its peer: 2 in use, and one spare. If the client has used all the allocated
+CID, it is supposed to retire those that are not used anymore, and the server
+is supposed to provide replacements, as specified in {{QUIC-TRANSPORT}}.
 
 
 ## Path Closure
 
-{{fig-example-path-close}} illustrates an example of path closing. In this
-case, we are going to close the first path. For the first path, the server's
-1-RTT packets use DCID C1, which has a sequence number of 1; the client's 1-RTT
-packets use DCID S2, which has a sequence number of 2.  For the second path,
-the server's 1-RTT packets use DCID C2, which has a sequence number of 2; the
-client's 1-RTT packets use CID S3, which has a sequence number of 3. Note that
-two paths use different packet number space.
+{{fig-example-path-close1}} illustrates an example of path closing when both
+the client and the server use non-zero length CIDs. Path identifier type 0x00
+is chosen. In this case, we are going to close the first path. For the first
+path, the server's 1-RTT packets use DCID C1, which has a sequence number of 1;
+the client's 1-RTT packets use DCID S2, which has a sequence number of 2.  For
+the second path, the server's 1-RTT packets use DCID C2, which has a sequence
+number of 2; the client's 1-RTT packets use CID S3, which has a sequence number
+of 3. Note that two paths use different packet number spaces.
 
 ~~~
-  Client                                                          Server
+  Client                                                      Server
 
   (client tells server to abandon a path)
-  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
-                                 (server tells client to abandon a path)
-        <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2], ACK_MP[Seq=2, PN=X]
+  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=0, path_id=1]->
+                              (server tells client to abandon a path)
+          <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id_type=0,path_id=2],
+                                                  ACK_MP[Seq=2, PN=X]
   (client abandons the path that it is using)
-  1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
-                             (server abandons the path that it is using)
-       <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
+  1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2],
+                          ACK_MP[Seq=1, PN=Y]->
+                          (server abandons the path that it is using)
+                         <-1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1],
+                                                  ACK_MP[Seq=3, PN=U]
 
 ~~~
-{: #fig-example-path-close title="Example of closing a path (path id type=0x00)"}
+{: #fig-example-path-close1 title="Example of closing a path when both the
+server and client use non-zero length CIDs"}
 
-In scenarios such as client detects the network environment change (client's 4G/Wi-Fi is turned off,
-Wi-Fi signal is fading to a threshold), or endpoints detect that the quality of RTT or loss rate is
-becoming worse, client or server can terminate a path immediately.
+{{fig-example-path-close2}} illustrates an example of path closing when the
+client uses non-zero length CID while the server uses zero-length CID. Similar
+to the above example, in this case, we are going to close the first path. For
+the first path, the client's 1-RTT packets use DCID S2, which has a sequence
+number of 2, so the server can still use path identifier type 0x00 and a
+path_id=2 in its PATH_ABANDON frame. However, because the server now uses
+zero-length CID, the client needs to use path identifier type 0x01 with a
+path_id=2 in its PATH_ABANDON frame, which is different from the above example.
+The server can readily close the first path when it receives the
+RETIRE_CONNECTION_ID frame from the client. However, since the client will not
+receive a RETIRE_CONNECTION_ID frame, after sending out RETIRE_CONNECTION_ID
+frame, the client waits for 3 RTO before closing the path. Note that single
+packet number spaces are used in both directions.
+
+~~~
+  Client                                                      Server
+
+  (client tells server to abandon a path)
+  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=1, path_id=2]->
+                             (server tells client to abandon a path)
+                <-1-RTT[Y]: PATH_ABANDON[path_id_type=0, path_id=2],
+                                                           ACK[PN=X]
+  (client retires the CID it is using
+  and waits for 3*RTO to close the path)
+  1-RTT[X+1]: DCID=S3 RETIRE_CONNECTION_ID[2],
+                                     ACK[PN=Y]->
+                                            (server closes the path)
+
+~~~
+{: #fig-example-path-close2 title="Example of closing a path when the client
+uses non-zero length CID while the server uses zero-length CID"}
+
+{{fig-example-path-close3}} illustrates an example of path closing when both
+the client and the server use zero-length CIDs. Again, we are going to close
+the first path. In this case, both the server and the client use path
+identifier type 0x02, which refers to the current path in the PATH_ABANDON
+frame. Both endpoints wait for 3 RTO after receiving the ACK of their
+respective PATH_ABANDON frames before closing the path. Note that single packet
+number spaces are used in both directions.
+
+~~~
+  Client                                                     Server
+
+  (client tells server to abandon a path)
+  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=2]->
+                            (server tells client to abandon a path)
+                          <-1-RTT[Y]: PATH_ABANDON[path_id_type=2],
+                                                          ACK[PN=X]
+  (client waits for 3*RTO to close the path)
+  1-RTT[X+1]: ACK[PN=Y]->
+                         (server waits for 3*RTO to close the path)
+
+~~~
+{: #fig-example-path-close3 title="Example of closing a path when both client
+and server use zero-length CIDs."}
+
+In scenarios such as client detects the network environment change (client's
+4G/Wi-Fi is turned off, Wi-Fi signal is fading to a threshold), or endpoints
+detect that the quality of RTT or loss rate is becoming worse, client or server
+can terminate a path immediately.
 
 # Implementation Considerations
 
@@ -673,10 +740,10 @@ this as a connection error of type MP_PROTOCOL_VIOLATION and close the connectio
 # Error Codes {#error-codes}
 Multi-path QUIC transport error codes are 62-bit unsigned integers following {{QUIC-TRANSPORT}}.
 
-This section lists the defined Multi-path QUIC transport error codes that can be 
+This section lists the defined Multi-path QUIC transport error codes that can be
 used in a CONNECTION_CLOSE frame with a type of 0x1c.  These errors apply to the entire connection.
 
-MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance 
+MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance
 that was not covered by more specific error codes.
 
 
@@ -705,7 +772,7 @@ TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-
 TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON         | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
-The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes" 
+The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes"
 registry under the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
