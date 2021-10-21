@@ -243,14 +243,13 @@ after a spurious estimate of path abandonment by the client.
 
 ~~~
        o
-       | Initiate path validation
-       | PATH_CHALLENGE received on new path
+       | PATH_CHALLENGE sent/received on new path
        v
  +------------+    Path validation abandoned
  | Validating |----------------------------------+
  +------------+                                  |
        |                                         |
-       | Path validation succeeded               |
+       | PATH_RESPONSE received                  |
        |                                         |
        v        Associated CID have been retired |
  +------------+        Path's idle timeout       |
@@ -272,7 +271,7 @@ after a spurious estimate of path abandonment by the client.
 ~~~
 {: #fig-path-states title="States of a path"}
 
-In non-terminal states, hosts MUST track the following information.
+In non-final states, hosts have to track the following information.
 
 - Associated 4-tuple: The tuple (source IP, source port, destination IP, destination port)
 used by the endhost to send packets over the path.
@@ -289,11 +288,10 @@ In the "Active" state, hosts MUST also track the following information.
 - Associated Source Connection ID: The Connection ID used to receive packets over the path.
 
 A path in the "Validating" state performs path validation as described in {{Section 8.2 of QUIC-TRANSPORT}}.
-An endhost SHOULD NOT send non-probing frames on a path in "Validating" state, as it has no guarantee that packets
+An endhost should not send non-probing frames on a path in "Validating" state, as it has no guarantee that packets
 will actually reach the peer.
 
-The endhost can use all the paths in the "Active" state, provided that their usage is enabled by the path's congestion
-controller and the connection's flow control.
+The endhost can use all the paths in the "Active" state, provided that the congestion control and flow control currently allow sending of new data on a path.
 
 In the "Closing" state, the endhost SHOULD NOT send packets on this path anymore, as there is no guarantee that
 the peer can still map the packets to the connection. The endhost SHOULD wait for the acknowledgment of the PATH_ABANDONED
