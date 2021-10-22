@@ -464,7 +464,7 @@ key on all active paths. Further, an
 endpoint MUST NOT initiate a subsequent key update until a packet with the
 current key has been acknowledged on each path.
 
-Following {{Section 5.4 of {{QUIC-TLS}}, the Key Phase bit is protected, so
+Following Section 5.4 of {{QUIC-TLS}}, the Key Phase bit is protected, so
 sending multiple packets with Key Phase bit flipping at the same time should
 not cause linkability issue.
 
