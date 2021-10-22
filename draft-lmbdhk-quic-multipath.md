@@ -52,12 +52,12 @@ normative:
   QUIC-TRANSPORT: rfc9000
   QUIC-TLS: rfc9001
 
-
 informative:
   RFC6356:
   I-D.bonaventure-iccrg-schedulers:
   QUIC-RECOVERY: rfc9002
   QUIC-Invariants: rfc8999
+  QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
     title: "MPTCP is not pareto-optimal: performance issues and a possible solution"
     date: "2012"
@@ -355,7 +355,7 @@ The tests also showed that it is desirable to send copies of the ACKs
 on multiple paths, for robustness if a path experiences sudden losses.
 
 An early implementation mitigated the delay variation issue by using
-time stamps, as specified in [QUIC-Timestamp].  When the timestamps
+time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
 are present, the implementation can estimate the transmission delay
 on each one-way path, and can then use these one way delays for more
 efficient implementations of recovery and congestion control
