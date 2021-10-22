@@ -273,7 +273,7 @@ The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers.
 received in 1-RTT packets while the state of multipath negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
 
-## Using One packet Number Space
+## Using One Packet Number Space
 
 If the multipath option is negotiated to use one packet number space for all paths, the packet sequence numbers are allocated from
 the common number space, so that, for example, packet number N could be sent on one path and packet number N+1 on another.
