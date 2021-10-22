@@ -132,9 +132,11 @@ In addition, we define the following terms:
 The difference between Path Identifier and Packet Number Space Identifier, is that Path Identifier
 is used in multi-path control frames to identify a path, and Packet Number Space Identifier is used
 in 1-RTT packets and ACK_MP frames to distinguish packet number spaces for different paths.
-Both identifiers have the sam value, which is the sequence number of the connection ID, if a
-non-zero connection ID is used. If the connection ID is zero length, the Packet Number Space
-Identifier is 0, while the Path Identifier is selected on path establishment.
+When an endhost uses a non-zero-length Connection ID on a path, the Packet Number Space Identifier
+corresponds to the sequence number of the CID used. In the case one of the hosts uses
+zero-length connection IDs, the packet number space identifier of its path corresponds to the
+sequence number of the Connection ID used by its peer over the same 5-tuple. When both hosts
+uses zero-length connection IDs, the packet number space identifier is 0.
 
 # Handshake Negotiation and Transport Parameter {#nego}
 
