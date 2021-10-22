@@ -256,8 +256,12 @@ considerations.
 # Packet Number Space and Use of Connection ID
 
 If the connection ID is present (non-zero length) in the packet header, the connection ID is used to identify the path.
+If no connection ID is present, the 4 tuple identies the path.
 The intital path that is used during the handshake (and multipath negotiation) has the path ID 0 and therefore 
 all 0-RTT packets are also tracked and processed with the path ID 0.
+For 1-RTT packets the path ID is the sequence number of
+the Destination Connection ID present in the packet header, as defined in Section 5.1.1
+of {{QUIC-TRANSPORT}}, or also 0 if the Connection ID is zero-length.
 
 If non-zero-length Connection IDs are used, an endpoint MUST use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different 4-tuples
@@ -265,13 +269,9 @@ due to, e.g., NAT rebinding. In such case, the receiver reacts as specified in
 {{Section 9.3 of QUIC-TRANSPORT}}.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using ACK frames, as specified in {{QUIC-TRANSPORT}}.
-The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for some reason ACK frames are
+The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for any reason ACK frames are
 received in 1-RTT packets while the state of multipath negotiation is ambiguous, they MUST be interpreted as acknowledging
-packets sent on path ID 0.
-
-If endpoints negotiate multipath support with value 2 to use multiple
-packet number spaces, they SHOULD use ACK_MP frames instead of ACK frames to signal acknowledgement of 1-RTT packets on path number 0
-and also 0-RTT packets as specified in {{handling-of-0-rtt-packets}}.
+packets sent on path 0.
 
 ## Using One packet Number Space
 
@@ -279,19 +279,21 @@ If the multipath option is negotiated to use one packet number space for all pat
 the common number space, so that, for example, packet number N could be sent on one path and packet number N+1 on another.
 
 ACK frames report the numbers of packets that have been received so far, regardless of the path on which they have been received.
-That means the senders needs to maintain an association between previously sent packet numbers and
+That means the senders needs to maintain an association between sent packet numbers and
 the path over which these packets were sent. This is necessary to implement per path congestion control.
 
-When a packet is newly acknowledged, the delay between the transmission of that packet and
-its first acknowledgement is used to update the RTT statistics for the sending path, and to update the state of the congestion control for that path.
+When a packet is acknowledged, the state of the congestion control MUST be updates for the path
+where the acknowledge packet was orginially sent.
+The RTT is calculated based on the delay between the transmission of that packet and
+its first acknowledgement (see Section {{compute-rtt}}) and is used to update the RTT statistics for the sending path.
 
-If one packet numer space is used for all paths, packet loss detection MUST be adapted to allow for different RTTs on
+Also loss detection MUST be adapted to allow for different RTTs on
 different paths.  For example, timer computations should take into
 account the RTT of the path on which a packet was sent.  Detections
 based on packet numbers shall compare a given packet number to the
 highest packet number received for that path.
 
-### Acknowledgement and Ranges
+### Sending Acknowledgements and Handling Ranges
 
 If senders decide to send packets on paths with different
 transmission delays, some packets will very likely be received out
@@ -319,7 +321,7 @@ be controlled by the combination of one or several of the following:
    uses a series of consecutive sequence numbers without creating
    holes.
 
-### Computing Path RTT
+### Computing Path RTT {#compute-rtt}
 
 Acknowledgement delays are the sum of two one-way delays, the delay
 on the packet sending path and the delay on the return path chosen
@@ -343,7 +345,7 @@ as shown in Table {{fig-example-ack-delay}}.
 ~~~
 {: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
 
-Using the default algorithm specified in {{QUIC-RECOVERY}}. would result
+Using the default algorithm specified in {{QUIC-RECOVERY}} would result
 in suboptimal performance, computing average RTT and standard
 deviation from a series of different delay measurements of different
 combined paths.  At the same time, early tests show that it is
@@ -371,19 +373,22 @@ provides more robust measurements.
 
 ## Using Multiple Packet Number Spaces
 
-If the multipath option is enabled with a value of 1, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}} which additionally contains a Packet Number Space Identifier (PN Space ID). The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID. Therefore, the packet number space for 1-RTT packets is specific to the Destination Connection ID in these packets.
+If the multipath option is enabled with a value of 2, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}}.
+Compared to the QUIC v1 ACK frame, the MP_ACK frames additionally contains a Packet Number Space Identifier (PN Space ID).
+The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID. 
+Therefore, the packet number space for 1-RTT packets can be identified based on the Destination Connection ID in each packets.
 
-Note: Even if the use of multiple packet number spaces is negotiated but a peer uses an zero length connection ID, then all packets sent to that peer MUST be numbered in a single number space (as specified in the previous section), because the packet level decryption implementation will only see one Connection ID sequence number (the default number 0).
-
-Endpoints can find which path a received packet belongs to according to the Destination Connection ID of
-the 1-RTT packet. Endpoints identify the context of a path by its Connection ID or the Sequence number
-of Connection ID.
+As soon as the negotiate of multipath support with value 2 is completed, 
+endpoints SHOULD use ACK_MP frames instead of ACK frames for acknowledgements of 1-RTT packets on path 0,
+as well as for 0-RTT packets that are acknowledged after the handshake concluded.
 
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames to issue usable connections IDs
-to reach it. Before an endpoint adds a new path, it MUST check whether there is at least one unused
+to reach it. Before an endpoint adds a new path by initiatiing path validation, it MUST check whether there has at least one unused
 available Connection ID for each side.
 
-If the transport parameter "active_connection_id_limit" is negotiated as N, the server provided N Connection IDs, and the client is already actively using N paths, the limit is reached. If the client wants to start a new path, it has to retire
+If the transport parameter "active_connection_id_limit" is negotiated as N,
+the server provided N Connection IDs, and the client is already actively using N paths,
+the limit is reached. If the client wants to start a new path, it has to retire
 one of the established paths.
 
 ACK_MP frame {{mp-ack-frame}} can be returned via either a different path, or the same path identified
@@ -403,21 +408,25 @@ or retry packet integrity. However, the use of multiple
 number spaces for 1-RTT packets requires changes in AEAD usage.
 
 Section 5.3 of {{QUIC-TLS}} specifies AEAD usage, and in particular the use of a
-nonce, N, formed by combining the packet protection IV with the packet number. QUIC
-multipath uses multiple packet number spaces, and thus the packet number alone would
-not guarantee the uniqueness of the nonce. In order to guarantee this uniqueness, we
-construct the nonce N by combining the packet protection IV with the packet number
-and with the identifier of the path, which for 1-RTT packets is the Sequence Number of
-the Destination Connection ID present in the packet header, as defined in Section 5.1.1
-of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length. Section 19 of
-{{QUIC-TRANSPORT}} encodes this Connection ID Sequence Number as a variable-length integer,
-allowing values up to 2^62-1; for QUIC multipath, we require that a range of no more than 2^32-1
-values be used without updating the packet protection key.
+nonce, N, formed by combining the packet protection IV with the packet number. If
+multiple packet number spaces are used, the packet number alone would
+not guarantee the uniqueness of the nonce.
 
-For QUIC multipath, the construction of the nonce starts with the construction of a 96 bit
-path-and-packet-number, composed of the 32 bit Connection ID Sequence Number in byte order,
+In order to guarantee the uniqueness of the None, the nonce N is calculated by
+combining the packet protection IV with the packet number
+and with the path identifier. 
+
+The path ID for 1-RTT packets is the sequence number of
+the Destination Connection ID present in the packet header, as defined in Section 5.1.1
+of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length. 
+{{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a variable-length integer,
+allowing values up to 2^62-1; in this specification a range of less than 2^32-1
+values MUST be used before updating the packet protection key.
+
+To calcullate the nonce, a 96 bit
+path-and-packet-number is composed of the 32 bit Connection ID Sequence Number in byte order,
 two zero bits, and the 62 bits of the reconstructed QUIC packet number in network byte order.
-If the IV is larger than 96 bits, path-and-packet-number is left-padded with zeros to the
+If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the
 size of the IV. The exclusive OR of the padded packet number and the IV forms the AEAD nonce.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`, the connection ID sequence
@@ -427,8 +436,8 @@ number is `3`, and the packet number is `aead`, the nonce will be set to
 ### Key Update for QUIC Multipath {#multipath-key-update}
 
 The Key Phase bit update process for QUIC v1 is specified in Section 6 of
-{{QUIC-TLS}}. The general principles of key update are not changed for
-Multipath QUIC. Following QUIC V1, the Key Phase bit is used to indicate which
+{{QUIC-TLS}}. The general principles of key update are not changed in this
+specification. Following QUIC v1, the Key Phase bit is used to indicate which
 packet protection keys are used to protect the packet. The Key Phase bit is
 toggled to signal each subsequent key update. Because of network delays,
 packets protected with the older key might arrive later than the packets
@@ -438,11 +447,11 @@ between the new key and the old key. In QUIC V1, this is done using packet
 numbers so that the rule is made simple: Use the older key if packet number is
 lower than any packet number frame the current key phase.
 
-When using multiple packet number space on different paths,
-some care is needed in the initiating Key Update process.
-Because different paths use different packet number spaces but share a single
-key. When a key update is initiated on one path, packets sent to the other path
-needs to know when transition is complete. Otherwise, it is possible that the
+When using multiple packet number spaces on different paths,
+some care is needed when initiating the Key Update process, as different paths
+use different packet number spaces but share a single
+key. When a key update is initiated on one path, packets sent to another path
+needs to know when the transition is complete. Otherwise, it is possible that the
 other paths send packets with the old keys, but skip sending any packets in the
 current key phase and directly jump to sending packet in the next key phase.
 When that happens, as the endpoint can only retain two sets of packet
@@ -452,11 +461,11 @@ in a key rotation synchronization problem.
 
 To address such a synchronization issue, if key update is
 initilized on one path, the sender SHOULD send at least one packet with the new
-key on all active paths. Regarding the responding to Key Update process, the
+key on all active paths. Further, an
 endpoint MUST NOT initiate a subsequent key update until a packet with the
 current key has been acknowledged on each path.
 
-Following the Section 5.4. of {{QUIC-TLS}}, the Key Phase bit is protected, so
+Following {{Section 5.4 of {{QUIC-TLS}}, the Key Phase bit is protected, so
 sending multiple packets with Key Phase bit flipping at the same time should
 not cause linkability issue.
 
@@ -486,26 +495,38 @@ not cause linkability issue.
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
 
-As shown in {{fig-example-new-path}}, client provides one unused available Connection ID (C1 with sequence number 1),
-and server provides two available Connection IDs (S1 with sequence number 1, and S2 with sequence number 2).
-When client wants to start a new path, it checks whether there is unused available Connection IDs for each side,
-and choose an available Connection ID S2 as the Destination Connection ID in the new path.
+In Figure {{fig-example-new-path}}, the endpoints first exchange new availabe Connection IDs
+with the NEW_CONNECTION_ID frame. In this exampe the client provides one Connection ID (C1 with sequence number 1),
+and server provides two Connection IDs (S1 with sequence number 1, and S2 with sequence number 2).
 
-Endpoints need to exchange unused available Connection IDs with the NEW_CONNECTION_ID frame before an endpoint
-starts a new path. For example, if the goal is to maintain 2 paths, each endpoint should provide at least 3 CID to its peer:
-2 in use, and one spare. If the client has used all the allocated CID, it is supposed to retire those that are
+Before the client opens a new path by sending an packet on that path with a PATH_CHALLENGE frame,
+it has to check. whether there is an unused Connection IDs availabe for each side.
+In this example the client chooses the Connection ID S2 as the Destination Connection ID in the new path.
+
+If the client has used all the allocated CID, it is supposed to retire those that are
 not used anymore, and the server is supposed to provide replacements, as specified in {{QUIC-TRANSPORT}}.
+Usually it is desired to proviide one more connection ID as currently in used, to allow for new paths
+or migration.
 
 
 ## Path Closure
 
-{{fig-example-path-close}} illustrates an example of path closing. In this
-case, we are going to close the first path. For the first path, the server's
-1-RTT packets use DCID C1, which has a sequence number of 1; the client's 1-RTT
+In this exmaple the client detects the network environment change (client's 4G/Wi-Fi is turned off,
+Wi-Fi signal is fading to a threshold, or the quality of RTT or loss rate is
+becoming worse) and wants to close the initial path.
+
+In Figure {{fig-example-path-close}} the server's
+1-RTT packets use DCID C1, which has a sequence number of 1, for the first path; the client's 1-RTT
 packets use DCID S2, which has a sequence number of 2.  For the second path,
 the server's 1-RTT packets use DCID C2, which has a sequence number of 2; the
 client's 1-RTT packets use CID S3, which has a sequence number of 3. Note that
 two paths use different packet number space.
+
+Thee client initiates the path closure for the path with ID 1 by sending a
+packet with an PATH_ABANDON frame. When the server reeceived the PATH_ABANDON
+frame, it also sends an PATH_ABANDON frame in the next packet. Afterwards
+the connection IDs in both directions can be retired using the RETIRE_CONNECTION_ID
+frame.
 
 ~~~
   Client                                                          Server
@@ -521,10 +542,6 @@ two paths use different packet number space.
 
 ~~~
 {: #fig-example-path-close title="Example of closing a path (path id type=0x00)"}
-
-In scenarios such as client detects the network environment change (client's 4G/Wi-Fi is turned off,
-Wi-Fi signal is fading to a threshold), or endpoints detect that the quality of RTT or loss rate is
-becoming worse, client or server can terminate a path immediately.
 
 # Implementation Considerations
 
@@ -584,7 +601,7 @@ Path Identifier: An identifier of the path, which is formatted as shown in {{fig
 
 Note: If the receiver of the PATH_ABANDON frame is using non-zero length Connection ID on that path,
 endpoint SHOULD use type 0x00 for path identifier in the control frame. If the receiver of the PATH_ABANDON frame
-is using 0-length Connection ID, but the peer is using non-zero length Connection ID on that path, endpoints
+is using zero-length Connection ID, but the peer is using non-zero length Connection ID on that path, endpoints
 SHOULD use type 0x01 for path identifier. If both endpoints are using 0-length Connection IDs on that path,
 endpoints SHOULD only use type 0x02 for path identifier.
 
@@ -606,7 +623,7 @@ Reason Phrase:
 PATH_ABANDON frames SHOULD be acknowledged. If a packet containing a PATH_ABANDON
 frame is considered lost, the peer should repeat it.
 
-PATH_ABANDON frame can be sent on any path, not only the path identified by the
+PATH_ABANDON frames can sent on any path, not only the path identified by the
 Path Identifier field.
 
 
@@ -638,7 +655,7 @@ Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following field i
 
 Packet Number Space Identifier: An identifier of the path packet number space, which is the sequence number of
 Destination Connection ID of the 1-RTT packets which are acknowledged by the ACK_MP frame. If the endpoint receives
-1-RTT packets with 0-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
+1-RTT packets with zero-length Connection ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
 If an endpoint receives a ACK_MP frame with a non-existing packet number space ID, it MUST treat this
 as a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
 
@@ -649,7 +666,7 @@ this as a connection error of type MP_PROTOCOL_VIOLATION and close the connectio
 # Error Codes {#error-codes}
 Multi-path QUIC transport error codes are 62-bit unsigned integers following {{QUIC-TRANSPORT}}.
 
-This section lists the defined Multi-path QUIC transport error codes that can be 
+This section lists the defined multipath QUIC transport error codes that can be 
 used in a CONNECTION_CLOSE frame with a type of 0x1c.  These errors apply to the entire connection.
 
 MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance 
