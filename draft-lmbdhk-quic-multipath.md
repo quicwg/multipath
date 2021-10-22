@@ -400,7 +400,7 @@ updates, as explained in {{multipath-key-update}}.
 
 ### Packet Protection for QUIC Multipath {#multipath-aead}
 
-Packet protection for QUIC v1 is specified is section 5 of {{QUIC-TLS}}. The general principles
+Packet protection for QUIC v1 is specified is Section 5 of {{!QUIC-TLS}}. The general principles
 of packet protection are not changed for QUIC Multipath. No changes are needed for setting
 packet protection keys, initial secrets, header protection, use of 0-RTT keys, receiving
 out-of-order protected packets, receiving protected packets,
@@ -417,7 +417,6 @@ combining the packet protection IV with the packet number
 and with the path identifier. 
 
 The path ID for 1-RTT packets is the sequence number of
-the Destination Connection ID present in the packet header, as defined in Section 5.1.1
 of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length. 
 {{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification a range of less than 2^32-1
