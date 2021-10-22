@@ -139,7 +139,7 @@ during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new tra
 defined as follow:
 
 - name: enable_multipath (TBD)
-- value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more 
+- value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
 Client Option| Definition                                      | Allowed server responses
@@ -150,10 +150,10 @@ Client Option| Definition                                      | Allowed server 
 0x3	      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
-If the peer does not carry the enable_multipath transport parameter, which means the peer does not 
-support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use 
-any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter 
-"enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR 
+If the peer does not carry the enable_multipath transport parameter, which means the peer does not
+support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use
+any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter
+"enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR
 and close the connection.
 
 Note that the transport parameter "active_connection_id_limit" {{QUIC-TRANSPORT}} limits the number of usable
@@ -214,7 +214,7 @@ associated with the connection ID, but MUST use a different connection ID when d
 {{QUIC-TRANSPORT}} allows for closing of connections if they stay idle for too long.
 The connection idle timeout in multipath QUIC is defined as "no packet received on any path for the
 duration of the idle timeout". When only one path is available, servers MUST follow the
-specifications in {{QUIC-TRANSPORT}}. 
+specifications in {{QUIC-TRANSPORT}}.
 
 When more than one path is
 available, servers shall monitor the arrival of non-probing packets
@@ -225,7 +225,7 @@ paths.  Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
 available path if no traffic is received for the duration of the idle
-timeout, as specified in section 10.1 of {{QUIC-TRANSPORT}}. 
+timeout, as specified in section 10.1 of {{QUIC-TRANSPORT}}.
 This means if all paths remain idle for the idle timeout, the connection
 is implicitly closed.
 
@@ -257,7 +257,7 @@ considerations.
 
 If the connection ID is present (non-zero length) in the packet header, the connection ID is used to identify the path.
 If no connection ID is present, the 4 tuple identies the path.
-The intital path that is used during the handshake (and multipath negotiation) has the path ID 0 and therefore 
+The intital path that is used during the handshake (and multipath negotiation) has the path ID 0 and therefore
 all 0-RTT packets are also tracked and processed with the path ID 0.
 For 1-RTT packets the path ID is the sequence number of
 the Destination Connection ID present in the packet header, as defined in Section 5.1.1
@@ -375,10 +375,10 @@ provides more robust measurements.
 
 If the multipath option is enabled with a value of 2, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}}.
 Compared to the QUIC v1 ACK frame, the MP_ACK frames additionally contains a Packet Number Space Identifier (PN Space ID).
-The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID. 
+The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified based on the Destination Connection ID in each packets.
 
-As soon as the negotiate of multipath support with value 2 is completed, 
+As soon as the negotiate of multipath support with value 2 is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames for acknowledgements of 1-RTT packets on path 0,
 as well as for 0-RTT packets that are acknowledged after the handshake concluded.
 
@@ -414,10 +414,10 @@ not guarantee the uniqueness of the nonce.
 
 In order to guarantee the uniqueness of the None, the nonce N is calculated by
 combining the packet protection IV with the packet number
-and with the path identifier. 
+and with the path identifier.
 
 The path ID for 1-RTT packets is the sequence number of
-of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length. 
+of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length.
 Section 19 of {{QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
@@ -560,7 +560,7 @@ path, and release the corresponding resources. An endpoint uses the sequence num
 used by the peer for PATH_ABANDON frames (describing the sender's path
 identifier). More complex path management can
 be made possible with additional extensions (e.g., PATH_STATUS frame in
-{{?I-D.liu-multipath-quic}} ). 
+{{?I-D.liu-multipath-quic}} ).
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
@@ -665,10 +665,10 @@ this as a connection error of type MP_PROTOCOL_VIOLATION and close the connectio
 # Error Codes {#error-codes}
 Multi-path QUIC transport error codes are 62-bit unsigned integers following {{QUIC-TRANSPORT}}.
 
-This section lists the defined multipath QUIC transport error codes that can be 
+This section lists the defined multipath QUIC transport error codes that can be
 used in a CONNECTION_CLOSE frame with a type of 0x1c.  These errors apply to the entire connection.
 
-MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance 
+MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected an error with protocol compliance
 that was not covered by more specific error codes.
 
 
@@ -697,7 +697,7 @@ TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-
 TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON         | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
-The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes" 
+The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes"
 registry under the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
