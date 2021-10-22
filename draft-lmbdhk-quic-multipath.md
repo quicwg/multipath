@@ -418,7 +418,7 @@ and with the path identifier.
 
 The path ID for 1-RTT packets is the sequence number of
 of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length. 
-{{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a variable-length integer,
+Section 19 of {{QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
 
