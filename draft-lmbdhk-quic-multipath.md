@@ -266,7 +266,7 @@ of {{QUIC-TRANSPORT}}, or also 0 if the Connection ID is zero-length.
 If non-zero-length Connection IDs are used, an endpoint MUST use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different 4-tuples
 due to, e.g., NAT rebinding. In such case, the receiver reacts as specified in
-{{Section 9.3 of QUIC-TRANSPORT}}.
+Section 9.3 of {{QUIC-TRANSPORT}}.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using ACK frames, as specified in {{QUIC-TRANSPORT}}.
 The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for any reason ACK frames are
