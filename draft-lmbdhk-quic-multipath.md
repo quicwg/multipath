@@ -536,13 +536,19 @@ is supposed to provide replacements, as specified in {{QUIC-TRANSPORT}}.
 ## Path Closure
 
 {{fig-example-path-close1}} illustrates an example of path closing when both
-the client and the server use non-zero length CIDs. Path identifier type 0x00
-is chosen. In this case, we are going to close the first path. For the first
-path, the server's 1-RTT packets use DCID C1, which has a sequence number of 1;
-the client's 1-RTT packets use DCID S2, which has a sequence number of 2.  For
-the second path, the server's 1-RTT packets use DCID C2, which has a sequence
+the client and the server use non-zero length CIDs. For the first path, the
+server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
+client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
+second path, the server's 1-RTT packets use DCID C2, which has a sequence
 number of 2; the client's 1-RTT packets use CID S3, which has a sequence number
-of 3. Note that two paths use different packet number spaces.
+of 3. Note that two paths use different packet number spaces. In this case, the
+client is going to close the first path. It identifies the path by the sequence
+number of the received packet's DCID over that path (path identifier type
+0x00), hence using a path_id 1. In reply, the server confirms the path using
+the sequence number of the received packet's DCID over that path (path
+identifier type 0x00), which corresponds to a path_id 2. Both the client and
+the server can close the path after receiving the RETIRE_CONNECTION_ID frame
+for that path.
 
 ~~~
   Client                                                      Server
@@ -564,18 +570,21 @@ of 3. Note that two paths use different packet number spaces.
 server and client use non-zero length CIDs"}
 
 {{fig-example-path-close2}} illustrates an example of path closing when the
-client uses non-zero length CID while the server uses zero-length CID. Similar
-to the above example, in this case, we are going to close the first path. For
-the first path, the client's 1-RTT packets use DCID S2, which has a sequence
-number of 2, so the server can still use path identifier type 0x00 and a
-path_id=2 in its PATH_ABANDON frame. However, because the server now uses
-zero-length CID, the client needs to use path identifier type 0x01 with a
-path_id=2 in its PATH_ABANDON frame, which is different from the above example.
-The server can readily close the first path when it receives the
-RETIRE_CONNECTION_ID frame from the client. However, since the client will not
-receive a RETIRE_CONNECTION_ID frame, after sending out RETIRE_CONNECTION_ID
-frame, the client waits for 3 RTO before closing the path. Note that single
-packet number spaces are used in both directions.
+client uses non-zero length CID while the server uses zero-length CID. Because
+there is a non-zero length CID in one direction, single packet number spaces
+are used. For the first path, the client's 1-RTT packets use DCID S2, which has
+a sequence number of 2. For the second path, the client's 1-RTT packets use
+DCID S3, which has a sequence number of 3. Again, in this case, the client is
+going to close the first path. Similar to the first path closing example, the
+server can still use path identifier type 0x00, and hence, a path_id 2 in its
+PATH_ABANDON frame. However, because the client now receives zero-length CID
+packets, it needs to use path identifier type 0x01, which identifies a path by
+the DCID sequence number of the packets it sends over that path, and hence, it
+uses a path_id 2 in its PATH_ABANDON frame. The server can readily close the
+first path when it receives the RETIRE_CONNECTION_ID frame from the client.
+However, since the client will not receive a RETIRE_CONNECTION_ID frame, after
+sending out RETIRE_CONNECTION_ID frame, the client waits for 3 RTO before
+closing the path.
 
 ~~~
   Client                                                      Server
@@ -596,12 +605,12 @@ packet number spaces are used in both directions.
 uses non-zero length CID while the server uses zero-length CID"}
 
 {{fig-example-path-close3}} illustrates an example of path closing when both
-the client and the server use zero-length CIDs. Again, we are going to close
-the first path. In this case, both the server and the client use path
-identifier type 0x02, which refers to the current path in the PATH_ABANDON
-frame. Both endpoints wait for 3 RTO after receiving the ACK of their
-respective PATH_ABANDON frames before closing the path. Note that single packet
-number spaces are used in both directions.
+the client and the server use zero-length CIDs. Single packet number spaces are
+used due to the use of zero-length CIDs by both endpoints. Again, in this
+example, the client is going to close the first path. Both the server and the
+client need to use path identifier type 0x02, which refers to the current path
+in use. Both endpoints wait for 3 RTO after receiving the ACK of their
+respective PATH_ABANDON frames before closing the path.
 
 ~~~
   Client                                                     Server
