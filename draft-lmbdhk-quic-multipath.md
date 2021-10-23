@@ -378,13 +378,13 @@ Compared to the QUIC v1 ACK frame, the MP_ACK frames additionally contains a Pac
 The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified based on the Destination Connection ID in each packets.
 
-As soon as the negotiate of multipath support with value 2 is completed,
+As soon as the negotiation of multipath support with value 2 is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames for acknowledgements of 1-RTT packets on path 0,
 as well as for 0-RTT packets that are acknowledged after the handshake concluded.
 
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames to issue usable connections IDs
-to reach it. Before an endpoint adds a new path by initiatiing path validation, it MUST check whether there has at least one unused
-available Connection ID for each side.
+to reach it. Before an endpoint adds a new path by initiating path validation, it MUST check whether at least one unused
+Connection ID is available for each side.
 
 If the transport parameter "active_connection_id_limit" is negotiated as N,
 the server provided N Connection IDs, and the client is already actively using N paths,
@@ -422,7 +422,7 @@ Section 19 of {{QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a 
 allowing values up to 2^62-1; in this specification a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
 
-To calcullate the nonce, a 96 bit
+To calculate the nonce, a 96 bit
 path-and-packet-number is composed of the 32 bit Connection ID Sequence Number in byte order,
 two zero bits, and the 62 bits of the reconstructed QUIC packet number in network byte order.
 If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the
@@ -510,7 +510,7 @@ or migration.
 
 ## Path Closure
 
-In this exmaple the client detects the network environment change (client's 4G/Wi-Fi is turned off,
+In this example the client detects the network environment change (client's 4G/Wi-Fi is turned off,
 Wi-Fi signal is fading to a threshold, or the quality of RTT or loss rate is
 becoming worse) and wants to close the initial path.
 
