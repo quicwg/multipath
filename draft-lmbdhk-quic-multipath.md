@@ -283,7 +283,7 @@ That means the senders needs to maintain an association between sent packet numb
 the path over which these packets were sent. This is necessary to implement per path congestion control.
 
 When a packet is acknowledged, the state of the congestion control MUST be updated for the path
-where the acknowledge packet was originally sent.
+where the acknowledged packet was originally sent.
 The RTT is calculated based on the delay between the transmission of that packet and
 its first acknowledgement (see Section {{compute-rtt}}) and is used to update the RTT statistics for the sending path.
 
