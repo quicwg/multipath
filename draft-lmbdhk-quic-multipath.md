@@ -667,13 +667,14 @@ PATH_ABANDON frames contain the following fields:
 Path Identifier: An identifier of the path, which is formatted as shown in {{fig-path-identifier-format}}.
 
 - Identifier Type: Identifier Type field is set to indicate the type of path identifier.
-  - Type 0: Refer to the connection identifier used by the sender of the control frame when
-    sending data over the specified path. This method SHOULD be used if this connection
-    identifier is non-zero length. This method MUST NOT be used if this connection identifier
-    is zero-length.
-  - Type 1: Refer to the connection identifier used by the receiver of the control frame when
-    sending data over the specified path. This method MUST NOT be used if this connection
-    identifier is zero-length.
+  - Type 0: Refer to the sequence number of the received packets' DCID over
+    that specific path seen by the sender of the control frame. This method SHOULD be
+used if this connection identifier is non-zero length. This method MUST NOT be
+used if this connection identifier is zero-length.
+  - Type 1: Refer to the sequence number of the sent packets' DCID over that
+    specific path used by the sender of the control frame. This method MUST NOT
+be used if this
+connection identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or received.
 - Path Identifier Content: A variable-length integer specifying the path identifier.
 
