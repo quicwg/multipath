@@ -151,7 +151,7 @@ Client Option| Definition                                      | Allowed server 
 {: #param_value_definition title="Available value for enable_multipath"}
 
 If the peer does not carry the enable_multipath transport parameter, which means the peer does not
-support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use
+support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} fwith single path and MUST NOT use
 any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR
 and close the connection.
@@ -241,6 +241,52 @@ Senders MUST manage per-path congestion status, and MUST NOT send more data on a
 
 Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  This scheme can immediately be adapted to Multipath QUIC. Other coupled congestion control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
+# Computing Path RTT {#compute-rtt}
+
+Acknowledgement delays are the sum of two one-way delays, the delay
+on the packet sending path and the delay on the return path chosen
+for the acknowledgements.  When different paths have different
+characteristics, this can cause acknowledgement delays to vary
+widely.  Consider for example multipath transmission using both a
+terrestrial path, with a latency of 50ms in each direction, and a
+geostationary satellite path, with a latency of 300ms in both
+directions.  The acknowledgement delay will depend on the combination
+of paths used for the packet transmission and the ACK transmission,
+as shown in {{fig-example-ack-delay}}.
+
+
+ACK Path \ Data path         | Terrestrial   | Satellite
+-----------------------------|-------------------|-----------------
+Terrestrial | 100ms  | 350ms
+Satellite   | 350ms  | 600ms
+{: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
+
+Using the default algorithm specified in {{QUIC-RECOVERY}} would result
+in suboptimal performance, computing average RTT and standard
+deviation from series of different delay measurements of different
+combined paths.  At the same time, early tests showed that it is
+desirable to send ACKs through the shortest path, because a shorter
+ACK delay results in a tighter control loop and better performances.
+The tests also showed that it is desirable to send copies of the ACKs
+on multiple paths, for robustness if a path experiences sudden losses.
+
+An early implementation mitigated the delay variation issue by using
+time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
+are present, the implementation can estimate the transmission delay
+on each one-way path, and can then use these one way delays for more
+efficient implementations of recovery and congestion control
+algorithms.
+
+If timestamps are not available, implementations could estimate one
+way delays using statistical techniques.  For example, in the example
+shown in Table 1, implementations can use use "same path"
+measurements to estimate the one way delay of the terrestrial path to
+about 50ms in each direction, and that of the satellite path to about
+300ms.  Further measurements can then be used to maintain estimates
+of one way delay variations, using logical similar to Kalman filters.
+But statistical processing is error-prone, and using time stamps
+provides more robust measurements.
+
 # Packet Scheduling
 
 The simultaneous usage of several sending paths introduces new
@@ -285,7 +331,7 @@ the path over which these packets were sent. This is necessary to implement per 
 When a packet is acknowledged, the state of the congestion control MUST be updated for the path
 where the acknowledged packet was originally sent.
 The RTT is calculated based on the delay between the transmission of that packet and
-its first acknowledgement (see Section {{compute-rtt}}) and is used to update the RTT statistics for the sending path.
+its first acknowledgement (see {{compute-rtt}}) and is used to update the RTT statistics for the sending path.
 
 Also loss detection MUST be adapted to allow for different RTTs on
 different paths.  For example, timer computations should take into
@@ -321,55 +367,7 @@ be controlled by the combination of one or several of the following:
    uses a series of consecutive sequence numbers without creating
    holes.
 
-### Computing Path RTT {#compute-rtt}
 
-Acknowledgement delays are the sum of two one-way delays, the delay
-on the packet sending path and the delay on the return path chosen
-for the acknowledgements.  When different paths have different
-characteristics, this can cause acknowledgement delays to vary
-widely.  Consider for example multipath transmission using both a
-terrestrial path, with a latency of 50ms in each direction, and a
-geostationary satellite path, with a latency of 300ms in both
-directions.  The acknowledgement delay will depend on the combination
-of paths used for the packet transmission and the ACK transmission,
-as shown in Table {{fig-example-ack-delay}}.
-
-~~~
-         +======================+=============+===========+
-         | ACK Path \ Data path | Terrestrial | Satellite |
-         +======================+=============+===========+
-         | Terrestrial          | 100ms       | 350ms     |
-         +----------------------+-------------+-----------+
-         | Satellite            | 350ms       | 600ms     |
-         +----------------------+-------------+-----------+
-~~~
-{: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
-
-Using the default algorithm specified in {{QUIC-RECOVERY}} would result
-in suboptimal performance, computing average RTT and standard
-deviation from a series of different delay measurements of different
-combined paths.  At the same time, early tests show that it is
-desirable to send ACKs through the shortest path, because a shorter
-ACK delay results in a tighter control loop and better performances.
-The tests also showed that it is desirable to send copies of the ACKs
-on multiple paths, for robustness if a path experiences sudden losses.
-
-An early implementation mitigated the delay variation issue by using
-time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
-are present, the implementation can estimate the transmission delay
-on each one-way path, and can then use these one way delays for more
-efficient implementations of recovery and congestion control
-algorithms.
-
-If timestamps are not available, implementations could estimate one
-way delays using statistical techniques.  For example, in the example
-shown in Table 1, implementations can use use "same path"
-measurements to estimate the one way delay of the terrestrial path to
-about 50ms in each direction, and that of the satellite path to about
-300ms.  Further measurements can then be used to maintain estimates
-of one way delay variations, using logical similar to Kalman filters.
-But statistical processing is error-prone, and using time stamps
-provides more robust measurements.
 
 ## Using Multiple Packet Number Spaces
 
