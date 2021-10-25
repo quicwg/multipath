@@ -721,8 +721,10 @@ Reason Phrase:
 PATH_ABANDON frames SHOULD be acknowledged. If a packet containing a PATH_ABANDON
 frame is considered lost, the peer SHOULD repeat it.
 
-PATH_ABANDON frames MAY be sent on any path, not only the path identified by the
-Path Identifier field.
+If the Identifier Type is 0x00 or 0x01, PATH_ABANDON frames MAY be sent on any path,
+not only the path identified by the Path Identifier Content field. If
+the Identifier Type if 0x02, the PATH_ABANDON frame MUST only be sent on the path
+that is intended to be abandoned.
 
 
 ## ACK_MP Frame {#mp-ack-frame}
