@@ -201,10 +201,10 @@ Both endpoints, namely the client and the server, can close a path, by sending P
 abandons the path with a corresponding Path Identifier. Once a path is marked
 as "abandoned", it means that the resources related to the path, such as the used connection IDs, can be released.
 However, information related to data delivered over that path SHOULD not be released immediately
-as ACK can still be received on other frame that also may trigger retransmission of data on another path.
+as acknowledgments can still be received or other frames that also may trigger retransmission of data on another path.
 
-The endpoint sending the PATH_ABANDON frame SHOULD consider a path as abandoned when the ACK for the 
-packet that contained the PATH_ABANDON frame was received. When releasing resources of a path,
+The endpoint sending the PATH_ABANDON frame SHOULD consider a path as abandoned when the 
+packet that contained the PATH_ABANDON frame is acknowledged. When releasing resources of a path,
 the endpoint SHOULD send a RETIRE_CONNECTION_ID frame for the connection IDs used on the path, if any.
 
 The receiver of a PATH_ABANDON frame SHOULD NOT release its resources immediately but SHOULD
@@ -224,8 +224,8 @@ that is intended to be closed, it is possible that the packet containing the PAT
 the packet containing the ACK for the PATH_ABANDON frame cannot be received anymore and the endpoint
 might need to rely on an idle time out to close the path, as described in Section {{idle-time-close}}.
 
-Packets, that have previously been send on the abandoned path and are considered lost, SHOULD be
-retransmitted on a different path.
+Retransmittable frame, that have previously been send on the abandoned path and are considered lost, 
+SHOULD be retransmitted on a different path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC connection, the receiving 
 peer SHOULD send a CONNECTION_CLOSE frame and enters the closing state. If the client
