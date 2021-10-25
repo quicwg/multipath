@@ -138,7 +138,7 @@ This extension defines a new transport parameter, used to negotiate the use of t
 during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follow:
 
-- name: enable_multipath (TBD)
+- name: enable_multipath (TBD - experiments use 0xbabf)
 - value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
@@ -682,7 +682,7 @@ under the "QUIC Protocol" heading.
 
 Value                        | Parameter Name.   | Specification
 -----------------------------|-------------------|-----------------
-TBD (experiments use 0xbaba) | enable_multipath  | {{nego}}
+TBD (experiments use 0xbabf) | enable_multipath  | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -693,7 +693,7 @@ under the "QUIC Protocol" heading.
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
 TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-ack-frame}}
-TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON         | {{path-abandon-frame}}
+TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON        | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should be added to the "QUIC Transport Error Codes"
