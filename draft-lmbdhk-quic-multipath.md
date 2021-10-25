@@ -161,7 +161,7 @@ Connection IDs, and also limits the number of concurrent paths. For the QUIC mul
 
 # Path Setup and Removal
 
-After completing the handshake, endpoints have agreed to enable multipath feature and can start using multiple paths.
+After completing the handshake, endpoints have agreed to enable multipath feature and can start using multiple paths. This version of the document does not discuss when a client decides to initiate a new path. This will be discussed in future versions of the draft or additional documents.
 
 This proposal adds one multi-path control frame for path management:
 
@@ -243,15 +243,17 @@ Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  
 
 # Packet Scheduling
 
-The simultaneous usage of several sending paths introduces new
-algorithms (packet scheduling, path management) whose specifications
-are out of scope of this document.  Nevertheless, these algorithms
-are actually present in any multipath-enabled transport protocol like
-Multipath TCP, CMT-SCTP and Multipath DCCP.  A companion draft
+The transmission of QUIC packets on a regular QUIC connection is regulated by
+the arrival of data from the application and the congestion control scheme. QUIC
+packets can only be sent when the congestion window is open.
+
+Multipath QUIC implementations also need to include a packet scheduler that decides,
+among the paths whose congestion window is open, the path over which the next QUIC packet
+will be sent. Many factors can influence the definition of these algorithms and
+their previse definition is outside the scope of this document. Various packet schedulers have been
+proposed and implemented, notably for Multipath TCP. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
-packet schedulers depending on the application goals.  A similar
-document can be created to discuss path management
-considerations.
+packet schedulers depending on the application goals.
 
 # Packet Number Space and Use of Connection ID
 
@@ -587,7 +589,7 @@ Path Identifier: An identifier of the path, which is formatted as shown in {{fig
     sending data over the specified path. This method MUST NOT be used if this connection
     identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or received.
-- Path Identifier Content: A variable-length integer specifying the path identifier. If Identifier Type is 2, 
+- Path Identifier Content: A variable-length integer specifying the path identifier. If Identifier Type is 2,
 the Path Identifier Content MUST be empty.
 
 ~~~
