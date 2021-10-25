@@ -239,7 +239,7 @@ after a spurious estimate of path abandonment by the client.
 
 Senders MUST manage per-path congestion status, and MUST NOT send more data on a given path than congestion control on that path allows.  This is already a requirement of {{QUIC-TRANSPORT}}.
 
-Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  This scheme can immediately be adapted to Multipath QUIC. Other coupled congestion control schemes have been proposed for Multipath TCP such as {{OLIA}}.
+When a Multipath QUIC connection uses two or more paths, there is no guarantee that these paths are fully disjoint. When two (or more paths) share the same bottleneck, using a standard congestion control scheme could result in an unfair distribution of the bandwidth with the multipath connection getting more bandwidth than competing single paths connections. Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}} to solve this problem.  This scheme can immediately be adapted to Multipath QUIC. Other coupled congestion control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
 # Packet Scheduling
 
