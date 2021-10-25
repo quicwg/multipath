@@ -103,7 +103,7 @@ As such this extension specifies a departure from the specification of path mana
 This proposal supports the negotiation of either the use of one packet number space for all paths or the use of separate packet number spaces per path. While separate packet number spaces allow for more efficient ACK encoding, especially when paths have highly different latencies, this approach requires the use of a connection ID. Therefore use of a single number space can be beneficial in highly constrained networks that do not benefit from exposing the connection ID in the header. While both approaches are supported by the specification in this version of the document, the intention for the final publication of a multipath extension for QUIC is to choose one option in order to avoid incompatibility. More evaluation and implementation experience is needed to select one approach before final publication. Some discussion about pros and cons can be found here:
 https://github.com/mirjak/draft-lmbdhk-quic-multipath/blob/master/presentations/PacketNumberSpace_s.pdf
 
-As currently defined in this version of the draft the use of multiple packet number spaces requires the use of connection IDs is both directions. Today's deployments often only use destination connection ID when sending packets from the client to the server as this addresses the most important use cases for migration, like NAT rebinding or mobility events. Further discussion and work is required to evaluate if the use of multiple packet number spaces could be supported as well when the connection ID is only present in one direction. 
+As currently defined in this version of the draft the use of multiple packet number spaces requires the use of connection IDs is both directions. Today's deployments often only use destination connection ID when sending packets from the client to the server as this addresses the most important use cases for migration, like NAT rebinding or mobility events. Further discussion and work is required to evaluate if the use of multiple packet number spaces could be supported as well when the connection ID is only present in one direction.
 
 This proposal does not cover address discovery and management. Addresses and the actual decision process to setup or tear down paths are assumed to be handled by the application that is using the QUIC multipath extension. Further, this proposal only specifies a simple basic packet scheduling algorithm in order to provide some basic implementation guidance. However, more advanced algorithms as well as potential extensions to enhance signaling of the current path state are expected as future work.
 
@@ -269,6 +269,69 @@ Server implementations need to select the sub-path idle timeout as a trade-
 off between keeping resources, such as connection IDs, in use
 for an excessive time or having to promptly reestablish a path
 after a spurious estimate of path abandonment by the client.
+
+## Path States
+
+{{fig-path-states}} shows the states that an endpoint's path can have.
+
+~~~
+       o
+       | PATH_CHALLENGE sent/received on new path
+       v
+ +------------+    Path validation abandoned
+ | Validating |----------------------------------+
+ +------------+                                  |
+       |                                         |
+       | PATH_RESPONSE received                  |
+       |                                         |
+       v        Associated CID have been retired |
+ +------------+        Path's idle timeout       |
+ |   Active   |----------------------------------+
+ +------------+                                  |
+       |                                         |
+       | PATH_ABANDONED sent/received            |
+       v                                         |
+ +------------+                                  |
+ |   Closing  |                                  |
+ +------------+                                  |
+       |                                         |
+       | Associated CID have been retired        |
+       | Path's idle timeout                     |
+       v                                         |
+ +------------+                                  |
+ |   Closed   |<---------------------------------+
+ +------------+
+~~~
+{: #fig-path-states title="States of a path"}
+
+In non-final states, hosts have to track the following information.
+
+- Associated 4-tuple: The tuple (source IP, source port, destination IP, destination port)
+used by the endhost to send packets over the path.
+
+- Associated Destination Connection ID: The Connection ID used to send packets over the path.
+
+If multiple packet number spaces are used over the connection, hosts MUST also track the following information.
+
+- Path Packet Number Space: The endpoint maintains a separate packet number for sending and receiving packets over this path.
+Packet number considerations described in {{QUIC-TRANSPORT}} apply within the given path.
+
+In the "Active" state, hosts MUST also track the following information.
+
+- Associated Source Connection ID: The Connection ID used to receive packets over the path.
+
+A path in the "Validating" state performs path validation as described in {{Section 8.2 of QUIC-TRANSPORT}}.
+An endhost should not send non-probing frames on a path in "Validating" state, as it has no guarantee that packets
+will actually reach the peer.
+
+The endhost can use all the paths in the "Active" state, provided that the congestion control and flow control currently allow sending of new data on a path.
+
+In the "Closing" state, the endhost SHOULD NOT send packets on this path anymore, as there is no guarantee that
+the peer can still map the packets to the connection. The endhost SHOULD wait for the acknowledgment of the PATH_ABANDONED
+frame before moving the path to the "Closed" state to ensure a graceful termination of the path.
+
+When a path reaches the "Closed" state, the endhost releases all the path's associated resources.
+Consequently, the endhost is not able to send nor receive packets on this path anymore.
 
 
 # Congestion Control
