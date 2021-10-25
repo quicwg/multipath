@@ -189,7 +189,7 @@ available for transmission.
 Each endpoint manages the set of paths that are available for transmission.
 At any time in the connection, each endpoint can decide to abandon one of these paths,
 following for example changes in local connectivity or changes in
-local preferences.  After a client abandons a path, the server will
+local preferences.  After an endpoint abandons a path, the peer will
 not receive any more non-probing packets on that path.
 
 An endpoint that wants to close a path SHOULD NOT rely on implicit signals like idle time or packet losses,
@@ -199,7 +199,40 @@ but instead SHOULD use explicit request to terminate path by sending the PATH_AB
 
 Both endpoints, namely the client and the server, can close a path, by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
 abandons the path with a corresponding Path Identifier. Once a path is marked
-as "abandoned", it means that the resources related to the path can be released.
+as "abandoned", it means that the resources related to the path, such as the used connection IDs, can be released.
+However, information related to data delivered over that path SHOULD not be released immediately
+as ACK can still be received on other frame that also my trigger retransmission of data on another path.
+
+The endpoint sending the PATH_ABANDON frame SHOULD consider a path as abandoned when the ACK for the 
+packet that contained the PATH_ABANDON frame was received. When releasing resources of a path,
+the endpoint SHOULD send a RETIRE_CONNECTION_ID frame for the connection IDs used on the path, if any.
+
+The receiver of a PATH_ABANDON frame SHOULD NOT release its resources immediately but SHOULD
+wait for the receive of the RETIRE_CONNECTION_ID frame for the used connection IDs or 3 RTOs.
+
+Usually it is expected that the PATH_ABANDON frame is used by the client to indicate to the server
+that path conditions have changed such that the path is or will be not usable anymore, e.g. in case
+of an mobility event. The PATH_ABANDON frame therefore indicates to the receiving peer that the sender
+does not intent to send any packets on that path anymore but also recommends to the receiver that no 
+packets should be sent in either direction. The receiver of an PATH_ABANDON frame MAY also
+send an PATH_ABANDON frame to signal its own willingness to not send any packet on this path anymore.
+
+If connection IDs are used, PATH_ABANDON frames can be sent on any path, not only the path that
+is intended to be closed. Thus a connection can be abandoned even if connectivity on that path is
+already broken. If no connection IDs are used and the PATH_ABANDON frame has to sent on the path
+that is intended to be closed, it is possible that the packet containing the PATH_ABANDON frame or
+the packet containing the ACK for the PATH_ABANDON frame cannot the received anymore and the endpoint
+might need to rely on an idle time out to close the path, as described in Section {{idle-time-close}}.
+
+Packets, that have previously been send on the abandoned path and are considered lost, SHOULD be
+retransmitted on a different path.
+
+If a PATH_ABANDON frame is received for the only active path of a QUIC connection, the receiving 
+peer SHOULD send a CONNECTION_CLOSE frame and enters the closing state. If the client
+received a PATH_ABANDON frame for the last open path, it MAY instead try to open a new path, if
+available, and only initiate connection closure if path validation fails or a CONNECTION_CLOSE frame
+is received from the server. Similarly the server MAY wait for a short, limited time such as one RTO
+if a path probing packet is received on a new path before sending the CONNECTION_CLOSE frame.
 
 ### Effect of RETIRE_CONNECTION_ID Frame
 
@@ -209,7 +242,7 @@ this endpoint, the resources include the list of received packets used to send a
 The peer MAY decide to keep sending data using the same IP addresses and UDP ports previously
 associated with the connection ID, but MUST use a different connection ID when doing so.
 
-### Idle Timeout
+### Idle Timeout {#idle-time-close}
 
 {{QUIC-TRANSPORT}} allows for closing of connections if they stay idle for too long.
 The connection idle timeout in multipath QUIC is defined as "no packet received on any path for the
@@ -555,7 +588,7 @@ MP_PROTOCOL_VIOLATION as a connection error and close the connection.
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
 The PATH_ABANDON frame informs the peer to abandon a
-path, and release the corresponding resources. An endpoint uses the sequence number of the CID
+path. An endpoint uses the sequence number of the CID
 used by the peer for PATH_ABANDON frames (describing the sender's path
 identifier). More complex path management can
 be made possible with additional extensions (e.g., PATH_STATUS frame in
@@ -620,9 +653,9 @@ Reason Phrase:
   by any entity other than the one that created the text.
 
 PATH_ABANDON frames SHOULD be acknowledged. If a packet containing a PATH_ABANDON
-frame is considered lost, the peer should repeat it.
+frame is considered lost, the peer SHOULD repeat it.
 
-PATH_ABANDON frames can sent on any path, not only the path identified by the
+PATH_ABANDON frames MAY be sent on any path, not only the path identified by the
 Path Identifier field.
 
 
