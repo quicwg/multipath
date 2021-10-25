@@ -655,9 +655,7 @@ MP_PROTOCOL_VIOLATION as a connection error and close the connection.
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
 The PATH_ABANDON frame informs the peer to abandon a
-path. An endpoint uses the sequence number of the CID
-used by the peer for PATH_ABANDON frames (describing the sender's path
-identifier). More complex path management can
+path. More complex path management can
 be made possible with additional extensions (e.g., PATH_STATUS frame in
 {{?I-D.liu-multipath-quic}} ).
 
