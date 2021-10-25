@@ -588,12 +588,13 @@ Path Identifier: An identifier of the path, which is formatted as shown in {{fig
     sending data over the specified path. This method MUST NOT be used if this connection
     identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or received.
-- Path Identifier Content: A variable-length integer specifying the path identifier.
+- Path Identifier Content: A variable-length integer specifying the path identifier. If Identifier Type is 2, 
+the Path Identifier Content MUST be empty.
 
 ~~~
   Path Identifier {
     Identifier Type (i) = 0x00..0x02,
-    Path Identifier Content (i),
+    [Path Identifier Content (i)],
   }
 ~~~
 {: #fig-path-identifier-format title="Path Identifier Format"}
