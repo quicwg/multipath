@@ -626,18 +626,18 @@ Path Identifier field.
 
 ## ACK_MP Frame {#mp-ack-frame}
 
-The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01
-or 0x42..x43) is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}.
-It is used to acknowledge packets that were sent on different paths when using multiple packet number spaces. If the
-frame type is TBD-01, ACK_MP frames also contain the sum of QUIC packets with
-associated ECN marks received on the connection up to this point.
+The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
+is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to
+acknowledge packets that were sent on different paths when using multiple
+packet number spaces. If the frame type is TBD-01, ACK_MP frames also contain
+the sum of QUIC packets with associated ECN marks received on the connection up
+to this point.
 
 ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
 
 ~~~
   ACK_MP Frame {
-    Type (i) = TBD-00..TBD-01
-       (experiments use 0xbaba00..0xbaba01 or 0x42..x43),
+    Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
     Packet Number Space Identifier (i),
     Largest Acknowledged (i),
     ACK Delay (i),
