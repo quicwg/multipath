@@ -138,7 +138,7 @@ This extension defines a new transport parameter, used to negotiate the use of t
 during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follow:
 
-- name: enable_multipath (TBD - experiments use 0xbabe)
+- name: enable_multipath (TBD - experiments use 0xbabf)
 - value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
@@ -683,7 +683,7 @@ under the "QUIC Protocol" heading.
 
 Value                        | Parameter Name.   | Specification
 -----------------------------|-------------------|-----------------
-TBD (experiments use 0xbabe) | enable_multipath  | {{nego}}
+TBD (experiments use 0xbabf) | enable_multipath  | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
