@@ -144,10 +144,10 @@ PN spaces, available option value for client and server are listed in {{param_va
 
 Client Option| Definition                                      | Allowed server responses
 -------------|-------------------------------------------------|--------------------------
-0x0	      | don't support multi-path                        | 0x0
-0x1	      | only support one PN space for multi-path        | 0x0 or 0x1
-0x2	      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
-0x3	      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
+0x0      | don't support multi-path                        | 0x0
+0x1      | only support one PN space for multi-path        | 0x0 or 0x1
+0x2      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
+0x3      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
 If the peer does not carry the enable_multipath transport parameter, which means the peer does not
@@ -479,14 +479,14 @@ not cause linkability issue.
 
    (Exchanges start on default path)
    1-RTT[]: NEW_CONNECTION_ID[C1, Seq=1] -->
-                         <-- 1-RTT[]: NEW_CONNECTION_ID[S1, Seq=1]
-                         <-- 1-RTT[]: NEW_CONNECTION_ID[S2, Seq=2]
+                       <-- 1-RTT[]: NEW_CONNECTION_ID[S1, Seq=1]
+                       <-- 1-RTT[]: NEW_CONNECTION_ID[S2, Seq=2]
    ...
    (starts new path)
    1-RTT[0]: DCID=S2, PATH_CHALLENGE[X] -->
-                     Checks AEAD using nonce(CID sequence 2, PN 0)
-       <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
-                                                ACK_MP[Seq=2,PN=0]
+                   Checks AEAD using nonce(CID sequence 2, PN 0)
+     <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
+                                              ACK_MP[Seq=2,PN=0]
    Checks AEAD using nonce(CID sequence 1, PN 0)
    1-RTT[1]: DCID=S2, PATH_RESPONSE[Y],
              ACK_MP[Seq=1, PN=0], ... -->
@@ -528,17 +528,16 @@ the connection IDs in both directions can be retired using the RETIRE_CONNECTION
 frame.
 
 ~~~
-  Client                                                          Server
+Client                                                      Server
 
-  (client tells server to abandon a path)
-  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
-                                 (server tells client to abandon a path)
-        <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2], ACK_MP[Seq=2, PN=X]
-  (client abandons the path that it is using)
-  1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
-                             (server abandons the path that it is using)
-       <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
-
+(client tells server to abandon a path)
+1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
+                           (server tells client to abandon a path)
+  <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2], ACK_MP[Seq=2, PN=X]
+(client abandons the path that it is using)
+1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
+                       (server abandons the path that it is using)
+ <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
 ~~~
 {: #fig-example-path-close title="Example of closing a path (path id type=0x00)"}
 
@@ -639,7 +638,8 @@ ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
 
 ~~~
   ACK_MP Frame {
-    Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01 or 0x42..x43),
+    Type (i) = TBD-00..TBD-01
+       (experiments use 0xbaba00..0xbaba01 or 0x42..x43),
     Packet Number Space Identifier (i),
     Largest Acknowledged (i),
     ACK Delay (i),
