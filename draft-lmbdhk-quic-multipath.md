@@ -213,7 +213,7 @@ wait for the receive of the RETIRE_CONNECTION_ID frame for the used connection I
 Usually it is expected that the PATH_ABANDON frame is used by the client to indicate to the server
 that path conditions have changed such that the path is or will be not usable anymore, e.g. in case
 of an mobility event. The PATH_ABANDON frame therefore indicates to the receiving peer that the sender
-does not intent to send any packets on that path anymore but also recommends to the receiver that no 
+does not intend to send any packets on that path anymore but also recommends to the receiver that no 
 packets should be sent in either direction. The receiver of an PATH_ABANDON frame MAY also
 send an PATH_ABANDON frame to signal its own willingness to not send any packet on this path anymore.
 
@@ -221,7 +221,7 @@ If connection IDs are used, PATH_ABANDON frames can be sent on any path, not onl
 is intended to be closed. Thus a connection can be abandoned even if connectivity on that path is
 already broken. If no connection IDs are used and the PATH_ABANDON frame has to sent on the path
 that is intended to be closed, it is possible that the packet containing the PATH_ABANDON frame or
-the packet containing the ACK for the PATH_ABANDON frame cannot the received anymore and the endpoint
+the packet containing the ACK for the PATH_ABANDON frame cannot be received anymore and the endpoint
 might need to rely on an idle time out to close the path, as described in Section {{idle-time-close}}.
 
 Packets, that have previously been send on the abandoned path and are considered lost, SHOULD be
