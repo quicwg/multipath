@@ -230,7 +230,6 @@ might need to rely on an idle time out to close the path, as described in Sectio
 Retransmittable frames, that have previously been send on the abandoned path and are considered lost, 
 SHOULD be retransmitted on a different path.
 
-If an endpoint wants to close the last open path of a connection, it MUST use the CONNECTION_CLOSE frame as specified in {{RFC9000}}.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC connection, the receiving 
 peer SHOULD send a CONNECTION_CLOSE frame and enters the closing state. If the client
@@ -322,7 +321,7 @@ In the "Active" state, hosts MUST also track the following information.
 
 - Associated Source Connection ID: The Connection ID used to receive packets over the path.
 
-A path in the "Validating" state performs path validation as described in {{Section 8.2 of QUIC-TRANSPORT}}.
+A path in the "Validating" state performs path validation as described in Section 8.2 of {{QUIC-TRANSPORT}}.
 An endhost should not send non-probing frames on a path in "Validating" state, as it has no guarantee that packets
 will actually reach the peer.
 
