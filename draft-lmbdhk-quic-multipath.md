@@ -161,7 +161,7 @@ Connection IDs, and also limits the number of concurrent paths. For the QUIC mul
 
 # Path Setup and Removal
 
-After completing the handshake, endpoints have agreed to enable multipath feature and can start using multiple paths. This version of the document does not discuss when a client decides to initiate a new path. This will be discussed in future versions of the draft or additional documents.
+After completing the handshake, endpoints have agreed to enable multipath feature and can start using multiple paths. This document does not discuss when a client decides to initiate a new path. We delegate such discussion in separate documents.
 
 This proposal adds one multi-path control frame for path management:
 
