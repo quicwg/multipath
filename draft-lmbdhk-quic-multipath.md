@@ -206,7 +206,7 @@ as "abandoned", it means that the resources related to the path, such as the use
 However, information related to data delivered over that path SHOULD not be released immediately
 as acknowledgments can still be received or other frames that also may trigger retransmission of data on another path.
 
-The endpoint sending the PATH_ABANDON frame SHOULD consider a path as abandoned when the 
+The endpoint sending the PATH_ABANDON frame SHOULD consider a path as abandoned when the
 packet that contained the PATH_ABANDON frame is acknowledged. When releasing resources of a path,
 the endpoint SHOULD send a RETIRE_CONNECTION_ID frame for the connection IDs used on the path, if any.
 
@@ -216,7 +216,7 @@ wait for the receive of the RETIRE_CONNECTION_ID frame for the used connection I
 Usually it is expected that the PATH_ABANDON frame is used by the client to indicate to the server
 that path conditions have changed such that the path is or will be not usable anymore, e.g. in case
 of an mobility event. The PATH_ABANDON frame therefore indicates to the receiving peer that the sender
-does not intend to send any packets on that path anymore but also recommends to the receiver that no 
+does not intend to send any packets on that path anymore but also recommends to the receiver that no
 packets should be sent in either direction. The receiver of an PATH_ABANDON frame MAY also
 send an PATH_ABANDON frame to signal its own willingness to not send any packet on this path anymore.
 
@@ -227,11 +227,11 @@ that is intended to be closed, it is possible that the packet containing the PAT
 the packet containing the ACK for the PATH_ABANDON frame cannot be received anymore and the endpoint
 might need to rely on an idle time out to close the path, as described in Section {{idle-time-close}}.
 
-Retransmittable frames, that have previously been send on the abandoned path and are considered lost, 
+Retransmittable frames, that have previously been send on the abandoned path and are considered lost,
 SHOULD be retransmitted on a different path.
 
 
-If a PATH_ABANDON frame is received for the only active path of a QUIC connection, the receiving 
+If a PATH_ABANDON frame is received for the only active path of a QUIC connection, the receiving
 peer SHOULD send a CONNECTION_CLOSE frame and enters the closing state. If the client
 received a PATH_ABANDON frame for the last open path, it MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails or a CONNECTION_CLOSE frame
