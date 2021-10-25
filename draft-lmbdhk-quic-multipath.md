@@ -245,7 +245,7 @@ Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}}.  
 
 The transmission of QUIC packets on a regular QUIC connection is regulated by
 the arrival of data from the application and the congestion control scheme. QUIC
-packets can only be sent when the congestion window is open.
+packets can only be sent when the congestion window of at least one path is open.
 
 Multipath QUIC implementations also need to include a packet scheduler that decides,
 among the paths whose congestion window is open, the path over which the next QUIC packet
