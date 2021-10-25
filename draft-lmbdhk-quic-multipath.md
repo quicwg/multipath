@@ -154,7 +154,7 @@ Client Option| Definition                                      | Allowed server 
 {: #param_value_definition title="Available value for enable_multipath"}
 
 If the peer does not carry the enable_multipath transport parameter, which means the peer does not
-support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} fwith single path and MUST NOT use
+support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use
 any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR
 and close the connection.
@@ -396,7 +396,7 @@ packets can only be sent when the congestion window of at least one path is open
 Multipath QUIC implementations also need to include a packet scheduler that decides,
 among the paths whose congestion window is open, the path over which the next QUIC packet
 will be sent. Many factors can influence the definition of these algorithms and
-their previse definition is outside the scope of this document. Various packet schedulers have been
+their precise definition is outside the scope of this document. Various packet schedulers have been
 proposed and implemented, notably for Multipath TCP. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
 packet schedulers depending on the application goals.
@@ -404,7 +404,7 @@ packet schedulers depending on the application goals.
 # Packet Number Space and Use of Connection ID
 
 If the connection ID is present (non-zero length) in the packet header, the connection ID is used to identify the path.
-If no connection ID is present, the 4 tuple identies the path.
+If no connection ID is present, the 4 tuple identifies the path.
 The initial path that is used during the handshake (and multipath negotiation) has the path ID 0 and therefore
 all 0-RTT packets are also tracked and processed with the path ID 0.
 For 1-RTT packets the path ID is the sequence number of
@@ -559,7 +559,7 @@ distinguish which key should be used to decode received packets, which results
 in a key rotation synchronization problem.
 
 To address such a synchronization issue, if key update is
-initilized on one path, the sender SHOULD send at least one packet with the new
+initialized on one path, the sender SHOULD send at least one packet with the new
 key on all active paths. Further, an
 endpoint MUST NOT initiate a subsequent key update until a packet with the
 current key has been acknowledged on each path.
@@ -594,17 +594,17 @@ not cause linkability issue.
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
 
-In Figure {{fig-example-new-path}}, the endpoints first exchange new availabe Connection IDs
-with the NEW_CONNECTION_ID frame. In this exampe the client provides one Connection ID (C1 with sequence number 1),
+In Figure {{fig-example-new-path}}, the endpoints first exchange new available Connection IDs
+with the NEW_CONNECTION_ID frame. In this example the client provides one Connection ID (C1 with sequence number 1),
 and server provides two Connection IDs (S1 with sequence number 1, and S2 with sequence number 2).
 
 Before the client opens a new path by sending an packet on that path with a PATH_CHALLENGE frame,
-it has to check. whether there is an unused Connection IDs availabe for each side.
+it has to check. whether there is an unused Connection IDs available for each side.
 In this example the client chooses the Connection ID S2 as the Destination Connection ID in the new path.
 
 If the client has used all the allocated CID, it is supposed to retire those that are
 not used anymore, and the server is supposed to provide replacements, as specified in {{QUIC-TRANSPORT}}.
-Usually it is desired to proviide one more connection ID as currently in used, to allow for new paths
+Usually it is desired to provide one more connection ID as currently in used, to allow for new paths
 or migration.
 
 
@@ -622,7 +622,7 @@ client's 1-RTT packets use CID S3, which has a sequence number of 3. Note that
 two paths use different packet number space.
 
 Thee client initiates the path closure for the path with ID 1 by sending a
-packet with an PATH_ABANDON frame. When the server reeceived the PATH_ABANDON
+packet with an PATH_ABANDON frame. When the server received the PATH_ABANDON
 frame, it also sends an PATH_ABANDON frame in the next packet. Afterwards
 the connection IDs in both directions can be retired using the RETIRE_CONNECTION_ID
 frame.
