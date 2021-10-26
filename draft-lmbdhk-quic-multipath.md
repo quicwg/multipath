@@ -116,22 +116,23 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 as described in BCP 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
 
-We assume that the reader is familiar with the terminology used in {{QUIC-TRANSPORT}}.
+We assume that the reader is familiar with the terminology used in {{QUIC-TRANSPORT}} (Section 1.2, in particular).
 In addition, we define the following terms:
 
-- Path Identifier (Path ID): An identifier that is used to identify a path in a QUIC connection
-  at an endpoint. Path Identifier is used in multi-path control frames (etc. PATH_ABANDON frame)
-  to identify a path. By default, it is defined as the sequence number of the destination Connection ID
-  used for sending packets on that particular path, but alternative definitions can be used
-  if the length of that connection ID is zero.
+- Path: refers to the 4-tuple {source IP address, source port number, destination IP address, destination port number}. A path refers to "network path" used in {{QUIC-TRANSPORT}}.
+- Path Identifier (Path ID): A local identifier that is used to identify a path in a QUIC connection
+  at an endpoint. Path ID is used in multipath control frames (e.g., PATH_ABANDON frame)
+  to identify a path. By default, it is defined as the sequence number of the destination Connection ID (CID)
+  used for sending packets over that particular path, but alternative definitions can be used
+  for zero-length connection IDs.
 
 - Packet Number Space Identifier (PN Space ID): An identifier that is used to distinguish packet
-    number spaces for different paths. It is used in 1-RTT packets and ACK_MP frames. Each node
+    number spaces of the same QUIC connection over different paths. It is used in 1-RTT packets and ACK_MP frames. Each endpoint
     maintains a list of "Received Packets" for each of the CID that it provided to the peer,
     which is used for acknowledging packets received with that CID.
 
 The difference between Path Identifier and Packet Number Space Identifier, is that the Path Identifier
-is used in multipath control frames to identify a path, and the Packet Number Space Identifier is used
+is used in multipath control frames to identify a path, while the Packet Number Space Identifier is used
 in 1-RTT packets and ACK_MP frames to distinguish packet number spaces for different paths.
 Both identifiers have the same value, which is the sequence number of the connection ID, if a
 non-zero connection ID is used. If the connection ID is zero length, the Packet Number Space
