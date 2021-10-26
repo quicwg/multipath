@@ -135,11 +135,11 @@ Both identifiers have the same value, which is the sequence number of the connec
 non-zero connection ID is used. If the connection ID is zero length, the Packet Number Space
 Identifier is 0, while the Path Identifier is selected on path establishment.
 
-# Handshake Negotiation and Transport Parameter {#nego}
+# Handshake Negotiation: Multipath Transport Parameter {#nego}
 
-This extension defines a new transport parameter, used to negotiate the use of the multipath extension
-during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
-defined as follow:
+This section introduces a new transport parameter that is used to negotiate the use of the multipath extension
+during the QUIC connection handshake. The new transport parameter is
+defined as follows:
 
 - name: enable_multipath (TBD - experiments use 0xbabf)
 - value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more
@@ -147,20 +147,22 @@ PN spaces, available option value for client and server are listed in {{param_va
 
 Client Option| Definition                                      | Allowed server responses
 -------------|-------------------------------------------------|--------------------------
-0x0      | don't support multi-path                        | 0x0
-0x1      | only support one PN space for multi-path        | 0x0 or 0x1
+0x0      | don't support multipath                         | 0x0
+0x1      | only support one PN space for multipath         | 0x0 or 0x1
 0x2      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
 0x3      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
-If the peer does not carry the enable_multipath transport parameter, which means the peer does not
-support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use
-any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter
-"enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR
-and close the connection.
+An endpoint includes the "enable_multipath" transport parameter as per Section 7.4 of {{QUIC-TRANSPORT}} to negotiate the activation of multipath extensions for a given connection. {{param_value_definition}} indicates the allowed values by a client. 
 
-Note that the transport parameter "active_connection_id_limit" {{QUIC-TRANSPORT}} limits the number of usable
-Connection IDs, and also limits the number of concurrent paths. For the QUIC multipath extension this limit even applies when no connection ID is exposed in the QUIC header.
+If the peer does not support enable_multipath or it is configured to disable it, it ignores the "enable_multipath" transport parameter received from a peer as defined in Section 7.4.2 of {{QUIC-TRANSPORT}}. The endpoints MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use any frame or mechanism defined in this document.
+
+If an endpoint receives unexpected value for the transport parameter "enable_multipath", it MUST treat it as a connection error of type MP_CONNECTION_ERROR (TBA)
+and MUST close the connection.
+
+Note that the transport parameter "active_connection_id_limit" (Section 18.2 of {{QUIC-TRANSPORT}}) limits the number of usable
+connection IDs for a connection. It also limits the number of concurrent paths. For the multipath QUIC extension, this limit even applies when no connection ID is exposed in the QUIC header.
+
 
 # Path Setup and Removal
 
