@@ -1,5 +1,5 @@
 ---
-title: Multipath Extension for QUIC
+title: Multipath Extensions for QUIC
 abbrev: Multipath QUIC
 docname: draft-lmbdhk-quic-multipath-latest
 date: {DATE}
@@ -77,35 +77,37 @@ informative:
 
 --- abstract
 
-This document specifies a multipath extension for the QUIC protocol to enable the simultaneous usage of multiple paths for a single connection.
+This document specifies a multipath extension for the QUIC protocol to enable the simultaneous usage of multiple paths for a single QUIC connection.
 
 --- middle
 
 # Introduction
 
-This document specifies an extension to QUIC v1 {{QUIC-TRANSPORT}} to enable the simultaneous usage of multiple paths for a single connection.
+QUIC connections are not strictly bound to a single network path. QUIC version 1 {{QUIC-TRANSPORT}} supports a mechanism for migrating a connection to a new network path. However, such procedure is not optimal in contexts where, for example, resource pooling is required. To fill that void, this document specifies an extension to QUIC version 1 to enable the simultaneous usage of multiple paths for a single connection.
 
-This proposal is based on several basic design points:
+This extension is based upon several basic design points:
 
-  * Re-use as much as possible mechanisms of QUIC-v1. In particular this proposal uses path validation as specified for QUIC v1 and aims to re-use as much as possible of QUIC's connection migration.
-  * Use the same packet header formats as QUIC v1 to avoid the risk of packets being dropped by middleboxes (which may only support QUIC v1)
-  * Congestion Control, RTT measurements and PMTU discovery should be per-path (following {{QUIC-TRANSPORT}})
-  * A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore there can be at most one active paths/connection ID per 4-tuple.
+  * Re-use as much as possible the mechanisms defined in QUIC version 1. In particular, this extension uses the path validation procedure as specified for QUIC version 1 and aims to re-use as much as possible of QUIC's connection migration (Section 9 of {{QUIC-TRANSPORT}}).
+  * Use the same packet header formats as QUIC version 1 to avoid the risk of packets being dropped by middleboxes (which may only support QUIC version 1).
+* Congestion Control, RTT measurements, and PMTU discovery should be per-path (following Section 14 of {{QUIC-TRANSPORT}}).
+  * A path is determined by the 4-tuple {source IP address, source port number, destination IP address, destination port number}. Therefore, there can be at most one active path/connection ID per 4-tuple.
 
-The path management specified in section 9 of {{QUIC-TRANSPORT}} fulfills multiple goals: it directs a peer to switch sending through a new preferred path, and it allows the peer to release resources associated with the old path. Multipath requires several changes to that mechanism:
+The path migration procedure specified in Section 9 of {{QUIC-TRANSPORT}} fulfills multiple goals: it directs a peer to switch sending through a new path and it allows the peer to release resources associated with the old path. The support of multipath requires several changes to that mechanism:
 
-  *  Allow simultaneous transmission of non probing frames on multiple paths.
+  *  Allow simultaneous transmission of non-probing frames on multiple active paths.
   *  Continue using an existing path even if non-probing frames have been received on another path.
-  *  Manage the removal of paths that have been abandoned.
+  *  Explicilty manage the removal of paths that have to be abandoned.
 
-As such this extension specifies a departure from the specification of path management in section 9 of {{QUIC-TRANSPORT}} and therefore requires negotiation between the two endpoints using a new transport parameter, as specified in {{nego}}.
+In order to explicitely enable multipathing and dinstigsuih it from path migration, this document introduces a negotiation between the two endpoints using a new transport parameter, as specified in {{nego}}.
 
-This proposal supports the negotiation of either the use of one packet number space for all paths or the use of separate packet number spaces per path. While separate packet number spaces allow for more efficient ACK encoding, especially when paths have highly different latencies, this approach requires the use of a connection ID. Therefore use of a single number space can be beneficial in highly constrained networks that do not benefit from exposing the connection ID in the header. While both approaches are supported by the specification in this version of the document, the intention for the final publication of a multipath extension for QUIC is to choose one option in order to avoid incompatibility. More evaluation and implementation experience is needed to select one approach before final publication. Some discussion about pros and cons can be found here:
+This proposal supports the negotiation of either the use of one packet number space for all active paths or separate packet number space per-path. While separate packet number spaces allow for more efficient ACK encoding, especially when paths have highly different latencies, this approach requires the use of a connection ID. Therefore use of a single number space can be beneficial in highly constrained networks that do not benefit from exposing the connection ID in the header. While both approaches are supported by the specification in this version of the document, the intention for the final publication of a multipath extension for QUIC is to choose one option in order to avoid incompatibility. More evaluation and implementation experience is needed to select one approach before final publication. Some discussion about pros and cons can be found here:
 https://github.com/mirjak/draft-lmbdhk-quic-multipath/blob/master/presentations/PacketNumberSpace_s.pdf
 
-As currently defined in this version of the draft the use of multiple packet number spaces requires the use of connection IDs is both directions. Today's deployments often only use destination connection ID when sending packets from the client to the server as this addresses the most important use cases for migration, like NAT rebinding or mobility events. Further discussion and work is required to evaluate if the use of multiple packet number spaces could be supported as well when the connection ID is only present in one direction.
+As currently defined in this document, the use of multiple packet number spaces requires the use of connection IDs in both directions. Today's deployments often only use destination connection ID when sending packets from the client to the server as this addresses the most important use cases for migration, like NAT rebinding or mobility events. Further discussion and work is required to evaluate if the use of multiple packet number spaces could be supported as well when the connection ID is only present in one direction.
 
-This proposal does not cover address discovery and management. Addresses and the actual decision process to setup or tear down paths are assumed to be handled by the application that is using the QUIC multipath extension. Further, this proposal only specifies a simple basic packet scheduling algorithm in order to provide some basic implementation guidance. However, more advanced algorithms as well as potential extensions to enhance signaling of the current path state are expected as future work.
+This proposal does not cover address discovery and management. Addresses (and port numbers) and the actual decision process to setup or tear down paths are assumed to be handled by the application that is using the QUIC multipath extension. 
+
+Also, this proposal only specifies a simple basic packet scheduling algorithm in order to provide some basic implementation guidance. However, more advanced algorithms as well as potential extensions to enhance signaling of the current path state are expected as future work.
 
 ## Conventions and Definitions {#definition}
 
