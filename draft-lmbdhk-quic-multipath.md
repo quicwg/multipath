@@ -164,78 +164,76 @@ Connection IDs, and also limits the number of concurrent paths. For the QUIC mul
 
 # Path Setup and Removal
 
-After completing the handshake, endpoints have agreed to enable multipath feature and can start using multiple paths. This document does not discuss when a client decides to initiate a new path. We delegate such discussion in separate documents.
+After completing the handshake with both endpoints having agreed to enable the multipath extension, the endpoints can start using available multiple paths as a function of a local policy. This document does not discuss such policy (e.g., when a client decides to initiate a new path or withdraw a path). We delegate such discussion in separate documents.
 
-This proposal adds one multi-path control frame for path management:
+This document adds one multipath control frame for path management:
 
-- PATH_ABANDON frame for the receiver side to abandon the path {{path-abandon-frame}}
+- PATH_ABANDON frame for the receiver side to abandon the path {{path-abandon-frame}}.
 
 All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
 
-When the multipath option is negotiated, clients that want to use an additional
+When the multipath extension is negotiated, clients that want to use an additional
 path MUST first initiate the Address Validation procedure with PATH_CHALLENGE and PATH_RESPONSE
 frames described in Section 8 of {{QUIC-TRANSPORT}}. After
 receiving packets from the client on the new paths, the servers MAY
 in turn attempt to validate these paths using the same mechanisms.
 
-If validation succeed, the client can send non-probing, 1-RTT packets on the new paths.  In
-contrast with the specification in section 9 of [QUIC-TRANSPORT], the
+If the validation succeed, the client can send non-probing, 1-RTT packets on the new paths.  In
+contrast with the specification in Section 9 of [QUIC-TRANSPORT], the
 server MUST NOT assume that receiving non-probing packets on a new
 path indicates an attempt to migrate to that path.  Instead, servers
 SHOULD consider new paths over which non-probing packets have been received as
-available for transmission.
+available for data transmission.
 
 ## Path Close
 
-Each endpoint manages the set of paths that are available for transmission.
-At any time in the connection, each endpoint can decide to abandon one of these paths,
-following for example changes in local connectivity or changes in
-local preferences.  After an endpoint abandons a path, the peer will
-not receive any more non-probing packets on that path.
+Each endpoint manages the set of paths that are available for data transmission.
+At any time during the connection life, each endpoint can decide to abandon one of these paths
+following, for example, changes in local connectivity or changes in
+local preferences. These policies are out of scope.
 
 An endpoint that wants to close a path SHOULD NOT rely on implicit signals like idle time or packet losses,
 but instead SHOULD use explicit request to terminate path by sending the PATH_ABANDON frame (see {{path-abandon-frame}}).
 
+After an endpoint abandons a path, the peer MUST ignore any non-probing packets received on that path. 
+
 ### Use PATH_ABANDON Frame to Close a Path
 
-Both endpoints, namely the client and the server, can close a path, by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
+Both the client and the server can close a path by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
 abandons the path with a corresponding Path Identifier. Once a path is marked
 as "abandoned", it means that the resources related to the path, such as the used connection IDs, can be released.
-However, information related to data delivered over that path SHOULD not be released immediately
-as acknowledgments can still be received or other frames that also may trigger retransmission of data on another path.
 
-The endpoint sending the PATH_ABANDON frame SHOULD consider a path as abandoned when the
+The endpoint that sent the PATH_ABANDON frame SHOULD consider a path as abandoned when the
 packet that contained the PATH_ABANDON frame is acknowledged. When releasing resources of a path,
-the endpoint SHOULD send a RETIRE_CONNECTION_ID frame for the connection IDs used on the path, if any.
+the endpoint SHOULD send a RETIRE_CONNECTION_ID frame (Section 19.16 of {{QUIC-TRANSPORT}}) for the connection IDs used on the path, if any.
 
-The receiver of a PATH_ABANDON frame SHOULD NOT release its resources immediately but SHOULD
-wait for the receive of the RETIRE_CONNECTION_ID frame for the used connection IDs or 3 RTOs.
+The the receiver of a PATH_ABANDON frame SHOULD NOT release its resources immediately but SHOULD
+wait for the receive of the RETIRE_CONNECTION_ID frame for the used connection IDs or 3 RTOs. This is to accomodate acknowledgments can still be received or other frames that also may trigger retransmission of data on another path.
 
-Usually it is expected that the PATH_ABANDON frame is used by the client to indicate to the server
-that path conditions have changed such that the path is or will be not usable anymore, e.g. in case
-of an mobility event. The PATH_ABANDON frame therefore indicates to the receiving peer that the sender
+It is expected that the PATH_ABANDON frame is used by the client to indicate to the server
+that path conditions have changed such that the path is or will be not usable anymore, e.g., in case
+of a mobility event. The PATH_ABANDON frame, therefore, indicates to the receiving peer that the sender
 does not intend to send any packets on that path anymore but also recommends to the receiver that no
 packets should be sent in either direction. The receiver of an PATH_ABANDON frame MAY also
-send an PATH_ABANDON frame to signal its own willingness to not send any packet on this path anymore.
+send a PATH_ABANDON frame to signal its own willingness to not send any packet on this path anymore.
 
 If connection IDs are used, PATH_ABANDON frames can be sent on any path, not only the path that
 is intended to be closed. Thus a connection can be abandoned even if connectivity on that path is
-already broken. If no connection IDs are used and the PATH_ABANDON frame has to sent on the path
+already broken. If no connection IDs are used and the PATH_ABANDON frame has to be sent on the path
 that is intended to be closed, it is possible that the packet containing the PATH_ABANDON frame or
 the packet containing the ACK for the PATH_ABANDON frame cannot be received anymore and the endpoint
 might need to rely on an idle time out to close the path, as described in Section {{idle-time-close}}.
 
-Retransmittable frames, that have previously been send on the abandoned path and are considered lost,
+Retransmittable frames, that have previously been sent on an abandoned path and are considered lost,
 SHOULD be retransmitted on a different path.
 
-
 If a PATH_ABANDON frame is received for the only active path of a QUIC connection, the receiving
-peer SHOULD send a CONNECTION_CLOSE frame and enters the closing state. If the client
+peer SHOULD send a CONNECTION_CLOSE frame (Section 19.19 of {{QUIC-TRANSPORT}}) and enters the closing state. If the client
 received a PATH_ABANDON frame for the last open path, it MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails or a CONNECTION_CLOSE frame
-is received from the server. Similarly the server MAY wait for a short, limited time such as one RTO
+was received from the server. Similarly, the server MAY wait for a short, limited time such as one RTO
 if a path probing packet is received on a new path before sending the CONNECTION_CLOSE frame.
 
 ### Effect of RETIRE_CONNECTION_ID Frame
@@ -243,7 +241,7 @@ if a path probing packet is received on a new path before sending the CONNECTION
 Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard the resources associated with
 that connection ID. If the connection ID was used by the peer to identify a path from the peer to
 this endpoint, the resources include the list of received packets used to send acknowledgements.
-The peer MAY decide to keep sending data using the same IP addresses and UDP ports previously
+The peer MAY decide to keep sending data using the same IP addresses and port numbers previously
 associated with the connection ID, but MUST use a different connection ID when doing so.
 
 ### Idle Timeout {#idle-time-close}
@@ -262,7 +260,7 @@ paths.  Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
 available path if no traffic is received for the duration of the idle
-timeout, as specified in section 10.1 of {{QUIC-TRANSPORT}}.
+timeout, as specified in Section 10.1 of {{QUIC-TRANSPORT}}.
 This means if all paths remain idle for the idle timeout, the connection
 is implicitly closed.
 
@@ -277,7 +275,7 @@ after a spurious estimate of path abandonment by the client.
 
 ~~~
        o
-       | PATH_CHALLENGE sent/received on new path
+       | PATH_CHALLENGE sent/received on a new path
        v
  +------------+    Path validation abandoned
  | Validating |----------------------------------+
@@ -285,7 +283,7 @@ after a spurious estimate of path abandonment by the client.
        |                                         |
        | PATH_RESPONSE received                  |
        |                                         |
-       v        Associated CID have been retired |
+       v       Associated CIDs have been retired |
  +------------+        Path's idle timeout       |
  |   Active   |----------------------------------+
  +------------+                                  |
@@ -296,7 +294,7 @@ after a spurious estimate of path abandonment by the client.
  |   Closing  |                                  |
  +------------+                                  |
        |                                         |
-       | Associated CID have been retired        |
+       | Associated CIDs have been retired       |
        | Path's idle timeout                     |
        v                                         |
  +------------+                                  |
@@ -337,7 +335,7 @@ Consequently, the endhost is not able to send nor receive packets on this path a
 
 # Congestion Control
 
-Senders MUST manage per-path congestion status, and MUST NOT send more data on a given path than congestion control on that path allows.  This is already a requirement of {{QUIC-TRANSPORT}}.
+Senders MUST manage per-path congestion status and MUST NOT send more data on a given path than congestion control on that path allows. This is already a requirement of {{QUIC-TRANSPORT}}.
 
 When a Multipath QUIC connection uses two or more paths, there is no guarantee that these paths are fully disjoint. When two (or more paths) share the same bottleneck, using a standard congestion control scheme could result in an unfair distribution of the bandwidth with the multipath connection getting more bandwidth than competing single paths connections. Multipath TCP uses the LIA congestion control scheme specified in {{RFC6356}} to solve this problem.  This scheme can immediately be adapted to Multipath QUIC. Other coupled congestion control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
