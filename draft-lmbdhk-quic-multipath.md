@@ -473,7 +473,9 @@ be controlled by the combination of one or several of the following:
 
 ## Using Multiple Packet Number Spaces
 
-If the multipath option is enabled with a value of 2, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}}.
+If the multipath option is enabled with a value of 2, each path has
+its own packet number space for transmitting 1-RTT packets and a new
+ACK frame format is used as specified in {{ack-mp-frame}}.
 Compared to the QUIC v1 ACK frame, the ACK_MP frames additionally contains a Packet Number Space Identifier (PN Space ID).
 The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified based on the Destination Connection ID in each packets.
@@ -735,7 +737,7 @@ packet number spaces. If the frame type is TBD-01, ACK_MP frames also contain
 the sum of QUIC packets with associated ECN marks received on the connection up
 to this point.
 
-ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
+ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 
 ~~~
   ACK_MP Frame {
@@ -749,7 +751,7 @@ ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
     [ECN Counts (..)],
   }
 ~~~
-{: #fig-mp-ack-format title="ACK_MP Frame Format"}
+{: #fig-ack-mp-format title="ACK_MP Frame Format"}
 
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following field is added.
 
