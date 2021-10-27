@@ -142,7 +142,9 @@ during the connection handshake, as specified in {{QUIC-TRANSPORT}}. The new tra
 defined as follow:
 
 - name: enable_multipath (TBD - experiments use 0xbabf)
-- value: 0 (default) for disabled. Endpoints use 2-bits in the value field for negotiating one or more
+- value: 0 (default) for disabled. 
+
+Endpoints use 2-bits in the value field for negotiating one or more
 PN spaces, available option value for client and server are listed in {{param_value_definition}} :
 
 Client Option| Definition                                      | Allowed server responses
@@ -153,9 +155,10 @@ Client Option| Definition                                      | Allowed server 
 0x3      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
-If the peer does not carry the enable_multipath transport parameter, which means the peer does not
-support multipath, endpoint MUST fallback to {{QUIC-TRANSPORT}} with single path and MUST NOT use
-any frame or mechanism defined in this document. If endpoint receives unexpected value for the transport parameter
+If the parameter is absent or set to 0, the endpoints MUST fallback to {{QUIC-TRANSPORT}} with
+single path and MUST NOT use any frame or mechanism defined in this document. 
+
+If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type MP_CONNECTION_ERROR
 and close the connection.
 
