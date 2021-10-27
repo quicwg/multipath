@@ -491,7 +491,7 @@ the server provided N Connection IDs, and the client is already actively using N
 the limit is reached. If the client wants to start a new path, it has to retire
 one of the established paths.
 
-ACK_MP frame {{mp-ack-frame}} can be returned via either a different path, or the same path identified
+ACK_MP frame {{ack-mp-frame}} can be returned via either a different path, or the same path identified
 by the Path Identifier, based on different strategies of sending ACK_MP frames.
 
 Using multiple packet number spaces requires changes in the way AEAD is applied for packet
@@ -726,7 +726,7 @@ the Identifier Type if 0x02, the PATH_ABANDON frame MUST only be sent on the pat
 that is intended to be abandoned.
 
 
-## ACK_MP Frame {#mp-ack-frame}
+## ACK_MP Frame {#ack-mp-frame}
 
 The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
 is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to
@@ -794,7 +794,7 @@ under the "QUIC Protocol" heading.
 
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-ack-frame}}
+TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{ack-mp-frame}}
 TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON        | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
