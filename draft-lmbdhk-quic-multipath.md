@@ -473,8 +473,10 @@ be controlled by the combination of one or several of the following:
 
 ## Using Multiple Packet Number Spaces
 
-If the multipath option is enabled with a value of 2, each path has its own packet number space for transmitting 1-RTT packets and a new ACK frame format is used as specified in {{mp-ack-frame}}.
-Compared to the QUIC v1 ACK frame, the MP_ACK frames additionally contains a Packet Number Space Identifier (PN Space ID).
+If the multipath option is enabled with a value of 2, each path has
+its own packet number space for transmitting 1-RTT packets and a new
+ACK frame format is used as specified in {{ack-mp-frame}}.
+Compared to the QUIC v1 ACK frame, the ACK_MP frames additionally contains a Packet Number Space Identifier (PN Space ID).
 The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified based on the Destination Connection ID in each packets.
 
@@ -491,7 +493,7 @@ the server provided N Connection IDs, and the client is already actively using N
 the limit is reached. If the client wants to start a new path, it has to retire
 one of the established paths.
 
-ACK_MP frame {{mp-ack-frame}} can be returned via either a different path, or the same path identified
+ACK_MP frame {{ack-mp-frame}} can be returned via either a different path, or the same path identified
 by the Path Identifier, based on different strategies of sending ACK_MP frames.
 
 Using multiple packet number spaces requires changes in the way AEAD is applied for packet
@@ -726,7 +728,7 @@ the Identifier Type if 0x02, the PATH_ABANDON frame MUST only be sent on the pat
 that is intended to be abandoned.
 
 
-## ACK_MP Frame {#mp-ack-frame}
+## ACK_MP Frame {#ack-mp-frame}
 
 The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
 is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is used to
@@ -735,7 +737,7 @@ packet number spaces. If the frame type is TBD-01, ACK_MP frames also contain
 the sum of QUIC packets with associated ECN marks received on the connection up
 to this point.
 
-ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
+ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 
 ~~~
   ACK_MP Frame {
@@ -749,7 +751,7 @@ ACK_MP frame is formatted as shown in {{fig-mp-ack-format}}.
     [ECN Counts (..)],
   }
 ~~~
-{: #fig-mp-ack-format title="ACK_MP Frame Format"}
+{: #fig-ack-mp-format title="ACK_MP Frame Format"}
 
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following field is added.
 
@@ -794,7 +796,7 @@ under the "QUIC Protocol" heading.
 
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{mp-ack-frame}}
+TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{ack-mp-frame}}
 TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON        | {{path-abandon-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
