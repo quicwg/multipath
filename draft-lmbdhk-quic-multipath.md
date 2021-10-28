@@ -83,12 +83,12 @@ This document specifies a multipath extension for the QUIC protocol to enable th
 
 # Introduction
 
-This document specifies an extension to QUIC v1 {{QUIC-TRANSPORT}} to enable the simultaneous usage of multiple paths for a single connection.
+This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}} to enable the simultaneous usage of multiple paths for a single connection.
 
 This proposal is based on several basic design points:
 
-  * Re-use as much as possible mechanisms of QUIC-v1. In particular this proposal uses path validation as specified for QUIC v1 and aims to re-use as much as possible of QUIC's connection migration.
-  * Use the same packet header formats as QUIC v1 to avoid the risk of packets being dropped by middleboxes (which may only support QUIC v1)
+  * Re-use as much as possible mechanisms of QUIC version 1. In particular this proposal uses path validation as specified for QUIC version 1 and aims to re-use as much as possible of QUIC's connection migration.
+  * Use the same packet header formats as QUIC version 1 to avoid the risk of packets being dropped by middleboxes (which may only support QUIC version 1)
   * Congestion Control, RTT measurements and PMTU discovery should be per-path (following {{QUIC-TRANSPORT}})
   * A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore there can be at most one active paths/connection ID per 4-tuple.
 
@@ -479,7 +479,7 @@ be controlled by the combination of one or several of the following:
 If the multipath option is enabled with a value of 2, each path has
 its own packet number space for transmitting 1-RTT packets and a new
 ACK frame format is used as specified in {{ack-mp-frame}}.
-Compared to the QUIC v1 ACK frame, the ACK_MP frames additionally contains a Packet Number Space Identifier (PN Space ID).
+Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally contains a Packet Number Space Identifier (PN Space ID).
 The PN Space ID used to distinguish packet number spaces for different paths and is simply derived from the sequence number of Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified based on the Destination Connection ID in each packets.
 
@@ -505,7 +505,7 @@ updates, as explained in {{multipath-key-update}}.
 
 ### Packet Protection for QUIC Multipath {#multipath-aead}
 
-Packet protection for QUIC v1 is specified is Section 5 of {{!QUIC-TLS}}. The general principles
+Packet protection for QUIC version 1 is specified is Section 5 of {{!QUIC-TLS}}. The general principles
 of packet protection are not changed for QUIC Multipath. No changes are needed for setting
 packet protection keys, initial secrets, header protection, use of 0-RTT keys, receiving
 out-of-order protected packets, receiving protected packets,
@@ -539,15 +539,15 @@ number is `3`, and the packet number is `aead`, the nonce will be set to
 
 ### Key Update for QUIC Multipath {#multipath-key-update}
 
-The Key Phase bit update process for QUIC v1 is specified in Section 6 of
+The Key Phase bit update process for QUIC version 1 is specified in Section 6 of
 {{QUIC-TLS}}. The general principles of key update are not changed in this
-specification. Following QUIC v1, the Key Phase bit is used to indicate which
+specification. Following QUIC version 1, the Key Phase bit is used to indicate which
 packet protection keys are used to protect the packet. The Key Phase bit is
 toggled to signal each subsequent key update. Because of network delays,
 packets protected with the older key might arrive later than the packets
 protected with the new key. Therefore, the endpoint needs to retain old packet
 keys to allow these delayed packets to be processed and it must distinguish
-between the new key and the old key. In QUIC V1, this is done using packet
+between the new key and the old key. In QUIC version 1, this is done using packet
 numbers so that the rule is made simple: Use the older key if packet number is
 lower than any packet number frame the current key phase.
 
