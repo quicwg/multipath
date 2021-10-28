@@ -49,8 +49,6 @@ author:
 
 normative:
   RFC2119:
-  RFC9000:
-  RFC9001:
   QUIC-TRANSPORT: rfc9000
   QUIC-TLS: rfc9001
 
@@ -94,13 +92,13 @@ This proposal is based on several basic design points:
   * Congestion Control, RTT measurements and PMTU discovery should be per-path (following {{QUIC-TRANSPORT}})
   * A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore there can be at most one active paths/connection ID per 4-tuple.
 
-The path management specified in {{Section 9 of RFC9000}} fulfills multiple goals: it directs a peer to switch sending through a new preferred path, and it allows the peer to release resources associated with the old path. Multipath requires several changes to that mechanism:
+The path management specified in {{Section 9 of QUIC-TRANSPORT}} fulfills multiple goals: it directs a peer to switch sending through a new preferred path, and it allows the peer to release resources associated with the old path. Multipath requires several changes to that mechanism:
 
   *  Allow simultaneous transmission of non probing frames on multiple paths.
   *  Continue using an existing path even if non-probing frames have been received on another path.
   *  Manage the removal of paths that have been abandoned.
 
-As such this extension specifies a departure from the specification of path management in {{Section 9 of RFC9000}} and therefore requires negotiation between the two endpoints using a new transport parameter, as specified in {{nego}}.
+As such this extension specifies a departure from the specification of path management in {{Section 9 of QUIC-TRANSPORT}} and therefore requires negotiation between the two endpoints using a new transport parameter, as specified in {{nego}}.
 
 This proposal supports the negotiation of either the use of one packet number space for all paths or the use of separate packet number spaces per path. While separate packet number spaces allow for more efficient ACK encoding, especially when paths have highly different latencies, this approach requires the use of a connection ID. Therefore use of a single number space can be beneficial in highly constrained networks that do not benefit from exposing the connection ID in the header. While both approaches are supported by the specification in this version of the document, the intention for the final publication of a multipath extension for QUIC is to choose one option in order to avoid incompatibility. More evaluation and implementation experience is needed to select one approach before final publication. Some discussion about pros and cons can be found here:
 https://github.com/mirjak/draft-lmbdhk-quic-multipath/blob/master/presentations/PacketNumberSpace_s.pdf
@@ -181,12 +179,12 @@ All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 When the multipath option is negotiated, clients that want to use an additional
 path MUST first initiate the Address Validation procedure with PATH_CHALLENGE and PATH_RESPONSE
-frames described in {{Section 8 of RFC9000}}. After
+frames described in {{Section 8 of QUIC-TRANSPORT}}. After
 receiving packets from the client on the new paths, the servers MAY
 in turn attempt to validate these paths using the same mechanisms.
 
 If validation succeed, the client can send non-probing, 1-RTT packets on the new paths.  In
-contrast with the specification in {{Section 9 of RFC9000}}, the
+contrast with the specification in {{Section 9 of QUIC-TRANSPORT}}, the
 server MUST NOT assume that receiving non-probing packets on a new
 path indicates an attempt to migrate to that path.  Instead, servers
 SHOULD consider new paths over which non-probing packets have been received as
@@ -267,7 +265,7 @@ paths.  Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
 available path if no traffic is received for the duration of the idle
-timeout, as specified in {{Section 10.1 of RFC9000}}.
+timeout, as specified in {{Section 10.1 of QUIC-TRANSPORT}}.
 This means if all paths remain idle for the idle timeout, the connection
 is implicitly closed.
 
@@ -326,7 +324,7 @@ In the "Active" state, hosts MUST also track the following information.
 
 - Associated Source Connection ID: The Connection ID used to receive packets over the path.
 
-A path in the "Validating" state performs path validation as described in {{Section 8.2 of RFC9000}}.
+A path in the "Validating" state performs path validation as described in {{Section 8.2 of QUIC-TRANSPORT}}.
 An endhost should not send non-probing frames on a path in "Validating" state, as it has no guarantee that packets
 will actually reach the peer.
 
@@ -413,12 +411,12 @@ If no connection ID is present, the 4 tuple identifies the path.
 The initial path that is used during the handshake (and multipath negotiation) has the path ID 0 and therefore
 all 0-RTT packets are also tracked and processed with the path ID 0.
 For 1-RTT packets the path ID is the sequence number of
-the Destination Connection ID present in the packet header, as defined in {{Section 5.1.1 of RFC9000}}, or also 0 if the Connection ID is zero-length.
+the Destination Connection ID present in the packet header, as defined in {{Section 5.1.1 of QUIC-TRANSPORT}}, or also 0 if the Connection ID is zero-length.
 
 If non-zero-length Connection IDs are used, an endpoint MUST use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different 4-tuples
 due to, e.g., NAT rebinding. In such case, the receiver reacts as specified in
-{{Section 9.3 of RFC9000}}.
+{{Section 9.3 of QUIC-TRANSPORT}}.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using ACK frames, as specified in {{QUIC-TRANSPORT}}.
 The ACK frames, as defined in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for any reason ACK frames are
@@ -506,14 +504,14 @@ updates, as explained in {{multipath-key-update}}.
 
 ### Packet Protection for QUIC Multipath {#multipath-aead}
 
-Packet protection for QUIC version 1 is specified is {{Section 5 of RFC9001}}. The general principles
+Packet protection for QUIC version 1 is specified is {{Section 5 of QUIC-TLS}}. The general principles
 of packet protection are not changed for QUIC Multipath. No changes are needed for setting
 packet protection keys, initial secrets, header protection, use of 0-RTT keys, receiving
 out-of-order protected packets, receiving protected packets,
 or retry packet integrity. However, the use of multiple
 number spaces for 1-RTT packets requires changes in AEAD usage.
 
-{{Section 5.3 of RFC9001}} specifies AEAD usage, and in particular the use of a
+{{Section 5.3 of QUIC-TLS}} specifies AEAD usage, and in particular the use of a
 nonce, N, formed by combining the packet protection IV with the packet number. If
 multiple packet number spaces are used, the packet number alone would
 not guarantee the uniqueness of the nonce.
@@ -524,7 +522,7 @@ and with the path identifier.
 
 The path ID for 1-RTT packets is the sequence number of
 of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length.
-{{Section 19 of RFC9000}} encodes the Connection ID Sequence Number as a variable-length integer,
+{{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
 
@@ -540,7 +538,7 @@ number is `3`, and the packet number is `aead`, the nonce will be set to
 
 ### Key Update for QUIC Multipath {#multipath-key-update}
 
-The Key Phase bit update process for QUIC version 1 is specified in {{Section 6 of RFC9001}}.
+The Key Phase bit update process for QUIC version 1 is specified in {{Section 6 of QUIC-TLS}}.
 The general principles of key update are not changed in this
 specification. Following QUIC version 1, the Key Phase bit is used to indicate which
 packet protection keys are used to protect the packet. The Key Phase bit is
@@ -570,7 +568,7 @@ key on all active paths. Further, an
 endpoint MUST NOT initiate a subsequent key update until a packet with the
 current key has been acknowledged on each path.
 
-Following {{Section 5.4 of RFC9001}}, the Key Phase bit is protected, so
+Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected, so
 sending multiple packets with Key Phase bit flipping at the same time should
 not cause linkability issue.
 
