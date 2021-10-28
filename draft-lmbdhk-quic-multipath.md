@@ -49,6 +49,8 @@ author:
 
 normative:
   RFC2119:
+  RFC9000:
+  RFC9001:
   QUIC-TRANSPORT: rfc9000
   QUIC-TLS: rfc9001
 
