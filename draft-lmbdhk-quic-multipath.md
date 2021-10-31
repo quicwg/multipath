@@ -688,16 +688,16 @@ lower than any packet number frame the current key phase.
 
 When using multiple packet number spaces on different paths,
 some care is needed when initiating the Key Update process, 
-as different paths use different packet number spaces but share a single
-key. When a key update is initiated on one path, packets sent to 
+as different paths use different packet number spaces but share 
+a single key. When a key update is initiated on one path, packets sent to 
 another path needs to know when the transition is complete. Otherwise, 
 it is possible that the other paths send packets with the old keys, 
 but skip sending any packets in the current key phase and directly 
 jump to sending packet in the next key phase. When that happens, 
 as the endpoint can only retain two sets of packet protection keys 
 with the 1-bit Key Phase bit, the other paths cannot distinguish 
-which key should be used to decode received packets, which results
-in a key rotation synchronization problem.
+which key should be used to decode received packets, which results in 
+a key rotation synchronization problem.
 
 To address such a synchronization issue, if key update is
 initialized on one path, the sender SHOULD send at least one packet 
