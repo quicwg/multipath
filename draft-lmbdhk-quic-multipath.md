@@ -59,8 +59,8 @@ informative:
   QUIC-Invariants: rfc8999
   QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
-    title: "MPTCP is not pareto-optimal: performance issues and a 
-possible solution"
+    title: "MPTCP is not pareto-optimal: performance issues and 
+a possible solution"
     date: "2012"
     seriesinfo: "Proceedings of the 8th international conference on 
 Emerging networking experiments and technologies, ACM"
@@ -106,8 +106,8 @@ address as well as source and destination port. Therefore there can be
 at most one active paths/connection ID per 4-tuple.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}} 
-fulfills multiple goals: it directs a peer to switch sending through a 
-new preferred path, and it allows the peer to release resources 
+fulfills multiple goals: it directs a peer to switch sending through 
+a new preferred path, and it allows the peer to release resources 
 associated with the old path. Multipath requires several changes to 
 that mechanism:
 
@@ -126,8 +126,8 @@ This proposal supports the negotiation of either the use of one packet
 number space for all paths or the use of separate packet number spaces 
 per path. While separate packet number spaces allow for more efficient 
 ACK encoding, especially when paths have highly different latencies, 
-this approach requires the use of a connection ID. Therefore use of a 
-single number space can be beneficial in highly constrained networks 
+this approach requires the use of a connection ID. Therefore use of 
+a single number space can be beneficial in highly constrained networks 
 that do not benefit from exposing the connection ID in the header. While 
 both approaches are supported by the specification in this version of 
 the document, the intention for the final publication of a multipath 
