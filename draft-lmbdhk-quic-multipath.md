@@ -350,7 +350,11 @@ available, servers shall monitor the arrival of non-probing packets
 on the available paths.  Servers SHOULD stop sending traffic on paths
 through where no non-probing packet was received in the last 3 path
 RTTs, but MAY ignore that rule if it would disqualify all available
-paths.  Server MAY release the resource associated with paths for
+paths. To avoid idle timeout of a path, endpoints might need to 
+send ack-eliciting packets such as packets containing PING frames
+{{Section 19.2 of QUIC-TRANSPORT}}.
+
+Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
 available path if no traffic is received for the duration of the idle
