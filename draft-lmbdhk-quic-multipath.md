@@ -974,7 +974,7 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multipath protocol violation | {{error-codes}}
+TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
 {: #tab-error-code title="Error Code for Multipath QUIC"}
 
 
