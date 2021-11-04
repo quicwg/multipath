@@ -346,14 +346,13 @@ When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
 When more than one path is available, servers shall monitor the arrival of
-non-probing packets on the available paths.  Servers SHOULD stop sending
-traffic on paths through where no non-probing packet was received in the last 3
-path RTTs, but MAY ignore that rule if it would disqualify all available paths.
-To avoid idle timeout of a path, endpoints can send PING frames(type=0x01)
-{{Section 19.2 of QUIC-TRANSPORT}} on that path to keep it alive. Sending PING
-frames also helps prevent middlebox timeout. As recommended in {{Section 19.2
-of QUIC-TRANSPORT}}, sending packets every 15 to 30 seconds is necessary to
-prevent the majority of middileboxes from losing state for UDP flows.
+non-probing packets on the available paths. Servers SHOULD stop sending traffic
+on paths through where no non-probing packet was received in the last 3 path
+RTTs, but MAY ignore that rule if it would disqualify all available paths.  To
+avoid idle timeout of a path, endpoints can send ack-eliciting packets such as
+packets containing PING frames (type=0x01) {{Section 19.2 of QUIC-TRANSPORT}}
+on that path to keep it alive. Sending periodic PING frames also helps prevent
+middlebox timeout, as discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}.
 
 Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
