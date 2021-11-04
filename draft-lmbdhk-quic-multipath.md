@@ -124,14 +124,9 @@ parameter, as specified in {{nego}}.
 
 This proposal supports the negotiation of either the use of one packet
 number space for all paths or the use of separate packet number spaces
-per path. While separate packet number spaces allow for more efficient
-ACK encoding, especially when paths have highly different latencies,
-this approach requires the use of a connection ID. Therefore use of
-a single number space can be beneficial in highly constrained networks
-that do not benefit from exposing the connection ID in the header. While
-both approaches are supported by the specification in this version of
-the document, the intention for the final publication of a multipath
-extension for QUIC is to choose one option in order to avoid
+per path. While both approaches are supported by the specification in
+this version of the document, the intention for the final publication
+of a multipath extension for QUIC is to choose one option in order to avoid
 incompatibility. More evaluation and implementation experience is needed
 to select one approach before final publication. Some discussion about
 pros and cons can be found here:
@@ -540,6 +535,14 @@ in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for any reason
 ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
+
+Endpoints negotiate the use of one packet number space for all paths or
+separate packet number spaces per path during the connection handshake
+{{nego}}. While separate packet number spaces allow for more efficient
+ACK encoding, especially when paths have highly different latencies,
+this approach requires the use of a connection ID. Therefore use of
+a single number space can be beneficial when endpoints use zero-length
+connection ID for less overhead.
 
 ## Using One Packet Number Space
 
