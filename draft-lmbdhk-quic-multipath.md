@@ -168,7 +168,7 @@ We assume that the reader is familiar with the terminology used in
 
 - Path Identifier (Path ID): An identifier that is used to identify
   a path in a QUIC connection at an endpoint. Path Identifier is used
-  in multi-path control frames (etc. PATH_ABANDON frame) to identify
+  in multipath control frames (etc. PATH_ABANDON frame) to identify
   a path. By default, it is defined as the sequence number of
   the destination Connection ID used for sending packets on that
   particular path, but alternative definitions can be used if the length
@@ -206,9 +206,9 @@ PN spaces, available option value for client and server are listed in
 
 Client Option| Definition                                  | Allowed server responses
 ---------|-------------------------------------------------|--------------------------
-0x0      | don't support multi-path                        | 0x0
-0x1      | only support one PN space for multi-path        | 0x0 or 0x1
-0x2      | only support multiple PN spaces for multi-path  | 0x0 or 0x2
+0x0      | don't support multipath                         | 0x0
+0x1      | only support one PN space for multipath         | 0x0 or 0x1
+0x2      | only support multiple PN spaces for multipath   | 0x0 or 0x2
 0x3      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
 {: #param_value_definition title="Available value for enable_multipath"}
 
@@ -233,7 +233,7 @@ multipath feature and can start using multiple paths. This document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
 
-This proposal adds one multi-path control frame for path management:
+This proposal adds one multipath control frame for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 {{path-abandon-frame}}
@@ -930,7 +930,7 @@ was negotiated, it MUST treat this as a connection error of type
 MP_PROTOCOL_VIOLATION and close the connection.
 
 # Error Codes {#error-codes}
-Multi-path QUIC transport error codes are 62-bit unsigned integers
+Multipath QUIC transport error codes are 62-bit unsigned integers
 following {{QUIC-TRANSPORT}}.
 
 This section lists the defined multipath QUIC transport error codes
@@ -974,8 +974,8 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multi-path protocol violation | {{error-codes}}
-{: #tab-error-code title="Error Code for Multi-path QUIC"}
+TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
+{: #tab-error-code title="Error Code for Multipath QUIC"}
 
 
 # Security Considerations
