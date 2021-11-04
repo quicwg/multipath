@@ -542,8 +542,7 @@ separate packet number spaces per path during the connection handshake
 ACK encoding, especially when paths have highly different latencies,
 this approach requires the use of a connection ID. Therefore use of
 a single number space can be beneficial when endpoints use zero-length
-connection ID for less overhead, e.g., in highly constrained networks
-that do not benefit from exposing the connection ID in the header.
+connection ID for less overhead.
 
 ## Using One Packet Number Space
 
