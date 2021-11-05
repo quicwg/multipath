@@ -196,20 +196,27 @@ defined as follow:
 - value: 0 (default) for disabled.
 
 Endpoints use 2-bits in the value field for negotiating one or more
-PN spaces, available option value for client and server are listed in
+PN spaces, available option values are listed in
 {{param_value_definition}} :
 
-Client Option| Definition                                  | Allowed server responses
----------|-------------------------------------------------|--------------------------
-0x0      | don't support multipath                         | 0x0
-0x1      | only support one PN space for multipath         | 0x0 or 0x1
-0x2      | only support multiple PN spaces for multipath   | 0x0 or 0x2
-0x3      | support both one PN space and multiple PN space | 0x0, 0x1 or 0x2
+Option | Definition
+---------|---------------------------------------
+0x0      | don't support multipath
+0x1      | only support one PN space for multipath
+0x2      | only support multiple PN spaces for multipath
+0x3      | support both one PN space and multiple PN space
 {: #param_value_definition title="Available value for enable_multipath"}
 
-If the parameter is absent or set to 0, the endpoints MUST fallback to
+If for anyone of the endpoints the parameter is absent or set to 0,
+or if the two enpoints select incompatible values,
+one proposing 0x1 and the other proposing 0x2,
+the endpoints MUST fallback to
 {{QUIC-TRANSPORT}} with single path and MUST NOT use any frame or
 mechanism defined in this document.
+
+If an endpoint proposes the value 0x3, the value proposed by the
+other is accepted. If both endpoints propose the value 0x3, the
+value 0x2 is negotiated.
 
 If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
