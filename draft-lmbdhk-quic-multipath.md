@@ -207,8 +207,8 @@ Option | Definition
 0x3      | support both one PN space and multiple PN space
 {: #param_value_definition title="Available value for enable_multipath"}
 
-If for anyone of the endpoints the parameter is absent or set to 0,
-or if the two enpoints select incompatible values,
+If for any one of the endpoints the parameter is absent or set to 0,
+or if the two endpoints select incompatible values,
 one proposing 0x1 and the other proposing 0x2,
 the endpoints MUST fallback to
 {{QUIC-TRANSPORT}} with single path and MUST NOT use any frame or
