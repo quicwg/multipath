@@ -663,7 +663,7 @@ the use of a nonce, N, formed by combining the packet protection IV
 with the packet number. If multiple packet number spaces are used,
 the packet number alone would not guarantee the uniqueness of the nonce.
 
-In order to guarantee the uniqueness of the None, the nonce N is
+In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
 and with the path identifier.
 
