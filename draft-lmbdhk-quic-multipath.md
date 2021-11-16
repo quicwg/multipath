@@ -306,7 +306,7 @@ an PATH_ABANDON frame to signal its own willingness to not send
 any packet on this path anymore.
 
 If connection IDs are used, PATH_ABANDON frames can be sent on any path,
-not only the path that is intended to be closed. Thus a connection can
+not only the path that is intended to be closed. Thus a path can
 be abandoned even if connectivity on that path is already broken.
 If no connection IDs are used and the PATH_ABANDON frame has to sent
 on the path that is intended to be closed, it is possible that the packet
