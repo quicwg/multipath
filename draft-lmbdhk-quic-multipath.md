@@ -758,7 +758,7 @@ sequence number 1), and server provides two Connection IDs
 (S1 with sequence number 1, and S2 with sequence number 2).
 
 Before the client opens a new path by sending an packet on that path
-with a PATH_CHALLENGE frame, it has to check. whether there is
+with a PATH_CHALLENGE frame, it has to check whether there is
 an unused Connection IDs available for each side.
 In this example the client chooses the Connection ID S2
 as the Destination Connection ID in the new path.
@@ -784,7 +784,7 @@ the server's 1-RTT packets use DCID C2, which has a sequence number of 2;
 the client's 1-RTT packets use CID S3, which has a sequence number of 3.
 Note that two paths use different packet number space.
 
-Thee client initiates the path closure for the path with ID 1 by sending
+The client initiates the path closure for the path with ID 1 by sending
 a packet with an PATH_ABANDON frame. When the server received the
 PATH_ABANDON frame, it also sends an PATH_ABANDON frame in the next packet.
 Afterwards the connection IDs in both directions can be retired
