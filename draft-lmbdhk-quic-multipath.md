@@ -17,6 +17,7 @@ author:
 -
   ins: Y. Liu
   name: Yanmei Liu
+  role: editor
   org: Alibaba Inc.
   email: miaoji.lym@alibaba-inc.com
 -
@@ -27,6 +28,7 @@ author:
 -
    ins: Q. De Coninck
    name: Quentin De Coninck
+   role: editor
    org: UCLouvain
    email: quentin.deconinck@uclouvain.be
 -
