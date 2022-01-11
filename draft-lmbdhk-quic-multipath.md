@@ -173,7 +173,9 @@ congestion control state of each path to be able to determine whether a path has
 a new frame. It should also have access to the path's MTU as different paths do not necessarily have the
 same MTU. A simple PS is a round-robin scheduler that checks the congestion window of a path before sending
 a QUIC frame. Another example of a PS is an algorithm that selects the path whose congestion window is open and
-that has the smallest round-trip-time. This is the PS used by Multipath TCP. A companion draft
+that has the smallest round-trip-time. This is the PS used by Multipath TCP. Note that a multipath
+QUIC PS might treat control and data packets differently. For example, a PS could favor the lowest
+delay path for acknowledgments and a higher bandwidth for data. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
 packet schedulers depending on the application goals.
 
