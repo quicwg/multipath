@@ -163,6 +163,10 @@ capitals, as shown here.
 We assume that the reader is familiar with the terminology used in
 {{QUIC-TRANSPORT}}. In addition, we define the following terms:
 
+- Path: refers to the 4-tuple {source IP address, source port number,
+  destination IP address, destination port number}. A path refers to
+  "network path" used in {{QUIC-TRANSPORT}}.
+
 - Path Identifier (Path ID): An identifier that is used to identify
   a path in a QUIC connection at an endpoint. Path Identifier is used
   in multipath control frames (etc. PATH_ABANDON frame) to identify
