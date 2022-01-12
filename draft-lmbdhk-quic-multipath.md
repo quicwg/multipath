@@ -1,5 +1,5 @@
 ---
-itle: Multipath Extension for QUIC
+title: Multipath Extension for QUIC
 abbrev: Multipath QUIC
 docname: draft-lmbdhk-quic-multipath-latest
 date: {DATE}
