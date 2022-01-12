@@ -1,5 +1,5 @@
 ---
-title: Multipath Extension for QUIC
+itle: Multipath Extension for QUIC
 abbrev: Multipath QUIC
 docname: draft-lmbdhk-quic-multipath-latest
 date: {DATE}
@@ -136,57 +136,61 @@ Identifier is 0, while the Path Identifier is selected on path establishment.
 
 
 The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of 
-different paths to exchange non-probing QUIC frames for a single connection. This extends the base QUIC
-protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that results in the
-selection of one path to exchange such frames.
+different paths to exchange non-probing QUIC frames for a single connection. This contrasts with
+the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
+selects only one path to exchange such frames.
 
-A multipath QUIC connection starts with a QUIC handshake over one path as a regular QUIC connection.
-The communicating hosts use the enable_multipath transport parameter during the handshake to
-negotiate the utilization of this extension. Furthermore, the active_connection_id_limit transport 
-parameter bounds the maximum number of paths that can be used during a connection. A multipath
-QUIC connection is an established QUIC connection where the enable_multipath transport parameter
+A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
+The peers use the enable_multipath transport parameter during the handshake to
+negotiate the utilization of the multipath capabilities.
+The active_connection_id_limit transport parameter bounds the maximum number of paths
+that can be used during a connection. A multipath QUIC connection is thus an established QUIC
+connection where the enable_multipath transport parameter
 has been successfully negotiated.
 
-The establishment of a multipath QUIC connection and all its associated paths are triggered by the
-client. In this version of the document, a QUIC server never initiates the creation of a path. To use
-an additional path for an established QUIC connection, the client must initiate a path validation
-along the new path. A new path can be used once it has been validated. Each endpoint associates a
-Path identifier to each path. This identifier is notably used by the server or the client when closing
-a path. To perform this operation, the peer sends a PATH_ABANDON frame containing the Path identifier. 
+To add a new path to an existing multipath QUIC connection, a client starts a path validation on
+the chosen path. In this version of the document, a QUIC server does not initiate the creation
+of a path, but it can validate a new path created by a client. 
+A new path can only be used once it has been validated. Each endpoint associates a
+Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
+to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame. 
 
 Conceptually, an application using multipath QUIC contains two algorithms that it uses to
 manage the different paths. The first algorithm is the path manager (PM). Within the bounds
-set by the active_connection_id_limit transport parameter, the PM creates and stops paths based on
-the requirements of the applications. The PM uses QUIC's path migration mechanism to create new paths and
-controls the exchange of PATH_ABANDON frames. It also needs to monitor the utilization of the connection
-identifiers. We expect that different applications will use different paths
-managers based on their specific requirements. Since paths are always created by the client, a simple path
-manager would be to create one path per active network interface on the client. Another possibility would be
-to only create paths on the N first network interfaces of the client. A third possibility would be to only
+set by the active_connection_id_limit transport parameter, the PM starts and stops paths based on
+the requirements of its application. The PM uses QUIC's path migration mechanism to create new paths and
+controls the termination of paths using the idle timeout and the exchange of PATH_ABANDON frames.
+It also monitors the utilization of the connection identifiers. We expect that different
+applications will use different paths managers based on their specific requirements. Since paths are
+always created by the client, a simple path manager would be to create one path per active network
+interface on the client. Another possibility would be to only create paths on the N first network
+interfaces of the client. A third possibility would be to only
 create additional paths if the existing path becomes congested.
 
-The second algorithm that such applications will require is a packet scheduler (PS). The PS is used when there
-are two or more paths that are active for a given multipath QUIC connection. In this case, QUIC must select
-the path over which each frame will be sent. Many PS strategies are possible and the best one will depend
-on the requirements of each specific application. The PS should have access to (an abstraction of) the
-congestion control state of each path to be able to determine whether a path has enough capacity to carry
-a new frame. It should also have access to the path's MTU as different paths do not necessarily have the
-same MTU. A simple PS is a round-robin scheduler that checks the congestion window of a path before sending
-a QUIC frame. Another example of a PS is an algorithm that selects the path whose congestion window is open and
-that has the smallest round-trip-time. This is the PS used by Multipath TCP. Note that a multipath
-QUIC PS might treat control and data packets differently. For example, a PS could favor the lowest
-delay path for acknowledgments and a higher bandwidth for data. A companion draft
-{{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
-packet schedulers depending on the application goals.
+The second algorithm that multipath QUIC applications will require is a packet scheduler (PS).
+The PS is used when there are two or more paths that are active for a given multipath QUIC connection. In
+this case, QUIC must select the path over which each frame will be sent. Many PS strategies
+are possible and the best one will depend on the application's requirements. The PS should
+have access to (an abstraction of) the congestion control state of each path to be able to determine
+whether a path has enough capacity to carry a new packet. The PS also needs to have access to the
+path's MTU as different paths do not necessarily have the same MTU. A simple PS is a round-robin
+scheduler that checks the congestion window of a path before sending a QUIC packet.
+Another sample PS is an algorithm that selects the path whose congestion window is open and
+that has the smallest round-trip-time. This is the PS used by the Linux implementation of Multipath
+TCP. Note that a multipath QUIC PS will probably treat control and data packets differently. For
+example, a PS could favor low delay paths to send acknowledgments and higher bandwidth
+ones for data packets. A companion draft
+{{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose multipath
+packet schedulers. 
 
 Multipath QUIC uses acknowledgments like regularly QUIC. More details about these acknowledgments
 are provided later. Multipath QUIC enables new techniques to cope with packet losses compared to QUIC.
 In QUIC, a lost packet can either be abandoned or retransmitted over the same path once it has been
-detected as lost. A Multipath QUIC implementation can use different strategies to cope with lost frames.
-A simple strategy is to retransmit a lost frame over the same path. Another strategy would be to retransmit
-a lost frame over its original path and another one. A third strategy would be to establish a path that is
-only used to send retransmissions. This document does not preclude a specific strategy that would eventually
-depend on the application needs.
+detected as lost. A Multipath QUIC implementation can use different strategies to cope with losses.
+A simple strategy is to retransmit a lost frame over the same path. Another strategy would be to
+simultaneously retransmit a lost frame over its original path and another one.
+A third strategy would be to use a dedicated path to send retransmissions. This document does not
+preclude a specific strategy that would eventually depend on the application needs.
 
 
 
