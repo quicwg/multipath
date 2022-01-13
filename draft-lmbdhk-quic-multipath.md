@@ -615,8 +615,8 @@ be controlled by the combination of one or several of the following:
 The ACK Delay field of the ACK frame is relative to the largest
 acknowledged packet number (see {{Section 13.2.5 of QUIC-TRANSPORT}}).
 When using paths with different transmission delays, the reported host
-delay will mostly relate to the path with the shortest latency. To
-collect ACK delays on all the paths, hosts should rely on time stamps
+delay will most of the time relate to the path with the shortest latency.
+To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
 
 ## Using Multiple Packet Number Spaces
