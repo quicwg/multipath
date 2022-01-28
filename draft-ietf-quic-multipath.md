@@ -1,7 +1,7 @@
 ---
 title: Multipath Extension for QUIC
 abbrev: Multipath QUIC
-docname: draft-lmbdhk-quic-multipath-latest
+docname: draft-ietf-quic-multipath-latest
 date: {DATE}
 category: std
 

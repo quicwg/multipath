@@ -1,17 +1,18 @@
 # Multipath Extension for QUIC
 
-This is the working area for the individual Internet-Draft, "Multipath Extension for QUIC".
+This is the working area for the IETF QUIC Working Group Internet-Draft,
+"Multipath Extension for QUIC".
 
-* [Editor's Copy](https://mirjak.github.io/draft-lmbdhk-quic-multipath/#go.draft-lmbdhk-quic-multipath.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-lmbdhk-quic-multipath)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-lmbdhk-quic-multipath)
-* [Compare Editor's Copy to Individual Draft](https://mirjak.github.io/draft-lmbdhk-quic-multipath/#go.draft-lmbdhk-quic-multipath.diff)
+* [Editor's Copy](https://quicwg.github.io/multipath/#go.draft-ietf-quic-multipath.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-quic-multipath)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath)
+* [Compare Editor's Copy to Individual Draft](https://quicwg.github.io/multipath/#go.draft-ietf-quic-multipath.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/mirjak/draft-lmbdhk-quic-multipath/blob/master/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/quicwg/multipath/blob/master/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
