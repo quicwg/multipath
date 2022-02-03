@@ -357,7 +357,7 @@ When more than one path is available, hosts shall monitor the arrival
 of non-probing packets  and the acknowledgements 
 for the packets sent over each path. Hosts SHOULD stop
 sending traffic on paths if (a) no non-probing packet was received
-in the last 3 path RTTsor (b) no non-probing packet sent over this
+in the last 3 path RTTs or (b) no non-probing packet sent over this
 path was acknowledged during the last 3 path 
 RTT, but MAY ignore that rule if it would disqualify
 all available paths. To avoid idle timeout of a path, endpoints can
