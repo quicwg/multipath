@@ -351,7 +351,7 @@ the connection ID, but MUST use a different connection ID when doing so.
 for too long. The connection idle timeout in multipath QUIC is defined
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
-in {{QUIC-TRANSPORT}}
+in {{QUIC-TRANSPORT}}.
 
 When more than one path is available, hosts shall monitor the arrival
 of non-probing packets  and the acknowledgements 
