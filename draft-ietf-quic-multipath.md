@@ -625,6 +625,26 @@ delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
 
+### Handling ECN Feedback
+
+ECN feedback in QUIC is provided based on counters in the ACK frame
+(see {{Section  19.3.2. of QUIC-TRANSPORT}}). That means if an ACK
+frame acknowledges multiple packets, the ECN feedback cannot be accounted
+to a specific packet. Respectively, if an ACK frames acknowledges multiple
+packets from different paths, the ECN feedback cannot unambiguously be assigned to
+a path. Therefore if one of the ECN counters increases, especially the CE
+counter, hosts SHOULD only acknowlegde packets from the same path where
+the ECN mark was observed in the same ACK frame.
+
+If a host receives an
+ACK frame that increases the CE counter and contains packets that have
+been sent on different paths, it MUST treat the CE marking as if it was
+received on either of the path and therefore consider it as a congestion
+indication for all paths with packets that have been acknowledges in that
+ACK frame. An host that receives an ACK with an ECN counter increase that
+acknowledges packets from different paths MAY disable ECN marking and
+send all subsequent packets as Not-ECN capable.
+
 ## Using Multiple Packet Number Spaces
 
 If the multipath option is enabled with a value of 2, each path has
