@@ -234,7 +234,7 @@ limits the number of concurrent paths. For the QUIC multipath extension
 this limit even applies when no connection ID is exposed in the QUIC
 header.
 
-# Path Setup and Removal
+# Path Setup and Removal {#setup}
 
 After completing the handshake, endpoints have agreed to enable
 multipath feature and can start using multiple paths. This document
