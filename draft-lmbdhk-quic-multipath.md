@@ -185,7 +185,7 @@ ones for data packets. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose multipath
 packet schedulers. 
 
-Multipath QUIC uses acknowledgments like regularly QUIC. More details about these acknowledgments
+Multipath QUIC uses acknowledgments like regular QUIC. More details about these acknowledgments
 are provided later. Multipath QUIC enables new techniques to cope with packet losses compared to QUIC.
 In QUIC, a lost packet can either be abandoned or retransmitted over the same path once it has been
 detected as lost. A Multipath QUIC implementation can use different strategies to cope with losses.
