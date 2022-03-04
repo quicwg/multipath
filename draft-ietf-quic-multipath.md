@@ -641,8 +641,8 @@ ACK frame that increases the CE counter and contains packets that have
 been sent on different paths, it MUST treat the CE marking as if it was
 received on either of the path and therefore consider it as a congestion
 indication for all paths with packets that have been acknowledged in that
-ACK frame. An host that receives an ACK with an ECN counter increase that
-acknowledges packets from different paths MAY disable ECN marking and
+ACK frame. An host that receives an ACK with an ECN counter increase
+acknowledging packets from different paths MAY disable ECN marking and
 send all subsequent packets as Not-ECN capable.
 
 ## Using Multiple Packet Number Spaces
