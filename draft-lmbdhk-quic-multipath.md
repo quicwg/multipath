@@ -150,7 +150,8 @@ connection where the enable_multipath transport parameter
 has been successfully negotiated.
 
 To add a new path to an existing multipath QUIC connection, a client starts a path validation on
-the chosen path. In this version of the document, a QUIC server does not initiate the creation
+the chosen path, as further described in Section {{setup}}.
+In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client. 
 A new path can only be used once it has been validated. Each endpoint associates a
 Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
