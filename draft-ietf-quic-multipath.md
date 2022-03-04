@@ -633,7 +633,7 @@ frame acknowledges multiple packets, the ECN feedback cannot be accounted
 to a specific packet. Respectively, if an ACK frames acknowledges multiple
 packets from different paths, the ECN feedback cannot unambiguously be assigned to
 a path. Therefore if one of the ECN counters increases, especially the CE
-counter, hosts SHOULD only acknowlegde packets from the same path where
+counter, hosts SHOULD only acknowledge packets from the same path where
 the ECN mark was observed in the same ACK frame.
 
 If a host receives an
