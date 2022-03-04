@@ -551,17 +551,17 @@ packets sent on path 0.
 ## Using NULL connection ID
 
 If a node elects to use NULL connection ID, it MUST implement the
-handling of Acknowledgements defined in {{Sending-Acknowledgements-and-Handling-Ranges}}.
+handling of Acknowledgements defined in {{sending-acknowledgements-and-handling-ranges}}.
 The peer of a node using NULL connection ID SHOULD implement specific
 logic to handle loss detection in the presence of multiple paths,
 identify the path on which packets are acknowledged or determined
 lost for the purpose of congestion control as explained
-in {{NULL-CID-Loss-and-Congestion}}, mitigate the ECN
-issues mentioned in {{ECN-and-NULL-CID-considerations}}, and
+in {{null-cid-loss-and-congestion}}, mitigate the ECN
+issues mentioned in {{ecn-and-null-cid-considerations}}, and
 mitigate the RTT measurement issues explained
-in {{ACK-Delay-and-NULL-CID Considerations}}. If a node
+in {{ack-delay-and-null-cid-considerations}}. If a node
 does not support this logic, it MUST limit its use of multipath
-as explained in {{Restricted-Sending-to-NULL-CID-Peer}}.
+as explained in {{restricted-sending-to-null-cid-peer}}.
 
 
 ### Sending Acknowledgements and Handling Ranges
@@ -606,9 +606,9 @@ sending path from the acknowledged packet numbers, for example by remembering
 which packet was sent to what path. The MUST use that information to
 perform congestion control on the relevant paths, and to correctly
 estimate the transmission delays on each path. (See
-{{ACK-Delay-and-NULL-CID-Considerations}} for specific considerations
+{{ack-delay-and-null-cid-considerations}} for specific considerations
 about using the ACK Delay field of ACK frames, and
-{{ECN-and-NULL-CID-Considerations}} for issues on using ECN marks.)
+{{ecn-and-null-cid-considerations}} for issues on using ECN marks.)
 
 Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
 based on timers and on sequence numbers. When sending to NULL CID receivers,
@@ -647,6 +647,23 @@ paths.
 A host that is sending over multiple paths to a NULL CID receiver
 MAY disable ECN marking and
 send all subsequent packets as Not-ECN capable.
+
+### Restricted Sending to NULL CID Peer
+
+Hosts that are designed to support multipath using multiple number spaces
+MAY adopt a conservative posture after negotiating multipath support with
+a peer using NULL CID. The simplest posture is to elect to only send
+data on one path at a time, while accepting packets on all acceptable
+paths. In that case:
+
+* the attribution of packets to path discussed in {{null-cid-loss-and-congestion}}
+  are easy to solve because packets are sent on a single path,
+* the ACK Delays are mostly correct,
+* the vast majority of ECN marks relate to the current sending path.
+
+Of course, the hosts will only take limited advantage from the multipath
+capability in these scenarios. Support for "make before break" migrations
+will improve, but load sharing between multiple paths will not work.
 
 ## Using Multiple Packet Number Spaces
 
