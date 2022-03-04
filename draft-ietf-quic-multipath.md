@@ -124,24 +124,26 @@ path management in {{Section 9 of QUIC-TRANSPORT}} and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}.
 
-This proposal supports the negotiation of either the use of one packet
-number space for all paths or the use of separate packet number spaces
-per path. While both approaches are supported by the specification in
-this version of the document, the intention for the final publication
-of a multipath extension for QUIC is to choose one option in order to avoid
-incompatibility. More evaluation and implementation experience is needed
-to select one approach before final publication. Some discussion about
-pros and cons can be found here:
-https://github.com/mirjak/draft-lmbdhk-quic-multipath/blob/master/presentations/PacketNumberSpace_s.pdf
+The proposal introduces support for multiple packet number spaces.
+When multipath is negotiated,
+each destination connection ID is linked to a separate packet number space.
+Using multiple packet number spaces enables direct use of the
+loss recovery and congestion control mechanisms defined in
+{{QUIC-RECOVERY}}.
 
-As currently defined in this version of the draft the use of multiple
-packet number spaces requires the use of connection IDs is both
-directions. Today's deployments often only use destination connection ID
-when sending packets from the client to the server as this addresses the
-most important use cases for migration, like NAT rebinding or mobility
-events. Further discussion and work is required to evaluate if the use
-of multiple packet number spaces could be supported as well when
-the connection ID is only present in one direction.
+Some deployments of QUIC use NULL length connection ID.
+When a node elects to use NULL length connection IDs, it is not
+possible to use different connections IDs for distinguishing packets
+sent to that node over different paths. All packets sent to a NULL
+CID are numbered in the same number space. Out of order delivery is likely,
+which causes inflation of the number of acknowledgement ranges and of the
+the size of ACK frames. This proposal specifies algorithms for
+controlling the size of acknowledgement packets. Senders that accept to
+use multiple paths when sending to a node using NULL length CID will
+have to use special logic to minimize the impact of multipath
+delivery on loss detection and congestion controls. If the receiver
+reports ECN counters, they will contain the sum of marks received on all
+paths. Senders will need specific logic to handle such ECN marks.
 
 This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
@@ -208,21 +210,13 @@ PN spaces, available option values are listed in
 Option | Definition
 ---------|---------------------------------------
 0x0      | don't support multipath
-0x1      | only support one PN space for multipath
-0x2      | only support multiple PN spaces for multipath
-0x3      | support both one PN space and multiple PN space
+0x1      | supports multipath as defined in this proposal
 {: #param_value_definition title="Available value for enable_multipath"}
 
 If for any one of the endpoints the parameter is absent or set to 0,
-or if the two endpoints select incompatible values,
-one proposing 0x1 and the other proposing 0x2,
 the endpoints MUST fallback to
-{{QUIC-TRANSPORT}} with single path and MUST NOT use any frame or
+{{QUIC-TRANSPORT}} with single active path and MUST NOT use any frame or
 mechanism defined in this document.
-
-If an endpoint proposes the value 0x3, the value proposed by the
-other is accepted. If both endpoints propose the value 0x3, the
-value 0x2 is negotiated.
 
 If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
@@ -254,7 +248,7 @@ When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
 {{Section 8 of QUIC-TRANSPORT}}. After receiving packets from the
-client on the new paths, the servers MAY in turn attempt to validate
+client on the new paths, the servers MUST in turn attempt to validate
 these paths using the same mechanisms.
 
 If validation succeed, the client can send non-probing, 1-RTT packets
@@ -554,39 +548,21 @@ ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
 
-Endpoints negotiate the use of one packet number space for all paths or
-separate packet number spaces per path during the connection handshake
-{{nego}}. While separate packet number spaces allow for more efficient
-ACK encoding, especially when paths have highly different latencies,
-this approach requires the use of a connection ID. Therefore use of
-a single number space can be beneficial when endpoints use zero-length
-connection ID for less overhead.
+## Using NULL connection ID
 
-## Using One Packet Number Space
+If a node elects to use NULL connection ID, it MUST implement the
+handling of Acknowledgements defined in {{Sending-Acknowledgements-and-Handling-Ranges}}.
+The peer of a node using NULL connection ID SHOULD implement specific
+logic to handle loss detection in the presence of multiple paths,
+identify the path on which packets are acknowledged or determined
+lost for the purpose of congestion control as explained
+in {{NULL-CID-Loss-and-Congestion}}, mitigate the ECN
+issues mentioned in {{ECN-and-NULL-CID-considerations}}, and
+mitigate the RTT measurement issues explained
+in {{ACK-Delay-and-NULL-CID Considerations}}. If a node
+does not support this logic, it MUST limit its use of multipath
+as explained in {{Restricted-Sending-to-NULL-CID-Peer}}.
 
-If the multipath option is negotiated to use one packet number space
-for all paths, the packet sequence numbers are allocated from the common
-number space, so that, for example, packet number N could be sent
-on one path and packet number N+1 on another.
-
-ACK frames report the numbers of packets that have been received so far,
-regardless of the path on which they have been received. That means
-the senders needs to maintain an association between sent packet numbers
-and the path over which these packets were sent. This is necessary
-to implement per path congestion control.
-
-When a packet is acknowledged, the state of the congestion control
-MUST be updated for the path where the acknowledged packet
-was originally sent. The RTT is calculated based on the delay
-between the transmission of that packet and its first acknowledgement
-(see {{compute-rtt}}) and is used to update the RTT statistics
-for the sending path.
-
-Also loss detection MUST be adapted to allow for different RTTs on
-different paths.  For example, timer computations should take into
-account the RTT of the path on which a packet was sent.  Detections
-based on packet numbers shall compare a given packet number to the
-highest packet number received for that path.
 
 ### Sending Acknowledgements and Handling Ranges
 
@@ -616,7 +592,36 @@ be controlled by the combination of one or several of the following:
    uses a series of consecutive sequence numbers without creating
    holes.
 
-### ACK Delay Considerations
+### NULL-CID-Loss-and-Congestion
+
+Implementations MUST implement per-path congestion control. Congestion
+control regulates the amount of data in flight and the pacing of packets
+using estimates of path characteristics. The estimates can use a variety
+of signals, such as packet acknowledgements, loss detection, or measurements
+of round trip time. These events MUST be attributed to the path over
+which the corresponding packets were sent. When sending to a NULL CID
+receiver, senders will receive back acknowledgements that combine packet
+numbers received over multiple paths. Senders MUST be able to infer the
+sending path from the acknowledged packet numbers, for example by remembering
+which packet was sent to what path. The MUST use that information to
+perform congestion control on the relevant paths, and to correctly
+estimate the transmission delays on each path. (See
+{{ACK-Delay-and-NULL-CID-Considerations}} for specific considerations
+about using the ACK Delay field of ACK frames, and
+{{ECN-and-NULL-CID-Considerations}} for issues on using ECN marks.)
+
+Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
+based on timers and on sequence numbers. When sending to NULL CID receivers,
+senders expect that packets sent on different paths will not be received in
+order. They cannot directly use the packet sequence numbers to
+compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
+Relying only on Time Thresholds produces correct results, but is somewhat
+suboptimal. Some implementations have been getting good results by
+remembering not just the path over which a packet was sent, but also
+the order of a packet on that path. They can then use this order in the
+Packet Threshold tests.
+
+### ACK Delay and NULL CID Considerations
 
 The ACK Delay field of the ACK frame is relative to the largest
 acknowledged packet number (see {{Section 13.2.5 of QUIC-TRANSPORT}}).
@@ -624,6 +629,24 @@ When using paths with different transmission delays, the reported host
 delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
+
+### ECN and NULL CID Considerations
+
+ECN feedback in QUIC is provided based on counters in the ACK frame
+(see {{Section  19.3.2. of QUIC-TRANSPORT}}). These counters are specific
+to a number space. When sending to NULL CID receivers, teh same number space is
+used for multiple paths, and the ECN feedback cannot unambiguously be assigned to
+a path.
+
+If the sender marks its packets with the ECN capable flags, the network
+will expect standard reactions to ECN marks, such as slowing down
+transmission on the sending path. As the sending path is ambiguous,
+the sender must treat a CE marking as a congestion signal on all sending
+paths.
+
+A host that is sending over multiple paths to a NULL CID receiver
+MAY disable ECN marking and
+send all subsequent packets as Not-ECN capable.
 
 ## Using Multiple Packet Number Spaces
 
@@ -781,7 +804,6 @@ those that are not used anymore, and the server is supposed to provide
 replacements, as specified in {{QUIC-TRANSPORT}}.
 Usually it is desired to provide one more connection ID as currently
 in used, to allow for new paths or migration.
-
 
 ## Path Closure
 
