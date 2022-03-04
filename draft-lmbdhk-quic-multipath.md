@@ -141,6 +141,7 @@ the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration m
 selects only one path to exchange such frames.
 
 A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
+See further Section {{nego}}.
 The peers use the enable_multipath transport parameter during the handshake to
 negotiate the utilization of the multipath capabilities.
 The active_connection_id_limit transport parameter limits the maximum number of active paths
