@@ -530,19 +530,19 @@ packet schedulers depending on the application goals.
 
 # Recovery
 
-Simmultaneous use of multiple paths enables new techniques to cope with packet losses.
-In {{QUIC-TRANSPORT}}, a lost packet can either be abandoned or retransmitted over the same path once it has been
-detected as lost. However, when multiple paths are available for the retransmission
-QUIC implementation can use different strategies to cope with losses.
+Simultaneous use of multiple paths enables new techniques to cope with packet losses.
+In {{QUIC-TRANSPORT}}, a lost packet can either be abandoned or retransmitted over the
+same path. However, when multiple paths are available QUIC implementation can use
+different retransmission strategies to cope with losses.
 A simple strategy is to retransmit a lost frame over the same path.
-Another straegy would be to use the best path, e.g. in terms of latency,
+Another strategy would be to use the best path, e.g. in terms of latency,
 or use a dedicated path to send retransmissions. Depending on the
-appliaction needs another strategy could also be to simultaneously
+application needs another strategy could also be to simultaneously
 retransmit a lost frame over its original path and another one,
 however, this is not recommended for general purpose use due to
-the overhead but could be particualy beneficial for certain kind
+the overhead but could be particularly beneficial for certain kind
 of data or frames. This document does not preclude a specific strategy,
-however, more detailed specification of any such stragtegy is out of scope.
+however, more detailed specification of any such strategy is out of scope.
 
 # Packet Number Space and Use of Connection ID
 
