@@ -534,15 +534,13 @@ Simultaneous use of multiple paths enables new techniques to cope with packet lo
 In {{QUIC-TRANSPORT}}, a lost packet can either be abandoned or retransmitted over the
 same path. However, when multiple paths are available QUIC implementation can use
 different retransmission strategies to cope with losses.
-A simple strategy is to retransmit a lost frame over the same path.
-Another strategy would be to use the best path, e.g. in terms of latency,
-or use a dedicated path to send retransmissions. Depending on the
-application needs another strategy could also be to simultaneously
-retransmit a lost frame over its original path and another one,
-however, this is not recommended for general purpose use due to
-the overhead but could be particularly beneficial for certain kind
-of data or frames. This document does not preclude a specific strategy,
-however, more detailed specification of any such strategy is out of scope.
+
+Possible strategies include: a) retransmitting lost frames over the
+same path, b) retransmitting lost frames on a different or
+dedicated path, and c) duplicate lost frames on several paths (not
+recommended for general purpose use due to the network
+overhead). While this document does not preclude a specific
+strategy, more detailed specification is out of scope.
 
 # Packet Number Space and Use of Connection ID
 
