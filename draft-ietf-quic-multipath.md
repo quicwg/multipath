@@ -237,7 +237,13 @@ header.
 # Path Setup and Removal {#setup}
 
 After completing the handshake, endpoints have agreed to enable
-multipath feature and can start using multiple paths. This document
+multipath feature and can start using multiple paths. This document 
+does not specify how an endpoint that is reachable via several addresses
+announces these addresses to the other endpoint. In particular, if the
+server uses the preferred_address transport parameter, clients 
+SHOULD NOT assume that the initial server address and the addrresses 
+contained in this parameter can be simultaneously used for multipath. 
+Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
 
