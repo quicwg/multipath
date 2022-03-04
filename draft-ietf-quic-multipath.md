@@ -240,7 +240,7 @@ Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
 also disables multipath support, except "after a client has acted on a
 preferred_address transport parameter" {{Section 18.2. of QUIC-TRANSPORT}}.
 Further, it is out of scope for
-this document if the old address can also be used for multipath
+this document to specify if the old address can also be used for multipath
 after a client has migrated to the address provided in the preferred_address
 transport parameter. However, it SHOULD NOT be assumed that it is
 possible to use both addresses simultaneously without further confirmation
