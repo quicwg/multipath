@@ -143,7 +143,7 @@ selects only one path to exchange such frames.
 A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
 The peers use the enable_multipath transport parameter during the handshake to
 negotiate the utilization of the multipath capabilities.
-The active_connection_id_limit transport parameter bounds the maximum number of paths
+The active_connection_id_limit transport parameter limits the maximum number of active paths
 that can be used during a connection. A multipath QUIC connection is thus an established QUIC
 connection where the enable_multipath transport parameter
 has been successfully negotiated.
