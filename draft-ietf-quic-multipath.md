@@ -821,6 +821,14 @@ Client                                                      Server
 
 TDB
 
+## Handling different PMTU sizes
+
+An implementation should take care to handle different PMTU sizes across
+multiple paths. One simple option is to apply the minimum PMTU of all paths to
+each path. The benefit of such an approach is to simplify retransmission
+processing as a lost packet on one path can be immediately sent on another path
+without the need of changing its payload size.
+
 # New Frames {#frames}
 
 All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
