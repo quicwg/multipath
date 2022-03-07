@@ -234,6 +234,18 @@ limits the number of concurrent paths. For the QUIC multipath extension
 this limit even applies when no connection ID is exposed in the QUIC
 header.
 
+This extension does not change the definition of any transport parameter
+defined in {{Section 18.2. of QUIC-TRANSPORT}}. 
+Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
+also disables multipath support, except "after a client has acted on a
+preferred_address transport parameter" {{Section 18.2. of QUIC-TRANSPORT}}.
+Further, it is out of scope for
+this document to specify if the old address can also be used for multipath
+after a client has migrated to the address provided in the preferred_address
+transport parameter. However, it SHOULD NOT be assumed that it is
+possible to use both addresses simultaneously without further confirmation
+from the other host.
+
 # Path Setup and Removal {#setup}
 
 After completing the handshake, endpoints have agreed to enable
