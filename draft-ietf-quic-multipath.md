@@ -543,6 +543,17 @@ proposed and implemented, notably for Multipath TCP. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
 packet schedulers depending on the application goals.
 
+# Recovery
+
+Simultaneous use of multiple paths enables different 
+retransmission strategies to cope with losses such as:
+a) retransmitting lost frames over the
+same path, b) retransmitting lost frames on a different or
+dedicated path, and c) duplicate lost frames on several paths (not
+recommended for general purpose use due to the network
+overhead). While this document does not preclude a specific
+strategy, more detailed specification is out of scope.
+
 # Packet Number Space and Use of Connection ID
 
 If the connection ID is present (non-zero length) in the packet header,
