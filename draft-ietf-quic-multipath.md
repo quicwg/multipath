@@ -796,7 +796,7 @@ server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
 client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
 second path, the server's 1-RTT packets use DCID C2, which has a sequence
 number of 2; the client's 1-RTT packets use CID S3, which has a sequence number
-of 3. Note that two paths use different packet number spaces. In this case, the
+of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
 number of the received packet's DCID over that path (path identifier type
 0x00), hence using a path_id 1. In reply, the server confirms the path using
