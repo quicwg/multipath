@@ -819,7 +819,6 @@ Client                                                      Server
 
 # Implementation Considerations
 
-TDB
 
 ## Handling different PMTU sizes
 
