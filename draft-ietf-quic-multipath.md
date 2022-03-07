@@ -192,6 +192,35 @@ is used. If the connection ID is zero length, the Packet Number Space
 Identifier is 0, while the Path Identifier is selected on path
 establishment.
 
+# High-level overview {#overview}
+
+The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of 
+different paths to exchange non-probing QUIC frames for a single connection. This contrasts with
+the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
+selects only one path to exchange such frames.
+
+A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
+See further Section {{nego}}.
+The peers use the enable_multipath transport parameter during the handshake to
+negotiate the utilization of the multipath capabilities.
+The active_connection_id_limit transport parameter limits the maximum number of active paths
+that can be used during a connection. A multipath QUIC connection is thus an established QUIC
+connection where the enable_multipath transport parameter
+has been successfully negotiated.
+
+To add a new path to an existing multipath QUIC connection, a client starts a path validation on
+the chosen path, as further described in Section {{setup}}.
+In this version of the document, a QUIC server does not initiate the creation
+of a path, but it can validate a new path created by a client. 
+A new path can only be used once it has been validated. Each endpoint associates a
+Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
+to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame. 
+
+In addition to these core features, an application using Multipath QUIC will typically
+need additional algorithms to handle the number of active paths and how they are used to
+send packets. As these differ depending on the application's requirements, their
+specification is out of scope of this document.
+
 # Handshake Negotiation and Transport Parameter {#nego}
 
 This extension defines a new transport parameter, used to negotiate
