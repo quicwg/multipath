@@ -229,23 +229,19 @@ If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
 MP_CONNECTION_ERROR and close the connection.
 
-Note that the transport parameter "active_connection_id_limit"
+This extension does not change the definition of any transport parameter
+defined in {{Section 18.2. of QUIC-TRANSPORT}}. 
+
+Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
+also disables multipath support, except "after a client has acted on a
+preferred_address transport parameter" {{Section 18.2. of QUIC-TRANSPORT}}.
+
+The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
 limits the number of concurrent paths. For the QUIC multipath extension
 this limit even applies when no connection ID is exposed in the QUIC
 header.
 
-This extension does not change the definition of any transport parameter
-defined in {{Section 18.2. of QUIC-TRANSPORT}}. 
-Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
-also disables multipath support, except "after a client has acted on a
-preferred_address transport parameter" {{Section 18.2. of QUIC-TRANSPORT}}.
-Further, it is out of scope for
-this document to specify if the old address can also be used for multipath
-after a client has migrated to the address provided in the preferred_address
-transport parameter. However, it SHOULD NOT be assumed that it is
-possible to use both addresses simultaneously without further confirmation
-from the other host.
 
 # Path Setup and Removal {#setup}
 
