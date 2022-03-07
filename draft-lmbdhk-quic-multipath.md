@@ -157,17 +157,10 @@ A new path can only be used once it has been validated. Each endpoint associates
 Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
 to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame. 
 
-Conceptually, an application using multipath QUIC contains two algorithms that it uses to
-manage the different paths. The first algorithm is the path manager (PM). Within the bounds
-set by the active_connection_id_limit transport parameter, the PM starts and stops paths based on
-the requirements of its application. The PM uses QUIC's path migration mechanism to create new paths and
-controls the termination of paths using the idle timeout and the exchange of PATH_ABANDON frames.
-It also monitors the utilization of the connection identifiers. We expect that different
-applications will use different paths managers based on their specific requirements. Since paths are
-always created by the client, a simple path manager would be to create one path per active network
-interface on the client. Another possibility would be to only create paths on the N first network
-interfaces of the client. A third possibility would be to only
-create additional paths if the existing path becomes congested.
+In addition to these core features, an application using Multipath QUIC will typically
+need additional algorithms to handle the number of active paths and how they are used to
+send packets. As these differ depending on the application's requirements, their
+specification is out of scope of this document.
 
 The second algorithm that multipath QUIC applications will require is a packet scheduler (PS).
 The PS is used when there are two or more paths that are active for a given multipath QUIC connection. In
