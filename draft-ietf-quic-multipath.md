@@ -887,12 +887,16 @@ in {{fig-path-identifier-format}}.
 - Identifier Type: Identifier Type field is set to indicate the type of
 path identifier.
   - Type 0: Refer to the connection identifier issued by the sender of
-    the control frame when sending data over the specified path.
+    the control frame. 
+    Note that this is the connection identifier used by the peer 
+    when sending packets on the to-be-closed path.
     This method SHOULD be used if this connection identifier is non-zero
     length. This method MUST NOT be used if this connection identifier
     is zero-length.
   - Type 1: Refer to the connection identifier issued by the receiver of
-    the control frame when sending data over the specified path.
+    the control frame.
+    Note that this is the connection identifier used by the sender 
+    when sending packets on the to-be-closed path.
     This method MUST NOT be used if this connection identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or
     received.
