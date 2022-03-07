@@ -101,8 +101,9 @@ migration.
   * Use the same packet header formats as QUIC version 1 to avoid the
 risk of packets being dropped by middleboxes (which may only support
 QUIC version 1)
-  * Congestion Control, RTT measurements and PMTU discovery should be
-per-path (following {{QUIC-TRANSPORT}})
+  * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
+which usually also requires per-path RTT measurements
+  * PMTU discovery should be performed per-path
   * A path is determined by the 4-tuple of source and destination IP
 address as well as source and destination port. Therefore there can be
 at most one active paths/connection ID per 4-tuple.
