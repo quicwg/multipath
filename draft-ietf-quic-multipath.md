@@ -823,7 +823,7 @@ Client                                                      Server
 ## Handling different PMTU sizes
 
 An implementation should take care to handle different PMTU sizes across
-multiple paths. One simple option is to apply the minimum PMTU of all paths to
+multiple paths. One simple option if the PMTUs are relatively similar is to apply the minimum PMTU of all paths to
 each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.
