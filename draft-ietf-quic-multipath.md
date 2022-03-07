@@ -795,7 +795,7 @@ the client and the server use non-zero-length CIDs. For the first path, the
 server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
 client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
 second path, the server's 1-RTT packets use DCID C2, which has a sequence
-number of 2; the client's 1-RTT packets use CID S3, which has a sequence number
+number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
 number of the received packet's DCID over that path (path identifier type
