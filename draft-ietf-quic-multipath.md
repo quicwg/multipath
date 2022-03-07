@@ -645,6 +645,9 @@ ACK frame. An host that receives an ACK with an ECN counter increase
 acknowledging packets from different paths MAY disable ECN marking and
 send all subsequent packets as Not-ECN capable.
 
+Alternatively, a sender MAY decide to disable ECN entirely when a single
+packet number space is used by marking all sent packets as Not-ECN capable.
+
 ## Using Multiple Packet Number Spaces
 
 If the multipath option is enabled with a value of 2, each path has
