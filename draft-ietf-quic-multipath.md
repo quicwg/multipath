@@ -799,9 +799,10 @@ number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
 number of the received packet's DCID over that path (path identifier type
-0x00), hence using the path_id 1. In reply, the server confirms the path using
+0x00), hence using the path_id 1. Optionally, the server confirms the path closure 
+by sending an PATH_ABANDON frame using
 the sequence number of the received packet's DCID over that path (path
-identifier type 0x00), which corresponds to the path_id 2. Both the client and
+identifier type 0x00) as path identifier, which corresponds to the path_id 2. Both the client and
 the server can close the path after receiving the RETIRE_CONNECTION_ID frame
 for that path.
 
