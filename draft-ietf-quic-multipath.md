@@ -848,32 +848,72 @@ In this example the client detects the network environment change
 or the quality of RTT or loss rate is becoming worse) and wants to close
 the initial path.
 
-In Figure {{fig-example-path-close}} the server's 1-RTT packets use DCID C1,
-which has a sequence number of 1, for the first path; the client's 1-RTT
-packets use DCID S2, which has a sequence number of 2.  For the second path,
-the server's 1-RTT packets use DCID C2, which has a sequence number of 2;
-the client's 1-RTT packets use CID S3, which has a sequence number of 3.
-Note that two paths use different packet number space.
-
-The client initiates the path closure for the path with ID 1 by sending
-a packet with an PATH_ABANDON frame. When the server received the
-PATH_ABANDON frame, it also sends an PATH_ABANDON frame in the next packet.
-Afterwards the connection IDs in both directions can be retired
-using the RETIRE_CONNECTION_ID frame.
+{{fig-example-path-close1}} illustrates an example of path closing when both
+the client and the server use non-zero-length CIDs. For the first path, the
+server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
+client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
+second path, the server's 1-RTT packets use DCID C2, which has a sequence
+number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
+of 3. Note that the paths use different packet number spaces. In this case, the
+client is going to close the first path. It identifies the path by the sequence
+number of the received packet's DCID over that path (path identifier type
+0x00), hence using the path_id 1. Optionally, the server confirms the path closure 
+by sending an PATH_ABANDON frame using
+the sequence number of the received packet's DCID over that path (path
+identifier type 0x00) as path identifier, which corresponds to the path_id 2. Both the client and
+the server can close the path after receiving the RETIRE_CONNECTION_ID frame
+for that path.
 
 ~~~
 Client                                                      Server
 
 (client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
+1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=0, path_id=1]->
                            (server tells client to abandon a path)
-  <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2], ACK_MP[Seq=2, PN=X]
-(client abandons the path that it is using)
+      <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id_type=0, path_id=2],
+                                               ACK_MP[Seq=2, PN=X]
+(client retires the corresponding CID)
 1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
-                       (server abandons the path that it is using)
+                            (server retires the corresponding CID)
  <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
 ~~~
-{: #fig-example-path-close title="Example of closing a path (path id type=0x00)"}
+{: #fig-example-path-close1 title="Example of closing a path when both the
+client and the server choose to receive non-zero-length CIDs."}
+
+{{fig-example-path-close2}} illustrates an example of path closing when the
+client chooses to receive zero-length CIDs while the server chooses to receive
+non-zero-length CIDs.  Because there is a zero-length CID in one direction,
+single packet number spaces are used. For the first path, the client's 1-RTT
+packets use DCID S2, which has a sequence number of 2. For the second path, the
+client's 1-RTT packets use DCID S3, which has a sequence number of 3. Again, in
+this case, the client is going to close the first path. Because the client now
+receives zero-length CID packets, it needs to use path identifier type 0x01,
+which identifies a path by the DCID sequence number of the packets it sends
+over that path, and hence, it uses a path_id 2 in its PATH_ABANDON frame. The
+server SHOULD stop sending new data on the path indicated by the PATH_ABANDON
+frame after receiving it. However, The client may want to repeat the
+PATH_ABANDON frame if it sees the server continuing to send data. When the
+client's PATH_ABANDON frame is acknowledged, it sends out a
+RETIRE_CONNECTION_ID frame for the CID used on the first path. The server can
+readily close the first path when it receives the RETIRE_CONNECTION_ID frame
+from the client.  However, since the client will not receive a
+RETIRE_CONNECTION_ID frame, after sending out the RETIRE_CONNECTION_ID frame, the
+client waits for 3 RTO before closing the path.
+
+~~~
+  Client                                                      Server
+
+  (client tells server to abandon a path)
+  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=1, path_id=2]->
+                             (server stops sending on that path after
+                                              receiving PATH_ABANDON)
+  (client retires the corresponding CID
+      after PATH_ABANDON is acknowledged)
+  1-RTT[X+1]: DCID=S3 RETIRE_CONNECTION_ID[2]->
+~~~
+{: #fig-example-path-close2 title="Example of closing a path when the client
+chooses to receive zero-length CIDs while the server chooses to receive
+non-zero-length CIDs"}
 
 # Implementation Considerations
 
