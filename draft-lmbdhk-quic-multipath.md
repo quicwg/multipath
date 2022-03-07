@@ -134,7 +134,6 @@ Identifier is 0, while the Path Identifier is selected on path establishment.
 
 # High-level overview {#overview}
 
-
 The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of 
 different paths to exchange non-probing QUIC frames for a single connection. This contrasts with
 the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
@@ -161,33 +160,6 @@ In addition to these core features, an application using Multipath QUIC will typ
 need additional algorithms to handle the number of active paths and how they are used to
 send packets. As these differ depending on the application's requirements, their
 specification is out of scope of this document.
-
-The second algorithm that multipath QUIC applications will require is a packet scheduler (PS).
-The PS is used when there are two or more paths that are active for a given multipath QUIC connection. In
-this case, QUIC must select the path over which each frame will be sent. Many PS strategies
-are possible and the best one will depend on the application's requirements. The PS should
-have access to (an abstraction of) the congestion control state of each path to be able to determine
-whether a path has enough capacity to carry a new packet. The PS also needs to have access to the
-path's MTU as different paths do not necessarily have the same MTU. A simple PS is a round-robin
-scheduler that checks the congestion window of a path before sending a QUIC packet.
-Another sample PS is an algorithm that selects the path whose congestion window is open and
-that has the smallest round-trip-time. This is the PS used by the Linux implementation of Multipath
-TCP. Note that a multipath QUIC PS will probably treat control and data packets differently. For
-example, a PS could favor low delay paths to send acknowledgments and higher bandwidth
-ones for data packets. A companion draft
-{{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose multipath
-packet schedulers. 
-
-Multipath QUIC uses acknowledgments like regular QUIC. More details about these acknowledgments
-are provided later. Multipath QUIC enables new techniques to cope with packet losses compared to QUIC.
-In QUIC, a lost packet can either be abandoned or retransmitted over the same path once it has been
-detected as lost. A Multipath QUIC implementation can use different strategies to cope with losses.
-A simple strategy is to retransmit a lost frame over the same path. Another strategy would be to
-simultaneously retransmit a lost frame over its original path and another one.
-A third strategy would be to use a dedicated path to send retransmissions. This document does not
-preclude a specific strategy that would eventually depend on the application needs.
-
-
 
 # Handshake Negotiation and Transport Parameter {#nego}
 
