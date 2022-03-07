@@ -365,13 +365,16 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
-When more than one path is available, servers shall monitor the arrival
-of non-probing packets on the available paths. Servers SHOULD stop
-sending traffic on paths through where no non-probing packet was received
-in the last 3 path RTTs, but MAY ignore that rule if it would disqualify
+When more than one path is available, hosts shall monitor the arrival
+of non-probing packets and the acknowledgements 
+for the packets sent over each path. Hosts SHOULD stop
+sending traffic on a path if for at least max_idle_timeout milliseconds 
+(a) no non-probing packet was received or (b) no non-probing
+packet sent over this path was acknowledged, but MAY ignore that
+rule if it would disqualify
 all available paths. To avoid idle timeout of a path, endpoints can
 send ack-eliciting packets such as packets containing PING frames
-{{Section 19.2 of QUIC-TRANSPORT}} on that path to keep it alive.
+({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
 Sending periodic PING frames also helps prevent middlebox timeout,
 as discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}.
 
