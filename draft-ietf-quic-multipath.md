@@ -298,7 +298,7 @@ When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
 {{Section 8.2 of QUIC-TRANSPORT}}. After receiving packets from the
-client on the new paths, if the server decides to use the new path, 
+client on a new path, if the server decides to use the new path, 
 the server MUST perform path validation {{Section 8.2 of QUIC-TRANSPORT}} 
 using the same mechanisms, unless it has previously validated that address.
 
