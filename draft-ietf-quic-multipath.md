@@ -248,7 +248,7 @@ When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
 {{Section 8 of QUIC-TRANSPORT}}. After receiving packets from the
-client on the new paths, the servers MUST in turn attempt to validate
+client on the new paths, the servers MAY in turn attempt to validate
 these paths using the same mechanisms.
 
 If validation succeed, the client can send non-probing, 1-RTT packets
@@ -548,20 +548,20 @@ ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
 
-## Using NULL connection ID
+## Using Zero-Length connection ID
 
-If a node elects to use NULL connection ID, it MUST implement the
+If a node elects to use zero-length connection ID, it MUST implement the
 handling of Acknowledgements defined in {{sending-acknowledgements-and-handling-ranges}}.
-The peer of a node using NULL connection ID SHOULD implement specific
+The peer of a node using zero-length connection ID SHOULD implement specific
 logic to handle loss detection in the presence of multiple paths,
 identify the path on which packets are acknowledged or determined
 lost for the purpose of congestion control as explained
-in {{null-cid-loss-and-congestion}}, mitigate the ECN
-issues mentioned in {{ecn-and-null-cid-considerations}}, and
+in {{zero-length-cid-loss-and-congestion}}, mitigate the ECN
+issues mentioned in {{ecn-and-zero-length-cid-considerations}}, and
 mitigate the RTT measurement issues explained
-in {{ack-delay-and-null-cid-considerations}}. If a node
+in {{ack-delay-and-zero-length-cid-considerations}}. If a node
 does not support this logic, it MUST limit its use of multipath
-as explained in {{restricted-sending-to-null-cid-peer}}.
+as explained in {{restricted-sending-to-zero-length-cid-peer}}.
 
 
 ### Sending Acknowledgements and Handling Ranges
@@ -592,26 +592,21 @@ be controlled by the combination of one or several of the following:
    uses a series of consecutive sequence numbers without creating
    holes.
 
-### NULL-CID-Loss-and-Congestion
+### Zero-Length CID Loss and Congestion
 
-Implementations MUST implement per-path congestion control. Congestion
-control regulates the amount of data in flight and the pacing of packets
-using estimates of path characteristics. The estimates can use a variety
-of signals, such as packet acknowledgements, loss detection, or measurements
-of round trip time. These events MUST be attributed to the path over
-which the corresponding packets were sent. When sending to a NULL CID
+When sending to a zero-length CID
 receiver, senders will receive back acknowledgements that combine packet
 numbers received over multiple paths. Senders MUST be able to infer the
 sending path from the acknowledged packet numbers, for example by remembering
-which packet was sent to what path. The sender MUST use that information to
+which packet was sent on what path. The senders MUST use that information to
 perform congestion control on the relevant paths, and to correctly
 estimate the transmission delays on each path. (See
-{{ack-delay-and-null-cid-considerations}} for specific considerations
+{{ack-delay-and-zero-length-cid-considerations}} for specific considerations
 about using the ACK Delay field of ACK frames, and
-{{ecn-and-null-cid-considerations}} for issues on using ECN marks.)
+{{ecn-and-zero-length-cid-considerations}} for issues on using ECN marks.)
 
 Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
-based on timers and on sequence numbers. When sending to NULL CID receivers,
+based on timers and on sequence numbers. When sending to zero-length CID receivers,
 senders expect that packets sent on different paths will not be received in
 order. They cannot directly use the packet sequence numbers to
 compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
@@ -621,7 +616,7 @@ remembering not just the path over which a packet was sent, but also
 the order of a packet on that path. They can then use this order in the
 Packet Threshold tests.
 
-### ACK Delay and NULL CID Considerations
+### ACK Delay and Zero-Length CID Considerations
 
 The ACK Delay field of the ACK frame is relative to the largest
 acknowledged packet number (see {{Section 13.2.5 of QUIC-TRANSPORT}}).
@@ -630,11 +625,11 @@ delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
 
-### ECN and NULL CID Considerations
+### ECN and Zero-Length CID Considerations
 
 ECN feedback in QUIC is provided based on counters in the ACK frame
 (see {{Section  19.3.2. of QUIC-TRANSPORT}}). These counters are specific
-to a number space. When sending to NULL CID receivers, the same number space is
+to a number space. When sending to zero-length CID receivers, the same number space is
 used for multiple paths, and the ECN feedback cannot unambiguously be assigned to
 a path.
 
@@ -644,21 +639,21 @@ transmission on the sending path. As the sending path is ambiguous,
 the sender must treat a CE marking as a congestion signal on all sending
 paths.
 
-A host that is sending over multiple paths to a NULL CID receiver
+A host that is sending over multiple paths to a zero-length CID receiver
 MAY disable ECN marking and
 send all subsequent packets as Not-ECN capable.
 
-### Restricted Sending to NULL CID Peer
+### Restricted Sending to Zero-Length CID Peer
 
 Hosts that are designed to support multipath using multiple number spaces
 MAY adopt a conservative posture after negotiating multipath support with
-a peer using NULL CID. The simplest posture is to elect to only send
+a peer using zero-length CID. The simplest posture is to elect to only send
 data on one path at a time, while accepting packets on all acceptable
 paths. In that case:
 
-* the attribution of packets to path discussed in {{null-cid-loss-and-congestion}}
+* the attribution of packets to path discussed in {{zero-length-cid-loss-and-congestion}}
   are easy to solve because packets are sent on a single path,
-* the ACK Delays are mostly correct,
+* the ACK Delays are correct,
 * the vast majority of ECN marks relate to the current sending path.
 
 Of course, the hosts will only take limited advantage from the multipath
