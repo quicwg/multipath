@@ -131,8 +131,8 @@ Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}}.
 
-Some deployments of QUIC use NULL length connection ID.
-When a node elects to use NULL length connection IDs, it is not
+Some deployments of QUIC use zero-length connection ID.
+When a node elects to use zero-length connection IDs, it is not
 possible to use different connections IDs for distinguishing packets
 sent to that node over different paths. All packets sent to a NULL
 CID are numbered in the same number space. Out of order delivery is likely,
