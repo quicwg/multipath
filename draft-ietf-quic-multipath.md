@@ -634,7 +634,7 @@ as described in {{QUIC-Timestamp}}.
 
 ECN feedback in QUIC is provided based on counters in the ACK frame
 (see {{Section  19.3.2. of QUIC-TRANSPORT}}). These counters are specific
-to a number space. When sending to NULL CID receivers, teh same number space is
+to a number space. When sending to NULL CID receivers, the same number space is
 used for multiple paths, and the ECN feedback cannot unambiguously be assigned to
 a path.
 
