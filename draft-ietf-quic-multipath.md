@@ -603,7 +603,7 @@ which the corresponding packets were sent. When sending to a NULL CID
 receiver, senders will receive back acknowledgements that combine packet
 numbers received over multiple paths. Senders MUST be able to infer the
 sending path from the acknowledged packet numbers, for example by remembering
-which packet was sent to what path. The MUST use that information to
+which packet was sent to what path. The sender MUST use that information to
 perform congestion control on the relevant paths, and to correctly
 estimate the transmission delays on each path. (See
 {{ack-delay-and-null-cid-considerations}} for specific considerations
