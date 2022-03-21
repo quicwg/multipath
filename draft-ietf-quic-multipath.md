@@ -435,8 +435,8 @@ after a spurious estimate of path abandonment by the client.
        |                                         |
        | PATH_RESPONSE received                  |
        |                                         |
-       v        Associated CID have been retired |
- +------------+        Path's idle timeout       |
+       v                                         |
+ +------------+     Path blackhole detected      |
  |   Active   |----------------------------------+
  +------------+                                  |
        |                                         |
@@ -446,8 +446,8 @@ after a spurious estimate of path abandonment by the client.
  |   Closing  |                                  |
  +------------+                                  |
        |                                         |
-       | Associated CID have been retired        |
-       | Path's idle timeout                     |
+       | Path's draining timeout                 |
+       | (at least 3 PTO)                        |
        v                                         |
  +------------+                                  |
  |   Closed   |<---------------------------------+
@@ -482,7 +482,8 @@ guarantee that packets will actually reach the peer.
 
 The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
-of new data on a path.
+of new data on a path. Note that if a path became idle timeout, 
+endpoints SHOULD send PATH_ABANDONED frame before closing the path.
 
 In the "Closing" state, the endhost SHOULD NOT send packets on this
 path anymore, as there is no guarantee that the peer can still map
@@ -491,8 +492,13 @@ the acknowledgment of the PATH_ABANDONED frame before moving the path
 to the "Closed" state to ensure a graceful termination of the path.
 
 When a path reaches the "Closed" state, the endhost releases all the
-path's associated resources. Consequently, the endhost is not able to
-send nor receive packets on this path anymore.
+path's associated resources, including the associated Connection IDs. 
+Endpoints SHOULD send RETIRE_CONNECTION_ID frames for releasing the
+associated Connection IDs following {{QUIC-TRANSPORT}}. Considering 
+endpoints SHOULD NOT send packets on the current path of "Closed" state,
+endpoints can send RETIRE_CONNECTION_ID frames on other available paths.
+Consequently, the endhost is not able to send nor receive packets 
+on this path anymore.
 
 
 # Congestion Control
