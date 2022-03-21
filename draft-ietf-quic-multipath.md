@@ -495,10 +495,10 @@ When a path reaches the "Closed" state, the endhost releases all the
 path's associated resources, including the associated Connection IDs. 
 Endpoints SHOULD send RETIRE_CONNECTION_ID frames for releasing the
 associated Connection IDs following {{QUIC-TRANSPORT}}. Considering 
-endpoints SHOULD NOT send packets on the current path of "Closed" state,
-endpoints can send RETIRE_CONNECTION_ID frames on other available paths.
-Consequently, the endhost is not able to send nor receive packets 
-on this path anymore.
+endpoints SHOULD NOT send packets on the current path in the "Closed" 
+state, endpoints can send RETIRE_CONNECTION_ID frames on other 
+available paths. Consequently, the endhost is not able to send nor 
+receive packets on this path anymore.
 
 
 # Congestion Control
