@@ -307,6 +307,24 @@ to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission.
 
+
+## Path State Management
+
+An endpoint uses PATH_STATUS frames to inform that the peer should 
+send packets in the preference expressed by these frames. 
+
+PATH_STATUS frame describes 2 kinds of path states:
+
+- Mark a path as "available", i.e., allow the peer to use its own logic 
+  to split traffic among available paths.
+- Mark a path as "standby", i.e., suggest that no traffic should be sent 
+  on that path if another path is available.
+
+Endpoints use Path Identifier field in PATH_STATUS frame to identify 
+which path’s state is going to be changed. Notice that PATH_STATUS frame 
+can be sent via a different path.
+
+
 ## Path Close
 
 Each endpoint manages the set of paths that are available for
