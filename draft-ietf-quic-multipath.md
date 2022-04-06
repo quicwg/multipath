@@ -1036,7 +1036,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
   PATH_ABANDON Frame {
-    Type (i) = TBD-03 (experiments use 0xbaba05),
+    Type (i) = TBD-02 (experiments use 0xbaba05),
     Path Identifier (..),
     Error Code (i),
     Reason Phrase Length (i),
@@ -1112,6 +1112,56 @@ If the Identifier Type is 0x00 or 0x01, PATH_ABANDON frames MAY be sent
 on any path, not only the path identified by the Path Identifier Content
 field. If the Identifier Type if 0x02, the PATH_ABANDON frame MUST only
 be sent on the path that is intended to be abandoned.
+
+
+## PATH_STATUS frame {#path-status-frame}
+
+PATH_STATUS Frame are used by endpoints to inform the peer of the current 
+status of one path, and the peer should send packets according to 
+the preference expressed in these frames. 
+PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
+
+~~~
+  PATH_STATUS Frame {
+    Type (i) = TBD-03 (experiments use 0xbaba06),
+    Path Identifier (..),
+    Path Status sequence number (i),
+    Path Status (i),
+  }
+~~~
+{: #fig-path-status-format title="PATH_STATUS Frame Format"}
+
+PATH_STATUS Frames contain the following fields:
+
+Path Identifier: An identifier of the path, which is formatted 
+  as shown in {{fig-path-identifier-format}}. Exactly the same as 
+  the definition of Path Identifier in {#path-abandon-frame}.
+
+Path Status sequence number: A variable-length integer specifying 
+  the sequence number assigned for this PATH_STATUS frame.
+  There is a different path status sequence number space for each path.
+
+Available values of Path Status field are:
+
+- 1: Standby
+- 2: Available
+
+Endpoints use PATH_STATUS frame to inform the peer whether it prefer to 
+use this path or not. If an endpoint receives a PATH_STATUS frame 
+containing 1-Standby status, it SHOULD stop sending non-probing packets 
+on the corresponding path, until it receive a new PATH_STATUS frame 
+containing 2-Available status with a higher sequence number referring to 
+the same path.
+
+Frames may be received out of order. A peer MUST ignore an incoming 
+PATH_STATUS frame if it previously received another PATH_STATUS frame 
+for the same Path Identifier with a sequence number equal to or
+higher than the sequence number of the incoming frame.
+
+PATH_STATUS frames SHOULD be acknowledged. If a packet containing 
+a PATH_STATUS frame is considered lost, the peer should only repeat it 
+if it was the last status sent for that path -- as indicated by 
+the sequence number.
 
 
 ## ACK_MP Frame {#ack-mp-frame}
