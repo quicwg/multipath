@@ -595,7 +595,7 @@ be controlled by the combination of one or several of the following:
    uses a series of consecutive sequence numbers without creating
    holes.
 
-### Zero-Length CID Loss and Congestion
+### Loss and Congestion Handling With Zero-Length CID {#zero-length-cid-loss-and-congestion}
 
 When sending to a zero-length CID
 receiver, senders will receive back acknowledgements that combine packet
