@@ -137,13 +137,16 @@ possible to use different connection IDs for distinguishing packets
 sent to that node over different paths. All packets sent to a zero-length
 CID are numbered in the same number space. Out of order delivery is likely,
 which causes inflation of the number of acknowledgement ranges and of the
-the size of ACK frames. This proposal specifies algorithms for
+the size of ACK frames. This proposal specifies algorithms forf{#
 controlling the size of acknowledgement packets. Senders that accept to
 use multiple paths when sending to a node using zero-length CID will
 have to use special logic to minimize the impact of multipath
 delivery on loss detection and congestion control. If the receiver
 reports ECN counters, they will contain the sum of markings received on all
 paths. Senders will need specific logic to handle such ECN marks.
+(The logic required to support zero-length CID at receivers and senders
+is discussed in {{using-zero-length}}.)
+
 
 This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
@@ -548,7 +551,7 @@ ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
 
-## Using Zero-Length connection ID
+## Using Zero-Length connection ID {#using-zero-length}
 
 If a node elects to use zero-length connection IDs, it MUST implement the
 handling of Acknowledgements defined in {{sending-acknowledgements-and-handling-ranges}}.
