@@ -101,8 +101,9 @@ migration.
   * Use the same packet header formats as QUIC version 1 to avoid the
 risk of packets being dropped by middleboxes (which may only support
 QUIC version 1)
-  * Congestion Control, RTT measurements and PMTU discovery should be
-per-path (following {{QUIC-TRANSPORT}})
+  * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
+which usually also requires per-path RTT measurements
+  * PMTU discovery should be performed per-path
   * A path is determined by the 4-tuple of source and destination IP
 address as well as source and destination port. Therefore there can be
 at most one active paths/connection ID per 4-tuple.
@@ -191,6 +192,35 @@ is used. If the connection ID is zero length, the Packet Number Space
 Identifier is 0, while the Path Identifier is selected on path
 establishment.
 
+# High-level overview {#overview}
+
+The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of 
+different paths to exchange non-probing QUIC frames for a single connection. This contrasts with
+the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
+selects only one path to exchange such frames.
+
+A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
+See further Section {{nego}}.
+The peers use the enable_multipath transport parameter during the handshake to
+negotiate the utilization of the multipath capabilities.
+The active_connection_id_limit transport parameter limits the maximum number of active paths
+that can be used during a connection. A multipath QUIC connection is thus an established QUIC
+connection where the enable_multipath transport parameter
+has been successfully negotiated.
+
+To add a new path to an existing multipath QUIC connection, a client starts a path validation on
+the chosen path, as further described in Section {{setup}}.
+In this version of the document, a QUIC server does not initiate the creation
+of a path, but it can validate a new path created by a client. 
+A new path can only be used once it has been validated. Each endpoint associates a
+Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
+to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame. 
+
+In addition to these core features, an application using Multipath QUIC will typically
+need additional algorithms to handle the number of active paths and how they are used to
+send packets. As these differ depending on the application's requirements, their
+specification is out of scope of this document.
+
 # Handshake Negotiation and Transport Parameter {#nego}
 
 This extension defines a new transport parameter, used to negotiate
@@ -228,16 +258,30 @@ If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
 MP_CONNECTION_ERROR and close the connection.
 
-Note that the transport parameter "active_connection_id_limit"
+This extension does not change the definition of any transport parameter
+defined in {{Section 18.2. of QUIC-TRANSPORT}}. 
+
+Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
+also disables multipath support, except "after a client has acted on a
+preferred_address transport parameter" {{Section 18.2. of QUIC-TRANSPORT}}.
+
+The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
 limits the number of concurrent paths. For the QUIC multipath extension
 this limit even applies when no connection ID is exposed in the QUIC
 header.
 
+
 # Path Setup and Removal {#setup}
 
 After completing the handshake, endpoints have agreed to enable
-multipath feature and can start using multiple paths. This document
+multipath feature and can start using multiple paths. This document 
+does not specify how an endpoint that is reachable via several addresses
+announces these addresses to the other endpoint. In particular, if the
+server uses the preferred_address transport parameter, clients 
+SHOULD NOT assume that the initial server address and the addresses 
+contained in this parameter can be simultaneously used for multipath. 
+Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
 
@@ -353,13 +397,16 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
-When more than one path is available, servers shall monitor the arrival
-of non-probing packets on the available paths. Servers SHOULD stop
-sending traffic on paths through where no non-probing packet was received
-in the last 3 path RTTs, but MAY ignore that rule if it would disqualify
+When more than one path is available, hosts shall monitor the arrival
+of non-probing packets and the acknowledgements 
+for the packets sent over each path. Hosts SHOULD stop
+sending traffic on a path if for at least max_idle_timeout milliseconds 
+(a) no non-probing packet was received or (b) no non-probing
+packet sent over this path was acknowledged, but MAY ignore that
+rule if it would disqualify
 all available paths. To avoid idle timeout of a path, endpoints can
 send ack-eliciting packets such as packets containing PING frames
-{{Section 19.2 of QUIC-TRANSPORT}} on that path to keep it alive.
+({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
 Sending periodic PING frames also helps prevent middlebox timeout,
 as discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}.
 
@@ -527,6 +574,17 @@ outside the scope of this document. Various packet schedulers have been
 proposed and implemented, notably for Multipath TCP. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
 packet schedulers depending on the application goals.
+
+# Recovery
+
+Simultaneous use of multiple paths enables different 
+retransmission strategies to cope with losses such as:
+a) retransmitting lost frames over the
+same path, b) retransmitting lost frames on a different or
+dedicated path, and c) duplicate lost frames on several paths (not
+recommended for general purpose use due to the network
+overhead). While this document does not preclude a specific
+strategy, more detailed specification is out of scope.
 
 # Packet Number Space and Use of Connection ID
 
@@ -790,36 +848,83 @@ In this example the client detects the network environment change
 or the quality of RTT or loss rate is becoming worse) and wants to close
 the initial path.
 
-In Figure {{fig-example-path-close}} the server's 1-RTT packets use DCID C1,
-which has a sequence number of 1, for the first path; the client's 1-RTT
-packets use DCID S2, which has a sequence number of 2.  For the second path,
-the server's 1-RTT packets use DCID C2, which has a sequence number of 2;
-the client's 1-RTT packets use CID S3, which has a sequence number of 3.
-Note that two paths use different packet number space.
-
-The client initiates the path closure for the path with ID 1 by sending
-a packet with an PATH_ABANDON frame. When the server received the
-PATH_ABANDON frame, it also sends an PATH_ABANDON frame in the next packet.
-Afterwards the connection IDs in both directions can be retired
-using the RETIRE_CONNECTION_ID frame.
+{{fig-example-path-close1}} illustrates an example of path closing when both
+the client and the server use non-zero-length CIDs. For the first path, the
+server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
+client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
+second path, the server's 1-RTT packets use DCID C2, which has a sequence
+number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
+of 3. Note that the paths use different packet number spaces. In this case, the
+client is going to close the first path. It identifies the path by the sequence
+number of the received packet's DCID over that path (path identifier type
+0x00), hence using the path_id 1. Optionally, the server confirms the path closure 
+by sending an PATH_ABANDON frame using
+the sequence number of the received packet's DCID over that path (path
+identifier type 0x00) as path identifier, which corresponds to the path_id 2. Both the client and
+the server can close the path after receiving the RETIRE_CONNECTION_ID frame
+for that path.
 
 ~~~
 Client                                                      Server
 
 (client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
+1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=0, path_id=1]->
                            (server tells client to abandon a path)
-  <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2], ACK_MP[Seq=2, PN=X]
-(client abandons the path that it is using)
+      <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id_type=0, path_id=2],
+                                               ACK_MP[Seq=2, PN=X]
+(client retires the corresponding CID)
 1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
-                       (server abandons the path that it is using)
+                            (server retires the corresponding CID)
  <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
 ~~~
-{: #fig-example-path-close title="Example of closing a path (path id type=0x00)"}
+{: #fig-example-path-close1 title="Example of closing a path when both the
+client and the server choose to receive non-zero-length CIDs."}
+
+{{fig-example-path-close2}} illustrates an example of path closing when the
+client chooses to receive zero-length CIDs while the server chooses to receive
+non-zero-length CIDs.  Because there is a zero-length CID in one direction,
+single packet number spaces are used. For the first path, the client's 1-RTT
+packets use DCID S2, which has a sequence number of 2. For the second path, the
+client's 1-RTT packets use DCID S3, which has a sequence number of 3. Again, in
+this case, the client is going to close the first path. Because the client now
+receives zero-length CID packets, it needs to use path identifier type 0x01,
+which identifies a path by the DCID sequence number of the packets it sends
+over that path, and hence, it uses a path_id 2 in its PATH_ABANDON frame. The
+server SHOULD stop sending new data on the path indicated by the PATH_ABANDON
+frame after receiving it. However, The client may want to repeat the
+PATH_ABANDON frame if it sees the server continuing to send data. When the
+client's PATH_ABANDON frame is acknowledged, it sends out a
+RETIRE_CONNECTION_ID frame for the CID used on the first path. The server can
+readily close the first path when it receives the RETIRE_CONNECTION_ID frame
+from the client.  However, since the client will not receive a
+RETIRE_CONNECTION_ID frame, after sending out the RETIRE_CONNECTION_ID frame, the
+client waits for 3 RTO before closing the path.
+
+~~~
+  Client                                                      Server
+
+  (client tells server to abandon a path)
+  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=1, path_id=2]->
+                             (server stops sending on that path after
+                                              receiving PATH_ABANDON)
+  (client retires the corresponding CID
+      after PATH_ABANDON is acknowledged)
+  1-RTT[X+1]: DCID=S3 RETIRE_CONNECTION_ID[2]->
+~~~
+{: #fig-example-path-close2 title="Example of closing a path when the client
+chooses to receive zero-length CIDs while the server chooses to receive
+non-zero-length CIDs"}
 
 # Implementation Considerations
 
-TDB
+
+## Handling different PMTU sizes
+
+An implementation should take care to handle different PMTU sizes across
+multiple paths. One simple option if the PMTUs are relatively similar is to apply the minimum PMTU of all paths to
+each path. The benefit of such an approach is to simplify retransmission
+processing as the content of lost packets initially sent on one path can be sent
+on another path without further frame scheduling adaptations.
 
 # New Frames {#frames}
 
@@ -857,13 +962,17 @@ in {{fig-path-identifier-format}}.
 
 - Identifier Type: Identifier Type field is set to indicate the type of
 path identifier.
-  - Type 0: Refer to the connection identifier used by the sender of
-    the control frame when sending data over the specified path.
+  - Type 0: Refer to the connection identifier issued by the sender of
+    the control frame. 
+    Note that this is the connection identifier used by the peer 
+    when sending packets on the to-be-closed path.
     This method SHOULD be used if this connection identifier is non-zero
     length. This method MUST NOT be used if this connection identifier
     is zero-length.
-  - Type 1: Refer to the connection identifier used by the receiver of
-    the control frame when sending data over the specified path.
+  - Type 1: Refer to the connection identifier issued by the receiver of
+    the control frame.
+    Note that this is the connection identifier used by the sender 
+    when sending packets on the to-be-closed path.
     This method MUST NOT be used if this connection identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or
     received.
