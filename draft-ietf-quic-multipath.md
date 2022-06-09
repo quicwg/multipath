@@ -142,7 +142,7 @@ controlling the size of acknowledgement packets. Senders that accept to
 use multiple paths when sending to a node using NULL length CID will
 have to use special logic to minimize the impact of multipath
 delivery on loss detection and congestion control. If the receiver
-reports ECN counters, they will contain the sum of marks received on all
+reports ECN counters, they will contain the sum of markings received on all
 paths. Senders will need specific logic to handle such ECN marks.
 
 This proposal does not cover address discovery and management. Addresses
