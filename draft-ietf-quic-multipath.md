@@ -210,7 +210,7 @@ PN spaces, available option values are listed in
 Option | Definition
 ---------|---------------------------------------
 0x0      | don't support multipath
-0x1      | supports multipath as defined in this proposal
+0x1      | supports multipath as defined in this document
 {: #param_value_definition title="Available value for enable_multipath"}
 
 If for any one of the endpoints the parameter is absent or set to 0,
