@@ -139,7 +139,7 @@ CID are numbered in the same number space. Out of order delivery is likely,
 which causes inflation of the number of acknowledgement ranges and of the
 the size of ACK frames. This proposal specifies algorithms for
 controlling the size of acknowledgement packets. Senders that accept to
-use multiple paths when sending to a node using NULL length CID will
+use multiple paths when sending to a node using zero-length CID will
 have to use special logic to minimize the impact of multipath
 delivery on loss detection and congestion control. If the receiver
 reports ECN counters, they will contain the sum of markings received on all
