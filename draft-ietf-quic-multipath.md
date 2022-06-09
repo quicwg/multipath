@@ -550,7 +550,7 @@ packets sent on path 0.
 
 ## Using Zero-Length connection ID
 
-If a node elects to use zero-length connection ID, it MUST implement the
+If a node elects to use zero-length connection IDs, it MUST implement the
 handling of Acknowledgements defined in {{sending-acknowledgements-and-handling-ranges}}.
 The peer of a node using zero-length connection ID SHOULD implement specific
 logic to handle loss detection in the presence of multiple paths,
