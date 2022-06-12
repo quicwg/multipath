@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-06-09T00:53:03.484558+00:00",
+  "timestamp": "2022-06-12T00:54:50.351678+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -2688,6 +2688,37 @@
       "updatedAt": "2022-06-08T13:10:43Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 120,
+      "id": "I_kwDOGNtpaM5Lh9lX",
+      "title": "active_connection_id_limit",
+      "url": "https://github.com/quicwg/multipath/issues/120",
+      "state": "OPEN",
+      "author": "boucadair",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Is there any reason why a new parameter isn't defined to negotiate max_paths rather than reusing this existing parameter? \r\n\r\nThat design is much more cleaner. For example, the max paths wouldn't be ignored even when zero-length CIDs are in use. \r\n\r\nUnless I'm mistaken, the current design have to comply with the following from RFC9000:\r\n\r\n>If an endpoint issues a zero-length connection ID... and therefore ignores the active_connection_id_limit value received from its peer.\r\n\r\n\r\nBTW, how the following MUST will be honored for the zero-length CID case: \r\n\r\n```\r\nBefore an\r\n   endpoint adds a new path by initiating path validation, it MUST check\r\n   whether at least one unused Connection ID is available for each side.\r\n```\r\n\r\n",
+      "createdAt": "2022-06-10T07:54:07Z",
+      "updatedAt": "2022-06-10T19:18:46Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "From RFC9000 (Section 9.5), an endhost cannot (voluntary) reuse a given CID on different addresses. Since CIDs are the path identifiers, this already restricts the number of concurrent paths. Given that paths must be symmetrical, this should restrict the number of concurrent paths to the minimum advertised value of `active_connection_id_limit`. Note that the actual limit can be lower than this, as you depend on your peer to have your CIDs.\r\n\r\nFor the `max_paths` parameter, this is something we considered in early multipath drafts (such as draft-deconinck-quic-multipath-02). Such value would only be meaningful when it is lower than the advertised `active_connection_id_limit`. And even in such case, it is difficult to enforce that limit. If you provide 8 CIDs to your peer and request `max_paths` to be 2, how would you do that? Especially when handling transient situations (i.e., stop using a path on a network A to use another on network B), the receiver might notice 3 paths being in concurrent use (especially if network B is faster than network A), even if the sender behaves nicely.\r\n\r\nOn the other hand, if one host definitely wants to limit the number of concurrent paths, it can simply as most `max_paths` active CIDs.\r\n\r\nFor the zero-length CIDs, I think there are two parts. If we consider one-sided zero-length CIDs while the other direction uses non-zero-length CIDs, the maximum number of paths is constrained by the `active_connection_id_limit` value of the non-zero-length CID side. If we now consider both sides using zero-length CIDs, then I would keep the minimum of both `active_connection_id_limit` values? RFC9000 states that the host can ignore because it will not send NEW_CONNECTION_ID frames, but we can extend this meaning in the draft. In any case, it might be better to clarify this, and we will likely perform a strong editorial pass on the whole text once we get an agreement on #103.",
+          "createdAt": "2022-06-10T15:38:50Z",
+          "updatedAt": "2022-06-10T15:38:50Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I agree with @qdeconinck. Having two limits instead of just one just introduces complexity with little benefit. Yes, the case of two endpoints both using zero-length CIDs may be under specified. But the deployments of that scenarios are going to be very limited. If the server is part of a frame and uses zero-length CID, the client is identified by its IP address and port. The load balancer will struggle to match the new IP and port of a new path with the original values used in connection establishment. I don't see how that could work. So we are pretty much left to peer to peer scenarios, in which the server is a single computer. Even there, the matching of the new IP and port with the original client requires a combination of guesswork and maybe trial decryption. If developers are ready to do that, they can probably invent a way to manage the path number...",
+          "createdAt": "2022-06-10T19:18:46Z",
+          "updatedAt": "2022-06-10T19:18:46Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -8311,13 +8342,13 @@
       "labels": [],
       "body": "This derives from the discussions on issue #96 ",
       "createdAt": "2022-03-04T22:24:40Z",
-      "updatedAt": "2022-03-19T06:44:22Z",
+      "updatedAt": "2022-06-10T17:25:10Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "232072927fdabba366f7c331eb57963a0d26385a",
       "headRepository": "huitema/multipath",
       "headRefName": "unified",
-      "headRefOid": "622ec9ba2dbaf8cfee5950f5430f151815128d49",
+      "headRefOid": "a566ad86acf62258c5633c82617e210fea6fe596",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -8329,6 +8360,13 @@
           "body": "The commit [a230bc1](https://github.com/quicwg/multipath/pull/103/commits/a230bc17db0eabf78dffb6e0d02224ad851197da) applies the changes suggested in the previous reviews. With those changes, I think we have a good basis for discussing a unified solution in the working group.",
           "createdAt": "2022-03-17T18:38:52Z",
           "updatedAt": "2022-03-17T18:38:52Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks @boucadair for the review. I have applied the editorial changes. You are asking for something more regarding the \"specific logic\" required when supporting zero-length CID. There are in fact two pieces to that: logic at the receiver, i.e., the node that chose to receive packets with zero-length CID; and logic at the sender, i.e., the node that accepts to send data on multiple paths towards a node that uses zero-length CID. This is explained in details in the section \"Using Zero-Length connection ID\", so I guess what we need is a reference to that section.",
+          "createdAt": "2022-06-09T16:00:45Z",
+          "updatedAt": "2022-06-09T16:00:45Z"
         }
       ],
       "reviews": [
@@ -8670,6 +8708,206 @@
               "body": "```suggestion\r\ndelivery on loss detection and congestion controller. If the receiver\r\n```",
               "createdAt": "2022-03-18T12:33:49Z",
               "updatedAt": "2022-03-18T12:40:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47rJ7Q",
+          "commit": {
+            "abbreviatedOid": "622ec9b"
+          },
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "state": "CHANGES_REQUESTED",
+          "body": "Some very minor comments. ",
+          "createdAt": "2022-06-09T11:33:17Z",
+          "updatedAt": "2022-06-09T12:04:15Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "```suggestion\r\nSome deployments of QUIC use zero-length connection IDs.\r\n```",
+              "createdAt": "2022-06-09T11:33:18Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 31,
+              "body": "```suggestion\r\npossible to use different connection IDs for distinguishing packets\r\n```",
+              "createdAt": "2022-06-09T11:33:36Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "is that \"special logic\" hinted somewhere or this is left as implementation-specific? I would be explicit about the intent here. Thanks. ",
+              "createdAt": "2022-06-09T11:37:23Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 39,
+              "body": "```suggestion\r\ndelivery on loss detection and congestion control. If the receiver\r\n```",
+              "createdAt": "2022-06-09T11:38:19Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "```suggestion\r\n0x1      | supports multipath as defined in this document\r\n```",
+              "createdAt": "2022-06-09T11:39:09Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 109,
+              "body": "```suggestion\r\nIf a node elects to use zero-length connection IDs, it MUST implement the\r\n```",
+              "createdAt": "2022-06-09T11:39:45Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 111,
+              "body": "```suggestion\r\nThe peer node using zero-length connection IDs SHOULD implement a\r\n```",
+              "createdAt": "2022-06-09T11:40:19Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 149,
+              "body": "Can a pointer be provided for \"getting good results\"? Thanks",
+              "createdAt": "2022-06-09T11:44:20Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 29,
+              "body": "RFC9000 says the following:\r\n\r\n```\r\n  An endpoint SHOULD NOT initiate migration with a peer that has\r\n   requested a zero-length connection ID, because traffic over the new\r\n   path might be trivially linkable to traffic over the old one.\r\n```\r\n\r\nI wonder if the above behavior has implications on maintaining multiple paths when  zero-length connection IDs are in used.",
+              "createdAt": "2022-06-09T12:01:09Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "Again, the \"specific\" thing is worth be exemplified.",
+              "createdAt": "2022-06-09T12:02:17Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            },
+            {
+              "originalPosition": 40,
+              "body": "```suggestion\r\nreports ECN counters, they will contain the sum of markings received on all\r\n```",
+              "createdAt": "2022-06-09T12:02:33Z",
+              "updatedAt": "2022-06-09T12:04:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47tC74",
+          "commit": {
+            "abbreviatedOid": "05199f8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-06-09T16:34:24Z",
+          "updatedAt": "2022-06-09T16:34:25Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "This lines were added to address review by @boucadair ",
+              "createdAt": "2022-06-09T16:34:25Z",
+              "updatedAt": "2022-06-09T16:34:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47tDpj",
+          "commit": {
+            "abbreviatedOid": "622ec9b"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-06-09T16:36:47Z",
+          "updatedAt": "2022-06-09T16:36:48Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "I added a forward reference to the section describing that logic. I hope it addresses the concerns of  @boucadair .",
+              "createdAt": "2022-06-09T16:36:48Z",
+              "updatedAt": "2022-06-09T16:36:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47tGqI",
+          "commit": {
+            "abbreviatedOid": "38c72f5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-06-09T16:46:46Z",
+          "updatedAt": "2022-06-09T16:46:46Z",
+          "comments": [
+            {
+              "originalPosition": 139,
+              "body": "The new title is \"Loss and Congestion Handling With Zero-Length CID\". I hope it works.",
+              "createdAt": "2022-06-09T16:46:46Z",
+              "updatedAt": "2022-06-09T16:46:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47tMKT",
+          "commit": {
+            "abbreviatedOid": "622ec9b"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-06-09T17:05:22Z",
+          "updatedAt": "2022-06-09T17:05:22Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "The RFC 9000 text suggests that only the node that is choosing to use zero length CID will initiate a new path -- typically a client. That seems fine. Third parties will be able to observe packets flowing between client and server as follow:\r\n\r\n* path 1: between address 1 and port 1 on client, and server address and server port on server.\r\n* path 2: between address 2 and port 2 on client, and server address and server port on server.\r\n\r\nThe addresses and ports will be visible whether the client uses null-length CID or not. We may want to say to point out that using different port numbers for each path may remove 16 bits of possible correlation data, but that applies to RFC 9000 just as well.\r\n",
+              "createdAt": "2022-06-09T17:05:22Z",
+              "updatedAt": "2022-06-09T17:05:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47vq1D",
+          "commit": {
+            "abbreviatedOid": "622ec9b"
+          },
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-06-10T07:22:46Z",
+          "updatedAt": "2022-06-10T07:22:46Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "I agree this is OK in typical scenarios. \r\n\r\nI leave it up to you to decide if it is worth to include a mention about this in the draft. Thanks, @huitema.\r\n\r\n\r\n",
+              "createdAt": "2022-06-10T07:22:46Z",
+              "updatedAt": "2022-06-10T07:22:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM47x3wD",
+          "commit": {
+            "abbreviatedOid": "177b643"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Small typo; for the remaining, LGTM.",
+          "createdAt": "2022-06-10T15:00:41Z",
+          "updatedAt": "2022-06-10T15:05:33Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "```suggestion\r\nthe size of ACK frames. This proposal specifies algorithms for\r\n```",
+              "createdAt": "2022-06-10T15:00:42Z",
+              "updatedAt": "2022-06-10T15:05:33Z"
             }
           ]
         }
