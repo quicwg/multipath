@@ -738,12 +738,11 @@ In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
 and with the path identifier.
 
-The path ID for 1-RTT packets is the sequence number of
-of {{QUIC-TRANSPORT}}, or zero if the Connection ID is zero-length.
-{{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence Number
-as a variable-length integer, allowing values up to 2^62-1;
-in this specification a range of less than 2^32-1 values MUST be used
-before updating the packet protection key.
+The path ID for 1-RTT packets is the sequence number of {{QUIC-TRANSPORT}}, or
+zero if the Connection ID is zero-length.  {{Section 19 of QUIC-TRANSPORT}}
+encodes the Connection ID Sequence Number as a variable-length integer,
+allowing values up to 2^62-1; in this specification a range of less than 2^32-1
+values MUST be used before updating the packet protection key.
 
 To calculate the nonce, a 96 bit path-and-packet-number is composed of
 the 32 bit Connection ID Sequence Number in byte order, two zero bits,
