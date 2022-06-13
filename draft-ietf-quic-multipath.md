@@ -194,7 +194,7 @@ establishment.
 
 # High-level overview {#overview}
 
-The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of 
+The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of
 different paths to exchange non-probing QUIC frames for a single connection. This contrasts with
 the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
 selects only one path to exchange such frames.
@@ -211,10 +211,10 @@ has been successfully negotiated.
 To add a new path to an existing multipath QUIC connection, a client starts a path validation on
 the chosen path, as further described in Section {{setup}}.
 In this version of the document, a QUIC server does not initiate the creation
-of a path, but it can validate a new path created by a client. 
+of a path, but it can validate a new path created by a client.
 A new path can only be used once it has been validated. Each endpoint associates a
 Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
-to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame. 
+to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame.
 
 In addition to these core features, an application using Multipath QUIC will typically
 need additional algorithms to handle the number of active paths and how they are used to
@@ -259,7 +259,7 @@ If endpoint receives unexpected value for the transport parameter
 MP_CONNECTION_ERROR and close the connection.
 
 This extension does not change the definition of any transport parameter
-defined in {{Section 18.2. of QUIC-TRANSPORT}}. 
+defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
 Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
 also disables multipath support, except "after a client has acted on a
@@ -275,12 +275,12 @@ header.
 # Path Setup and Removal {#setup}
 
 After completing the handshake, endpoints have agreed to enable
-multipath feature and can start using multiple paths. This document 
+multipath feature and can start using multiple paths. This document
 does not specify how an endpoint that is reachable via several addresses
 announces these addresses to the other endpoint. In particular, if the
-server uses the preferred_address transport parameter, clients 
-SHOULD NOT assume that the initial server address and the addresses 
-contained in this parameter can be simultaneously used for multipath. 
+server uses the preferred_address transport parameter, clients
+SHOULD NOT assume that the initial server address and the addresses
+contained in this parameter can be simultaneously used for multipath.
 Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
@@ -398,9 +398,9 @@ When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
 When more than one path is available, hosts shall monitor the arrival
-of non-probing packets and the acknowledgements 
+of non-probing packets and the acknowledgements
 for the packets sent over each path. Hosts SHOULD stop
-sending traffic on a path if for at least max_idle_timeout milliseconds 
+sending traffic on a path if for at least max_idle_timeout milliseconds
 (a) no non-probing packet was received or (b) no non-probing
 packet sent over this path was acknowledged, but MAY ignore that
 rule if it would disqualify
@@ -577,7 +577,7 @@ packet schedulers depending on the application goals.
 
 # Recovery
 
-Simultaneous use of multiple paths enables different 
+Simultaneous use of multiple paths enables different
 retransmission strategies to cope with losses such as:
 a) retransmitting lost frames over the
 same path, b) retransmitting lost frames on a different or
@@ -856,7 +856,7 @@ number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
 number of the received packet's DCID over that path (path identifier type
-0x00), hence using the path_id 1. Optionally, the server confirms the path closure 
+0x00), hence using the path_id 1. Optionally, the server confirms the path closure
 by sending an PATH_ABANDON frame using
 the sequence number of the received packet's DCID over that path (path
 identifier type 0x00) as path identifier, which corresponds to the path_id 2. Both the client and
@@ -962,15 +962,15 @@ in {{fig-path-identifier-format}}.
 - Identifier Type: Identifier Type field is set to indicate the type of
 path identifier.
   - Type 0: Refer to the connection identifier issued by the sender of
-    the control frame. 
-    Note that this is the connection identifier used by the peer 
+    the control frame.
+    Note that this is the connection identifier used by the peer
     when sending packets on the to-be-closed path.
     This method SHOULD be used if this connection identifier is non-zero
     length. This method MUST NOT be used if this connection identifier
     is zero-length.
   - Type 1: Refer to the connection identifier issued by the receiver of
     the control frame.
-    Note that this is the connection identifier used by the sender 
+    Note that this is the connection identifier used by the sender
     when sending packets on the to-be-closed path.
     This method MUST NOT be used if this connection identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or
