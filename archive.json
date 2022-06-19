@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-06-14T01:01:00.671675+00:00",
+  "timestamp": "2022-06-19T00:54:13.210812+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -2709,7 +2709,7 @@
       "labels": [],
       "body": "Is there any reason why a new parameter isn't defined to negotiate max_paths rather than reusing this existing parameter? \r\n\r\nThat design is much more cleaner. For example, the max paths wouldn't be ignored even when zero-length CIDs are in use. \r\n\r\nUnless I'm mistaken, the current design have to comply with the following from RFC9000:\r\n\r\n>If an endpoint issues a zero-length connection ID... and therefore ignores the active_connection_id_limit value received from its peer.\r\n\r\n\r\nBTW, how the following MUST will be honored for the zero-length CID case: \r\n\r\n```\r\nBefore an\r\n   endpoint adds a new path by initiating path validation, it MUST check\r\n   whether at least one unused Connection ID is available for each side.\r\n```\r\n\r\n",
       "createdAt": "2022-06-10T07:54:07Z",
-      "updatedAt": "2022-06-10T19:18:46Z",
+      "updatedAt": "2022-06-17T05:56:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -2725,6 +2725,69 @@
           "body": "I agree with @qdeconinck. Having two limits instead of just one just introduces complexity with little benefit. Yes, the case of two endpoints both using zero-length CIDs may be under specified. But the deployments of that scenarios are going to be very limited. If the server is part of a frame and uses zero-length CID, the client is identified by its IP address and port. The load balancer will struggle to match the new IP and port of a new path with the original values used in connection establishment. I don't see how that could work. So we are pretty much left to peer to peer scenarios, in which the server is a single computer. Even there, the matching of the new IP and port with the original client requires a combination of guesswork and maybe trial decryption. If developers are ready to do that, they can probably invent a way to manage the path number...",
           "createdAt": "2022-06-10T19:18:46Z",
           "updatedAt": "2022-06-10T19:18:46Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> From RFC9000 (Section 9.5), an endhost cannot (voluntary) reuse a given CID on different addresses. Since CIDs are the path identifiers, this already restricts the number of concurrent paths. Given that paths must be symmetrical, this should restrict the number of concurrent paths to the minimum advertised value of `active_connection_id_limit`.\r\n\r\nI'm not sure to get why you say that CIDs are \"path identifiers\".  Also, please note that an \"address\" in 9000 is defined as follows:\r\n\r\n```\r\nAddress:\r\n\r\n    When used without qualification, the tuple of IP version, IP address, and UDP port number that represents one end of a network path\r\n\r\nConnection ID:\r\n\r\n    An identifier that is used to identify a QUIC connection at an endpoint. Each endpoint selects one or more connection IDs for its peer to include in packets sent towards the endpoint. This value is opaque to the peer.\r\n```",
+          "createdAt": "2022-06-16T06:39:49Z",
+          "updatedAt": "2022-06-16T06:39:49Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> Note that the actual limit can be lower than this, as you depend on your peer to have your CIDs.\r\n\r\nSure, this reasoning is still valid independent of whether active_connection_id_limit or a new transport metric is defined. ",
+          "createdAt": "2022-06-16T06:41:08Z",
+          "updatedAt": "2022-06-16T06:41:08Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> Especially when handling transient situations (i.e., stop using a path on a network A to use another on network B), the receiver might notice 3 paths being in concurrent use (especially if network B is faster than network A), even if the sender behaves nicely.\r\n\r\nThis same case can be considered when more than active_connection_id_limit are used (including in transient situations you mentioned). What concerns me with active_connection_id_limit is that the connection must be closed as per: \r\n\r\n` if the number of active connection IDs exceeds the value advertised in its active_connection_id_limit transport parameter, an endpoint MUST close the connection with an error of type CONNECTION_ID_LIMIT_ERROR.`\r\n\r\nwhile, with a dedicated path_max, new paths can be just discarded while maintaining the connection alive. ",
+          "createdAt": "2022-06-16T06:45:30Z",
+          "updatedAt": "2022-06-16T06:45:30Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> On the other hand, if one host definitely wants to limit the number of concurrent paths, it can simply as most `max_paths` active CIDs.\r\n\r\nAgree. This is only possible when dedicated parameters are defined. ",
+          "createdAt": "2022-06-16T06:46:21Z",
+          "updatedAt": "2022-06-16T06:46:21Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> RFC9000 states that the host can ignore because it will not send NEW_CONNECTION_ID frames, but we can extend this meaning in the draft. In any case, it might be better to clarify this\r\n\r\nNoted.",
+          "createdAt": "2022-06-16T06:47:37Z",
+          "updatedAt": "2022-06-16T06:47:37Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> Having two limits instead of just one just introduces complexity with little benefit\r\n\r\nI'm not sure to see complexities out there. Using connection IDs to infer per path specifics is not a clean design, btw. \r\n",
+          "createdAt": "2022-06-16T06:50:51Z",
+          "updatedAt": "2022-06-16T06:50:51Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Relying to previous comments:\r\n\r\n1) the `active_connection_id_limit` limits the number of CID that a peer MAY advertise at the same time. A peer MAY advertise \"at most\" this limit.\r\n\r\n2) there is no guarantee that a peer will advertise \"at least\" the `active_connection_id_limit`. For example, a node could decide to never advertise more than 3 CID, even if its peer's limit is 9.\r\n\r\n3) if a node reuses a non-zero-length CID on a different path mimics, the peer is most likely to treat that as a \"NAT rebinding\" event. There will be an exchange of probes, after which the peer will retain either the old or the new path. Thus, there can never be more active paths than the `active_connection_id_limit`.\r\n\r\n4) Since a new path requires a new connection ID in each direction, the maximum number of paths cannot be higher than the lowest of the two `active_connection_id_limit` advertised by both peers.\r\n\r\nI think the issue boils down to \"how does a node refuse to establish a new path\". Imagine a node with a hard limit to maximum two simultaneous paths per connection, but advertising 3 CIDs. With RFC 9000 the only option would be to ignore incoming challenges for new paths. The peer will see timeouts, and repeat the challenges a number of time before giving up. If the peer knew that the local node supports at most two paths, it might not bother sending new challenges in the first place, saving some time. But there are synchronization issues.\r\n\r\nThe peer may or may not know how many paths are currently active. For example, one of the current paths may have been abandoned, and the peer does not know that yet. So if we create a \"max path\" mechanism, we also need some kind of synchronization mechanism. Or, we could add a soft-error mechanism of some kind, something like a \"CHALLENGE_REFUSED\" frame, maybe carrying an error reason. But we would have to work out the complexity, etc.\r\n\r\nLooks like something we could do later, maybe an extension on top of the basic multipath.\r\n\r\n",
+          "createdAt": "2022-06-16T22:52:17Z",
+          "updatedAt": "2022-06-16T22:52:17Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> Relying to previous comments:\r\n> \r\n>     1. the `active_connection_id_limit` limits the number of CID that a peer MAY advertise at the same time. A peer MAY advertise \"at most\" this limit.\r\n> \r\n>     2. there is no guarantee that a peer will advertise \"at least\" the `active_connection_id_limit`. For example, a node could decide to never advertise more than 3 CID, even if its peer's limit is 9.\r\n> \r\n>     3. if a node reuses a non-zero-length CID on a different path mimics, the peer is most likely to treat that as a \"NAT rebinding\" event. There will be an exchange of probes, after which the peer will retain either the old or the new path. Thus, there can never be more active paths than the `active_connection_id_limit`.\r\n> \r\n>     4. Since a new path requires a new connection ID in each direction, the maximum number of paths cannot be higher than the lowest of the two `active_connection_id_limit` advertised by both peers.\r\n\r\nFully Agree, Christian. ",
+          "createdAt": "2022-06-17T05:51:02Z",
+          "updatedAt": "2022-06-17T05:51:02Z"
+        },
+        {
+          "author": "boucadair",
+          "authorAssociation": "NONE",
+          "body": "> I think the issue boils down to \"how does a node refuse to establish a new path\".\r\n\r\nThat's it! \r\n\r\nI'd like the mechanism to not lead to closing the connection when such new paths are being added but a limit is fired. ",
+          "createdAt": "2022-06-17T05:53:38Z",
+          "updatedAt": "2022-06-17T05:56:12Z"
         }
       ]
     }
