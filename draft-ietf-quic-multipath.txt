@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 17 September 2022                            Q. De Coninck, Ed.
+Expires: 6 January 2023                               Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           16 March 2022
+                                                             5 July 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 September 2022.
+   This Internet-Draft will expire on 6 January 2023.
 
 Copyright Notice
 
@@ -781,7 +781,7 @@ Table of Contents
    calculated by combining the packet protection IV with the packet
    number and with the path identifier.
 
-   The path ID for 1-RTT packets is the sequence number of of
+   The path ID for 1-RTT packets is the sequence number of
    [QUIC-TRANSPORT], or zero if the Connection ID is zero-length.
    Section 19 of [QUIC-TRANSPORT] encodes the Connection ID Sequence
    Number as a variable-length integer, allowing values up to 2^62-1; in

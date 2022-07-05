@@ -15,26 +15,26 @@
        This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection. 
     " name="description">
-<meta content="xml2rfc 3.12.3" name="generator">
+<meta content="xml2rfc 3.13.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-quic-multipath-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.12.3
-    Python 3.9.7
+  xml2rfc 3.13.0
+    Python 3.10.4
     appdirs 1.4.4
-    ConfigArgParse 1.3
-    google-i18n-address 2.5.0
+    ConfigArgParse 1.5.3
+    google-i18n-address 2.5.2
     html5lib 1.1
     intervaltree 3.1.0
-    Jinja2 2.11.3
+    Jinja2 3.1.2
     kitchen 1.2.6
-    lxml 4.6.5
-    MarkupSafe 2.0.1
-    pycountry 20.7.3
-    pyflakes 2.3.1
-    PyYAML 5.4.1
-    requests 2.26.0
-    setuptools 52.0.0
+    lxml 4.9.1
+    MarkupSafe 2.1.1
+    pycountry 22.3.5
+    pyflakes 2.4.0
+    PyYAML 6.0
+    requests 2.27.1
+    setuptools 59.4.0
     six 1.16.0
 -->
 <link href="draft-ietf-quic-multipath.xml" rel="alternate" type="application/rfc+xml">
@@ -159,6 +159,14 @@ enable the simultaneous usage of multiple paths for a single connection.
   font-weight: 700;
   font-display: swap;
   src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -342,7 +350,7 @@ ol, ul {
   padding: 0;
   margin: 0 0 0.5em 2em;
 }
-ol ol, ul ul, ol ul, ul ol {
+:is(ol, ul) :is(ol, ul) {
   margin-left: 1em;
 }
 li {
@@ -357,8 +365,7 @@ ul.empty, .ulEmpty {
 ul.empty li, .ulEmpty li {
   margin-top: 0.5em;
 }
-ul.compact, .ulCompact,
-ol.compact, .olCompact {
+:is(ul, ol).compact, .ulCompact, .olCompact {
   line-height: 100%;
   margin: 0 0 0 2em;
 }
@@ -374,7 +381,7 @@ dl > dd {
   margin-bottom: .8em;
   min-height: 1.3em;
 }
-dl.compact > dd, .dlCompact > dd {
+:is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0em;
 }
 dl > dd > dl {
@@ -416,6 +423,9 @@ tt, code {
      remove leading to avoid altering the final height of lines */
   line-height: 0;
 }
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
 pre {
   border: 1px solid var(--line-color);
   font-size: 13.5px;
@@ -440,6 +450,19 @@ figcaption, caption {
   text-align: left;
 }
 @media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
   pre, svg {
     display: inline-block;
     overflow-x: auto;
@@ -455,7 +478,7 @@ figcaption, caption {
     display: block;
     width: calc(100% - 25px);
   }
-  pre + .pilcrow, svg + .pilcrow {
+  :is(pre, svg) + .pilcrow {
     display: inline-block;
     vertical-align: text-bottom;
     padding-bottom: 8px;
@@ -504,17 +527,11 @@ th, td {
 th {
   background-color: var(--line-color);
 }
-tr:nth-child(2n) > td {
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
   background-color: var(--background-color);
 }
-tr:nth-child(2n+1) > td {
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
   background-color: var(--highlight-color);
-}
-thead+tbody > tr:nth-child(2n) > td {
-  background-color: var(--highlight-color);
-}
-thead+tbody > tr:nth-child(2n+1) > td {
-  background-color: var(--background-color);
 }
 table caption {
   margin: 0;
@@ -554,8 +571,9 @@ hr {
 }
 .bcp14 {
   font-variant: small-caps;
+  font-weight: 600;
+  font-size: 14.5px;
 }
-
 .role {
   font-variant: all-small-caps;
 }
@@ -794,7 +812,7 @@ hr.addr {
     margin: 0 0 0 4px;
     font-size: var(--small-font-size);
   }
-  #toc ul p, #toc ul li {
+  #toc ul :is(p, li) {
     margin: 2px 0;
     line-height: 22px;
   }
@@ -904,13 +922,13 @@ dl.dlNewline > dt {
 }
 
 /* Provide styling for table cell text alignment */
-table .text-left, table .text-left {
+table .text-left {
   text-align: left;
 }
-table .text-center, table .text-center {
+table .text-center {
   text-align: center;
 }
-table .text-right, table .text-right {
+table .text-right {
   text-align: right;
 }
 
@@ -977,12 +995,6 @@ address div.right {
   }
 
 }
-/* Tweak the bcp14 keyword presentation */
-.bcp14 {
-  font-variant: small-caps;
-  font-weight: bold;
-  font-size: 0.9em;
-}
 
 /* Dark mode. */
 @media (prefers-color-scheme: dark) {
@@ -997,19 +1009,20 @@ address div.right {
   --pilcrow-strong: #666;
   scrollbar-color: #777 #333;
 }
-/* Trick: a prefix match works because only black and white are allowed */
-svg [stroke="black"], svg [stroke^="#000"] {
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
   stroke: var(--text-color);
 }
-svg [stroke="white"], svg [stroke^="#fff"] {
+svg :is([stroke="white"], [stroke^="#fff"]) {
   stroke: var(--background-color);
 }
-svg [fill="black"], svg [fill^="#000"], svg :not([fill]) {
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
   fill: var(--text-color);
 }
-svg [stroke="fill"], svg [fill^="#fff"] {
+svg :is([stroke="fill"], [fill^="#fff"]) {
   fill: var(--background-color);
-}
 }
 </style>
 
@@ -1019,11 +1032,11 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">March 2022</td>
+<td class="right">July 2022</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 17 September 2022</td>
+<td class="center">Expires 6 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1036,12 +1049,12 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-03-16" class="published">16 March 2022</time>
+<time datetime="2022-07-05" class="published">5 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-09-17">17 September 2022</time></dd>
+<dd class="expires"><time datetime="2023-01-06">6 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1110,7 +1123,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 September 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1403,7 +1416,7 @@ establishment.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
       <h2 id="name-high-level-overview">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-high-level-overview" class="section-name selfRef">High-level overview</a>
       </h2>
-<p id="section-2-1">The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of 
+<p id="section-2-1">The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of
 different paths to exchange non-probing QUIC frames for a single connection. This contrasts with
 the base QUIC protocol <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> that includes a connection migration mechanism that
 selects only one path to exchange such frames.<a href="#section-2-1" class="pilcrow">¶</a></p>
@@ -1418,7 +1431,7 @@ has been successfully negotiated.<a href="#section-2-2" class="pilcrow">¶</a></
 <p id="section-2-3">To add a new path to an existing multipath QUIC connection, a client starts a path validation on
 the chosen path, as further described in Section <a href="#setup" class="xref">Section 4</a>.
 In this version of the document, a QUIC server does not initiate the creation
-of a path, but it can validate a new path created by a client. 
+of a path, but it can validate a new path created by a client.
 A new path can only be used once it has been validated. Each endpoint associates a
 Path identifier to each path. This identifier is notably used when a peer sends a PATH_ABANDON frame
 to indicate that it has closed the path whose identifier is contained in the PATH_ABANDON frame.<a href="#section-2-3" class="pilcrow">¶</a></p>
@@ -1508,12 +1521,12 @@ header.<a href="#section-3-10" class="pilcrow">¶</a></p>
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-path-setup-and-removal" class="section-name selfRef">Path Setup and Removal</a>
       </h2>
 <p id="section-4-1">After completing the handshake, endpoints have agreed to enable
-multipath feature and can start using multiple paths. This document 
+multipath feature and can start using multiple paths. This document
 does not specify how an endpoint that is reachable via several addresses
 announces these addresses to the other endpoint. In particular, if the
-server uses the preferred_address transport parameter, clients 
-SHOULD NOT assume that the initial server address and the addresses 
-contained in this parameter can be simultaneously used for multipath. 
+server uses the preferred_address transport parameter, clients
+SHOULD NOT assume that the initial server address and the addresses
+contained in this parameter can be simultaneously used for multipath.
 Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.<a href="#section-4-1" class="pilcrow">¶</a></p>
@@ -1638,9 +1651,9 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.2.3-2">When more than one path is available, hosts shall monitor the arrival
-of non-probing packets and the acknowledgements 
+of non-probing packets and the acknowledgements
 for the packets sent over each path. Hosts SHOULD stop
-sending traffic on a path if for at least max_idle_timeout milliseconds 
+sending traffic on a path if for at least max_idle_timeout milliseconds
 (a) no non-probing packet was received or (b) no non-probing
 packet sent over this path was acknowledged, but MAY ignore that
 rule if it would disqualify
@@ -1858,7 +1871,7 @@ packet schedulers depending on the application goals.<a href="#section-7-2" clas
       <h2 id="name-recovery">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-recovery" class="section-name selfRef">Recovery</a>
       </h2>
-<p id="section-8-1">Simultaneous use of multiple paths enables different 
+<p id="section-8-1">Simultaneous use of multiple paths enables different
 retransmission strategies to cope with losses such as:
 a) retransmitting lost frames over the
 same path, b) retransmitting lost frames on a different or
@@ -2026,12 +2039,11 @@ the packet number alone would not guarantee the uniqueness of the nonce.<a href=
 <p id="section-9.2.1-3">In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
 and with the path identifier.<a href="#section-9.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-9.2.1-4">The path ID for 1-RTT packets is the sequence number of
-of <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, or zero if the Connection ID is zero-length.
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19" class="relref">Section 19</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> encodes the Connection ID Sequence Number
-as a variable-length integer, allowing values up to 2^62-1;
-in this specification a range of less than 2^32-1 values MUST be used
-before updating the packet protection key.<a href="#section-9.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-9.2.1-4">The path ID for 1-RTT packets is the sequence number of <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, or
+zero if the Connection ID is zero-length.  <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19" class="relref">Section 19</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>
+encodes the Connection ID Sequence Number as a variable-length integer,
+allowing values up to 2^62-1; in this specification a range of less than 2^32-1
+values MUST be used before updating the packet protection key.<a href="#section-9.2.1-4" class="pilcrow">¶</a></p>
 <p id="section-9.2.1-5">To calculate the nonce, a 96 bit path-and-packet-number is composed of
 the 32 bit Connection ID Sequence Number in byte order, two zero bits,
 and the 62 bits of the reconstructed QUIC packet number in network byte order.
@@ -2160,7 +2172,7 @@ number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
 number of the received packet's DCID over that path (path identifier type
-0x00), hence using the path_id 1. Optionally, the server confirms the path closure 
+0x00), hence using the path_id 1. Optionally, the server confirms the path closure
 by sending an PATH_ABANDON frame using
 the sequence number of the received packet's DCID over that path (path
 identifier type 0x00) as path identifier, which corresponds to the path_id 2. Both the client and
@@ -2294,8 +2306,8 @@ in <a href="#fig-path-identifier-format" class="xref">Figure 6</a>.<a href="#sec
 path identifier.<a href="#section-12.1-6.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-12.1-6.1.2.1">Type 0: Refer to the connection identifier issued by the sender of
-the control frame. 
-Note that this is the connection identifier used by the peer 
+the control frame.
+Note that this is the connection identifier used by the peer
 when sending packets on the to-be-closed path.
 This method SHOULD be used if this connection identifier is non-zero
 length. This method MUST NOT be used if this connection identifier
@@ -2303,7 +2315,7 @@ is zero-length.<a href="#section-12.1-6.1.2.1" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="section-12.1-6.1.2.2">Type 1: Refer to the connection identifier issued by the receiver of
 the control frame.
-Note that this is the connection identifier used by the sender 
+Note that this is the connection identifier used by the sender
 when sending packets on the to-be-closed path.
 This method MUST NOT be used if this connection identifier is zero-length.<a href="#section-12.1-6.1.2.2" class="pilcrow">¶</a>
 </li>
