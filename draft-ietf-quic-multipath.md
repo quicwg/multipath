@@ -626,7 +626,7 @@ perform congestion control on the relevant paths, and to correctly
 estimate the transmission delays on each path. (See
 {{ack-delay-and-zero-length-cid-considerations}} for specific considerations
 about using the ACK Delay field of ACK frames, and
-{{ecn-and-zero-length-cid-considerations}} for issues on using ECN marks.)
+{{ecn-handling}} for issues on using ECN marks.)
 
 Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
 based on timers and on sequence numbers. When packets are sent over
@@ -650,7 +650,7 @@ delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
 
-### ECN and Zero-Length CID Considerations {#ecn-handing}
+### ECN and Zero-Length CID Considerations {#ecn-handling}
 
 ECN feedback in QUIC is provided based on counters in the ACK frame
 (see {{Section  19.3.2. of QUIC-TRANSPORT}}). That means if an ACK
