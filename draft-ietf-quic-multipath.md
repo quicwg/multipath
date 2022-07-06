@@ -124,7 +124,7 @@ path management in {{Section 9 of QUIC-TRANSPORT}} and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}.
 
-The proposal introduces support for multiple packet number spaces.
+This extension uses multiple packet number spaces.
 When multipath is negotiated,
 each destination connection ID is linked to a separate packet number space.
 Using multiple packet number spaces enables direct use of the
