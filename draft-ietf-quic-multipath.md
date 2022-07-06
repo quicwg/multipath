@@ -552,17 +552,30 @@ packets sent on path 0.
 
 ## Using Zero-Length connection ID {#using-zero-length}
 
-If a node elects to use zero-length connection IDs, it MUST implement the
-handling of Acknowledgements defined in {{sending-acknowledgements-and-handling-ranges}}.
-The peer node using zero-length connection IDs SHOULD implement a
-logic to handle loss detection in the presence of multiple paths,
-identify the path on which packets are acknowledged or determined
-lost for the purpose of congestion control as explained
-in {{zero-length-cid-loss-and-congestion}}, mitigate the ECN
-issues mentioned in {{ecn-and-zero-length-cid-considerations}}, and
-mitigate the RTT measurement issues explained
-in {{ack-delay-and-zero-length-cid-considerations}}. If a node
-does not support this logic, it MUST limit its use of multipath
+If a zero-length connection ID is used, one packet number space
+ for all paths. That means the packet sequence numbers are allocated
+ from the common
+ number space, so that, for example, packet number N could be sent
+ on one path and packet number N+1 on another.
+ 
+ In this case, ACK frames report the numbers of packets that have been
+ received so far,
+ regardless of the path on which they have been received. That means
+ the senders needs to maintain an association between sent packet numbers
+ and the path over which these packets were sent. This is necessary
+ to implement per path congestion control, as explained
+in {{zero-length-cid-loss-and-congestion}}.
+
+Further, the receiver of packets with zero-length connection IDs should
+implement handling of acknowledgements as defined in
+{{sending-acknowledgements-and-handling-ranges}}.
+
+ECN handing is specified in {{ecn-handling}}, and
+mitigation of the RTT measurement is further explained
+in {{ack-delay-and-zero-length-cid-considerations}}. 
+
+If a node
+does not want to implement this logic, it MAY instead limit its use of multiple paths
 as explained in {{restricted-sending-to-zero-length-cid-peer}}.
 
 
