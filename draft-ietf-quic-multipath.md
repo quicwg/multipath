@@ -632,7 +632,7 @@ Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
 based on timers and on sequence numbers. When packets are sent over
 multiple paths, loss detection must be adapted to allow for different RTTs
 on different paths. When sending to zero-length CID receivers, packets sent
-on different paths may not be received in order. Therefore senders cannot
+on different paths may be received out of order. Therefore senders cannot
 directly use the packet sequence numbers to
 compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
 Relying only on Time Thresholds produces correct results, but is somewhat
