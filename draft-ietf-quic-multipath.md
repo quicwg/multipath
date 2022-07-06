@@ -583,13 +583,13 @@ as explained in {{restricted-sending-to-zero-length-cid-peer}}.
 
 If zero-length CID and therefore also a single packet number space
 is used by the sender, the receiver MAY send ACK frames instead
-of ACK_MPframes to reduce overhead as the additional path ID field
+of ACK_MP frames to reduce overhead as the additional path ID field
 will anyway always carry the same value.
 
 If senders decide to send packets on paths with different
 transmission delays, some packets will very likely be received out
-of order.  This will cause the ACK frames to carry multiple ranges of
-received packets.  The large number of range increases the size of
+of order. This will cause the ACK frames to carry multiple ranges of
+received packets. The large number of range increases the size of
 ACK frames, causing transmission and processing overhead.
 
 The size and overhead of the ACK frames can
@@ -626,7 +626,7 @@ perform congestion control on the relevant paths, and to correctly
 estimate the transmission delays on each path. (See
 {{ack-delay-and-zero-length-cid-considerations}} for specific considerations
 about using the ACK Delay field of ACK frames, and
-{{ecn-and-zero-length-cid-considerations}} for issues on using ECN marks.)
+{{ecn-handling}} for issues on using ECN marks.)
 
 Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
 based on timers and on sequence numbers. When packets are sent over
@@ -637,8 +637,9 @@ directly use the packet sequence numbers to
 compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
 Relying only on Time Thresholds produces correct results, but is somewhat
 suboptimal. Some implementations have been getting good results by
-remembering not just the path over which a packet was sent, but also
-the order of a packet on that path. They can then use this order in the
+not just remembering the path over which a packet was sent, but also
+maintaining an order list of packets sent on each path. That ordered
+list can then be used to compute acknowledgement gaps per path in
 Packet Threshold tests.
 
 ### ACK Delay and Zero-Length CID Considerations
@@ -650,7 +651,7 @@ delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
 
-### ECN and Zero-Length CID Considerations {#ecn-handing}
+### ECN and Zero-Length CID Considerations {#ecn-handling}
 
 ECN feedback in QUIC is provided based on counters in the ACK frame
 (see {{Section  19.3.2. of QUIC-TRANSPORT}}). That means if an ACK
