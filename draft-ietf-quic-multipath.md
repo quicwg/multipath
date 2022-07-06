@@ -134,8 +134,9 @@ loss recovery and congestion control mechanisms defined in
 Some deployments of QUIC use zero-length connection IDs.
 When a node selects to use zero-length connection IDs, it is not
 possible to use different connection IDs for distinguishing packets
-sent to that node over different paths. All packets sent with a zero-length
-CID are numbered in the same number space. When using the same packet number space
+sent to that node over different paths. This extension also specifies a way to use
+zero-length CID by using the same packet number space on all paths. 
+However, when using the same packet number space
 on multiple paths, out of order delivery is likely. This causes inflation of the number of
 acknowledgement ranges and therefore of the
 the size of ACK frames. Senders that accept to use a single number
