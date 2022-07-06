@@ -554,17 +554,17 @@ packets sent on path 0.
 ## Using Zero-Length connection ID {#using-zero-length}
 
 If a zero-length connection ID is used, one packet number space
- for all paths. That means the packet sequence numbers are allocated
- from the common
- number space, so that, for example, packet number N could be sent
- on one path and packet number N+1 on another.
- 
- In this case, ACK frames report the numbers of packets that have been
- received so far,
- regardless of the path on which they have been received. That means
- the senders needs to maintain an association between sent packet numbers
- and the path over which these packets were sent. This is necessary
- to implement per path congestion control, as explained
+for all paths. That means the packet sequence numbers are allocated
+from the common
+number space, so that, for example, packet number N could be sent
+on one path and packet number N+1 on another.
+
+In this case, ACK frames report the numbers of packets that have been
+received so far,
+regardless of the path on which they have been received. That means
+the senders needs to maintain an association between sent packet numbers
+and the path over which these packets were sent. This is necessary
+to implement per path congestion control, as explained
 in {{zero-length-cid-loss-and-congestion}}.
 
 Further, the receiver of packets with zero-length connection IDs should
@@ -573,7 +573,7 @@ implement handling of acknowledgements as defined in
 
 ECN handing is specified in {{ecn-handling}}, and
 mitigation of the RTT measurement is further explained
-in {{ack-delay-and-zero-length-cid-considerations}}. 
+in {{ack-delay-and-zero-length-cid-considerations}}.
 
 If a node
 does not want to implement this logic, it MAY instead limit its use of multiple paths
@@ -666,7 +666,7 @@ the ECN feedback cannot unambiguously be assigned to a path.
 
 If the sender marks its packets with the ECN capable flags, the network
 will expect standard reactions to ECN marks, such as slowing down
-transmission on the sending path. If zero-length CID is used, 
+transmission on the sending path. If zero-length CID is used,
 the sending path is however ambiguous. Therefore, the sender MUST
 treat a CE marking as a congestion signal on all sending paths that
 have been by a packet that was acknowledged in the ACK frame signaling
