@@ -568,6 +568,11 @@ as explained in {{restricted-sending-to-zero-length-cid-peer}}.
 
 ### Sending Acknowledgements and Handling Ranges
 
+If zero-length CID and therefore also a single packet number space
+is used by the sender, the receiver MAY send ACK frames instead
+of ACK_MPframes to reduce overhead as the additional path ID field
+will anyway always carry the same value.
+
 If senders decide to send packets on paths with different
 transmission delays, some packets will very likely be received out
 of order.  This will cause the ACK frames to carry multiple ranges of
