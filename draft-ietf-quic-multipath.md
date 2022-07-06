@@ -637,9 +637,11 @@ a path.
 
 If the sender marks its packets with the ECN capable flags, the network
 will expect standard reactions to ECN marks, such as slowing down
-transmission on the sending path. As the sending path is ambiguous,
-the sender must treat a CE marking as a congestion signal on all sending
-paths.
+transmission on the sending path. If zero-length CID is used, 
+the sending path is however ambiguous. Therefore, the sender MUST
+treat a CE marking as a congestion signal on all sending paths that
+have been by a packet that was acknowledged in the ACK frame signaling
+the CE counter increase.
 
 A host that is sending over multiple paths to a zero-length CID receiver
 MAY disable ECN marking and
