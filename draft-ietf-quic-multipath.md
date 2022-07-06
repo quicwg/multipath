@@ -645,7 +645,7 @@ delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
 
-### ECN and Zero-Length CID Considerations
+### ECN and Zero-Length CID Considerations {#ecn-handing}
 
 ECN feedback in QUIC is provided based on counters in the ACK frame
 (see {{Section  19.3.2. of QUIC-TRANSPORT}}). That means if an ACK
