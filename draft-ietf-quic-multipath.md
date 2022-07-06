@@ -673,7 +673,7 @@ send all subsequent packets as Not-ECN capable.
 
 Hosts that are designed to support multipath using multiple number spaces
 MAY adopt a conservative posture after negotiating multipath support with
-a peer using zero-length CID. The simplest posture is to elect to only send
+a peer using zero-length CID. The simplest posture is to only send
 data on one path at a time, while accepting packets on all acceptable
 paths. In that case:
 
