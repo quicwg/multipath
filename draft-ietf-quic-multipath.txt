@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 6 January 2023                               Q. De Coninck, Ed.
+Expires: 7 January 2023                               Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             5 July 2022
+                                                             6 July 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 January 2023.
+   This Internet-Draft will expire on 7 January 2023.
 
 Copyright Notice
 
@@ -337,10 +337,11 @@ Table of Contents
 
    When the multipath option is negotiated, clients that want to use an
    additional path MUST first initiate the Address Validation procedure
-   with PATH_CHALLENGE and PATH_RESPONSE frames described in Section 8
-   of [QUIC-TRANSPORT].  After receiving packets from the client on the
-   new paths, the servers MAY in turn attempt to validate these paths
-   using the same mechanisms.
+   with PATH_CHALLENGE and PATH_RESPONSE frames described in Section 8.2
+   of [QUIC-TRANSPORT].  After receiving packets from the client on a
+   new path, if the server decides to use the new path, the server MUST
+   perform path validation Section 8.2 of [QUIC-TRANSPORT] unless it has
+   previously validated that address.
 
    If validation succeed, the client can send non-probing, 1-RTT packets
    on the new paths.  In contrast with the specification in Section 9 of
