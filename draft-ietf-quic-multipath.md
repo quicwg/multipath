@@ -664,9 +664,9 @@ Of course, the hosts will only take limited advantage from the multipath
 capability in these scenarios. Support for "make before break" migrations
 will improve, but load sharing between multiple paths will not work.
 
-## Using Multiple Packet Number Spaces
+## Using non-zero length CID and Multiple Packet Number Spaces
 
-If the multipath option is enabled with a value of 2, each path has
+If packets contain a non-zero CID, each path has
 its own packet number space for transmitting 1-RTT packets and a new
 ACK frame format is used as specified in {{ack-mp-frame}}.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally
