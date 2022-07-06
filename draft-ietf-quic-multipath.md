@@ -300,7 +300,7 @@ with PATH_CHALLENGE and PATH_RESPONSE frames described in
 {{Section 8.2 of QUIC-TRANSPORT}}. After receiving packets from the
 client on a new path, if the server decides to use the new path, 
 the server MUST perform path validation {{Section 8.2 of QUIC-TRANSPORT}} 
-using the same mechanisms, unless it has previously validated that address.
+unless it has previously validated that address.
 
 If validation succeed, the client can send non-probing, 1-RTT packets
 on the new paths.  In contrast with the specification in
