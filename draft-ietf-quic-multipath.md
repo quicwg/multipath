@@ -648,10 +648,14 @@ as described in {{QUIC-Timestamp}}.
 ### ECN and Zero-Length CID Considerations
 
 ECN feedback in QUIC is provided based on counters in the ACK frame
-(see {{Section  19.3.2. of QUIC-TRANSPORT}}). These counters are specific
-to a number space. When sending to zero-length CID receivers, the same number space is
-used for multiple paths, and the ECN feedback cannot unambiguously be assigned to
-a path.
+(see {{Section  19.3.2. of QUIC-TRANSPORT}}). That means if an ACK
+ frame acknowledges multiple packets, the ECN feedback cannot be accounted
+ to a specific packet.
+
+There are separate counters for each packet number space. However, sending
+to zero-length CID receivers, the same number space is used for multiple paths.
+Respectively, if an ACK frames acknowledges multiple packets from different paths,
+the ECN feedback cannot unambiguously be assigned to a path.
 
 If the sender marks its packets with the ECN capable flags, the network
 will expect standard reactions to ECN marks, such as slowing down
