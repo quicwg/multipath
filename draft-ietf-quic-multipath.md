@@ -566,7 +566,7 @@ does not support this logic, it MUST limit its use of multipath
 as explained in {{restricted-sending-to-zero-length-cid-peer}}.
 
 
-### Sending Acknowledgements and Handling Ranges
+### Sending Acknowledgements and Handling Ranges {#sending-acknowledgements-and-handling-ranges}
 
 If zero-length CID and therefore also a single packet number space
 is used by the sender, the receiver MAY send ACK frames instead
