@@ -138,15 +138,13 @@ sent to that node over different paths. All packets sent with a zero-length
 CID are numbered in the same number space. When using the same packet number space
 on multiple paths, out of order delivery is likely. This causes inflation of the number of 
 acknowledgement ranges and therefore of the
-the size of ACK frames. This proposal specifies algorithms for
-controlling the size of acknowledgement packets. Senders that accept to
-use multiple paths when sending to a node using zero-length CID will
-have to use special logic to minimize the impact of multipath
-delivery on loss detection and congestion control. If the receiver
-reports ECN counters, they will contain the sum of markings received on all
-paths. Senders will need specific logic to handle such ECN marks.
-(The logic required to support zero-length CID at receivers and senders
-is discussed in {{using-zero-length}}.)
+the size of ACK frames. Senders that accept to use a single number
+space on multiple paths when sending to a node using zero-length CID need
+to take special care to minimize the impact of multipath
+delivery on loss detection, congestion control, and ECN handling. 
+This proposal specifies algorithms for
+controlling the size of acknowledgement packets and ECN handling in
+Section {{using-zero-length}} and {{ecn-handling}}.
 
 
 This proposal does not cover address discovery and management. Addresses
