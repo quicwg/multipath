@@ -629,9 +629,11 @@ about using the ACK Delay field of ACK frames, and
 {{ecn-and-zero-length-cid-considerations}} for issues on using ECN marks.)
 
 Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
-based on timers and on sequence numbers. When sending to zero-length CID receivers,
-senders expect that packets sent on different paths will not be received in
-order. They cannot directly use the packet sequence numbers to
+based on timers and on sequence numbers. When packets are sent over
+multiple paths, loss detection must be adapted to allow for different RTTs
+on different paths. When sending to zero-length CID receivers, packets sent
+on different paths may not be received in order. Therefore senders cannot
+directly use the packet sequence numbers to
 compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
 Relying only on Time Thresholds produces correct results, but is somewhat
 suboptimal. Some implementations have been getting good results by
