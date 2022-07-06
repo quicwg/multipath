@@ -616,7 +616,10 @@ be controlled by the combination of one or several of the following:
 
 When sending to a zero-length CID
 receiver, senders may receive acknowledgements that combine packet
-numbers received over multiple paths. Senders MUST be able to infer the
+numbers received over multiple paths. 
+However, even if one packet number space is used on multiple path
+the sender MUST maintain separate congestion control state for each
+path. Therefore, senders MUST be able to infer the
 sending path from the acknowledged packet numbers, for example by remembering
 which packet was sent on what path. The senders MUST use that information to
 perform congestion control on the relevant paths, and to correctly
