@@ -134,14 +134,15 @@ loss recovery and congestion control mechanisms defined in
 Some deployments of QUIC use zero-length connection IDs.
 When a node selects to use zero-length connection IDs, it is not
 possible to use different connection IDs for distinguishing packets
-sent to that node over different paths. All packets sent with a zero-length
-CID are numbered in the same number space. When using the same packet number space
-on multiple paths, out of order delivery is likely. This causes inflation of the number of 
+sent to that node over different paths. This extension also specifies a way to use
+zero-length CID by using the same packet number space on all paths. 
+However, when using the same packet number space
+on multiple paths, out of order delivery is likely. This causes inflation of the number of
 acknowledgement ranges and therefore of the
 the size of ACK frames. Senders that accept to use a single number
 space on multiple paths when sending to a node using zero-length CID need
 to take special care to minimize the impact of multipath
-delivery on loss detection, congestion control, and ECN handling. 
+delivery on loss detection, congestion control, and ECN handling.
 This proposal specifies algorithms for
 controlling the size of acknowledgement packets and ECN handling in
 Section {{using-zero-length}} and {{ecn-handling}}.
@@ -632,7 +633,7 @@ Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
 based on timers and on sequence numbers. When packets are sent over
 multiple paths, loss detection must be adapted to allow for different RTTs
 on different paths. When sending to zero-length CID receivers, packets sent
-on different paths may not be received in order. Therefore senders cannot
+on different paths may be received out of order. Therefore senders cannot
 directly use the packet sequence numbers to
 compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
 Relying only on Time Thresholds produces correct results, but is somewhat
