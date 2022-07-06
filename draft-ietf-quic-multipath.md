@@ -602,7 +602,7 @@ be controlled by the combination of one or several of the following:
 ### Loss and Congestion Handling With Zero-Length CID {#zero-length-cid-loss-and-congestion}
 
 When sending to a zero-length CID
-receiver, senders will receive back acknowledgements that combine packet
+receiver, senders may receive acknowledgements that combine packet
 numbers received over multiple paths. Senders MUST be able to infer the
 sending path from the acknowledged packet numbers, for example by remembering
 which packet was sent on what path. The senders MUST use that information to
