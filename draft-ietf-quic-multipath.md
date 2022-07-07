@@ -310,18 +310,18 @@ for transmission.
 
 ## Path State Management
 
-An endpoint uses PATH_STATUS frames to inform that the peer should 
-send packets in the preference expressed by these frames. 
+An endpoint uses PATH_STATUS frames to inform that the peer should
+send packets in the preference expressed by these frames.
 
 PATH_STATUS frame describes 2 kinds of path states:
 
-- Mark a path as "available", i.e., allow the peer to use its own logic 
+- Mark a path as "available", i.e., allow the peer to use its own logic
   to split traffic among available paths.
-- Mark a path as "standby", i.e., suggest that no traffic should be sent 
+- Mark a path as "standby", i.e., suggest that no traffic should be sent
   on that path if another path is available.
 
-Endpoints use Path Identifier field in PATH_STATUS frame to identify 
-which path’s state is going to be changed. Notice that PATH_STATUS frame 
+Endpoints use Path Identifier field in PATH_STATUS frame to identify
+which path’s state is going to be changed. Notice that PATH_STATUS frame
 can be sent via a different path.
 
 
@@ -1134,9 +1134,9 @@ be sent on the path that is intended to be abandoned.
 
 ## PATH_STATUS frame {#path-status-frame}
 
-PATH_STATUS Frame are used by endpoints to inform the peer of the current 
-status of one path, and the peer should send packets according to 
-the preference expressed in these frames. 
+PATH_STATUS Frame are used by endpoints to inform the peer of the current
+status of one path, and the peer should send packets according to
+the preference expressed in these frames.
 PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 
 ~~~
@@ -1151,13 +1151,13 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 
 PATH_STATUS Frames contain the following fields:
 
-Path Identifier: An identifier of the path, which is formatted 
-  as shown in {{fig-path-identifier-format}}. Exactly the same as 
+Path Identifier: An identifier of the path, which is formatted
+  as shown in {{fig-path-identifier-format}}. Exactly the same as
   the definition of Path Identifier in {#path-abandon-frame}.
 
-Path Status sequence number: A variable-length integer specifying 
-  the sequence number assigned for this PATH_STATUS frame. The sequence 
-  number MUST be monotonically increasing for the sender of 
+Path Status sequence number: A variable-length integer specifying
+  the sequence number assigned for this PATH_STATUS frame. The sequence
+  number MUST be monotonically increasing for the sender of
   the Path Status frame in the same connection.
 
 Available values of Path Status field are:
@@ -1165,21 +1165,21 @@ Available values of Path Status field are:
 - 1: Standby
 - 2: Available
 
-Endpoints use PATH_STATUS frame to inform the peer whether it prefer to 
-use this path or not. If an endpoint receives a PATH_STATUS frame 
-containing 1-Standby status, it SHOULD stop sending non-probing packets 
-on the corresponding path, until it receive a new PATH_STATUS frame 
-containing 2-Available status with a higher sequence number referring to 
+Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
+use this path or not. If an endpoint receives a PATH_STATUS frame
+containing 1-Standby status, it SHOULD stop sending non-probing packets
+on the corresponding path, until it receive a new PATH_STATUS frame
+containing 2-Available status with a higher sequence number referring to
 the same path.
 
-Frames may be received out of order. A peer MUST ignore an incoming 
-PATH_STATUS frame if it previously received another PATH_STATUS frame 
+Frames may be received out of order. A peer MUST ignore an incoming
+PATH_STATUS frame if it previously received another PATH_STATUS frame
 for the same Path Identifier with a sequence number equal to or
 higher than the sequence number of the incoming frame.
 
-PATH_STATUS frames SHOULD be acknowledged. If a packet containing 
-a PATH_STATUS frame is considered lost, the peer should only repeat it 
-if it was the last status sent for that path -- as indicated by 
+PATH_STATUS frames SHOULD be acknowledged. If a packet containing
+a PATH_STATUS frame is considered lost, the peer should only repeat it
+if it was the last status sent for that path -- as indicated by
 the sequence number.
 
 
