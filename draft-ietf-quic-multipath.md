@@ -1156,8 +1156,9 @@ Path Identifier: An identifier of the path, which is formatted
   the definition of Path Identifier in {#path-abandon-frame}.
 
 Path Status sequence number: A variable-length integer specifying 
-  the sequence number assigned for this PATH_STATUS frame.
-  There is a different path status sequence number space for each path.
+  the sequence number assigned for this PATH_STATUS frame. The sequence 
+  number MUST be monotonically increasing for the sender of 
+  the Path Status frame in the same connection.
 
 Available values of Path Status field are:
 
