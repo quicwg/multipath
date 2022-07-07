@@ -1036,7 +1036,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 7 January 2023</td>
+<td class="center">Expires 8 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1049,12 +1049,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-07-06" class="published">6 July 2022</time>
+<time datetime="2022-07-07" class="published">7 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-01-07">7 January 2023</time></dd>
+<dd class="expires"><time datetime="2023-01-08">8 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1123,7 +1123,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1207,18 +1207,27 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-packet-number-space-and-use" class="xref">Packet Number Space and Use of Connection ID</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="xref">9.1</a>.  <a href="#name-using-one-packet-number-spa" class="xref">Using One Packet Number Space</a></p>
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="xref">9.1</a>.  <a href="#name-using-zero-length-connectio" class="xref">Using Zero-Length connection ID</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.1">
                     <p id="section-toc.1-1.9.2.1.2.1.1"><a href="#section-9.1.1" class="xref">9.1.1</a>.  <a href="#name-sending-acknowledgements-an" class="xref">Sending Acknowledgements and Handling Ranges</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.2">
-                    <p id="section-toc.1-1.9.2.1.2.2.1"><a href="#section-9.1.2" class="xref">9.1.2</a>.  <a href="#name-ack-delay-considerations" class="xref">ACK Delay Considerations</a></p>
+                    <p id="section-toc.1-1.9.2.1.2.2.1"><a href="#section-9.1.2" class="xref">9.1.2</a>.  <a href="#name-loss-and-congestion-handlin" class="xref">Loss and Congestion Handling With Zero-Length CID</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.3">
+                    <p id="section-toc.1-1.9.2.1.2.3.1"><a href="#section-9.1.3" class="xref">9.1.3</a>.  <a href="#name-ack-delay-and-zero-length-c" class="xref">ACK Delay and Zero-Length CID Considerations</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.4">
+                    <p id="section-toc.1-1.9.2.1.2.4.1"><a href="#section-9.1.4" class="xref">9.1.4</a>.  <a href="#name-ecn-and-zero-length-cid-con" class="xref">ECN and Zero-Length CID Considerations</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.5">
+                    <p id="section-toc.1-1.9.2.1.2.5.1"><a href="#section-9.1.5" class="xref">9.1.5</a>.  <a href="#name-restricted-sending-to-zero-" class="xref">Restricted Sending to Zero-Length CID Peer</a></p>
 </li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="xref">9.2</a>.  <a href="#name-using-multiple-packet-numbe" class="xref">Using Multiple Packet Number Spaces</a></p>
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="xref">9.2</a>.  <a href="#name-using-non-zero-length-cid-a" class="xref">Using non-zero length CID and Multiple Packet Number Spaces</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.1">
                     <p id="section-toc.1-1.9.2.2.2.1.1"><a href="#section-9.2.1" class="xref">9.2.1</a>.  <a href="#name-packet-protection-for-quic-" class="xref">Packet Protection for QUIC Multipath</a></p>
@@ -1341,23 +1350,27 @@ been received on another path.<a href="#section-1-5.2" class="pilcrow">¶</a>
 path management in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in <a href="#nego" class="xref">Section 3</a>.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">This proposal supports the negotiation of either the use of one packet
-number space for all paths or the use of separate packet number spaces
-per path. While both approaches are supported by the specification in
-this version of the document, the intention for the final publication
-of a multipath extension for QUIC is to choose one option in order to avoid
-incompatibility. More evaluation and implementation experience is needed
-to select one approach before final publication. Some discussion about
-pros and cons can be found here:
-https://github.com/mirjak/draft-lmbdhk-quic-multipath/blob/master/presentations/PacketNumberSpace_s.pdf<a href="#section-1-7" class="pilcrow">¶</a></p>
-<p id="section-1-8">As currently defined in this version of the draft the use of multiple
-packet number spaces requires the use of connection IDs is both
-directions. Today's deployments often only use destination connection ID
-when sending packets from the client to the server as this addresses the
-most important use cases for migration, like NAT rebinding or mobility
-events. Further discussion and work is required to evaluate if the use
-of multiple packet number spaces could be supported as well when
-the connection ID is only present in one direction.<a href="#section-1-8" class="pilcrow">¶</a></p>
+<p id="section-1-7">This extension uses multiple packet number spaces.
+When multipath is negotiated,
+each destination connection ID is linked to a separate packet number space.
+Using multiple packet number spaces enables direct use of the
+loss recovery and congestion control mechanisms defined in
+<span>[<a href="#QUIC-RECOVERY" class="xref">QUIC-RECOVERY</a>]</span>.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-8">Some deployments of QUIC use zero-length connection IDs.
+When a node selects to use zero-length connection IDs, it is not
+possible to use different connection IDs for distinguishing packets
+sent to that node over different paths. This extension also specifies a way to use
+zero-length CID by using the same packet number space on all paths.
+However, when using the same packet number space
+on multiple paths, out of order delivery is likely. This causes inflation of the number of
+acknowledgement ranges and therefore of the
+the size of ACK frames. Senders that accept to use a single number
+space on multiple paths when sending to a node using zero-length CID need
+to take special care to minimize the impact of multipath
+delivery on loss detection, congestion control, and ECN handling.
+This proposal specifies algorithms for
+controlling the size of acknowledgement packets and ECN handling in
+Section <a href="#using-zero-length" class="xref">Section 9.1</a> and <a href="#ecn-handling" class="xref">Section 9.1.4</a>.<a href="#section-1-8" class="pilcrow">¶</a></p>
 <p id="section-1-9">This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
 to be handled by the application that is using the QUIC multipath
@@ -1478,41 +1491,28 @@ PN spaces, available option values are listed in
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">0x1</td>
-            <td class="text-left" rowspan="1" colspan="1">only support one PN space for multipath</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x2</td>
-            <td class="text-left" rowspan="1" colspan="1">only support multiple PN spaces for multipath</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3</td>
-            <td class="text-left" rowspan="1" colspan="1">support both one PN space and multiple PN space</td>
+            <td class="text-left" rowspan="1" colspan="1">supports multipath as defined in this document</td>
           </tr>
         </tbody>
       </table>
 </div>
 <p id="section-3-5">If for any one of the endpoints the parameter is absent or set to 0,
-or if the two endpoints select incompatible values,
-one proposing 0x1 and the other proposing 0x2,
 the endpoints MUST fallback to
-<span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> with single path and MUST NOT use any frame or
+<span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> with single active path and MUST NOT use any frame or
 mechanism defined in this document.<a href="#section-3-5" class="pilcrow">¶</a></p>
-<p id="section-3-6">If an endpoint proposes the value 0x3, the value proposed by the
-other is accepted. If both endpoints propose the value 0x3, the
-value 0x2 is negotiated.<a href="#section-3-6" class="pilcrow">¶</a></p>
-<p id="section-3-7">If endpoint receives unexpected value for the transport parameter
+<p id="section-3-6">If endpoint receives unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
-MP_CONNECTION_ERROR and close the connection.<a href="#section-3-7" class="pilcrow">¶</a></p>
-<p id="section-3-8">This extension does not change the definition of any transport parameter
-defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3-8" class="pilcrow">¶</a></p>
-<p id="section-3-9">Inline with the definition in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> disable_active_migration
+MP_CONNECTION_ERROR and close the connection.<a href="#section-3-6" class="pilcrow">¶</a></p>
+<p id="section-3-7">This extension does not change the definition of any transport parameter
+defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3-7" class="pilcrow">¶</a></p>
+<p id="section-3-8">Inline with the definition in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> disable_active_migration
 also disables multipath support, except "after a client has acted on a
-preferred_address transport parameter" <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3-9" class="pilcrow">¶</a></p>
-<p id="section-3-10">The transport parameter "active_connection_id_limit"
+preferred_address transport parameter" <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3-8" class="pilcrow">¶</a></p>
+<p id="section-3-9">The transport parameter "active_connection_id_limit"
 <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> limits the number of usable Connection IDs, and also
 limits the number of concurrent paths. For the QUIC multipath extension
 this limit even applies when no connection ID is exposed in the QUIC
-header.<a href="#section-3-10" class="pilcrow">¶</a></p>
+header.<a href="#section-3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="setup">
@@ -1908,92 +1908,172 @@ in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, do 
 ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.<a href="#section-9-3" class="pilcrow">¶</a></p>
-<p id="section-9-4">Endpoints negotiate the use of one packet number space for all paths or
-separate packet number spaces per path during the connection handshake
-<a href="#nego" class="xref">Section 3</a>. While separate packet number spaces allow for more efficient
-ACK encoding, especially when paths have highly different latencies,
-this approach requires the use of a connection ID. Therefore use of
-a single number space can be beneficial when endpoints use zero-length
-connection ID for less overhead.<a href="#section-9-4" class="pilcrow">¶</a></p>
-<div id="using-one-packet-number-space">
+<div id="using-zero-length">
 <section id="section-9.1">
-        <h3 id="name-using-one-packet-number-spa">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-using-one-packet-number-spa" class="section-name selfRef">Using One Packet Number Space</a>
+        <h3 id="name-using-zero-length-connectio">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-using-zero-length-connectio" class="section-name selfRef">Using Zero-Length connection ID</a>
         </h3>
-<p id="section-9.1-1">If the multipath option is negotiated to use one packet number space
-for all paths, the packet sequence numbers are allocated from the common
+<p id="section-9.1-1">If a zero-length connection ID is used, one packet number space
+for all paths. That means the packet sequence numbers are allocated
+from the common
 number space, so that, for example, packet number N could be sent
 on one path and packet number N+1 on another.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.1-2">ACK frames report the numbers of packets that have been received so far,
+<p id="section-9.1-2">In this case, ACK frames report the numbers of packets that have been
+received so far,
 regardless of the path on which they have been received. That means
 the senders needs to maintain an association between sent packet numbers
 and the path over which these packets were sent. This is necessary
-to implement per path congestion control.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3">When a packet is acknowledged, the state of the congestion control
-MUST be updated for the path where the acknowledged packet
-was originally sent. The RTT is calculated based on the delay
-between the transmission of that packet and its first acknowledgement
-(see <a href="#compute-rtt" class="xref">Section 6</a>) and is used to update the RTT statistics
-for the sending path.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
-<p id="section-9.1-4">Also loss detection MUST be adapted to allow for different RTTs on
-different paths.  For example, timer computations should take into
-account the RTT of the path on which a packet was sent.  Detections
-based on packet numbers shall compare a given packet number to the
-highest packet number received for that path.<a href="#section-9.1-4" class="pilcrow">¶</a></p>
+to implement per path congestion control, as explained
+in <a href="#zero-length-cid-loss-and-congestion" class="xref">Section 9.1.2</a>.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.1-3">Further, the receiver of packets with zero-length connection IDs should
+implement handling of acknowledgements as defined in
+<a href="#sending-acknowledgements-and-handling-ranges" class="xref">Section 9.1.1</a>.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.1-4">ECN handing is specified in <a href="#ecn-handling" class="xref">Section 9.1.4</a>, and
+mitigation of the RTT measurement is further explained
+in <a href="#ack-delay-and-zero-length-cid-considerations" class="xref">Section 9.1.3</a>.<a href="#section-9.1-4" class="pilcrow">¶</a></p>
+<p id="section-9.1-5">If a node
+does not want to implement this logic, it MAY instead limit its use of multiple paths
+as explained in <a href="#restricted-sending-to-zero-length-cid-peer" class="xref">Section 9.1.5</a>.<a href="#section-9.1-5" class="pilcrow">¶</a></p>
 <div id="sending-acknowledgements-and-handling-ranges">
 <section id="section-9.1.1">
           <h4 id="name-sending-acknowledgements-an">
 <a href="#section-9.1.1" class="section-number selfRef">9.1.1. </a><a href="#name-sending-acknowledgements-an" class="section-name selfRef">Sending Acknowledgements and Handling Ranges</a>
           </h4>
-<p id="section-9.1.1-1">If senders decide to send packets on paths with different
+<p id="section-9.1.1-1">If zero-length CID and therefore also a single packet number space
+is used by the sender, the receiver MAY send ACK frames instead
+of ACK_MP frames to reduce overhead as the additional path ID field
+will anyway always carry the same value.<a href="#section-9.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-9.1.1-2">If senders decide to send packets on paths with different
 transmission delays, some packets will very likely be received out
-of order.  This will cause the ACK frames to carry multiple ranges of
-received packets.  The large number of range increases the size of
-ACK frames, causing transmission and processing overhead.<a href="#section-9.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.1.1-2">The size and overhead of the ACK frames can
-be controlled by the combination of one or several of the following:<a href="#section-9.1.1-2" class="pilcrow">¶</a></p>
+of order. This will cause the ACK frames to carry multiple ranges of
+received packets. The large number of range increases the size of
+ACK frames, causing transmission and processing overhead.<a href="#section-9.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.1.1-3">The size and overhead of the ACK frames can
+be controlled by the combination of one or several of the following:<a href="#section-9.1.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-9.1.1-3.1">Not transmitting again ACK ranges that were present in an ACK
-frame acknowledged by the peer.<a href="#section-9.1.1-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-9.1.1-4.1">Not transmitting again ACK ranges that were present in an ACK
+frame acknowledged by the peer.<a href="#section-9.1.1-4.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-9.1.1-3.2">Delay acknowledgements to allow for arrival of "hole filling"
-packets.<a href="#section-9.1.1-3.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-9.1.1-4.2">Delay acknowledgements to allow for arrival of "hole filling"
+packets.<a href="#section-9.1.1-4.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-9.1.1-3.3">Limit the total number of ranges sent in an ACK frame.<a href="#section-9.1.1-3.3" class="pilcrow">¶</a>
+            <li class="normal" id="section-9.1.1-4.3">Limit the total number of ranges sent in an ACK frame.<a href="#section-9.1.1-4.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-9.1.1-3.4">Limiting the number of transmissions of a specific ACK range, on
+            <li class="normal" id="section-9.1.1-4.4">Limiting the number of transmissions of a specific ACK range, on
 the assumption that a sufficient number of transmissions almost
-certainly ensures reception by the peer.<a href="#section-9.1.1-3.4" class="pilcrow">¶</a>
+certainly ensures reception by the peer.<a href="#section-9.1.1-4.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-9.1.1-3.5">Send multiple messages for a given path in a single socket
+            <li class="normal" id="section-9.1.1-4.5">Send multiple messages for a given path in a single socket
 operation, so that a series of packets sent from a single path
 uses a series of consecutive sequence numbers without creating
-holes.<a href="#section-9.1.1-3.5" class="pilcrow">¶</a>
+holes.<a href="#section-9.1.1-4.5" class="pilcrow">¶</a>
 </li>
           </ul>
 </section>
 </div>
-<div id="ack-delay-considerations">
+<div id="zero-length-cid-loss-and-congestion">
 <section id="section-9.1.2">
-          <h4 id="name-ack-delay-considerations">
-<a href="#section-9.1.2" class="section-number selfRef">9.1.2. </a><a href="#name-ack-delay-considerations" class="section-name selfRef">ACK Delay Considerations</a>
+          <h4 id="name-loss-and-congestion-handlin">
+<a href="#section-9.1.2" class="section-number selfRef">9.1.2. </a><a href="#name-loss-and-congestion-handlin" class="section-name selfRef">Loss and Congestion Handling With Zero-Length CID</a>
           </h4>
-<p id="section-9.1.2-1">The ACK Delay field of the ACK frame is relative to the largest
+<p id="section-9.1.2-1">When sending to a zero-length CID
+receiver, senders may receive acknowledgements that combine packet
+numbers received over multiple paths.
+However, even if one packet number space is used on multiple path
+the sender MUST maintain separate congestion control state for each
+path. Therefore, senders MUST be able to infer the
+sending path from the acknowledged packet numbers, for example by remembering
+which packet was sent on what path. The senders MUST use that information to
+perform congestion control on the relevant paths, and to correctly
+estimate the transmission delays on each path. (See
+<a href="#ack-delay-and-zero-length-cid-considerations" class="xref">Section 9.1.3</a> for specific considerations
+about using the ACK Delay field of ACK frames, and
+<a href="#ecn-handling" class="xref">Section 9.1.4</a> for issues on using ECN marks.)<a href="#section-9.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.1.2-2">Loss detection as specified in <span>[<a href="#QUIC-RECOVERY" class="xref">QUIC-RECOVERY</a>]</span> uses algorithms
+based on timers and on sequence numbers. When packets are sent over
+multiple paths, loss detection must be adapted to allow for different RTTs
+on different paths. When sending to zero-length CID receivers, packets sent
+on different paths may be received out of order. Therefore senders cannot
+directly use the packet sequence numbers to
+compute the Packet Thresholds defined in <span><a href="https://rfc-editor.org/rfc/rfc9002#section-6.1.1" class="relref">Section 6.1.1</a> of [<a href="#QUIC-RECOVERY" class="xref">QUIC-RECOVERY</a>]</span>.
+Relying only on Time Thresholds produces correct results, but is somewhat
+suboptimal. Some implementations have been getting good results by
+not just remembering the path over which a packet was sent, but also
+maintaining an order list of packets sent on each path. That ordered
+list can then be used to compute acknowledgement gaps per path in
+Packet Threshold tests.<a href="#section-9.1.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ack-delay-and-zero-length-cid-considerations">
+<section id="section-9.1.3">
+          <h4 id="name-ack-delay-and-zero-length-c">
+<a href="#section-9.1.3" class="section-number selfRef">9.1.3. </a><a href="#name-ack-delay-and-zero-length-c" class="section-name selfRef">ACK Delay and Zero-Length CID Considerations</a>
+          </h4>
+<p id="section-9.1.3-1">The ACK Delay field of the ACK frame is relative to the largest
 acknowledged packet number (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-13.2.5" class="relref">Section 13.2.5</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>).
 When using paths with different transmission delays, the reported host
 delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
-as described in <span>[<a href="#QUIC-Timestamp" class="xref">QUIC-Timestamp</a>]</span>.<a href="#section-9.1.2-1" class="pilcrow">¶</a></p>
+as described in <span>[<a href="#QUIC-Timestamp" class="xref">QUIC-Timestamp</a>]</span>.<a href="#section-9.1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ecn-handling">
+<section id="section-9.1.4">
+          <h4 id="name-ecn-and-zero-length-cid-con">
+<a href="#section-9.1.4" class="section-number selfRef">9.1.4. </a><a href="#name-ecn-and-zero-length-cid-con" class="section-name selfRef">ECN and Zero-Length CID Considerations</a>
+          </h4>
+<p id="section-9.1.4-1">ECN feedback in QUIC is provided based on counters in the ACK frame
+(see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3.2." class="relref">Section 19.3.2.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>). That means if an ACK
+ frame acknowledges multiple packets, the ECN feedback cannot be accounted
+ to a specific packet.<a href="#section-9.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-9.1.4-2">There are separate counters for each packet number space. However, sending
+to zero-length CID receivers, the same number space is used for multiple paths.
+Respectively, if an ACK frames acknowledges multiple packets from different paths,
+the ECN feedback cannot unambiguously be assigned to a path.<a href="#section-9.1.4-2" class="pilcrow">¶</a></p>
+<p id="section-9.1.4-3">If the sender marks its packets with the ECN capable flags, the network
+will expect standard reactions to ECN marks, such as slowing down
+transmission on the sending path. If zero-length CID is used,
+the sending path is however ambiguous. Therefore, the sender MUST
+treat a CE marking as a congestion signal on all sending paths that
+have been by a packet that was acknowledged in the ACK frame signaling
+the CE counter increase.<a href="#section-9.1.4-3" class="pilcrow">¶</a></p>
+<p id="section-9.1.4-4">A host that is sending over multiple paths to a zero-length CID receiver
+MAY disable ECN marking and
+send all subsequent packets as Not-ECN capable.<a href="#section-9.1.4-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="restricted-sending-to-zero-length-cid-peer">
+<section id="section-9.1.5">
+          <h4 id="name-restricted-sending-to-zero-">
+<a href="#section-9.1.5" class="section-number selfRef">9.1.5. </a><a href="#name-restricted-sending-to-zero-" class="section-name selfRef">Restricted Sending to Zero-Length CID Peer</a>
+          </h4>
+<p id="section-9.1.5-1">Hosts that are designed to support multipath using multiple number spaces
+MAY adopt a conservative posture after negotiating multipath support with
+a peer using zero-length CID. The simplest posture is to only send
+data on one path at a time, while accepting packets on all acceptable
+paths. In that case:<a href="#section-9.1.5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9.1.5-2.1">the attribution of packets to path discussed in <a href="#zero-length-cid-loss-and-congestion" class="xref">Section 9.1.2</a>
+are easy to solve because packets are sent on a single path,<a href="#section-9.1.5-2.1" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-9.1.5-2.2">the ACK Delays are correct,<a href="#section-9.1.5-2.2" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-9.1.5-2.3">the vast majority of ECN marks relate to the current sending path.<a href="#section-9.1.5-2.3" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-9.1.5-3">Of course, the hosts will only take limited advantage from the multipath
+capability in these scenarios. Support for "make before break" migrations
+will improve, but load sharing between multiple paths will not work.<a href="#section-9.1.5-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
-<div id="using-multiple-packet-number-spaces">
+<div id="using-non-zero-length-cid-and-multiple-packet-number-spaces">
 <section id="section-9.2">
-        <h3 id="name-using-multiple-packet-numbe">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-using-multiple-packet-numbe" class="section-name selfRef">Using Multiple Packet Number Spaces</a>
+        <h3 id="name-using-non-zero-length-cid-a">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-using-non-zero-length-cid-a" class="section-name selfRef">Using non-zero length CID and Multiple Packet Number Spaces</a>
         </h3>
-<p id="section-9.2-1">If the multipath option is enabled with a value of 2, each path has
+<p id="section-9.2-1">If packets contain a non-zero CID, each path has
 its own packet number space for transmitting 1-RTT packets and a new
 ACK frame format is used as specified in <a href="#ack-mp-frame" class="xref">Section 12.2</a>.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally
