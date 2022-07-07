@@ -387,6 +387,15 @@ acknowledgements. The peer MAY decide to keep sending data using
 the same IP addresses and UDP ports previously associated with
 the connection ID, but MUST use a different connection ID when doing so.
 
+Note that if the sender retires a Connection ID that is still used by
+in-flight packets, it may receive ACK_MP frames referencing the retired
+Connection ID. If the sender stops tracking sent packets with retired
+Connection ID, these would be spuriously marked as lost. To avoid such
+performance issue without keeping retired Connection ID state, an
+endhost should first stop sending packets with the to-be-retired
+Connection ID, then wait for all in-flight packets to be eitther
+acknowledged or marked as lost, and finally retire the Connection ID.
+
 ### Idle Timeout {#idle-time-close}
 
 {{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
