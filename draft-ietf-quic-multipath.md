@@ -573,6 +573,14 @@ proposed and implemented, notably for Multipath TCP. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
 packet schedulers depending on the application goals.
 
+The receiver plays an important role by scheduling ACK(_MP) frames. A
+natural ACK(_MP) scheduling strategy would be to send ACK(_MP) frames on
+the path showing the lowest latency to provide the fastest feedback to
+the peer. However, the sender can be interested by estimating the RTT of
+a path instead of the sum of the forward one-way delay of a path and the
+return one-way delay of another. To that end, a receiver should
+periodically send ACK(_MP) frames on the path they acknowledge packets.
+
 # Recovery
 
 Simultaneous use of multiple paths enables different
