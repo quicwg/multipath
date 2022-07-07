@@ -482,7 +482,7 @@ guarantee that packets will actually reach the peer.
 
 The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
-of new data on a path. Note that if a path became idle timeout, 
+of new data on a path. Note that if a path became idle due to a timeout, 
 endpoints SHOULD send PATH_ABANDONED frame before closing the path.
 
 In the "Closing" state, the endhost SHOULD NOT send packets on this
