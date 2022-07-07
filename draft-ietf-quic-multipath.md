@@ -397,18 +397,20 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
-When more than one path is available, hosts shall monitor the arrival
-of non-probing packets and the acknowledgements
-for the packets sent over each path. Hosts SHOULD stop
-sending traffic on a path if for at least max_idle_timeout milliseconds
-(a) no non-probing packet was received or (b) no non-probing
-packet sent over this path was acknowledged, but MAY ignore that
-rule if it would disqualify
-all available paths. To avoid idle timeout of a path, endpoints can
-send ack-eliciting packets such as packets containing PING frames
-({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
-Sending periodic PING frames also helps prevent middlebox timeout,
-as discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}.
+When more than one path is available, hosts shall monitor the arrival of
+non-probing packets and the acknowledgements for the packets sent over each
+path. Hosts SHOULD stop sending traffic on a path if for at least that path's
+idle_period milliseconds (a) no non-probing packet was received or (b) no
+non-probing packet sent over this path was acknowledged, but MAY ignore that
+rule if it would disqualify all available paths. If max_idle_timeout is
+specified, a path's idle_period is set to max_idle_timout if it is larger than
+three times the path's current PTO value.  To avoid excessively small idle
+timeout period, endpoints MUST increase a path's idle_peroid to be at least
+three times that path's current PTO. To avoid idle timeout of a path, endpoints
+can send ack-eliciting packets such as packets containing PING frames
+({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.  Sending
+periodic PING frames also helps prevent middlebox timeout, as discussed in
+{{Section 10.1.2 of QUIC-TRANSPORT}}.
 
 Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
