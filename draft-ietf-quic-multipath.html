@@ -1569,11 +1569,19 @@ abandon one of these paths, following for example changes in local
 connectivity or changes in local preferences. After an endpoint abandons
 a path, the peer will not receive any more non-probing packets on
 that path.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">An endpoint that wants to close a path SHOULD NOT rely on implicit
-signals like idle time or packet losses, but instead SHOULD use explicit
-request to terminate path by sending the PATH_ABANDON frame
-(see <a href="#path-abandon-frame" class="xref">Section 12.1</a>).<a href="#section-4.2-2" class="pilcrow">¶</a></p>
-<div id="use-pathabandon-frame-to-close-a-path">
+<p id="section-4.2-2">An endpoint that wants to close a path SHOULD use explicit request to
+terminate the path by sending the PATH_ABANDON frame (see
+<a href="#path-abandon-close" class="xref">Section 4.2.1</a>). Note that while abandoning a path implies
+Connection ID retirement, only retiring the associated Connection ID
+does not necessarily advertise path abandon (see <a href="#retire-cid-close" class="xref">Section 4.2.2</a>).
+However, implicit signals such as idle time or packet losses might be
+the only way for an endhost to detect path closure (see
+<a href="#idle-time-close" class="xref">Section 4.2.3</a>).<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">Note that other explicit closing mechanisms of <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> still
+apply on the whole connection. In particular, the reception of either a
+CONNECTION_CLOSE (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.2" class="relref">Section 10.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) or a Stateless
+Reset (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) closes the connection.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<div id="path-abandon-close">
 <section id="section-4.2.1">
           <h4 id="name-use-path_abandon-frame-to-c">
 <a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-use-path_abandon-frame-to-c" class="section-name selfRef">Use PATH_ABANDON Frame to Close a Path</a>
@@ -1627,7 +1635,7 @@ probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.<a href="#section-4.2.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="effect-of-retireconnectionid-frame">
+<div id="retire-cid-close">
 <section id="section-4.2.2">
           <h4 id="name-effect-of-retire_connection">
 <a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-effect-of-retire_connection" class="section-name selfRef">Effect of RETIRE_CONNECTION_ID Frame</a>
