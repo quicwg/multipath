@@ -1571,7 +1571,7 @@ a path, the peer will not receive any more non-probing packets on
 that path.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">An endpoint that wants to close a path SHOULD use explicit request to
 terminate the path by sending the PATH_ABANDON frame (see
-<a href="#path-abandon-close" class="xref">Section 4.2.1</a>). Note that while abandoning a path implies
+<a href="#path-abandon-close" class="xref">Section 4.2.1</a>). Note that while abandoning a path will cause
 Connection ID retirement, only retiring the associated Connection ID
 does not necessarily advertise path abandon (see <a href="#retire-cid-close" class="xref">Section 4.2.2</a>).
 However, implicit signals such as idle time or packet losses might be
