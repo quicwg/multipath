@@ -1191,7 +1191,7 @@ Table of Contents
    for the same Path Identifier with a sequence number equal to or
    higher than the sequence number of the incoming frame.
 
-   PATH_STATUS frames SHOULD be acknowledged.  If a packet containing a
+   PATH_STATUS frames are ack-eliciting.  If a packet containing a
    PATH_STATUS frame is considered lost, the peer should only repeat it
    if it was the last status sent for that path -- as indicated by the
    sequence number.

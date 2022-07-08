@@ -2543,7 +2543,7 @@ the same path.<a href="#section-12.2-8" class="pilcrow">¶</a></p>
 PATH_STATUS frame if it previously received another PATH_STATUS frame
 for the same Path Identifier with a sequence number equal to or
 higher than the sequence number of the incoming frame.<a href="#section-12.2-9" class="pilcrow">¶</a></p>
-<p id="section-12.2-10">PATH_STATUS frames SHOULD be acknowledged. If a packet containing
+<p id="section-12.2-10">PATH_STATUS frames are ack-eliciting. If a packet containing
 a PATH_STATUS frame is considered lost, the peer should only repeat it
 if it was the last status sent for that path -- as indicated by
 the sequence number.<a href="#section-12.2-10" class="pilcrow">¶</a></p>
