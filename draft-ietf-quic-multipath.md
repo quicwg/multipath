@@ -392,7 +392,7 @@ in-flight packets, it may receive ACK_MP frames referencing the retired
 Connection ID. If the sender stops tracking sent packets with retired
 Connection ID, these would be spuriously marked as lost. To avoid such
 performance issue without keeping retired Connection ID state, an
-endhost should first stop sending packets with the to-be-retired
+endpoint should first stop sending packets with the to-be-retired
 Connection ID, then wait for all in-flight packets to be either
 acknowledged or marked as lost, and finally retire the Connection ID.
 
