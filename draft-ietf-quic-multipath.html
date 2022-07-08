@@ -1647,6 +1647,14 @@ the resources include the list of received packets used to send
 acknowledgements. The peer MAY decide to keep sending data using
 the same IP addresses and UDP ports previously associated with
 the connection ID, but MUST use a different connection ID when doing so.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.2-2">Note that if the sender retires a Connection ID that is still used by
+in-flight packets, it may receive ACK_MP frames referencing the retired
+Connection ID. If the sender stops tracking sent packets with retired
+Connection ID, these would be spuriously marked as lost. To avoid such
+performance issue without keeping retired Connection ID state, an
+endpoint should first stop sending packets with the to-be-retired
+Connection ID, then wait for all in-flight packets to be either
+acknowledged or marked as lost, and finally retire the Connection ID.<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="idle-time-close">
