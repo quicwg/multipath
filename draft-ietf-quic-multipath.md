@@ -312,6 +312,9 @@ for transmission.
 
 An endpoint uses PATH_STATUS frames to inform that the peer should
 send packets in the preference expressed by these frames.
+Note that the endpoint might not follow the peer’s advertisements,
+but the PATH_STATUS frame is still a clear signal of suggestion
+for the preference of path usage by the peer.
 
 PATH_STATUS frame describes 2 kinds of path states:
 
