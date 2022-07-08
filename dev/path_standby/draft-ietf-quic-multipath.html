@@ -2536,7 +2536,7 @@ PATH_STATUS frames are formatted as shown in <a href="#fig-path-status-format" c
 <p id="section-12.2-8">Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
 use this path or not. If an endpoint receives a PATH_STATUS frame
 containing 1-Standby status, it SHOULD stop sending non-probing packets
-on the corresponding path, until it receive a new PATH_STATUS frame
+on the corresponding path, until it receives a new PATH_STATUS frame
 containing 2-Available status with a higher sequence number referring to
 the same path.<a href="#section-12.2-8" class="pilcrow">¶</a></p>
 <p id="section-12.2-9">Frames may be received out of order. A peer MUST ignore an incoming
