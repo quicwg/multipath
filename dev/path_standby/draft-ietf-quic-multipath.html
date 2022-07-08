@@ -1678,18 +1678,17 @@ for too long. The connection idle timeout in multipath QUIC is defined
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.3.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.3-2">When more than one path is available, hosts shall monitor the arrival
-of non-probing packets and the acknowledgements
-for the packets sent over each path. Hosts SHOULD stop
-sending traffic on a path if for at least max_idle_timeout milliseconds
-(a) no non-probing packet was received or (b) no non-probing
-packet sent over this path was acknowledged, but MAY ignore that
-rule if it would disqualify
-all available paths. To avoid idle timeout of a path, endpoints can
-send ack-eliciting packets such as packets containing PING frames
-(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.
-Sending periodic PING frames also helps prevent middlebox timeout,
-as discussed in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-2">When more than one path is available, hosts shall monitor the arrival of
+non-probing packets and the acknowledgements for the packets sent over each
+path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
+idle timeout as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1." class="relref">Section 10.1.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>
+(a) no non-probing packet was received or (b) no
+non-probing packet sent over this path was acknowledged, but MAY ignore that
+rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints
+can send ack-eliciting packets such as packets containing PING frames
+(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.  Sending
+periodic PING frames also helps prevent middlebox timeout, as discussed in
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3.3-3">Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
@@ -1724,8 +1723,8 @@ after a spurious estimate of path abandonment by the client.<a href="#section-4.
        |                                         |
        | PATH_RESPONSE received                  |
        |                                         |
-       v        Associated CID have been retired |
- +------------+        Path's idle timeout       |
+       v                                         |
+ +------------+     Path blackhole detected      |
  |   Active   |----------------------------------+
  +------------+                                  |
        |                                         |
@@ -1735,8 +1734,8 @@ after a spurious estimate of path abandonment by the client.<a href="#section-4.
  |   Closing  |                                  |
  +------------+                                  |
        |                                         |
-       | Associated CID have been retired        |
-       | Path's idle timeout                     |
+       | Path's draining timeout                 |
+       | (at least 3 PTO)                        |
        v                                         |
  +------------+                                  |
  |   Closed   |&lt;---------------------------------+
@@ -1776,15 +1775,21 @@ non-probing frames on a path in "Validating" state, as it has no
 guarantee that packets will actually reach the peer.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
 <p id="section-4.4-10">The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
-of new data on a path.<a href="#section-4.4-10" class="pilcrow">¶</a></p>
+of new data on a path. Note that if a path became idle due to a timeout,
+endpoints SHOULD send PATH_ABANDONED frame before closing the path.<a href="#section-4.4-10" class="pilcrow">¶</a></p>
 <p id="section-4.4-11">In the "Closing" state, the endhost SHOULD NOT send packets on this
 path anymore, as there is no guarantee that the peer can still map
 the packets to the connection. The endhost SHOULD wait for
 the acknowledgment of the PATH_ABANDONED frame before moving the path
 to the "Closed" state to ensure a graceful termination of the path.<a href="#section-4.4-11" class="pilcrow">¶</a></p>
 <p id="section-4.4-12">When a path reaches the "Closed" state, the endhost releases all the
-path's associated resources. Consequently, the endhost is not able to
-send nor receive packets on this path anymore.<a href="#section-4.4-12" class="pilcrow">¶</a></p>
+path's associated resources, including the associated Connection IDs.
+Endpoints SHOULD send RETIRE_CONNECTION_ID frames for releasing the
+associated Connection IDs following <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>. Considering
+endpoints are not expected to send packets on the current path in the "Closed"
+state, endpoints can send RETIRE_CONNECTION_ID frames on other
+available paths. Consequently, the endhost is not able to send nor
+receive packets on this path anymore.<a href="#section-4.4-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2498,7 +2503,7 @@ be sent on the path that is intended to be abandoned.<a href="#section-12.1-11" 
         <h3 id="name-path_status-frame">
 <a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-path_status-frame" class="section-name selfRef">PATH_STATUS frame</a>
         </h3>
-<p id="section-12.2-1">PATH_STATUS frames are used by endpoints to inform the peer of the current
+<p id="section-12.2-1">PATH_STATUS Frame are used by endpoints to inform the peer of the current
 status of one path, and the peer should send packets according to
 the preference expressed in these frames.
 PATH_STATUS frames are formatted as shown in <a href="#fig-path-status-format" class="xref">Figure 7</a>.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
@@ -2521,7 +2526,7 @@ PATH_STATUS frames are formatted as shown in <a href="#fig-path-status-format" c
 <p id="section-12.2-3">PATH_STATUS Frames contain the following fields:<a href="#section-12.2-3" class="pilcrow">¶</a></p>
 <p id="section-12.2-4">Path Identifier: An identifier of the path, which is formatted
   as shown in <a href="#fig-path-identifier-format" class="xref">Figure 6</a>. Exactly the same as
-  the definition of Path Identifier in <a href="#path-abandon-frame" class="xref">Section 12.1</a>.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
+  the definition of Path Identifier in {#path-abandon-frame}.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
 <p id="section-12.2-5">Path Status sequence number: A variable-length integer specifying
   the sequence number assigned for this PATH_STATUS frame. The sequence
   number MUST be monotonically increasing for the sender of
@@ -2536,14 +2541,14 @@ PATH_STATUS frames are formatted as shown in <a href="#fig-path-status-format" c
 <p id="section-12.2-8">Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
 use this path or not. If an endpoint receives a PATH_STATUS frame
 containing 1-Standby status, it SHOULD stop sending non-probing packets
-on the corresponding path, until it receives a new PATH_STATUS frame
+on the corresponding path, until it receive a new PATH_STATUS frame
 containing 2-Available status with a higher sequence number referring to
 the same path.<a href="#section-12.2-8" class="pilcrow">¶</a></p>
 <p id="section-12.2-9">Frames may be received out of order. A peer MUST ignore an incoming
 PATH_STATUS frame if it previously received another PATH_STATUS frame
 for the same Path Identifier with a sequence number equal to or
 higher than the sequence number of the incoming frame.<a href="#section-12.2-9" class="pilcrow">¶</a></p>
-<p id="section-12.2-10">PATH_STATUS frames are ack-eliciting. If a packet containing
+<p id="section-12.2-10">PATH_STATUS frames SHOULD be acknowledged. If a packet containing
 a PATH_STATUS frame is considered lost, the peer should only repeat it
 if it was the last status sent for that path -- as indicated by
 the sequence number.<a href="#section-12.2-10" class="pilcrow">¶</a></p>

@@ -454,14 +454,15 @@ Table of Contents
    When more than one path is available, hosts shall monitor the arrival
    of non-probing packets and the acknowledgements for the packets sent
    over each path.  Hosts SHOULD stop sending traffic on a path if for
-   at least max_idle_timeout milliseconds (a) no non-probing packet was
-   received or (b) no non-probing packet sent over this path was
-   acknowledged, but MAY ignore that rule if it would disqualify all
-   available paths.  To avoid idle timeout of a path, endpoints can send
-   ack-eliciting packets such as packets containing PING frames
-   (Section 19.2 of [QUIC-TRANSPORT]) on that path to keep it alive.
-   Sending periodic PING frames also helps prevent middlebox timeout, as
-   discussed in Section 10.1.2 of [QUIC-TRANSPORT].
+   at least the period of the idle timeout as specified in Section 10.1.
+   of [QUIC-TRANSPORT] (a) no non-probing packet was received or (b) no
+   non-probing packet sent over this path was acknowledged, but MAY
+   ignore that rule if it would disqualify all available paths.  To
+   avoid idle timeout of a path, endpoints can send ack-eliciting
+   packets such as packets containing PING frames (Section 19.2 of
+   [QUIC-TRANSPORT]) on that path to keep it alive.  Sending periodic
+   PING frames also helps prevent middlebox timeout, as discussed in
+   Section 10.1.2 of [QUIC-TRANSPORT].
 
    Server MAY release the resource associated with paths for which no
    non-probing packet was received for a sufficiently long path-idle
@@ -489,8 +490,8 @@ Table of Contents
           |                                         |
           | PATH_RESPONSE received                  |
           |                                         |
-          v        Associated CID have been retired |
-    +------------+        Path's idle timeout       |
+          v                                         |
+    +------------+     Path blackhole detected      |
     |   Active   |----------------------------------+
     +------------+                                  |
           |                                         |
@@ -500,8 +501,8 @@ Table of Contents
     |   Closing  |                                  |
     +------------+                                  |
           |                                         |
-          | Associated CID have been retired        |
-          | Path's idle timeout                     |
+          | Path's draining timeout                 |
+          | (at least 3 PTO)                        |
           v                                         |
     +------------+                                  |
     |   Closed   |<---------------------------------+
@@ -539,7 +540,9 @@ Table of Contents
 
    The endhost can use all the paths in the "Active" state, provided
    that the congestion control and flow control currently allow sending
-   of new data on a path.
+   of new data on a path.  Note that if a path became idle due to a
+   timeout, endpoints SHOULD send PATH_ABANDONED frame before closing
+   the path.
 
    In the "Closing" state, the endhost SHOULD NOT send packets on this
    path anymore, as there is no guarantee that the peer can still map
@@ -548,8 +551,13 @@ Table of Contents
    the "Closed" state to ensure a graceful termination of the path.
 
    When a path reaches the "Closed" state, the endhost releases all the
-   path's associated resources.  Consequently, the endhost is not able
-   to send nor receive packets on this path anymore.
+   path's associated resources, including the associated Connection IDs.
+   Endpoints SHOULD send RETIRE_CONNECTION_ID frames for releasing the
+   associated Connection IDs following [QUIC-TRANSPORT].  Considering
+   endpoints are not expected to send packets on the current path in the
+   "Closed" state, endpoints can send RETIRE_CONNECTION_ID frames on
+   other available paths.  Consequently, the endhost is not able to send
+   nor receive packets on this path anymore.
 
 5.  Congestion Control
 
@@ -1148,7 +1156,7 @@ Table of Contents
 
 12.2.  PATH_STATUS frame
 
-   PATH_STATUS frames are used by endpoints to inform the peer of the
+   PATH_STATUS Frame are used by endpoints to inform the peer of the
    current status of one path, and the peer should send packets
    according to the preference expressed in these frames.  PATH_STATUS
    frames are formatted as shown in Figure 7.
@@ -1166,7 +1174,7 @@ Table of Contents
 
    Path Identifier: An identifier of the path, which is formatted as
    shown in Figure 6.  Exactly the same as the definition of Path
-   Identifier in Section 12.1.
+   Identifier in {#path-abandon-frame}.
 
    Path Status sequence number: A variable-length integer specifying the
    sequence number assigned for this PATH_STATUS frame.  The sequence
@@ -1182,16 +1190,16 @@ Table of Contents
    Endpoints use PATH_STATUS frame to inform the peer whether it prefer
    to use this path or not.  If an endpoint receives a PATH_STATUS frame
    containing 1-Standby status, it SHOULD stop sending non-probing
-   packets on the corresponding path, until it receives a new
-   PATH_STATUS frame containing 2-Available status with a higher
-   sequence number referring to the same path.
+   packets on the corresponding path, until it receive a new PATH_STATUS
+   frame containing 2-Available status with a higher sequence number
+   referring to the same path.
 
    Frames may be received out of order.  A peer MUST ignore an incoming
    PATH_STATUS frame if it previously received another PATH_STATUS frame
    for the same Path Identifier with a sequence number equal to or
    higher than the sequence number of the incoming frame.
 
-   PATH_STATUS frames are ack-eliciting.  If a packet containing a
+   PATH_STATUS frames SHOULD be acknowledged.  If a packet containing a
    PATH_STATUS frame is considered lost, the peer should only repeat it
    if it was the last status sent for that path -- as indicated by the
    sequence number.
