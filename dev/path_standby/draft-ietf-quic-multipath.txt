@@ -1166,7 +1166,7 @@ Table of Contents
 
    Path Identifier: An identifier of the path, which is formatted as
    shown in Figure 6.  Exactly the same as the definition of Path
-   Identifier in {#path-abandon-frame}.
+   Identifier in Section 12.1.
 
    Path Status sequence number: A variable-length integer specifying the
    sequence number assigned for this PATH_STATUS frame.  The sequence
