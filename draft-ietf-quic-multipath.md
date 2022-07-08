@@ -386,6 +386,15 @@ the server MAY wait for a short, limited time such as one RTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
+### Refusing a New Path
+
+An endpoint may deny the establishment of a new path initiated by its
+peer during the address validation procedure. To achieve this, the
+endpoint does not send a PATH_RESPONSE in response to the peer's
+PATH_CHALLENGE. The endpoint instead sends a PATH_ABANDON frame
+containing the Path Identifier of the refused path on another active path.
+
+
 ### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
 Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
