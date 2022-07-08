@@ -316,12 +316,21 @@ connectivity or changes in local preferences. After an endpoint abandons
 a path, the peer will not receive any more non-probing packets on
 that path.
 
-An endpoint that wants to close a path SHOULD NOT rely on implicit
-signals like idle time or packet losses, but instead SHOULD use explicit
-request to terminate path by sending the PATH_ABANDON frame
-(see {{path-abandon-frame}}).
+An endpoint that wants to close a path SHOULD use explicit request to
+terminate the path by sending the PATH_ABANDON frame (see
+{{path-abandon-close}}). Note that while abandoning a path implies
+Connection ID retirement, only retiring the associated Connection ID
+does not necessarily advertise path abandon (see {{retire-cid-close}}).
+However, implicit signals such as idle time or packet losses might be
+the only way for an endhost to detect path closure (see
+{{idle-time-close}}).
 
-### Use PATH_ABANDON Frame to Close a Path
+Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
+apply on the whole connection. In particular, the reception of either a
+CONNECTION_CLOSE ({{Section 10.2 of QUIC-TRANSPORT}}) or a Stateless
+Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
+
+### Use PATH_ABANDON Frame to Close a Path {#path-abandon-close}
 
 Both endpoints, namely the client and the server, can close a path,
 by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
@@ -377,7 +386,7 @@ the server MAY wait for a short, limited time such as one RTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
-### Effect of RETIRE_CONNECTION_ID Frame
+### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
 Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
 the resources associated with that connection ID. If the connection ID
