@@ -1571,7 +1571,7 @@ for transmission.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-4.2-1">An endpoint uses PATH_STATUS frames to inform that the peer should
 send packets in the preference expressed by these frames.
-Note that the endpoint might not follow the peer's advertisements,
+Notice that the endpoint might not follow the peer's advertisements,
 but the PATH_STATUS frame is still a clear signal of suggestion
 for the preference of path usage by the peer.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">PATH_STATUS frame describes 2 kinds of path states:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
@@ -1585,7 +1585,8 @@ on that path if another path is available.<a href="#section-4.2-3.2" class="pilc
         </ul>
 <p id="section-4.2-4">Endpoints use Path Identifier field in PATH_STATUS frame to identify
 which path's state is going to be changed. Notice that PATH_STATUS frame
-can be sent via a different path.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+can be sent via a different path. An Endpoint MAY ignore the PATH_STATUS frame
+if it would make all the paths unavailable in a single connection.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="path-close">
