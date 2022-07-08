@@ -1651,18 +1651,17 @@ for too long. The connection idle timeout in multipath QUIC is defined
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-2">When more than one path is available, hosts shall monitor the arrival
-of non-probing packets and the acknowledgements
-for the packets sent over each path. Hosts SHOULD stop
-sending traffic on a path if for at least max_idle_timeout milliseconds
-(a) no non-probing packet was received or (b) no non-probing
-packet sent over this path was acknowledged, but MAY ignore that
-rule if it would disqualify
-all available paths. To avoid idle timeout of a path, endpoints can
-send ack-eliciting packets such as packets containing PING frames
-(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.
-Sending periodic PING frames also helps prevent middlebox timeout,
-as discussed in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.2.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.3-2">When more than one path is available, hosts shall monitor the arrival of
+non-probing packets and the acknowledgements for the packets sent over each
+path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
+idle timeout as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1." class="relref">Section 10.1.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>
+(a) no non-probing packet was received or (b) no
+non-probing packet sent over this path was acknowledged, but MAY ignore that
+rule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints
+can send ack-eliciting packets such as packets containing PING frames
+(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.  Sending
+periodic PING frames also helps prevent middlebox timeout, as discussed in
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.2.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.2.3-3">Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
