@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 8 January 2023                               Q. De Coninck, Ed.
+Expires: 9 January 2023                               Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             7 July 2022
+                                                             8 July 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2023.
+   This Internet-Draft will expire on 9 January 2023.
 
 Copyright Notice
 
@@ -470,8 +470,8 @@ Table of Contents
           |                                         |
           | PATH_RESPONSE received                  |
           |                                         |
-          v        Associated CID have been retired |
-    +------------+        Path's idle timeout       |
+          v                                         |
+    +------------+     Path blackhole detected      |
     |   Active   |----------------------------------+
     +------------+                                  |
           |                                         |
@@ -481,8 +481,8 @@ Table of Contents
     |   Closing  |                                  |
     +------------+                                  |
           |                                         |
-          | Associated CID have been retired        |
-          | Path's idle timeout                     |
+          | Path's draining timeout                 |
+          | (at least 3 PTO)                        |
           v                                         |
     +------------+                                  |
     |   Closed   |<---------------------------------+
@@ -520,7 +520,9 @@ Table of Contents
 
    The endhost can use all the paths in the "Active" state, provided
    that the congestion control and flow control currently allow sending
-   of new data on a path.
+   of new data on a path.  Note that if a path became idle due to a
+   timeout, endpoints SHOULD send PATH_ABANDONED frame before closing
+   the path.
 
    In the "Closing" state, the endhost SHOULD NOT send packets on this
    path anymore, as there is no guarantee that the peer can still map
@@ -529,8 +531,13 @@ Table of Contents
    the "Closed" state to ensure a graceful termination of the path.
 
    When a path reaches the "Closed" state, the endhost releases all the
-   path's associated resources.  Consequently, the endhost is not able
-   to send nor receive packets on this path anymore.
+   path's associated resources, including the associated Connection IDs.
+   Endpoints SHOULD send RETIRE_CONNECTION_ID frames for releasing the
+   associated Connection IDs following [QUIC-TRANSPORT].  Considering
+   endpoints are not expected to send packets on the current path in the
+   "Closed" state, endpoints can send RETIRE_CONNECTION_ID frames on
+   other available paths.  Consequently, the endhost is not able to send
+   nor receive packets on this path anymore.
 
 5.  Congestion Control
 
