@@ -1277,7 +1277,7 @@ Table of Contents
 
 17.  Acknowledgments
 
-   TBD f
+   TBD
 
 18.  References
 
