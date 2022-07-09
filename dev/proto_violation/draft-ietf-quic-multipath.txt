@@ -1192,7 +1192,7 @@ Table of Contents
    connection error of type MP_PROTOCOL_VIOLATION and close the
    connection.  If an endpoint receives an ACK_MP frame with a packet
    number space ID which is retired by RETIRE_CONNECTION_ID frame or
-   closed paths, it SHOULD ignore the ACK_MP frame without causing a
+   closed paths, it MUST ignore the ACK_MP frame without causing a
    connection error.
 
    When using a single packet number space, endhosts MUST NOT send
