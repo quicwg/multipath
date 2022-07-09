@@ -1148,7 +1148,7 @@ the 1-RTT packets which are acknowledged by the ACK_MP frame.
 If the endpoint receives 1-RTT packets with zero-length Connection ID,
 it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
 If an endpoint receives an ACK_MP frame with a packet number
-space ID which is never issued by endpoints, it MUST treat this as
+space ID which was never issued by endpoints, it MUST treat this as
 a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
 If an endpoint receives an ACK_MP frame with a packet number space ID
 which is retired by RETIRE_CONNECTION_ID frame or closed paths, it SHOULD
