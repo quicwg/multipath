@@ -1151,7 +1151,7 @@ If an endpoint receives an ACK_MP frame with a packet number
 space ID which was never issued by endpoints, it MUST treat this as
 a connection error of type MP_PROTOCOL_VIOLATION and close the connection.
 If an endpoint receives an ACK_MP frame with a packet number space ID
-which is retired by RETIRE_CONNECTION_ID frame or closed paths, it SHOULD
+which is retired by RETIRE_CONNECTION_ID frame or closed paths, it MUST
 ignore the ACK_MP frame without causing a connection error.
 
 
