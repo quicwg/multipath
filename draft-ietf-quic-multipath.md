@@ -724,7 +724,7 @@ can be used:
   time of that packet. When an ACK is sent on that path, the ACK Delay field is
   re-calculated using that path's largest packet receive time.
 
-* Each path also keeps track of a list of sent packets that are acknowledged by
+* The sender also keeps track of a list of sent packets for each path that are acknowledged by
   ACKs from the same path. A path's RTT sample is generated on receving ACK
   that meets the following two conditions: (1) For that path, the largest
   same-path acknowledged packet number is updated. (2) One of newly same-path
