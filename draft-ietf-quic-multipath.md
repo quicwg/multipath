@@ -715,7 +715,7 @@ If one chooses not to use time-stamps but wants to get reasonable estimation of
 RTTs on multiple paths with one packet number space, the following practices
 can be used:
 
-* Each path counts the number of ACK-eliciting packets received on that path,
+* The receiver side counts the number of ACK-eliciting packets received for each paths,
   and keeps a per-path ACK timer. An ACK from that path is triggered when the
   number of ACK-eliciting packets received on that path surpasses the path's
   ACK-eliciting threshold or the path's ACK-timer expires.
