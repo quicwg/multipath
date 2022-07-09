@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 9 January 2023                               Q. De Coninck, Ed.
+Expires: 10 January 2023                              Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             8 July 2022
+                                                             9 July 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2023.
+   This Internet-Draft will expire on 10 January 2023.
 
 Copyright Notice
 
@@ -1188,7 +1188,7 @@ Table of Contents
    If the endpoint receives 1-RTT packets with zero-length Connection
    ID, it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
    If an endpoint receives an ACK_MP frame with a packet number space ID
-   which is never issued by endpoints, it MUST treat this as a
+   which was never issued by endpoints, it MUST treat this as a
    connection error of type MP_PROTOCOL_VIOLATION and close the
    connection.  If an endpoint receives an ACK_MP frame with a packet
    number space ID which is retired by RETIRE_CONNECTION_ID frame or
