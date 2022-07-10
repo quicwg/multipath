@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-07T00:59:33.445934+00:00",
+  "timestamp": "2022-07-10T01:02:31.201939+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -788,7 +788,7 @@
       "id": "I_kwDOGNtpaM49ZPRt",
       "title": "Multiple packet number spaces can be compatible with zero-length Connection IDs",
       "url": "https://github.com/quicwg/multipath/issues/27",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -799,8 +799,8 @@
       ],
       "body": "Currently, the multiple packet number spaces proposal relies on the sequence number of the Connection ID when a non-zero connection ID is used. With non-zero-length Connection IDs at both ends, it is indeed possible that over a same path/5-tuple, the client reaches the server using a DCID with a sequence number that is different from the sequence number of the DCID used by the server to reach the client (e.g., Figure 2). In the current draft, we consider that if the connection ID is zero-length, the packet number space identifier is 0, and applying multiple packet number spaces is thus not possible.\r\n\r\nI believe we can do better than this. Consider the situation where the client uses a non-zero length DCID to reach the server while the server uses zero-length DCID. In this case, it is the client that initiates the usage of a path with path validation, associating a server-provided non-zero-length DCID to reach the server. Once the first client's packet reaches the server on the new path, the server can associate the client's 5-tuple to the sequence number of the used Destination Connection ID, making a valid Packet Number Space Identifier. The client can easily map incoming packets on the 5-tuple to the associated DCID sequence number.\r\n\r\nDoes this sound reasonable?",
       "createdAt": "2021-10-19T08:43:58Z",
-      "updatedAt": "2022-07-06T14:01:09Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-07T09:40:29Z",
+      "closedAt": "2022-07-07T09:40:29Z",
       "comments": [
         {
           "author": "mirjak",
@@ -864,6 +864,13 @@
           "body": "Can we close this issue @qdeconinck ?",
           "createdAt": "2022-07-06T14:01:09Z",
           "updatedAt": "2022-07-06T14:01:09Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Given that #103 got merged, we can now close this.",
+          "createdAt": "2022-07-07T09:40:29Z",
+          "updatedAt": "2022-07-07T09:40:29Z"
         }
       ]
     },
@@ -2099,7 +2106,7 @@
       "id": "I_kwDOGNtpaM5BmOFi",
       "title": "ECN support and single/multiple packet number spaces",
       "url": "https://github.com/quicwg/multipath/issues/87",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "obonaventure",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2112,8 +2119,8 @@
       ],
       "body": "With a packet number space per path, the ACK_MP frame provides the per path ECN feedback that enables a sender to detect congestion using ECN on a specific path. The per-path congestion control can adjust the congestion window based on the received feedback.\r\n\r\nWith a single packet number space shared among the different paths, the ECN fields of the ACK frame provide ECN information that is common to all paths. This makes it impossible for a sender to determine which path is affected by congestion when it receives an ACK frame with positive ECN counters. A per-path congestion control cannot easily react to such an ambiguous ECN feedback.",
       "createdAt": "2022-01-12T16:24:11Z",
-      "updatedAt": "2022-07-06T15:22:05Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-07T15:56:08Z",
+      "closedAt": "2022-07-07T15:56:08Z",
       "comments": [
         {
           "author": "mirjak",
@@ -2135,6 +2142,13 @@
           "body": "ECN text is included in PR #103 now.",
           "createdAt": "2022-07-06T15:22:05Z",
           "updatedAt": "2022-07-06T15:22:05Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "#103 was merged.",
+          "createdAt": "2022-07-07T15:56:08Z",
+          "updatedAt": "2022-07-07T15:56:08Z"
         }
       ]
     },
@@ -2334,12 +2348,13 @@
         "yfmascgy"
       ],
       "labels": [
+        "has PR",
         "design",
         "needs-discussion"
       ],
       "body": "This was discussed in issue #51 and PR #94.",
       "createdAt": "2022-02-09T09:25:51Z",
-      "updatedAt": "2022-03-23T14:45:17Z",
+      "updatedAt": "2022-07-08T08:33:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -2369,6 +2384,13 @@
           "body": "Presented at IETF-113 but no time for discussion.",
           "createdAt": "2022-03-23T14:45:16Z",
           "updatedAt": "2022-03-23T14:45:16Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have submitted PR #124 to resolve this issue according to the above discussions.",
+          "createdAt": "2022-07-07T09:01:47Z",
+          "updatedAt": "2022-07-07T09:02:28Z"
         }
       ]
     },
@@ -2377,7 +2399,7 @@
       "id": "I_kwDOGNtpaM5FBv52",
       "title": "Choosing between a single packet number space vs. multiple packet number spaces",
       "url": "https://github.com/quicwg/multipath/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -2387,8 +2409,8 @@
       ],
       "body": "This draft initially originates from a merging effort of previous Multipath proposals. While many points were found to be common between them, there remains one design point that still requires consensus: the number of packet number spaces that a Multipath QUIC connection should support (i.e., one for the whole connection vs. one per path).\r\n\r\nThe current draft enables experimentation with both variants, but in the final version we will certainly need to choose between one of the versions.",
       "createdAt": "2022-03-03T07:57:04Z",
-      "updatedAt": "2022-03-23T14:47:10Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-07T09:19:17Z",
+      "closedAt": "2022-07-07T09:19:17Z",
       "comments": [
         {
           "author": "huitema",
@@ -2564,19 +2586,20 @@
       "id": "I_kwDOGNtpaM5FNRGW",
       "title": "Clarify path closure based on discussion in issue #90",
       "url": "https://github.com/quicwg/multipath/issues/107",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
         "qdeconinck"
       ],
       "labels": [
+        "has PR",
         "editorial"
       ],
-      "body": "We should review the current text and make sure we cover everything clearly. Maybe add some more text to the intro path of 3.2 ",
+      "body": "We should review the current text and make sure we cover everything clearly. Maybe add some more text to the intro part of 3.2 ",
       "createdAt": "2022-03-07T09:10:49Z",
-      "updatedAt": "2022-03-07T09:55:46Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T11:10:15Z",
+      "closedAt": "2022-07-08T11:10:15Z",
       "comments": []
     },
     {
@@ -2624,7 +2647,7 @@
       "id": "I_kwDOGNtpaM5Ft7tx",
       "title": "Modifications for Path State Figure in Section 4.2",
       "url": "https://github.com/quicwg/multipath/issues/112",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -2633,8 +2656,8 @@
       ],
       "body": "In Section 4.3 [Path States](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-path-states) we wrote:\r\n```\r\n       o\r\n       | PATH_CHALLENGE sent/received on new path\r\n       v\r\n +------------+    Path validation abandoned\r\n | Validating |----------------------------------+\r\n +------------+                                  |\r\n       |                                         |\r\n       | PATH_RESPONSE received                  |\r\n       |                                         |\r\n       v        Associated CID have been retired |\r\n +------------+        Path's idle timeout       |\r\n |   Active   |----------------------------------+\r\n +------------+                                  |\r\n       |                                         |\r\n       | PATH_ABANDONED sent/received            |\r\n       v                                         |\r\n +------------+                                  |\r\n |   Closing  |                                  |\r\n +------------+                                  |\r\n       |                                         |\r\n       | Associated CID have been retired        |\r\n       | Path's idle timeout                     |\r\n       v                                         |\r\n +------------+                                  |\r\n |   Closed   |<---------------------------------+\r\n +------------+\r\n\r\n```\r\n\r\nThere are 2 problems in this figure:\r\n1. \"Associated CID have been retired\" should not cause the path turn into closed state, because in Section [4.2.2. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-4.2.2)[Effect of RETIRE_CONNECTION_ID Frame](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-effect-of-retire_connection) :\r\n\r\n> Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard the resources associated with that connection ID. If the connection ID was used by the peer to identify a path from the peer to this endpoint, the resources include the list of received packets used to send acknowledgements. The peer MAY decide to keep sending data using the same IP addresses and UDP ports previously associated with the connection ID, but MUST use a different connection ID when doing so.\r\n\r\n  So retiring associated CID only cause the resources belonging to the corresponding packet number space to be released, but not the whole path to be closed. In CID migration cases, endpoints just want to retire the old CID and use a new one, as path is defined as \"refers to the 4-tuple\"  in the current draft, this operation will not cause the whole path context (including congestion control states, RTT measurements, etc.) to be removed.\r\n\r\n2. Path closing is triggered by PATH_ABANDONED frame, and does not have dependency on CID retiring (Although path closing would trigger the retirement of CID resource). So when path_state transmit from \"Closing\" to \"Closed\", the proper condition might be \"Acknowledgement of PATH_ABANDONED frame received\" or \"Path's draining timeout for at least 3 times the current PTO interval\".\r\n",
       "createdAt": "2022-03-15T13:22:25Z",
-      "updatedAt": "2022-07-06T15:38:19Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T08:27:37Z",
+      "closedAt": "2022-07-08T08:27:37Z",
       "comments": [
         {
           "author": "yfmascgy",
@@ -2671,15 +2694,15 @@
       "id": "I_kwDOGNtpaM5F_PiC",
       "title": "PTO calculation in single PN",
       "url": "https://github.com/quicwg/multipath/issues/114",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yfmascgy",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "A PTO is calculated with a path's RTT measurement, which implies that we should calculate PTO per-path. However, in RFC9002, it says \"As with loss detection, the PTO is per packet number space. That is, a PTO value is computed per packet number space.\" The question is that in the single PN case, we send packets in single packet number space over multiple paths, if we stick to what RFC9002 says, we end up with one PTO for multiple paths. ",
       "createdAt": "2022-03-19T08:09:47Z",
-      "updatedAt": "2022-07-06T15:59:37Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-07T15:56:41Z",
+      "closedAt": "2022-07-07T15:56:41Z",
       "comments": [
         {
           "author": "mirjak",
@@ -2687,6 +2710,13 @@
           "body": "The point in RFC9000 is that you have to reset PTO if you use a new packet number space. However, in PR #103 we say:\r\n\r\n> Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms\r\n>  based on timers and on sequence numbers. When packets are sent over\r\n>  multiple paths, loss detection must be adapted to allow for different RTTs\r\n>  on different paths.\r\n\r\nI think that is correct. Is that sufficient or do you think we need to say more @yfmascgy ?",
           "createdAt": "2022-07-06T15:59:37Z",
           "updatedAt": "2022-07-06T15:59:37Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for pointing this out. I think the current text should suffice:)",
+          "createdAt": "2022-07-07T01:13:56Z",
+          "updatedAt": "2022-07-07T01:13:56Z"
         }
       ]
     },
@@ -2695,7 +2725,7 @@
       "id": "I_kwDOGNtpaM5F_P81",
       "title": "Path idle timeout for Path State Figure in Section 4.2",
       "url": "https://github.com/quicwg/multipath/issues/115",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yfmascgy",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -2704,26 +2734,37 @@
       ],
       "body": "For the transition from a \"closing\" state to a \"closed\" state In the path state figure in section 4.2, I find the phrase \"path idle timeout\" a bit confusing, because right now this value is supposed to be equal to max_idle_timeout, but shouldn't a transition from a \"closing\" state to a \"closed\" state be much quicker than that from an \"active\" state to a \"closed\" state since the first transition is just what we expect to happen?",
       "createdAt": "2022-03-19T08:20:41Z",
-      "updatedAt": "2022-03-23T14:37:08Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-07-08T09:58:08Z",
+      "closedAt": "2022-07-08T09:58:08Z",
+      "comments": [
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think this is now fixed by #116.",
+          "createdAt": "2022-07-08T09:58:08Z",
+          "updatedAt": "2022-07-08T09:58:08Z"
+        }
+      ]
     },
     {
       "number": 118,
       "id": "I_kwDOGNtpaM5HPPt_",
       "title": "Handle stateless reset",
       "url": "https://github.com/quicwg/multipath/issues/118",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "qdeconinck"
       ],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "Should the spec say something about stateless reset?\r\n\r\nSuppose a node is sending on two paths with two different DCID and two corresponding stateless reset secrets, and receives a stateless reset packet that matches the reset secret on the first path. Should it:\r\n\r\n1) Abandon that path and continue the connection with the other path?\r\n2) Abandon the connection?",
       "createdAt": "2022-04-06T20:57:39Z",
-      "updatedAt": "2022-07-06T15:39:20Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T11:10:15Z",
+      "closedAt": "2022-07-08T11:10:15Z",
       "comments": [
         {
           "author": "qdeconinck",
@@ -2765,12 +2806,14 @@
       "url": "https://github.com/quicwg/multipath/issues/120",
       "state": "OPEN",
       "author": "boucadair",
-      "authorAssociation": "NONE",
-      "assignees": [],
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "qdeconinck"
+      ],
       "labels": [],
       "body": "Is there any reason why a new parameter isn't defined to negotiate max_paths rather than reusing this existing parameter? \r\n\r\nThat design is much more cleaner. For example, the max paths wouldn't be ignored even when zero-length CIDs are in use. \r\n\r\nUnless I'm mistaken, the current design have to comply with the following from RFC9000:\r\n\r\n>If an endpoint issues a zero-length connection ID... and therefore ignores the active_connection_id_limit value received from its peer.\r\n\r\n\r\nBTW, how the following MUST will be honored for the zero-length CID case: \r\n\r\n```\r\nBefore an\r\n   endpoint adds a new path by initiating path validation, it MUST check\r\n   whether at least one unused Connection ID is available for each side.\r\n```\r\n\r\n",
       "createdAt": "2022-06-10T07:54:07Z",
-      "updatedAt": "2022-07-06T15:44:15Z",
+      "updatedAt": "2022-07-08T09:16:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -2789,42 +2832,42 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> From RFC9000 (Section 9.5), an endhost cannot (voluntary) reuse a given CID on different addresses. Since CIDs are the path identifiers, this already restricts the number of concurrent paths. Given that paths must be symmetrical, this should restrict the number of concurrent paths to the minimum advertised value of `active_connection_id_limit`.\r\n\r\nI'm not sure to get why you say that CIDs are \"path identifiers\".  Also, please note that an \"address\" in 9000 is defined as follows:\r\n\r\n```\r\nAddress:\r\n\r\n    When used without qualification, the tuple of IP version, IP address, and UDP port number that represents one end of a network path\r\n\r\nConnection ID:\r\n\r\n    An identifier that is used to identify a QUIC connection at an endpoint. Each endpoint selects one or more connection IDs for its peer to include in packets sent towards the endpoint. This value is opaque to the peer.\r\n```",
           "createdAt": "2022-06-16T06:39:49Z",
           "updatedAt": "2022-06-16T06:39:49Z"
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> Note that the actual limit can be lower than this, as you depend on your peer to have your CIDs.\r\n\r\nSure, this reasoning is still valid independent of whether active_connection_id_limit or a new transport metric is defined. ",
           "createdAt": "2022-06-16T06:41:08Z",
           "updatedAt": "2022-06-16T06:41:08Z"
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> Especially when handling transient situations (i.e., stop using a path on a network A to use another on network B), the receiver might notice 3 paths being in concurrent use (especially if network B is faster than network A), even if the sender behaves nicely.\r\n\r\nThis same case can be considered when more than active_connection_id_limit are used (including in transient situations you mentioned). What concerns me with active_connection_id_limit is that the connection must be closed as per: \r\n\r\n` if the number of active connection IDs exceeds the value advertised in its active_connection_id_limit transport parameter, an endpoint MUST close the connection with an error of type CONNECTION_ID_LIMIT_ERROR.`\r\n\r\nwhile, with a dedicated path_max, new paths can be just discarded while maintaining the connection alive. ",
           "createdAt": "2022-06-16T06:45:30Z",
           "updatedAt": "2022-06-16T06:45:30Z"
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> On the other hand, if one host definitely wants to limit the number of concurrent paths, it can simply as most `max_paths` active CIDs.\r\n\r\nAgree. This is only possible when dedicated parameters are defined. ",
           "createdAt": "2022-06-16T06:46:21Z",
           "updatedAt": "2022-06-16T06:46:21Z"
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> RFC9000 states that the host can ignore because it will not send NEW_CONNECTION_ID frames, but we can extend this meaning in the draft. In any case, it might be better to clarify this\r\n\r\nNoted.",
           "createdAt": "2022-06-16T06:47:37Z",
           "updatedAt": "2022-06-16T06:47:37Z"
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> Having two limits instead of just one just introduces complexity with little benefit\r\n\r\nI'm not sure to see complexities out there. Using connection IDs to infer per path specifics is not a clean design, btw. \r\n",
           "createdAt": "2022-06-16T06:50:51Z",
           "updatedAt": "2022-06-16T06:50:51Z"
@@ -2838,14 +2881,14 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> Relying to previous comments:\r\n> \r\n>     1. the `active_connection_id_limit` limits the number of CID that a peer MAY advertise at the same time. A peer MAY advertise \"at most\" this limit.\r\n> \r\n>     2. there is no guarantee that a peer will advertise \"at least\" the `active_connection_id_limit`. For example, a node could decide to never advertise more than 3 CID, even if its peer's limit is 9.\r\n> \r\n>     3. if a node reuses a non-zero-length CID on a different path mimics, the peer is most likely to treat that as a \"NAT rebinding\" event. There will be an exchange of probes, after which the peer will retain either the old or the new path. Thus, there can never be more active paths than the `active_connection_id_limit`.\r\n> \r\n>     4. Since a new path requires a new connection ID in each direction, the maximum number of paths cannot be higher than the lowest of the two `active_connection_id_limit` advertised by both peers.\r\n\r\nFully Agree, Christian. ",
           "createdAt": "2022-06-17T05:51:02Z",
           "updatedAt": "2022-06-17T05:51:02Z"
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> I think the issue boils down to \"how does a node refuse to establish a new path\".\r\n\r\nThat's it! \r\n\r\nI'd like the mechanism to not lead to closing the connection when such new paths are being added but a limit is fired. ",
           "createdAt": "2022-06-17T05:53:38Z",
           "updatedAt": "2022-06-17T05:56:12Z"
@@ -2856,6 +2899,20 @@
           "body": "Let's not add additionally frame(s) now, but do we want to add some text about \"how to refuse a new path\"?",
           "createdAt": "2022-07-06T15:44:15Z",
           "updatedAt": "2022-07-06T15:44:15Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Actually, there is a pretty straightforward way to \"refuse a new path\" -- just send back an \"abandon path\" frame.",
+          "createdAt": "2022-07-08T03:37:03Z",
+          "updatedAt": "2022-07-08T03:37:03Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "True. I think we should add some explicit text that you should send an abandon frame (on an existing path) to refuse a new path and not reply to oath challenge. ",
+          "createdAt": "2022-07-08T08:59:30Z",
+          "updatedAt": "2022-07-08T08:59:30Z"
         }
       ]
     },
@@ -2864,17 +2921,19 @@
       "id": "I_kwDOGNtpaM5NJ_JY",
       "title": "Handling incoming ACK_MP frames with a retired DCID sequence number",
       "url": "https://github.com/quicwg/multipath/issues/122",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "qdeconinck"
       ],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "It might be possible to be in a state where a sender retires a DCID that was used by still in-flight packets. Hence, it is possible for the sender to receive a ACK_MP frame referencing the retired DCID. Depending on the situation:\r\n\r\n- The sender can keep a way to track the sent packet with the retired DCID sequence number, allowing proper acknowledgement of the packets.\r\n- The sender drops all the state related to the DCID, hence marking the in-flight packets as being lost and ignoring ACK_MP frames having a retired DCID sequence number.\r\n\r\nWhile this should not affect interoperability, it might be worthwhile to add a sentence or two to mention the possible performance issue in such situation.",
       "createdAt": "2022-07-05T15:37:04Z",
-      "updatedAt": "2022-07-06T15:46:42Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T11:40:00Z",
+      "closedAt": "2022-07-08T11:40:00Z",
       "comments": [
         {
           "author": "mirjak",
@@ -2897,13 +2956,97 @@
         "qdeconinck"
       ],
       "labels": [
+        "has PR",
         "design"
       ],
       "body": "This issue came up during the discussion of issue #33. We say that ACK or ACK_MP frames can be send over any path, however, maybe we should discuss some guidance and trade-offs. E.g. sending on the same path as the packets received also for RTT measurements; using the shortest delay path might have some performance benefits...?",
       "createdAt": "2022-07-06T15:18:26Z",
-      "updatedAt": "2022-07-06T15:18:34Z",
+      "updatedAt": "2022-07-08T08:32:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I agree. We should add some guidance here. We did some experiment regarding this issue. Our finding is returning ACK on the shortest path is helpful. But the improvement is only more significant when the path rtt ratio is larger than 4:1.",
+          "createdAt": "2022-07-07T01:28:05Z",
+          "updatedAt": "2022-07-07T01:28:05Z"
+        }
+      ]
+    },
+    {
+      "number": 125,
+      "id": "I_kwDOGNtpaM5NT8tF",
+      "title": "Add more explanation on ACK delay and zero-length CID",
+      "url": "https://github.com/quicwg/multipath/issues/125",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "yfmascgy"
+      ],
+      "labels": [],
+      "body": "Comment by @yfmascgy (on PR #103):\r\nI think we expand this section a bit as we found getting the delay right was non-trivial. QUIC time-stamp would work for sure. But if one decides not to use QUIC timestamp, we probably want to explain what is needed to be done here.",
+      "createdAt": "2022-07-07T09:13:52Z",
+      "updatedAt": "2022-07-08T09:50:40Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have submitted PR #131 for this one.",
+          "createdAt": "2022-07-08T09:50:40Z",
+          "updatedAt": "2022-07-08T09:50:40Z"
+        }
+      ]
+    },
+    {
+      "number": 128,
+      "id": "I_kwDOGNtpaM5NVBa7",
+      "title": "Receiving old packet number space identifier in ACK_MP",
+      "url": "https://github.com/quicwg/multipath/issues/128",
+      "state": "OPEN",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "has PR"
+      ],
+      "body": "This is somewhat related to #122.\r\n\r\nSection 12.2 states that\r\n```\r\nIf an endpoint receives a ACK_MP frame with a non-existing packet number\r\nspace ID, it MUST treat this as a connection error of type\r\nMP_PROTOCOL_VIOLATION and close the connection.\r\n```\r\nThe notion of \"non-existing\" packet number space ID is somewhat blurry and maybe too aggressive. If for some reason an ACK_MP frame referencing an old, retired DCID sequence number arrives at the endhost, probably we just want to ignore it? And we could instead consider ACK_MP related to a packet number space ID larger than the greatest advertised one being MP_PROTOCOL_VIOLATION?",
+      "createdAt": "2022-07-07T12:33:31Z",
+      "updatedAt": "2022-07-08T14:25:40Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 132,
+      "id": "I_kwDOGNtpaM5NafCg",
+      "title": "Can we be more specific about RTT computation? The word \"statistical\" is a bit broad.",
+      "url": "https://github.com/quicwg/multipath/issues/132",
+      "state": "OPEN",
+      "author": "yfmascgy",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The current draft says \"If timestamps are not available, implementations could estimate one way delays using statistical techniques\". I find the word \"statistical\" a bit too broad. Can we elaborate what is the exact statistical method recommended to use? Moreover, \"statistical\" also implies variation and randomness, what happens for applications that do not expect such randomness?",
+      "createdAt": "2022-07-08T09:59:55Z",
+      "updatedAt": "2022-07-08T19:33:53Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I could elaborate, but I am afraid that this is going into lots of details very quickly.\r\n\r\n\r\nEach RTT measurement of the tuple (send path, return path) provides an evaluation of (one-way-delay(send_path, send_time) + one_way_delay(return_path, return_time)). At that point, we have to infer what is the most likely value of the one way delays that produced this result.\r\n\r\nWhatever the number of paths and number of measurements, the system ends up with fewer equations than variables. For example, even in the single path scenario, a delay of 60 ms can be explained equally well by a delay of 30 ms in each direction, a delay of 40 ms on the send path and 20 ms or the return path, or any combination of delays that sums to 60ms. We can extract bounds, such as \"the delay on segment X is not negative\", but that leaves out a wide range of estimations. This is generally handled by making simple assumptions, such as assuming delays on a given path are symmetric -- until we learn something more.\r\n\r\nEven with that symmetry hypothesis, we have to make hypotheses about the probability function for each path. Solutions like Kalman filter assume a Gaussian distribution of delays, which simplifies computations. The classic computation of smoothed RTT and RTT average in the TCP code implicitly assumes a Gaussian distribution of delays, and further simplifies the computations so they can be performed in real time. For a simple implementation, using the same kind of simplifications as seen in TCP, we can use the following algorithm:\r\n\r\n1) Maintain estimates of average delay and delay variation for each segment.\r\n2) When a measurement is received and delay and variation are already initialized for both segments, allocate a sample based on previous knowledge:\r\n         * delta = rtt_sample - average(send_segment) - average(return_segment)\r\n         * range = variation(send_segment) + variation(return_segment)\r\n         * sample(send_segment) = average(send_segment) + delta* variation(send_segment)/range\r\n         * sample(return_segment) = average(return_segment) + delta* variation(return_segment)/range\r\nthen update average and variation for each segment using the same formulas used for TCP.\r\n\r\n3) When delay and variation are not estimated for either segment, split the difference:\r\n        * sample(send_segment) = rtt_sample /2\r\n        * sample(return_segment) = rtt_sample /2.\r\nthen initialize average and deviation for each segment based on the sample for that segment.\r\n\r\n4) When delay and variation are only estimated for return segment, initialize the send segment:\r\n        * sample(return_segment) = min(average(return_segment), rtt_sample)\r\n        * sample(send_segment) = rtt_sample - sample(return_segment),\r\nthen initialize average and deviation for the send segment, but do not update estimates for the receive segment.\r\n\r\n5) When delay and variation are only estimated for send segment, initialize the return segment:\r\n        * sample(send_segment) = min(average(send_segment), rtt_sample)\r\n        * sample(return_segment) = rtt_sample - sample(send_segment) \r\nthen initialize average and deviation for the receive segment, but do not update estimates for the send segment.\r\n\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2022-07-08T19:32:55Z",
+          "updatedAt": "2022-07-08T19:32:55Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I guess the previous text could be copied in an annex.",
+          "createdAt": "2022-07-08T19:33:53Z",
+          "updatedAt": "2022-07-08T19:33:53Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -4266,21 +4409,21 @@
       "id": "PR_kwDOGNtpaM4tidpQ",
       "title": "Update identification of packet number space identifier",
       "url": "https://github.com/quicwg/multipath/pull/29",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Attempt to address #27, probably more text will be needed afterwards.",
       "createdAt": "2021-10-22T09:12:05Z",
-      "updatedAt": "2022-07-06T13:51:14Z",
+      "updatedAt": "2022-07-07T09:38:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7bbb37fb2db5d8be017016badcc9fb2b312e1c7d",
       "headRepository": "qdeconinck/draft-lmbdhk-quic-multipath",
       "headRefName": "pnsi-zero-length",
       "headRefOid": "8df480190cdcb0b355920a236cbe5cce467dc9d1",
-      "closedAt": null,
+      "closedAt": "2022-07-07T09:38:49Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -4347,6 +4490,13 @@
           "body": "I believe this PR is OBE. @qdeconinck can we close it?",
           "createdAt": "2022-07-06T13:51:14Z",
           "updatedAt": "2022-07-06T13:51:14Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Given that #103 is now merged, we can close this now.",
+          "createdAt": "2022-07-07T09:38:49Z",
+          "updatedAt": "2022-07-07T09:38:49Z"
         }
       ],
       "reviews": [
@@ -8555,24 +8705,26 @@
       "id": "PR_kwDOGNtpaM4z-o0v",
       "title": "First shot at a unified proposal",
       "url": "https://github.com/quicwg/multipath/pull/103",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This derives from the discussions on issue #96 ",
       "createdAt": "2022-03-04T22:24:40Z",
-      "updatedAt": "2022-07-06T19:35:30Z",
+      "updatedAt": "2022-07-07T09:19:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "232072927fdabba366f7c331eb57963a0d26385a",
       "headRepository": "huitema/multipath",
       "headRefName": "unified",
       "headRefOid": "0aec409c6f118515b6c8f1b547eba51570417407",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-07-07T09:19:18Z",
+      "mergedAt": "2022-07-07T09:19:17Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "71de7b625e2d1faac4329d2b6dee7ec404288123"
+      },
       "comments": [
         {
           "author": "huitema",
@@ -8937,7 +9089,7 @@
             "abbreviatedOid": "622ec9b"
           },
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "CHANGES_REQUESTED",
           "body": "Some very minor comments. ",
           "createdAt": "2022-06-09T11:33:17Z",
@@ -9097,7 +9249,7 @@
             "abbreviatedOid": "622ec9b"
           },
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2022-06-10T07:22:46Z",
@@ -9656,6 +9808,112 @@
               "body": "```suggestion\r\nzero-length CID by using the same packet number space on all paths.\r\n```",
               "createdAt": "2022-07-06T16:32:57Z",
               "updatedAt": "2022-07-06T16:32:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM42iW0u",
+          "commit": {
+            "abbreviatedOid": "0aec409"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-03-19T06:43:53Z",
+          "updatedAt": "2022-07-07T07:11:19Z",
+          "comments": [
+            {
+              "originalPosition": 186,
+              "body": "To be clear, assuming that peer A only supports multiple PN while peer B sends packets with zero-length CID, do you mean B elects to send packets on all available paths but A chooses only one path to send packets or reply ACKs? ",
+              "createdAt": "2022-03-19T06:43:53Z",
+              "updatedAt": "2022-07-07T07:11:19Z"
+            },
+            {
+              "originalPosition": 163,
+              "body": "I think we should expand this section a bit as we found getting the delay right was non-trivial. QUIC time-stamp would work for sure. But if one decides not to use QUIC timestamp, we probably want to explain what is needed to be done here.",
+              "createdAt": "2022-06-13T07:24:08Z",
+              "updatedAt": "2022-07-07T07:11:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49dq0H",
+          "commit": {
+            "abbreviatedOid": "0aec409"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T08:27:54Z",
+          "updatedAt": "2022-07-07T08:27:55Z",
+          "comments": [
+            {
+              "originalPosition": 186,
+              "body": "That is what I understand from the current text, yes.",
+              "createdAt": "2022-07-07T08:27:54Z",
+              "updatedAt": "2022-07-07T08:27:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49drJE",
+          "commit": {
+            "abbreviatedOid": "0aec409"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T08:28:49Z",
+          "updatedAt": "2022-07-07T08:28:49Z",
+          "comments": [
+            {
+              "originalPosition": 163,
+              "body": "Maybe should we create an issue referencing this and create a specific PR afterwards?",
+              "createdAt": "2022-07-07T08:28:49Z",
+              "updatedAt": "2022-07-07T08:28:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49d6Uv",
+          "commit": {
+            "abbreviatedOid": "0aec409"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T09:14:09Z",
+          "updatedAt": "2022-07-07T09:14:09Z",
+          "comments": [
+            {
+              "originalPosition": 163,
+              "body": "Created issue #125 ",
+              "createdAt": "2022-07-07T09:14:09Z",
+              "updatedAt": "2022-07-07T09:14:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49d726",
+          "commit": {
+            "abbreviatedOid": "0aec409"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T09:18:50Z",
+          "updatedAt": "2022-07-07T09:18:50Z",
+          "comments": [
+            {
+              "originalPosition": 186,
+              "body": "Yes, that's the meaning. For me the text is clear. I will merge the PR now, however, if you think further clarification is needed please propose a separate PR.",
+              "createdAt": "2022-07-07T09:18:50Z",
+              "updatedAt": "2022-07-07T09:18:50Z"
             }
           ]
         }
@@ -10327,24 +10585,26 @@
       "id": "PR_kwDOGNtpaM40uX8w",
       "title": "[~] modification for path states in Section 4.3",
       "url": "https://github.com/quicwg/multipath/pull/116",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fix issue #112 and #115 ",
       "createdAt": "2022-03-21T09:09:27Z",
-      "updatedAt": "2022-07-06T15:31:31Z",
+      "updatedAt": "2022-07-08T08:27:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "3d367b87caaa2f3c047ddfc96c0933b68278fd2f",
+      "baseRefOid": "71de7b625e2d1faac4329d2b6dee7ec404288123",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/path_state",
-      "headRefOid": "e9137d9e55d620f4f0b57d3ae9aa599bb5e29deb",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "59673b35c0b789a5630026dae6d4f9d005fad6dc",
+      "closedAt": "2022-07-08T08:27:37Z",
+      "mergedAt": "2022-07-08T08:27:37Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "99bd044dd4c3e249bcd04ad5fe8cebd9e5c07469"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10439,6 +10699,79 @@
           "createdAt": "2022-07-06T15:31:31Z",
           "updatedAt": "2022-07-06T15:31:31Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49f6k_",
+          "commit": {
+            "abbreviatedOid": "e2c6d05"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T15:30:40Z",
+          "updatedAt": "2022-07-07T15:30:45Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Is this a SHOULD NOT or a MUST NOT?",
+              "createdAt": "2022-07-07T15:30:41Z",
+              "updatedAt": "2022-07-07T15:30:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49gTPN",
+          "commit": {
+            "abbreviatedOid": "e2c6d05"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T16:42:39Z",
+          "updatedAt": "2022-07-07T16:42:39Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Actually this should not be normative here as this is just the reasoning. So maybe s/SHOULD NOT/are not expected to/",
+              "createdAt": "2022-07-07T16:42:39Z",
+              "updatedAt": "2022-07-07T16:42:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49gTdr",
+          "commit": {
+            "abbreviatedOid": "e2c6d05"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T16:43:23Z",
+          "updatedAt": "2022-07-07T16:43:24Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "```suggestion\r\nendpoints are not expected to send packets on the current path in the \"Closed\"\r\n```",
+              "createdAt": "2022-07-07T16:43:24Z",
+              "updatedAt": "2022-07-07T16:43:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49i8-b",
+          "commit": {
+            "abbreviatedOid": "59673b3"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T08:27:15Z",
+          "updatedAt": "2022-07-08T08:27:15Z",
+          "comments": []
         }
       ]
     },
@@ -10454,18 +10787,26 @@
       "labels": [],
       "body": "For issue #22",
       "createdAt": "2022-04-06T04:12:48Z",
-      "updatedAt": "2022-07-06T13:55:36Z",
+      "updatedAt": "2022-07-08T14:25:53Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "3d367b87caaa2f3c047ddfc96c0933b68278fd2f",
+      "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/path_standby",
-      "headRefOid": "d725ce4c5fb8f327dd42d90811f132ccc78fe4ed",
+      "headRefOid": "5abb88200431967913b69606969d3b11efb28464",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I think this is nearly ready. I just wonder what should be the behaviour of the PATH_STATUS receiver if all the existing paths are marked as Standby. Should we add something regarding this?\r\n\r\nI agree with this point. For the receiver side, endpoint MAY ignore this frame if it would cause all the paths unavailable.\r\nI updated the description. ",
+          "createdAt": "2022-07-08T14:00:28Z",
+          "updatedAt": "2022-07-08T14:00:28Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM49ZrgT",
@@ -10506,6 +10847,261 @@
               "updatedAt": "2022-07-06T13:55:36Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49fpAS",
+          "commit": {
+            "abbreviatedOid": "a19a414"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T14:45:21Z",
+          "updatedAt": "2022-07-07T14:45:22Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "It's ok that we maintain only one monotonically increasing sequence number for all the Path Status frame under the same connection.",
+              "createdAt": "2022-07-07T14:45:22Z",
+              "updatedAt": "2022-07-07T14:45:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49fxlw",
+          "commit": {
+            "abbreviatedOid": "d725ce4"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T15:06:40Z",
+          "updatedAt": "2022-07-07T15:06:41Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "Updated the definition of sequence number.",
+              "createdAt": "2022-07-07T15:06:41Z",
+              "updatedAt": "2022-07-07T15:06:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49f7JK",
+          "commit": {
+            "abbreviatedOid": "cc9fdef"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2022-07-07T15:32:18Z",
+          "updatedAt": "2022-07-07T15:40:58Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "```suggestion\r\nPATH_STATUS frames are used by endpoints to inform the peer of the current\r\n```",
+              "createdAt": "2022-07-07T15:32:18Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "I think I would be useful to explicitly state that these are indications, i.e., the peer might not follow the endhost advertisements.",
+              "createdAt": "2022-07-07T15:35:21Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            },
+            {
+              "originalPosition": 59,
+              "body": "```suggestion\r\n  the definition of Path Identifier in {{path-abandon-frame}}.\r\n```",
+              "createdAt": "2022-07-07T15:36:05Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            },
+            {
+              "originalPosition": 64,
+              "body": "Maybe we should state that the scope of the sequence number is relative to the Path Identifier? Having a single space for the whole connection might cause issues if we have different paths with different latencies.",
+              "createdAt": "2022-07-07T15:38:08Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            },
+            {
+              "originalPosition": 74,
+              "body": "```suggestion\r\non the corresponding path, until it receives a new PATH_STATUS frame\r\n```",
+              "createdAt": "2022-07-07T15:38:40Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            },
+            {
+              "originalPosition": 64,
+              "body": "Actually later this is explained, but I think it could be useful to explicitly state that here.",
+              "createdAt": "2022-07-07T15:39:58Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            },
+            {
+              "originalPosition": 83,
+              "body": "Do we want to state that PATH_STATUS is ack-eliciting?",
+              "createdAt": "2022-07-07T15:40:45Z",
+              "updatedAt": "2022-07-07T15:40:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49iNiP",
+          "commit": {
+            "abbreviatedOid": "cc9fdef"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T04:07:11Z",
+          "updatedAt": "2022-07-08T04:07:11Z",
+          "comments": [
+            {
+              "originalPosition": 64,
+              "body": "Actually the receiver should maintain the largest received sequence number for each path. The receiver should accept the Path Status Frame if and only if its sequence number is larger than the largest received sequence number of the Path Identifier. The latencies of different paths doesn't matter, because the receiver can distinguish Status Frames for different paths with Path Identifier field, and compares the sequence numbers independently.",
+              "createdAt": "2022-07-08T04:07:11Z",
+              "updatedAt": "2022-07-08T04:07:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49iNrr",
+          "commit": {
+            "abbreviatedOid": "cc9fdef"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T04:08:41Z",
+          "updatedAt": "2022-07-08T04:08:41Z",
+          "comments": [
+            {
+              "originalPosition": 83,
+              "body": "The acknowledgement of PATH_STATUS frame is important for the sender to check whether the receiver got the path status change or not.",
+              "createdAt": "2022-07-08T04:08:41Z",
+              "updatedAt": "2022-07-08T04:08:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jPeJ",
+          "commit": {
+            "abbreviatedOid": "7d68d77"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T09:28:22Z",
+          "updatedAt": "2022-07-08T09:28:23Z",
+          "comments": [
+            {
+              "originalPosition": 64,
+              "body": "I fully agree with your description, I just suggested to make it clearer here.\r\n```suggestion\r\n  the sequence number assigned for this PATH_STATUS frame. The sequence\r\n  number is relative to the Path Identifier and MUST be monotonically increasing\r\n  for the sender of the Path Status frame in the same connection.\r\n```",
+              "createdAt": "2022-07-08T09:28:22Z",
+              "updatedAt": "2022-07-08T09:28:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jQow",
+          "commit": {
+            "abbreviatedOid": "7d68d77"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T09:30:42Z",
+          "updatedAt": "2022-07-08T09:30:43Z",
+          "comments": [
+            {
+              "originalPosition": 83,
+              "body": "```suggestion\r\nPATH_STATUS frames are ack-eliciting. If a packet containing\r\n```",
+              "createdAt": "2022-07-08T09:30:42Z",
+              "updatedAt": "2022-07-08T09:30:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jc7b",
+          "commit": {
+            "abbreviatedOid": "cc9fdef"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T10:13:07Z",
+          "updatedAt": "2022-07-08T10:13:08Z",
+          "comments": [
+            {
+              "originalPosition": 64,
+              "body": "I updated the description to make it clearer, and it's different for the sender and receiver side. ",
+              "createdAt": "2022-07-08T10:13:08Z",
+              "updatedAt": "2022-07-08T10:13:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jer9",
+          "commit": {
+            "abbreviatedOid": "c463880"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T10:19:30Z",
+          "updatedAt": "2022-07-08T10:19:30Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Added note for that.",
+              "createdAt": "2022-07-08T10:19:30Z",
+              "updatedAt": "2022-07-08T10:19:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49kBK7",
+          "commit": {
+            "abbreviatedOid": "c463880"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I think this is nearly ready. I just wonder what should be the behaviour of the PATH_STATUS receiver if all the existing paths are marked as Standby. Should we add something regarding this?",
+          "createdAt": "2022-07-08T12:36:41Z",
+          "updatedAt": "2022-07-08T12:36:41Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49khYs",
+          "commit": {
+            "abbreviatedOid": "5abb882"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2022-07-08T14:20:03Z",
+          "updatedAt": "2022-07-08T14:20:03Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49kjSW",
+          "commit": {
+            "abbreviatedOid": "5abb882"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Sounds good to me.",
+          "createdAt": "2022-07-08T14:25:53Z",
+          "updatedAt": "2022-07-08T14:25:53Z",
+          "comments": []
         }
       ]
     },
@@ -10536,6 +11132,660 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 124,
+      "id": "PR_kwDOGNtpaM47AJMm",
+      "title": "fix max_idle_timeout issue in issue #95",
+      "url": "https://github.com/quicwg/multipath/pull/124",
+      "state": "MERGED",
+      "author": "yfmascgy",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Replace \"max_idle_timeout\" with \"a path's idle_period\" in the Idle_Timeout Section and make sure that the idle_period is larger than 3 times the path's PTO.\r\n",
+      "createdAt": "2022-07-07T09:00:58Z",
+      "updatedAt": "2022-07-08T09:18:54Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "f3a20915bd5b326918bfadf9dc6f304d3b009c37",
+      "headRepository": "yfmascgy/multipath",
+      "headRefName": "dev/fix-max-idle-timeout",
+      "headRefOid": "abd6d16f7569670857138d048997f12489e369ce",
+      "closedAt": "2022-07-08T09:18:54Z",
+      "mergedAt": "2022-07-08T09:18:54Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "a4283cf44ce7ee1e832b680b3440610936d15cdc"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49eCCz",
+          "commit": {
+            "abbreviatedOid": "bf2a0d2"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-07T09:37:25Z",
+          "updatedAt": "2022-07-07T09:37:26Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\r\npath. Hosts SHOULD stop sending traffic on a path if for at least the period of the\r\nidle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}} \r\n(a) no non-probing packet was received or (b) no\r\nnon-probing packet sent over this path was acknowledged, but MAY ignore that\r\nrule if it would disqualify all available paths. To avoid idle timeout of a path, endpoints\r\n```",
+              "createdAt": "2022-07-07T09:37:25Z",
+              "updatedAt": "2022-07-07T09:37:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49eCdo",
+          "commit": {
+            "abbreviatedOid": "bf2a0d2"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Proposing to rather reference to RFC9000 instead of specifying this here separate again.",
+          "createdAt": "2022-07-07T09:38:42Z",
+          "updatedAt": "2022-07-07T09:38:42Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49ibpX",
+          "commit": {
+            "abbreviatedOid": "abd6d16"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Just modified \"...at least _max_idle_timeout milliseconds_ (a)...\" \r\ninto \"... at least _the period of the idle timeout_  as specified in {{Section 10.1 of QUIC-TRANSPORT}} (a)...\"\r\n\r\nIt's better to just modify the corresponding 2 lines, but it's ok for me.",
+          "createdAt": "2022-07-08T06:02:55Z",
+          "updatedAt": "2022-07-08T06:02:55Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jGpU",
+          "commit": {
+            "abbreviatedOid": "abd6d16"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T09:00:24Z",
+          "updatedAt": "2022-07-08T09:00:24Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jLwo",
+          "commit": {
+            "abbreviatedOid": "abd6d16"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T09:18:45Z",
+          "updatedAt": "2022-07-08T09:18:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 126,
+      "id": "PR_kwDOGNtpaM47AOHD",
+      "title": "Clarify path closure and stateless reset reception",
+      "url": "https://github.com/quicwg/multipath/pull/126",
+      "state": "MERGED",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #107, #118.",
+      "createdAt": "2022-07-07T09:20:16Z",
+      "updatedAt": "2022-07-08T14:05:06Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "71de7b625e2d1faac4329d2b6dee7ec404288123",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-118",
+      "headRefOid": "99ca8a2ad04816b19ad6788059c627e41268f53f",
+      "closedAt": "2022-07-08T11:10:15Z",
+      "mergedAt": "2022-07-08T11:10:14Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "4e7695b8f3eaeec8883d786b2b7d5ce8a2e969c0"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49eC11",
+          "commit": {
+            "abbreviatedOid": "99ca8a2"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-07T09:39:55Z",
+          "updatedAt": "2022-07-07T09:39:55Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jsWN",
+          "commit": {
+            "abbreviatedOid": "99ca8a2"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2022-07-08T11:10:01Z",
+          "updatedAt": "2022-07-08T11:10:01Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49kcTB",
+          "commit": {
+            "abbreviatedOid": "99ca8a2"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Careful with implicit actions!",
+          "createdAt": "2022-07-08T14:04:42Z",
+          "updatedAt": "2022-07-08T14:05:06Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "I would not suggest that ABANDON \"implies\" CID retirement. It is true that after ABANDON the CID SHOULD be retired, but I don't think the spec states that the effect is mechanical or implicit. Or if it is, then we should clearly say so in the description of the abandon frame.",
+              "createdAt": "2022-07-08T14:04:42Z",
+              "updatedAt": "2022-07-08T14:05:06Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 127,
+      "id": "PR_kwDOGNtpaM47BIVw",
+      "title": "Add discussion about retiring DCID when there are still in-flight packets",
+      "url": "https://github.com/quicwg/multipath/pull/127",
+      "state": "MERGED",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #122.",
+      "createdAt": "2022-07-07T12:26:43Z",
+      "updatedAt": "2022-07-08T11:40:00Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "71de7b625e2d1faac4329d2b6dee7ec404288123",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-122",
+      "headRefOid": "e5feb80d6916dfb918d66dc5621f1c8b3aabe174",
+      "closedAt": "2022-07-08T11:40:00Z",
+      "mergedAt": "2022-07-08T11:40:00Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "07b692f4bae6381c23fca051a0cf7026609a7d2c"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49e1kt",
+          "commit": {
+            "abbreviatedOid": "9c2faa5"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-07T12:32:11Z",
+          "updatedAt": "2022-07-07T12:32:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jCIo",
+          "commit": {
+            "abbreviatedOid": "9c2faa5"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Just little gramma fix",
+          "createdAt": "2022-07-08T08:44:54Z",
+          "updatedAt": "2022-07-08T09:02:26Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\nConnection ID, then wait for all in-flight packets to be either\r\n```",
+              "createdAt": "2022-07-08T08:44:54Z",
+              "updatedAt": "2022-07-08T09:02:26Z"
+            },
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nendpoint should first stop sending packets with the to-be-retired\r\n```",
+              "createdAt": "2022-07-08T08:46:05Z",
+              "updatedAt": "2022-07-08T09:02:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jsrb",
+          "commit": {
+            "abbreviatedOid": "e5feb80"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T11:11:29Z",
+          "updatedAt": "2022-07-08T11:11:29Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 129,
+      "id": "PR_kwDOGNtpaM47Bbkb",
+      "title": "Add some guidance for ACK scheduling",
+      "url": "https://github.com/quicwg/multipath/pull/129",
+      "state": "OPEN",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #123.",
+      "createdAt": "2022-07-07T13:21:21Z",
+      "updatedAt": "2022-07-08T11:35:43Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "71de7b625e2d1faac4329d2b6dee7ec404288123",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-123",
+      "headRefOid": "49437967de268cf266fe1befe9965780032f9a4e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49jxmP",
+          "commit": {
+            "abbreviatedOid": "4943796"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-08T11:33:18Z",
+          "updatedAt": "2022-07-08T11:33:18Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Sending ACK_(MP) frames on the fastest path is one of the ACK scheduling strategies, but IMO the most common strategy is sending ACK_(MP) frames on the same path of the packet was sent. By the way, as QUIC-TRANSPORT doesn't contain a mechanism to calculate one-way-delay on a certain path, it's very important that we need to add some guidance for one-way-delay calculation(e.g. [QUIC-Timestamp]) with the fastest path ACK scheduling strategy, and some guidance for the potential impact on congestion control.",
+              "createdAt": "2022-07-08T11:33:18Z",
+              "updatedAt": "2022-07-08T11:33:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jyIQ",
+          "commit": {
+            "abbreviatedOid": "4943796"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Need to add guidance for one-way-delay calculation and impact on congestion control, if we want to recommend the fastest path ACK scheduling strategy.",
+          "createdAt": "2022-07-08T11:35:43Z",
+          "updatedAt": "2022-07-08T11:35:43Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 130,
+      "id": "PR_kwDOGNtpaM47F46r",
+      "title": "Minor editorial changes",
+      "url": "https://github.com/quicwg/multipath/pull/130",
+      "state": "MERGED",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Mostly fixing some English spellings and sentences, \"Figure Figure\"\r\nand \"Section Section\" occurrences. There is no content change here.",
+      "createdAt": "2022-07-08T09:13:35Z",
+      "updatedAt": "2022-07-08T11:37:50Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "99bd044dd4c3e249bcd04ad5fe8cebd9e5c07469",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-english",
+      "headRefOid": "197f61df3407783c6f9ff044e96e04020ee93c8c",
+      "closedAt": "2022-07-08T11:37:50Z",
+      "mergedAt": "2022-07-08T11:37:49Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "daae7450544329fe0f44653e7deae0122d030141"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49jRKo",
+          "commit": {
+            "abbreviatedOid": "197f61d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T09:31:42Z",
+          "updatedAt": "2022-07-08T09:31:42Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49jyix",
+          "commit": {
+            "abbreviatedOid": "197f61d"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T11:37:39Z",
+          "updatedAt": "2022-07-08T11:37:39Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 131,
+      "id": "PR_kwDOGNtpaM47GEgm",
+      "title": "Add more explanation on ACK delay, RTT computation for single PNS",
+      "url": "https://github.com/quicwg/multipath/pull/131",
+      "state": "OPEN",
+      "author": "yfmascgy",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "For issue #125 , add some considerations for RTT computation in our single pns implementation. Not sure if it is easy enough to understand. Please feel free to change.",
+      "createdAt": "2022-07-08T09:49:57Z",
+      "updatedAt": "2022-07-09T13:57:06Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "a4283cf44ce7ee1e832b680b3440610936d15cdc",
+      "headRepository": "yfmascgy/multipath",
+      "headRefName": "dev/rtt-spns-consideration",
+      "headRefOid": "df87c8f16223428589f41fad091c10138af52f30",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49j3TQ",
+          "commit": {
+            "abbreviatedOid": "2e9433e"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "The mechanism is ok, but we need to make it a little clearer by distinguishing actions for the sender and receiver side.",
+          "createdAt": "2022-07-08T11:58:24Z",
+          "updatedAt": "2022-07-08T12:06:47Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "```suggestion\r\n* The sender also keeps track of a list of sent packets for each path that are acknowledged by\r\n```",
+              "createdAt": "2022-07-08T11:58:24Z",
+              "updatedAt": "2022-07-08T12:06:47Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\n  ACKs received from the same path. A path's RTT sample is generated on receving ACK\r\n```",
+              "createdAt": "2022-07-08T11:59:52Z",
+              "updatedAt": "2022-07-08T12:06:47Z"
+            },
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\r\n* The receiver side counts the number of ACK-eliciting packets received for each paths,\r\n```",
+              "createdAt": "2022-07-08T12:01:38Z",
+              "updatedAt": "2022-07-08T12:06:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49moyE",
+          "commit": {
+            "abbreviatedOid": "df87c8f"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Look good to me.",
+          "createdAt": "2022-07-09T13:57:06Z",
+          "updatedAt": "2022-07-09T13:57:06Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 133,
+      "id": "PR_kwDOGNtpaM47GtJs",
+      "title": "add some text to refuse path initiation",
+      "url": "https://github.com/quicwg/multipath/pull/133",
+      "state": "OPEN",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Should fix #120.",
+      "createdAt": "2022-07-08T12:32:43Z",
+      "updatedAt": "2022-07-09T07:06:58Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "refuse-path",
+      "headRefOid": "ff0471f90f9aea5bcd6a5bade69004bfa98d7cfe",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49mckX",
+          "commit": {
+            "abbreviatedOid": "ff0471f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Yes, good idea. Specifying \"on another path\" is indeed the key, because otherwise the responder needs to consume a CID. \r\n\r\nThere is a corner case when the Path Challenge arrives with a NULL CID. What happens then?",
+          "createdAt": "2022-07-09T07:06:58Z",
+          "updatedAt": "2022-07-09T07:06:58Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 134,
+      "id": "PR_kwDOGNtpaM47HHW6",
+      "title": "Do not imply",
+      "url": "https://github.com/quicwg/multipath/pull/134",
+      "state": "MERGED",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Minor tweak. The text says that a path abandon \"implies\" retirement of the CID. Readers could be mislead and assume that they don't need to send a retire frame after sending abandon, when in fact they do.",
+      "createdAt": "2022-07-08T14:16:31Z",
+      "updatedAt": "2022-07-08T16:34:32Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
+      "headRepository": "huitema/multipath",
+      "headRefName": "do-not-imply",
+      "headRefOid": "e523da51315a7ae9ceb48a00aeec2b15e0e1ff90",
+      "closedAt": "2022-07-08T14:26:35Z",
+      "mergedAt": "2022-07-08T14:26:35Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "a6126f4ab1e3df1deca8c5517fbe974ffaf29e5d"
+      },
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@Yanmei-Liu , @qdeconinck, @mirjak please review.",
+          "createdAt": "2022-07-08T14:21:09Z",
+          "updatedAt": "2022-07-08T14:21:09Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This Github setting is pretty annoying. @LPardue I understand why only the selected authors would be able to merge a pull request, but as it stands I am also blocked from requesting reviews of a PR that I just created.",
+          "createdAt": "2022-07-08T14:25:01Z",
+          "updatedAt": "2022-07-08T14:25:01Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49kiV9",
+          "commit": {
+            "abbreviatedOid": "e523da5"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2022-07-08T14:22:58Z",
+          "updatedAt": "2022-07-08T14:22:58Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49kifJ",
+          "commit": {
+            "abbreviatedOid": "e523da5"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "The proposed text is indeed clearer.",
+          "createdAt": "2022-07-08T14:23:26Z",
+          "updatedAt": "2022-07-08T14:23:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49kivI",
+          "commit": {
+            "abbreviatedOid": "e523da5"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T14:24:13Z",
+          "updatedAt": "2022-07-08T14:24:13Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 135,
+      "id": "PR_kwDOGNtpaM47HITr",
+      "title": "[~] Receiving old packet number space identifier in ACK_MP",
+      "url": "https://github.com/quicwg/multipath/pull/135",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix issue #128 ",
+      "createdAt": "2022-07-08T14:20:15Z",
+      "updatedAt": "2022-07-09T14:04:46Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/proto_violation",
+      "headRefOid": "cf794b205911fdae1b2ebdf67141b07d3b0741d1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM49kj8Y",
+          "commit": {
+            "abbreviatedOid": "ffa3afd"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Minor English nit.",
+          "createdAt": "2022-07-08T14:27:55Z",
+          "updatedAt": "2022-07-08T14:29:08Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nspace ID which was never issued by endpoints, it MUST treat this as\r\n```",
+              "createdAt": "2022-07-08T14:27:55Z",
+              "updatedAt": "2022-07-08T14:29:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49mcms",
+          "commit": {
+            "abbreviatedOid": "ffa3afd"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-09T07:08:59Z",
+          "updatedAt": "2022-07-09T07:09:05Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Why SHOULD? Is there an exception? What else could the receiver do?",
+              "createdAt": "2022-07-09T07:08:59Z",
+              "updatedAt": "2022-07-09T07:09:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49mo9I",
+          "commit": {
+            "abbreviatedOid": "cf794b2"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-09T14:04:45Z",
+          "updatedAt": "2022-07-09T14:04:46Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Replaced with _MUST_",
+              "createdAt": "2022-07-09T14:04:45Z",
+              "updatedAt": "2022-07-09T14:04:46Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
