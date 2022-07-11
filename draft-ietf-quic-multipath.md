@@ -389,11 +389,13 @@ CONNECTION_CLOSE frame.
 ### Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
-peer during the address validation procedure. To achieve this, the
-endpoint does not send a PATH_RESPONSE in response to the peer's
-PATH_CHALLENGE. The endpoint instead sends a PATH_ABANDON frame
-containing the Path Identifier of the refused path on another active path.
-
+peer during the address validation procedure. According to
+{{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
+is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
+An endpoint that has negotiated the usage of the multipath extension MAY
+use an explicit method by sending on another active path a PATH_ABANDON
+frame containing the Path Identifier of the refused path, but only if the
+PATH_CHALLENGE arrives in a packet using a non-zero length Connection ID.
 
 ### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
