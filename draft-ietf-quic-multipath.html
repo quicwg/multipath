@@ -1935,6 +1935,15 @@ outside the scope of this document. Various packet schedulers have been
 proposed and implemented, notably for Multipath TCP. A companion draft
 <span>[<a href="#I-D.bonaventure-iccrg-schedulers" class="xref">I-D.bonaventure-iccrg-schedulers</a>]</span> provides several general-purpose
 packet schedulers depending on the application goals.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">Note that the receiver could use a different scheduling strategy to send
+ACK(_MP) frames. The recommended default behaviour consists in sending
+ACK(_MP) frames on the path they acknowledge packets. Other scheduling
+strategies, such as sending ACK(_MP) frames on the lowest latency
+path, might be considered, but they could impact the sender with side
+effects on, e.g., the RTT estimation or the congestion control scheme.
+When adopting such asymetrical acknowledgment scheduling, the receiver
+should at least ensure that the sender negotiated one-way delay
+calculation mechanism (e.g., <span>[<a href="#QUIC-Timestamp" class="xref">QUIC-Timestamp</a>]</span>).<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="recovery">
