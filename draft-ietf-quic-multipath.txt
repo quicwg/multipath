@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 9 January 2023                               Q. De Coninck, Ed.
+Expires: 12 January 2023                              Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             8 July 2022
+                                                            11 July 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2023.
+   This Internet-Draft will expire on 12 January 2023.
 
 Copyright Notice
 
@@ -74,11 +74,12 @@ Table of Contents
    3.  Handshake Negotiation and Transport Parameter
    4.  Path Setup and Removal
      4.1.  Path Initiation
-     4.2.  Path Close
-       4.2.1.  Use PATH_ABANDON Frame to Close a Path
-       4.2.2.  Effect of RETIRE_CONNECTION_ID Frame
-       4.2.3.  Idle Timeout
-     4.3.  Path States
+     4.2.  Path State Management
+     4.3.  Path Close
+       4.3.1.  Use PATH_ABANDON Frame to Close a Path
+       4.3.2.  Effect of RETIRE_CONNECTION_ID Frame
+       4.3.3.  Idle Timeout
+     4.4.  Path States
    5.  Congestion Control
    6.  Computing Path RTT
    7.  Packet Scheduling
@@ -100,7 +101,8 @@ Table of Contents
      11.1.  Handling different PMTU sizes
    12. New Frames
      12.1.  PATH_ABANDON Frame
-     12.2.  ACK_MP Frame
+     12.2.  PATH_STATUS frame
+     12.3.  ACK_MP Frame
    13. Error Codes
    14. IANA Considerations
    15. Security Considerations
@@ -344,7 +346,29 @@ Table of Contents
    path.  Instead, servers SHOULD consider new paths over which non-
    probing packets have been received as available for transmission.
 
-4.2.  Path Close
+4.2.  Path State Management
+
+   An endpoint uses PATH_STATUS frames to inform that the peer should
+   send packets in the preference expressed by these frames.  Notice
+   that the endpoint might not follow the peer's advertisements, but the
+   PATH_STATUS frame is still a clear signal of suggestion for the
+   preference of path usage by the peer.
+
+   PATH_STATUS frame describes 2 kinds of path states:
+
+   *  Mark a path as "available", i.e., allow the peer to use its own
+      logic to split traffic among available paths.
+
+   *  Mark a path as "standby", i.e., suggest that no traffic should be
+      sent on that path if another path is available.
+
+   Endpoints use Path Identifier field in PATH_STATUS frame to identify
+   which path's state is going to be changed.  Notice that PATH_STATUS
+   frame can be sent via a different path.  An Endpoint MAY ignore the
+   PATH_STATUS frame if it would make all the paths unavailable in a
+   single connection.
+
+4.3.  Path Close
 
    Each endpoint manages the set of paths that are available for
    transmission.  At any time in the connection, each endpoint can
@@ -355,12 +379,12 @@ Table of Contents
 
    An endpoint that wants to close a path SHOULD use explicit request to
    terminate the path by sending the PATH_ABANDON frame (see
-   Section 4.2.1).  Note that while abandoning a path will cause
+   Section 4.3.1).  Note that while abandoning a path will cause
    Connection ID retirement, only retiring the associated Connection ID
-   does not necessarily advertise path abandon (see Section 4.2.2).
+   does not necessarily advertise path abandon (see Section 4.3.2).
    However, implicit signals such as idle time or packet losses might be
    the only way for an endhost to detect path closure (see
-   Section 4.2.3).
+   Section 4.3.3).
 
    Note that other explicit closing mechanisms of [QUIC-TRANSPORT] still
    apply on the whole connection.  In particular, the reception of
@@ -368,7 +392,7 @@ Table of Contents
    Stateless Reset (Section 10.3 of [QUIC-TRANSPORT]) closes the
    connection.
 
-4.2.1.  Use PATH_ABANDON Frame to Close a Path
+4.3.1.  Use PATH_ABANDON Frame to Close a Path
 
    Both endpoints, namely the client and the server, can close a path,
    by sending PATH_ABANDON frame (see Section 12.1) which abandons the
@@ -407,7 +431,7 @@ Table of Contents
    packet containing the PATH_ABANDON frame or the packet containing the
    ACK for the PATH_ABANDON frame cannot be received anymore and the
    endpoint might need to rely on an idle time out to close the path, as
-   described in Section 4.2.3.
+   described in Section 4.3.3.
 
    Retransmittable frames, that have previously been sent on the
    abandoned path and are considered lost, SHOULD be retransmitted on a
@@ -423,7 +447,7 @@ Table of Contents
    such as one RTO if a path probing packet is received on a new path
    before sending the CONNECTION_CLOSE frame.
 
-4.2.2.  Effect of RETIRE_CONNECTION_ID Frame
+4.3.2.  Effect of RETIRE_CONNECTION_ID Frame
 
    Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
    the resources associated with that connection ID.  If the connection
@@ -444,7 +468,7 @@ Table of Contents
    either acknowledged or marked as lost, and finally retire the
    Connection ID.
 
-4.2.3.  Idle Timeout
+4.3.3.  Idle Timeout
 
    [QUIC-TRANSPORT] allows for closing of connections if they stay idle
    for too long.  The connection idle timeout in multipath QUIC is
@@ -478,7 +502,7 @@ Table of Contents
    for an excessive time or having to promptly reestablish a path after
    a spurious estimate of path abandonment by the client.
 
-4.3.  Path States
+4.4.  Path States
 
    Figure 1 shows the states that an endpoint's path can have.
 
@@ -823,7 +847,7 @@ Table of Contents
 
    If packets contain a non-zero CID, each path has its own packet
    number space for transmitting 1-RTT packets and a new ACK frame
-   format is used as specified in Section 12.2.  Compared to the QUIC
+   format is used as specified in Section 12.3.  Compared to the QUIC
    version 1 ACK frame, the ACK_MP frames additionally contains a Packet
    Number Space Identifier (PN Space ID).  The PN Space ID used to
    distinguish packet number spaces for different paths and is simply
@@ -846,7 +870,7 @@ Table of Contents
    actively using N paths, the limit is reached.  If the client wants to
    start a new path, it has to retire one of the established paths.
 
-   ACK_MP frame (defined in Section 12.2) can be returned via either a
+   ACK_MP frame (defined in Section 12.3) can be returned via either a
    different path, or the same path identified by the Path Identifier,
    based on different strategies of sending ACK_MP frames.
 
@@ -1079,7 +1103,7 @@ Table of Contents
    PATH_ABANDON frames are formatted as shown in Figure 5.
 
      PATH_ABANDON Frame {
-       Type (i) = TBD-03 (experiments use 0xbaba05),
+       Type (i) = TBD-02 (experiments use 0xbaba05),
        Path Identifier (..),
        Error Code (i),
        Reason Phrase Length (i),
@@ -1155,7 +1179,59 @@ Table of Contents
    Content field.  If the Identifier Type if 0x02, the PATH_ABANDON
    frame MUST only be sent on the path that is intended to be abandoned.
 
-12.2.  ACK_MP Frame
+12.2.  PATH_STATUS frame
+
+   PATH_STATUS Frame are used by endpoints to inform the peer of the
+   current status of one path, and the peer should send packets
+   according to the preference expressed in these frames.  PATH_STATUS
+   frames are formatted as shown in Figure 7.
+
+     PATH_STATUS Frame {
+       Type (i) = TBD-03 (experiments use 0xbaba06),
+       Path Identifier (..),
+       Path Status sequence number (i),
+       Path Status (i),
+     }
+
+                     Figure 7: PATH_STATUS Frame Format
+
+   PATH_STATUS Frames contain the following fields:
+
+   Path Identifier: An identifier of the path, which is formatted as
+   shown in Figure 6.  Exactly the same as the definition of Path
+   Identifier in {#path-abandon-frame}.
+
+   Path Status sequence number: A variable-length integer specifying the
+   sequence number assigned for this PATH_STATUS frame.  The sequence
+   number MUST be monotonically increasing generated by the sender of
+   the Path Status frame in the same connection.  The receiver of the
+   Path Status frame needs to use and compare the sequence numbers
+   separately for each Path Identifier.
+
+   Available values of Path Status field are:
+
+   *  1: Standby
+
+   *  2: Available
+
+   Endpoints use PATH_STATUS frame to inform the peer whether it prefer
+   to use this path or not.  If an endpoint receives a PATH_STATUS frame
+   containing 1-Standby status, it SHOULD stop sending non-probing
+   packets on the corresponding path, until it receive a new PATH_STATUS
+   frame containing 2-Available status with a higher sequence number
+   referring to the same path.
+
+   Frames may be received out of order.  A peer MUST ignore an incoming
+   PATH_STATUS frame if it previously received another PATH_STATUS frame
+   for the same Path Identifier with a sequence number equal to or
+   higher than the sequence number of the incoming frame.
+
+   PATH_STATUS frames SHOULD be acknowledged.  If a packet containing a
+   PATH_STATUS frame is considered lost, the peer should only repeat it
+   if it was the last status sent for that path -- as indicated by the
+   sequence number.
+
+12.3.  ACK_MP Frame
 
    The ACK_MP frame (types TBD-00 and TBD-01; experiments use
    0xbaba00..0xbaba01) is an extension of the ACK frame defined by
@@ -1165,7 +1241,7 @@ Table of Contents
    packets with associated ECN marks received on the connection up to
    this point.
 
-   ACK_MP frame is formatted as shown in Figure 7.
+   ACK_MP frame is formatted as shown in Figure 8.
 
      ACK_MP Frame {
        Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
@@ -1178,7 +1254,7 @@ Table of Contents
        [ECN Counts (..)],
      }
 
-                       Figure 7: ACK_MP Frame Format
+                       Figure 8: ACK_MP Frame Format
 
    Compared to the ACK frame specified in [QUIC-TRANSPORT], the
    following field is added.
@@ -1235,7 +1311,7 @@ Table of Contents
       +==============================+==============+===============+
       | Value                        | Frame Name   | Specification |
       +==============================+==============+===============+
-      | TBD-00 - TBD-01 (experiments | ACK_MP       | Section 12.2  |
+      | TBD-00 - TBD-01 (experiments | ACK_MP       | Section 12.3  |
       | use 0xbaba00-0xbaba01)       |              |               |
       +------------------------------+--------------+---------------+
       | TBD-02 (experiments use      | PATH_ABANDON | Section 12.1  |

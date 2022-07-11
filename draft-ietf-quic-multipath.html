@@ -1036,7 +1036,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 9 January 2023</td>
+<td class="center">Expires 12 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1049,12 +1049,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-07-08" class="published">8 July 2022</time>
+<time datetime="2022-07-11" class="published">11 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-01-09">9 January 2023</time></dd>
+<dd class="expires"><time datetime="2023-01-12">12 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1123,7 +1123,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1173,21 +1173,24 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-path-initiation" class="xref">Path Initiation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-path-close" class="xref">Path Close</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-path-state-management" class="xref">Path State Management</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-path-close" class="xref">Path Close</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
-                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="xref">4.2.1</a>.  <a href="#name-use-path_abandon-frame-to-c" class="xref">Use PATH_ABANDON Frame to Close a Path</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.1">
+                    <p id="section-toc.1-1.4.2.3.2.1.1"><a href="#section-4.3.1" class="xref">4.3.1</a>.  <a href="#name-use-path_abandon-frame-to-c" class="xref">Use PATH_ABANDON Frame to Close a Path</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.2">
-                    <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="xref">4.2.2</a>.  <a href="#name-effect-of-retire_connection" class="xref">Effect of RETIRE_CONNECTION_ID Frame</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.2">
+                    <p id="section-toc.1-1.4.2.3.2.2.1"><a href="#section-4.3.2" class="xref">4.3.2</a>.  <a href="#name-effect-of-retire_connection" class="xref">Effect of RETIRE_CONNECTION_ID Frame</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.3">
-                    <p id="section-toc.1-1.4.2.2.2.3.1"><a href="#section-4.2.3" class="xref">4.2.3</a>.  <a href="#name-idle-timeout" class="xref">Idle Timeout</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.3">
+                    <p id="section-toc.1-1.4.2.3.2.3.1"><a href="#section-4.3.3" class="xref">4.3.3</a>.  <a href="#name-idle-timeout" class="xref">Idle Timeout</a></p>
 </li>
                 </ul>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-path-states" class="xref">Path States</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="xref">4.4</a>.  <a href="#name-path-states" class="xref">Path States</a></p>
 </li>
             </ul>
 </li>
@@ -1265,7 +1268,10 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="xref">12.1</a>.  <a href="#name-path_abandon-frame" class="xref">PATH_ABANDON Frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="xref">12.2</a>.  <a href="#name-ack_mp-frame" class="xref">ACK_MP Frame</a></p>
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="xref">12.2</a>.  <a href="#name-path_status-frame" class="xref">PATH_STATUS frame</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.3">
+                <p id="section-toc.1-1.12.2.3.1"><a href="#section-12.3" class="xref">12.3</a>.  <a href="#name-ack_mp-frame" class="xref">ACK_MP Frame</a></p>
 </li>
             </ul>
 </li>
@@ -1558,35 +1564,60 @@ over which non-probing packets have been received as available
 for transmission.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="path-close">
+<div id="path-state-management">
 <section id="section-4.2">
-        <h3 id="name-path-close">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-path-close" class="section-name selfRef">Path Close</a>
+        <h3 id="name-path-state-management">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-path-state-management" class="section-name selfRef">Path State Management</a>
         </h3>
-<p id="section-4.2-1">Each endpoint manages the set of paths that are available for
+<p id="section-4.2-1">An endpoint uses PATH_STATUS frames to inform that the peer should
+send packets in the preference expressed by these frames.
+Notice that the endpoint might not follow the peer's advertisements,
+but the PATH_STATUS frame is still a clear signal of suggestion
+for the preference of path usage by the peer.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">PATH_STATUS frame describes 2 kinds of path states:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-3.1">Mark a path as "available", i.e., allow the peer to use its own logic
+to split traffic among available paths.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.2-3.2">Mark a path as "standby", i.e., suggest that no traffic should be sent
+on that path if another path is available.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-4.2-4">Endpoints use Path Identifier field in PATH_STATUS frame to identify
+which path's state is going to be changed. Notice that PATH_STATUS frame
+can be sent via a different path. An Endpoint MAY ignore the PATH_STATUS frame
+if it would make all the paths unavailable in a single connection.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="path-close">
+<section id="section-4.3">
+        <h3 id="name-path-close">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-path-close" class="section-name selfRef">Path Close</a>
+        </h3>
+<p id="section-4.3-1">Each endpoint manages the set of paths that are available for
 transmission. At any time in the connection, each endpoint can decide to
 abandon one of these paths, following for example changes in local
 connectivity or changes in local preferences. After an endpoint abandons
 a path, the peer will not receive any more non-probing packets on
-that path.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">An endpoint that wants to close a path SHOULD use explicit request to
+that path.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">An endpoint that wants to close a path SHOULD use explicit request to
 terminate the path by sending the PATH_ABANDON frame (see
-<a href="#path-abandon-close" class="xref">Section 4.2.1</a>). Note that while abandoning a path will cause
+<a href="#path-abandon-close" class="xref">Section 4.3.1</a>). Note that while abandoning a path will cause
 Connection ID retirement, only retiring the associated Connection ID
-does not necessarily advertise path abandon (see <a href="#retire-cid-close" class="xref">Section 4.2.2</a>).
+does not necessarily advertise path abandon (see <a href="#retire-cid-close" class="xref">Section 4.3.2</a>).
 However, implicit signals such as idle time or packet losses might be
 the only way for an endhost to detect path closure (see
-<a href="#idle-time-close" class="xref">Section 4.2.3</a>).<a href="#section-4.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.2-3">Note that other explicit closing mechanisms of <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> still
+<a href="#idle-time-close" class="xref">Section 4.3.3</a>).<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">Note that other explicit closing mechanisms of <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> still
 apply on the whole connection. In particular, the reception of either a
 CONNECTION_CLOSE (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.2" class="relref">Section 10.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) or a Stateless
-Reset (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) closes the connection.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+Reset (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) closes the connection.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <div id="path-abandon-close">
-<section id="section-4.2.1">
+<section id="section-4.3.1">
           <h4 id="name-use-path_abandon-frame-to-c">
-<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-use-path_abandon-frame-to-c" class="section-name selfRef">Use PATH_ABANDON Frame to Close a Path</a>
+<a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-use-path_abandon-frame-to-c" class="section-name selfRef">Use PATH_ABANDON Frame to Close a Path</a>
           </h4>
-<p id="section-4.2.1-1">Both endpoints, namely the client and the server, can close a path,
+<p id="section-4.3.1-1">Both endpoints, namely the client and the server, can close a path,
 by sending PATH_ABANDON frame (see <a href="#path-abandon-frame" class="xref">Section 12.1</a>) which
 abandons the path with a corresponding Path Identifier. Once a path is
 marked as "abandoned", it means that the resources related to the path,
@@ -1594,16 +1625,16 @@ such as the used connection IDs, can be released.
 However, information related to data delivered over that path SHOULD
 not be released immediately as acknowledgments can still be received
 or other frames that also may trigger retransmission of data on another
-path.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-2">The endpoint sending the PATH_ABANDON frame SHOULD consider a path as
+path.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-2">The endpoint sending the PATH_ABANDON frame SHOULD consider a path as
 abandoned when the packet that contained the PATH_ABANDON frame is
 acknowledged. When releasing resources of a path, the endpoint SHOULD
 send a RETIRE_CONNECTION_ID frame for the connection IDs used on the path,
-if any.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-3">The receiver of a PATH_ABANDON frame SHOULD NOT release its resources
+if any.<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-3">The receiver of a PATH_ABANDON frame SHOULD NOT release its resources
 immediately, but SHOULD wait for the reception of the RETIRE_CONNECTION_ID
-frame for the used connection IDs or 3 RTOs.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-4">Usually, it is expected that the PATH_ABANDON frame is used by the client
+frame for the used connection IDs or 3 RTOs.<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-4">Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
 the path is or will be not usable anymore, e.g. in case of a mobility
 event. The PATH_ABANDON frame therefore indicates to the receiving peer
@@ -1611,8 +1642,8 @@ that the sender does not intend to send any packets on that path anymore
 but also recommends to the receiver that no packets should be sent in
 either direction. The receiver of an PATH_ABANDON frame MAY also send
 an PATH_ABANDON frame to signal its own willingness to not send
-any packet on this path anymore.<a href="#section-4.2.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-5">If connection IDs are used, PATH_ABANDON frames can be sent on any path,
+any packet on this path anymore.<a href="#section-4.3.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-5">If connection IDs are used, PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
 If no connection IDs are used and the PATH_ABANDON frame has to send
@@ -1620,11 +1651,11 @@ on the path that is intended to be closed, it is possible that the packet
 containing the PATH_ABANDON frame or the packet containing the ACK
 for the PATH_ABANDON frame cannot be received anymore and the endpoint
 might need to rely on an idle time out to close the path, as described
-in <a href="#idle-time-close" class="xref">Section 4.2.3</a>.<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-6">Retransmittable frames, that have previously been sent on the abandoned
+in <a href="#idle-time-close" class="xref">Section 4.3.3</a>.<a href="#section-4.3.1-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-6">Retransmittable frames, that have previously been sent on the abandoned
 path and are considered lost, SHOULD be retransmitted on a different
-path.<a href="#section-4.2.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-7">If a PATH_ABANDON frame is received for the only active path of a QUIC
+path.<a href="#section-4.3.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-7">If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enters the closing state. If the client received a PATH_ABANDON
 frame for the last open path, it MAY instead try to open a new path, if
@@ -1632,42 +1663,42 @@ available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly
 the server MAY wait for a short, limited time such as one RTO if a path
 probing packet is received on a new path before sending the
-CONNECTION_CLOSE frame.<a href="#section-4.2.1-7" class="pilcrow">¶</a></p>
+CONNECTION_CLOSE frame.<a href="#section-4.3.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="retire-cid-close">
-<section id="section-4.2.2">
+<section id="section-4.3.2">
           <h4 id="name-effect-of-retire_connection">
-<a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-effect-of-retire_connection" class="section-name selfRef">Effect of RETIRE_CONNECTION_ID Frame</a>
+<a href="#section-4.3.2" class="section-number selfRef">4.3.2. </a><a href="#name-effect-of-retire_connection" class="section-name selfRef">Effect of RETIRE_CONNECTION_ID Frame</a>
           </h4>
-<p id="section-4.2.2-1">Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
+<p id="section-4.3.2-1">Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
 the resources associated with that connection ID. If the connection ID
 was used by the peer to identify a path from the peer to this endpoint,
 the resources include the list of received packets used to send
 acknowledgements. The peer MAY decide to keep sending data using
 the same IP addresses and UDP ports previously associated with
-the connection ID, but MUST use a different connection ID when doing so.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.2-2">Note that if the sender retires a Connection ID that is still used by
+the connection ID, but MUST use a different connection ID when doing so.<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-2">Note that if the sender retires a Connection ID that is still used by
 in-flight packets, it may receive ACK_MP frames referencing the retired
 Connection ID. If the sender stops tracking sent packets with retired
 Connection ID, these would be spuriously marked as lost. To avoid such
 performance issue without keeping retired Connection ID state, an
 endpoint should first stop sending packets with the to-be-retired
 Connection ID, then wait for all in-flight packets to be either
-acknowledged or marked as lost, and finally retire the Connection ID.<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
+acknowledged or marked as lost, and finally retire the Connection ID.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="idle-time-close">
-<section id="section-4.2.3">
+<section id="section-4.3.3">
           <h4 id="name-idle-timeout">
-<a href="#section-4.2.3" class="section-number selfRef">4.2.3. </a><a href="#name-idle-timeout" class="section-name selfRef">Idle Timeout</a>
+<a href="#section-4.3.3" class="section-number selfRef">4.3.3. </a><a href="#name-idle-timeout" class="section-name selfRef">Idle Timeout</a>
           </h4>
-<p id="section-4.2.3-1"><span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> allows for closing of connections if they stay idle
+<p id="section-4.3.3-1"><span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> allows for closing of connections if they stay idle
 for too long. The connection idle timeout in multipath QUIC is defined
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
-in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-2">When more than one path is available, hosts shall monitor the arrival of
+in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.3.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-2">When more than one path is available, hosts shall monitor the arrival of
 non-probing packets and the acknowledgements for the packets sent over each
 path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
 idle timeout as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1." class="relref">Section 10.1.</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>
@@ -1677,31 +1708,31 @@ rule if it would disqualify all available paths. To avoid idle timeout of a path
 can send ack-eliciting packets such as packets containing PING frames
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.  Sending
 periodic PING frames also helps prevent middlebox timeout, as discussed in
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.2.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-3">Server MAY release the resource associated with paths for
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-3">Server MAY release the resource associated with paths for
 which no non-probing packet was received for a sufficiently long
 path-idle delay, but SHOULD only release resource for the last
 available path if no traffic is received for the duration of the idle
 timeout, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1" class="relref">Section 10.1</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.
 This means if all paths remain idle for the idle timeout, the connection
-is implicitly closed.<a href="#section-4.2.3-3" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-4">Server implementations need to select the sub-path idle timeout as a trade-
+is implicitly closed.<a href="#section-4.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-4">Server implementations need to select the sub-path idle timeout as a trade-
 off between keeping resources, such as connection IDs, in use
 for an excessive time or having to promptly reestablish a path
-after a spurious estimate of path abandonment by the client.<a href="#section-4.2.3-4" class="pilcrow">¶</a></p>
+after a spurious estimate of path abandonment by the client.<a href="#section-4.3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="path-states">
-<section id="section-4.3">
+<section id="section-4.4">
         <h3 id="name-path-states">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-path-states" class="section-name selfRef">Path States</a>
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-path-states" class="section-name selfRef">Path States</a>
         </h3>
-<p id="section-4.3-1"><a href="#fig-path-states" class="xref">Figure 1</a> shows the states that an endpoint's path can have.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-1"><a href="#fig-path-states" class="xref">Figure 1</a> shows the states that an endpoint's path can have.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 <span id="name-states-of-a-path"></span><div id="fig-path-states">
 <figure id="figure-1">
-          <div class="alignLeft art-text artwork" id="section-4.3-2.1">
+          <div class="alignLeft art-text artwork" id="section-4.4-2.1">
 <pre>
        o
        | PATH_CHALLENGE sent/received on new path
@@ -1735,50 +1766,50 @@ after a spurious estimate of path abandonment by the client.<a href="#section-4.
 <a href="#name-states-of-a-path" class="selfRef">States of a path</a>
           </figcaption></figure>
 </div>
-<p id="section-4.3-3">In non-final states, hosts have to track the following information.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">In non-final states, hosts have to track the following information.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3-4.1">Associated 4-tuple: The tuple (source IP, source port, destination IP,
-destination port) used by the endhost to send packets over the path.<a href="#section-4.3-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.4-4.1">Associated 4-tuple: The tuple (source IP, source port, destination IP,
+destination port) used by the endhost to send packets over the path.<a href="#section-4.4-4.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.3-4.2">Associated Destination Connection ID: The Connection ID used to send
-packets over the path.<a href="#section-4.3-4.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-4.2">Associated Destination Connection ID: The Connection ID used to send
+packets over the path.<a href="#section-4.4-4.2" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-4.3-5">If multiple packet number spaces are used over the connection, hosts
-MUST also track the following information.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.4-5">If multiple packet number spaces are used over the connection, hosts
+MUST also track the following information.<a href="#section-4.4-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3-6.1">Path Packet Number Space: The endpoint maintains a separate packet
+<li class="normal" id="section-4.4-6.1">Path Packet Number Space: The endpoint maintains a separate packet
 number for sending and receiving packets over this path. Packet number
-considerations described in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> apply within the given path.<a href="#section-4.3-6.1" class="pilcrow">¶</a>
+considerations described in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> apply within the given path.<a href="#section-4.4-6.1" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-4.3-7">In the "Active" state, hosts MUST also track the following information.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
+<p id="section-4.4-7">In the "Active" state, hosts MUST also track the following information.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3-8.1">Associated Source Connection ID: The Connection ID used to receive
-packets over the path.<a href="#section-4.3-8.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.4-8.1">Associated Source Connection ID: The Connection ID used to receive
+packets over the path.<a href="#section-4.4-8.1" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-4.3-9">A path in the "Validating" state performs path validation as described
+<p id="section-4.4-9">A path in the "Validating" state performs path validation as described
 in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>. An endhost should not send
 non-probing frames on a path in "Validating" state, as it has no
-guarantee that packets will actually reach the peer.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
-<p id="section-4.3-10">The endhost can use all the paths in the "Active" state, provided
+guarantee that packets will actually reach the peer.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
+<p id="section-4.4-10">The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
 of new data on a path. Note that if a path became idle due to a timeout,
-endpoints SHOULD send PATH_ABANDONED frame before closing the path.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
-<p id="section-4.3-11">In the "Closing" state, the endhost SHOULD NOT send packets on this
+endpoints SHOULD send PATH_ABANDONED frame before closing the path.<a href="#section-4.4-10" class="pilcrow">¶</a></p>
+<p id="section-4.4-11">In the "Closing" state, the endhost SHOULD NOT send packets on this
 path anymore, as there is no guarantee that the peer can still map
 the packets to the connection. The endhost SHOULD wait for
 the acknowledgment of the PATH_ABANDONED frame before moving the path
-to the "Closed" state to ensure a graceful termination of the path.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
-<p id="section-4.3-12">When a path reaches the "Closed" state, the endhost releases all the
+to the "Closed" state to ensure a graceful termination of the path.<a href="#section-4.4-11" class="pilcrow">¶</a></p>
+<p id="section-4.4-12">When a path reaches the "Closed" state, the endhost releases all the
 path's associated resources, including the associated Connection IDs.
 Endpoints SHOULD send RETIRE_CONNECTION_ID frames for releasing the
 associated Connection IDs following <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>. Considering
 endpoints are not expected to send packets on the current path in the "Closed"
 state, endpoints can send RETIRE_CONNECTION_ID frames on other
 available paths. Consequently, the endhost is not able to send nor
-receive packets on this path anymore.<a href="#section-4.3-12" class="pilcrow">¶</a></p>
+receive packets on this path anymore.<a href="#section-4.4-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2096,7 +2127,7 @@ will improve, but load sharing between multiple paths will not work.<a href="#se
         </h3>
 <p id="section-9.2-1">If packets contain a non-zero CID, each path has
 its own packet number space for transmitting 1-RTT packets and a new
-ACK frame format is used as specified in <a href="#ack-mp-frame" class="xref">Section 12.2</a>.
+ACK frame format is used as specified in <a href="#ack-mp-frame" class="xref">Section 12.3</a>.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally
 contains a Packet Number Space Identifier (PN Space ID).
 The PN Space ID used to distinguish packet number spaces for different
@@ -2116,7 +2147,7 @@ one unused Connection ID is available for each side.<a href="#section-9.2-3" cla
 the server provided N Connection IDs, and the client is already actively
 using N paths, the limit is reached. If the client wants to start
 a new path, it has to retire one of the established paths.<a href="#section-9.2-4" class="pilcrow">¶</a></p>
-<p id="section-9.2-5">ACK_MP frame (defined in <a href="#ack-mp-frame" class="xref">Section 12.2</a>) can be returned via either a
+<p id="section-9.2-5">ACK_MP frame (defined in <a href="#ack-mp-frame" class="xref">Section 12.3</a>) can be returned via either a
 different path, or the same path identified by the Path Identifier, based on
 different strategies of sending ACK_MP frames.<a href="#section-9.2-5" class="pilcrow">¶</a></p>
 <p id="section-9.2-6">Using multiple packet number spaces requires changes in the way AEAD is
@@ -2387,7 +2418,7 @@ be made possible with additional extensions (e.g., PATH_STATUS frame in
           <div class="alignLeft art-text artwork" id="section-12.1-3.1">
 <pre>
   PATH_ABANDON Frame {
-    Type (i) = TBD-03 (experiments use 0xbaba05),
+    Type (i) = TBD-02 (experiments use 0xbaba05),
     Path Identifier (..),
     Error Code (i),
     Reason Phrase Length (i),
@@ -2487,21 +2518,79 @@ field. If the Identifier Type if 0x02, the PATH_ABANDON frame MUST only
 be sent on the path that is intended to be abandoned.<a href="#section-12.1-11" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="ack-mp-frame">
+<div id="path-status-frame">
 <section id="section-12.2">
-        <h3 id="name-ack_mp-frame">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-ack_mp-frame" class="section-name selfRef">ACK_MP Frame</a>
+        <h3 id="name-path_status-frame">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-path_status-frame" class="section-name selfRef">PATH_STATUS frame</a>
         </h3>
-<p id="section-12.2-1">The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
+<p id="section-12.2-1">PATH_STATUS Frame are used by endpoints to inform the peer of the current
+status of one path, and the peer should send packets according to
+the preference expressed in these frames.
+PATH_STATUS frames are formatted as shown in <a href="#fig-path-status-format" class="xref">Figure 7</a>.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
+<span id="name-path_status-frame-format"></span><div id="fig-path-status-format">
+<figure id="figure-7">
+          <div class="alignLeft art-text artwork" id="section-12.2-2.1">
+<pre>
+  PATH_STATUS Frame {
+    Type (i) = TBD-03 (experiments use 0xbaba06),
+    Path Identifier (..),
+    Path Status sequence number (i),
+    Path Status (i),
+  }
+</pre>
+</div>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-path_status-frame-format" class="selfRef">PATH_STATUS Frame Format</a>
+          </figcaption></figure>
+</div>
+<p id="section-12.2-3">PATH_STATUS Frames contain the following fields:<a href="#section-12.2-3" class="pilcrow">¶</a></p>
+<p id="section-12.2-4">Path Identifier: An identifier of the path, which is formatted
+  as shown in <a href="#fig-path-identifier-format" class="xref">Figure 6</a>. Exactly the same as
+  the definition of Path Identifier in {#path-abandon-frame}.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
+<p id="section-12.2-5">Path Status sequence number: A variable-length integer specifying
+  the sequence number assigned for this PATH_STATUS frame. The sequence
+  number MUST be monotonically increasing generated by the sender of
+  the Path Status frame in the same connection. The receiver of
+  the Path Status frame needs to use and compare the sequence numbers
+  separately for each Path Identifier.<a href="#section-12.2-5" class="pilcrow">¶</a></p>
+<p id="section-12.2-6">Available values of Path Status field are:<a href="#section-12.2-6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.2-7.1">1: Standby<a href="#section-12.2-7.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-12.2-7.2">2: Available<a href="#section-12.2-7.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-12.2-8">Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
+use this path or not. If an endpoint receives a PATH_STATUS frame
+containing 1-Standby status, it SHOULD stop sending non-probing packets
+on the corresponding path, until it receive a new PATH_STATUS frame
+containing 2-Available status with a higher sequence number referring to
+the same path.<a href="#section-12.2-8" class="pilcrow">¶</a></p>
+<p id="section-12.2-9">Frames may be received out of order. A peer MUST ignore an incoming
+PATH_STATUS frame if it previously received another PATH_STATUS frame
+for the same Path Identifier with a sequence number equal to or
+higher than the sequence number of the incoming frame.<a href="#section-12.2-9" class="pilcrow">¶</a></p>
+<p id="section-12.2-10">PATH_STATUS frames SHOULD be acknowledged. If a packet containing
+a PATH_STATUS frame is considered lost, the peer should only repeat it
+if it was the last status sent for that path -- as indicated by
+the sequence number.<a href="#section-12.2-10" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ack-mp-frame">
+<section id="section-12.3">
+        <h3 id="name-ack_mp-frame">
+<a href="#section-12.3" class="section-number selfRef">12.3. </a><a href="#name-ack_mp-frame" class="section-name selfRef">ACK_MP Frame</a>
+        </h3>
+<p id="section-12.3-1">The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
 is an extension of the ACK frame defined by <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>. It is
 used to acknowledge packets that were sent on different paths when using
 multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
 also contain the sum of QUIC packets with associated ECN marks received
-on the connection up to this point.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
-<p id="section-12.2-2">ACK_MP frame is formatted as shown in <a href="#fig-ack-mp-format" class="xref">Figure 7</a>.<a href="#section-12.2-2" class="pilcrow">¶</a></p>
+on the connection up to this point.<a href="#section-12.3-1" class="pilcrow">¶</a></p>
+<p id="section-12.3-2">ACK_MP frame is formatted as shown in <a href="#fig-ack-mp-format" class="xref">Figure 8</a>.<a href="#section-12.3-2" class="pilcrow">¶</a></p>
 <span id="name-ack_mp-frame-format"></span><div id="fig-ack-mp-format">
-<figure id="figure-7">
-          <div class="alignLeft art-text artwork" id="section-12.2-3.1">
+<figure id="figure-8">
+          <div class="alignLeft art-text artwork" id="section-12.3-3.1">
 <pre>
   ACK_MP Frame {
     Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
@@ -2515,24 +2604,24 @@ on the connection up to this point.<a href="#section-12.2-1" class="pilcrow">¶<
   }
 </pre>
 </div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
 <a href="#name-ack_mp-frame-format" class="selfRef">ACK_MP Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-12.2-4">Compared to the ACK frame specified in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, the following
-field is added.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
-<p id="section-12.2-5">Packet Number Space Identifier: An identifier of the path packet number
+<p id="section-12.3-4">Compared to the ACK frame specified in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>, the following
+field is added.<a href="#section-12.3-4" class="pilcrow">¶</a></p>
+<p id="section-12.3-5">Packet Number Space Identifier: An identifier of the path packet number
 space, which is the sequence number of Destination Connection ID of
 the 1-RTT packets which are acknowledged by the ACK_MP frame.
 If the endpoint receives 1-RTT packets with zero-length Connection ID,
 it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
 If an endpoint receives an ACK_MP frame with a non-existing packet number
 space ID, it MUST treat this as a connection error of type
-MP_PROTOCOL_VIOLATION and close the connection.<a href="#section-12.2-5" class="pilcrow">¶</a></p>
-<p id="section-12.2-6">When using a single packet number space, endhosts MUST NOT send ACK_MP frames.
+MP_PROTOCOL_VIOLATION and close the connection.<a href="#section-12.3-5" class="pilcrow">¶</a></p>
+<p id="section-12.3-6">When using a single packet number space, endhosts MUST NOT send ACK_MP frames.
 If an endhost receives an ACK_MP frame while a single packet number space
 was negotiated, it MUST treat this as a connection error of type
-MP_PROTOCOL_VIOLATION and close the connection.<a href="#section-12.2-6" class="pilcrow">¶</a></p>
+MP_PROTOCOL_VIOLATION and close the connection.<a href="#section-12.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2607,7 +2696,7 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
             <td class="text-left" rowspan="1" colspan="1">TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)</td>
             <td class="text-left" rowspan="1" colspan="1">ACK_MP</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#ack-mp-frame" class="xref">Section 12.2</a>
+              <a href="#ack-mp-frame" class="xref">Section 12.3</a>
 </td>
           </tr>
           <tr>
