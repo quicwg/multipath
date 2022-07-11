@@ -629,6 +629,16 @@ proposed and implemented, notably for Multipath TCP. A companion draft
 {{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
 packet schedulers depending on the application goals.
 
+Note that the receiver could use a different scheduling strategy to send
+ACK(_MP) frames. The recommended default behaviour consists in sending
+ACK(_MP) frames on the path they acknowledge packets. Other scheduling
+strategies, such as sending ACK(_MP) frames on the lowest latency
+path, might be considered, but they could impact the sender with side
+effects on, e.g., the RTT estimation or the congestion control scheme.
+When adopting such asymetrical acknowledgment scheduling, the receiver
+should at least ensure that the sender negotiated one-way delay
+calculation mechanism (e.g., [QUIC-Timestamp]).
+
 # Recovery
 
 Simultaneous use of multiple paths enables different
