@@ -5,14 +5,14 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 9 January 2023                               Q. De Coninck, Ed.
+Expires: 12 January 2023                              Q. De Coninck, Ed.
                                                           O. Bonaventure
                                                                UCLouvain
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             8 July 2022
+                                                            11 July 2022
 
 
                       Multipath Extension for QUIC
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2023.
+   This Internet-Draft will expire on 12 January 2023.
 
 Copyright Notice
 
@@ -426,11 +426,14 @@ Table of Contents
 4.2.2.  Refusing a New Path
 
    An endpoint may deny the establishment of a new path initiated by its
-   peer during the address validation procedure.  To achieve this, the
-   endpoint does not send a PATH_RESPONSE in response to the peer's
-   PATH_CHALLENGE.  The endpoint instead sends a PATH_ABANDON frame
-   containing the Path Identifier of the refused path on another active
-   path.
+   peer during the address validation procedure.  According to
+   [QUIC-TRANSPORT], the standard way to deny the establishment of a
+   path is to not send a PATH_RESPONSE in response to the peer's
+   PATH_CHALLENGE.  An endpoint that has negotiated the usage of the
+   multipath extension MAY use an explicit method by sending on another
+   active path a PATH_ABANDON frame containing the Path Identifier of
+   the refused path, but only if the PATH_CHALLENGE arrives in a packet
+   using a non-zero length Connection ID.
 
 4.2.3.  Effect of RETIRE_CONNECTION_ID Frame
 
