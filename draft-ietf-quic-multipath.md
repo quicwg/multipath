@@ -716,9 +716,9 @@ RTTs on multiple paths with one packet number space, the following practices
 can be used:
 
 * The receiver side counts the number of ACK-eliciting packets received for each paths,
-  and keeps a per-path ACK timer. An ACK from that path is triggered when the
-  number of ACK-eliciting packets received on that path surpasses the path's
-  ACK-eliciting threshold or the path's ACK-timer expires.
+  and keeps a per-path ACK timer. An ACK from that path is triggered when either
+  a) the number of ACK-eliciting packets received on that path surpasses the path's
+  ACK-eliciting threshold or b) the path's ACK-timer expires.
 
 * Each path records the largest packet received on that path and the receive
   time of that packet. When an ACK is sent on that path, the ACK Delay field is
