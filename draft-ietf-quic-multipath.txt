@@ -77,8 +77,9 @@ Table of Contents
      4.2.  Path State Management
      4.3.  Path Close
        4.3.1.  Use PATH_ABANDON Frame to Close a Path
-       4.3.2.  Effect of RETIRE_CONNECTION_ID Frame
-       4.3.3.  Idle Timeout
+       4.3.2.  Refusing a New Path
+       4.3.3.  Effect of RETIRE_CONNECTION_ID Frame
+       4.3.4.  Idle Timeout
      4.4.  Path States
    5.  Congestion Control
    6.  Computing Path RTT
@@ -381,10 +382,10 @@ Table of Contents
    terminate the path by sending the PATH_ABANDON frame (see
    Section 4.3.1).  Note that while abandoning a path will cause
    Connection ID retirement, only retiring the associated Connection ID
-   does not necessarily advertise path abandon (see Section 4.3.2).
+   does not necessarily advertise path abandon (see Section 4.3.3).
    However, implicit signals such as idle time or packet losses might be
    the only way for an endhost to detect path closure (see
-   Section 4.3.3).
+   Section 4.3.4).
 
    Note that other explicit closing mechanisms of [QUIC-TRANSPORT] still
    apply on the whole connection.  In particular, the reception of
@@ -431,7 +432,7 @@ Table of Contents
    packet containing the PATH_ABANDON frame or the packet containing the
    ACK for the PATH_ABANDON frame cannot be received anymore and the
    endpoint might need to rely on an idle time out to close the path, as
-   described in Section 4.3.3.
+   described in Section 4.3.4.
 
    Retransmittable frames, that have previously been sent on the
    abandoned path and are considered lost, SHOULD be retransmitted on a
@@ -447,7 +448,19 @@ Table of Contents
    such as one RTO if a path probing packet is received on a new path
    before sending the CONNECTION_CLOSE frame.
 
-4.3.2.  Effect of RETIRE_CONNECTION_ID Frame
+4.3.2.  Refusing a New Path
+
+   An endpoint may deny the establishment of a new path initiated by its
+   peer during the address validation procedure.  According to
+   [QUIC-TRANSPORT], the standard way to deny the establishment of a
+   path is to not send a PATH_RESPONSE in response to the peer's
+   PATH_CHALLENGE.  An endpoint that has negotiated the usage of the
+   multipath extension MAY use an explicit method by sending on another
+   active path a PATH_ABANDON frame containing the Path Identifier of
+   the refused path, but only if the PATH_CHALLENGE arrives in a packet
+   using a non-zero length Connection ID.
+
+4.3.3.  Effect of RETIRE_CONNECTION_ID Frame
 
    Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
    the resources associated with that connection ID.  If the connection
@@ -468,7 +481,7 @@ Table of Contents
    either acknowledged or marked as lost, and finally retire the
    Connection ID.
 
-4.3.3.  Idle Timeout
+4.3.4.  Idle Timeout
 
    [QUIC-TRANSPORT] allows for closing of connections if they stay idle
    for too long.  The connection idle timeout in multipath QUIC is
