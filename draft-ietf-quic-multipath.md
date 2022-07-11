@@ -768,7 +768,7 @@ maintaining an order list of packets sent on each path. That ordered
 list can then be used to compute acknowledgement gaps per path in
 Packet Threshold tests.
 
-### ACK Delay and Zero-Length CID Considerations
+### ACK Delay, RTT, and Zero-Length CID Considerations {#ack-delay-and-zero-length-cid-considerations}
 
 The ACK Delay field of the ACK frame is relative to the largest
 acknowledged packet number (see {{Section 13.2.5 of QUIC-TRANSPORT}}).
@@ -776,6 +776,26 @@ When using paths with different transmission delays, the reported host
 delay will most of the time relate to the path with the shortest latency.
 To collect ACK delays on all the paths, hosts should rely on time stamps
 as described in {{QUIC-Timestamp}}.
+
+If one chooses not to use time-stamps but wants to get reasonable estimation of
+RTTs on multiple paths with one packet number space, the following practices
+can be used:
+
+* The receiver side counts the number of ACK-eliciting packets received for each paths,
+  and keeps a per-path ACK timer. An ACK from that path is triggered when either
+  a) the number of ACK-eliciting packets received on that path surpasses the path's
+  ACK-eliciting threshold or b) the path's ACK-timer expires.
+
+* Each path records the largest packet received on that path and the receive
+  time of that packet. When an ACK is sent on that path, the ACK Delay field is
+  re-calculated using that path's largest packet receive time.
+
+* The sender also keeps track of a list of sent packets for each path that are acknowledged by
+  ACKs received from the same path. A path's RTT sample is generated on receving ACK
+  that meets the following two conditions: (1) For that path, the largest
+  same-path acknowledged packet number is updated. (2) One of newly same-path
+  acknowledged packets is ACK-eliciting.
+
 
 ### ECN and Zero-Length CID Considerations {#ecn-handling}
 
