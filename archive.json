@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-10T01:02:31.201939+00:00",
+  "timestamp": "2022-07-12T00:59:54.186978+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -540,7 +540,7 @@
       "id": "I_kwDOGNtpaM49UY5P",
       "title": "Are we sure we really don't need stand-by?",
       "url": "https://github.com/quicwg/multipath/issues/22",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -551,8 +551,8 @@
       ],
       "body": "I believe stand-by (or backup) has been useful in MPTCP. This is not really about scheduling because all it says is: I won't use this path actively(yet)  but please leave it open.",
       "createdAt": "2021-10-18T07:56:55Z",
-      "updatedAt": "2022-07-06T15:32:21Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-11T12:19:39Z",
+      "closedAt": "2022-07-11T12:19:39Z",
       "comments": [
         {
           "author": "qdeconinck",
@@ -2804,7 +2804,7 @@
       "id": "I_kwDOGNtpaM5Lh9lX",
       "title": "active_connection_id_limit",
       "url": "https://github.com/quicwg/multipath/issues/120",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "boucadair",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2813,8 +2813,8 @@
       "labels": [],
       "body": "Is there any reason why a new parameter isn't defined to negotiate max_paths rather than reusing this existing parameter? \r\n\r\nThat design is much more cleaner. For example, the max paths wouldn't be ignored even when zero-length CIDs are in use. \r\n\r\nUnless I'm mistaken, the current design have to comply with the following from RFC9000:\r\n\r\n>If an endpoint issues a zero-length connection ID... and therefore ignores the active_connection_id_limit value received from its peer.\r\n\r\n\r\nBTW, how the following MUST will be honored for the zero-length CID case: \r\n\r\n```\r\nBefore an\r\n   endpoint adds a new path by initiating path validation, it MUST check\r\n   whether at least one unused Connection ID is available for each side.\r\n```\r\n\r\n",
       "createdAt": "2022-06-10T07:54:07Z",
-      "updatedAt": "2022-07-08T09:16:27Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-11T12:23:05Z",
+      "closedAt": "2022-07-11T12:23:05Z",
       "comments": [
         {
           "author": "qdeconinck",
@@ -2949,7 +2949,7 @@
       "id": "I_kwDOGNtpaM5NP0ww",
       "title": "Guidance on scheduling of packets containing ACK frames",
       "url": "https://github.com/quicwg/multipath/issues/123",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -2961,8 +2961,8 @@
       ],
       "body": "This issue came up during the discussion of issue #33. We say that ACK or ACK_MP frames can be send over any path, however, maybe we should discuss some guidance and trade-offs. E.g. sending on the same path as the packets received also for RTT measurements; using the shortest delay path might have some performance benefits...?",
       "createdAt": "2022-07-06T15:18:26Z",
-      "updatedAt": "2022-07-08T08:32:33Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-11T12:30:48Z",
+      "closedAt": "2022-07-11T12:30:48Z",
       "comments": [
         {
           "author": "yfmascgy",
@@ -3004,7 +3004,7 @@
       "id": "I_kwDOGNtpaM5NVBa7",
       "title": "Receiving old packet number space identifier in ACK_MP",
       "url": "https://github.com/quicwg/multipath/issues/128",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -3013,8 +3013,8 @@
       ],
       "body": "This is somewhat related to #122.\r\n\r\nSection 12.2 states that\r\n```\r\nIf an endpoint receives a ACK_MP frame with a non-existing packet number\r\nspace ID, it MUST treat this as a connection error of type\r\nMP_PROTOCOL_VIOLATION and close the connection.\r\n```\r\nThe notion of \"non-existing\" packet number space ID is somewhat blurry and maybe too aggressive. If for some reason an ACK_MP frame referencing an old, retired DCID sequence number arrives at the endhost, probably we just want to ignore it? And we could instead consider ACK_MP related to a packet number space ID larger than the greatest advertised one being MP_PROTOCOL_VIOLATION?",
       "createdAt": "2022-07-07T12:33:31Z",
-      "updatedAt": "2022-07-08T14:25:40Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-11T12:57:37Z",
+      "closedAt": "2022-07-11T12:57:37Z",
       "comments": []
     },
     {
@@ -3029,7 +3029,7 @@
       "labels": [],
       "body": "The current draft says \"If timestamps are not available, implementations could estimate one way delays using statistical techniques\". I find the word \"statistical\" a bit too broad. Can we elaborate what is the exact statistical method recommended to use? Moreover, \"statistical\" also implies variation and randomness, what happens for applications that do not expect such randomness?",
       "createdAt": "2022-07-08T09:59:55Z",
-      "updatedAt": "2022-07-08T19:33:53Z",
+      "updatedAt": "2022-07-11T05:47:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -3045,6 +3045,20 @@
           "body": "I guess the previous text could be copied in an annex.",
           "createdAt": "2022-07-08T19:33:53Z",
           "updatedAt": "2022-07-08T19:33:53Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I could elaborate, but I am afraid that this is going into lots of details very quickly.\r\n> \r\n> Each RTT measurement of the tuple (send path, return path) provides an evaluation of (one-way-delay(send_path, send_time) + one_way_delay(return_path, return_time)). At that point, we have to infer what is the most likely value of the one way delays that produced this result.\r\n> \r\n> Whatever the number of paths and number of measurements, the system ends up with fewer equations than variables. For example, even in the single path scenario, a delay of 60 ms can be explained equally well by a delay of 30 ms in each direction, a delay of 40 ms on the send path and 20 ms or the return path, or any combination of delays that sums to 60ms. We can extract bounds, such as \"the delay on segment X is not negative\", but that leaves out a wide range of estimations. This is generally handled by making simple assumptions, such as assuming delays on a given path are symmetric -- until we learn something more.\r\n> \r\n> Even with that symmetry hypothesis, we have to make hypotheses about the probability function for each path. Solutions like Kalman filter assume a Gaussian distribution of delays, which simplifies computations. The classic computation of smoothed RTT and RTT average in the TCP code implicitly assumes a Gaussian distribution of delays, and further simplifies the computations so they can be performed in real time. For a simple implementation, using the same kind of simplifications as seen in TCP, we can use the following algorithm:\r\n> \r\n> 1. Maintain estimates of average delay and delay variation for each segment.\r\n> 2. When a measurement is received and delay and variation are already initialized for both segments, allocate a sample based on previous knowledge:\r\n>    * delta = rtt_sample - average(send_segment) - average(return_segment)\r\n>    * range = variation(send_segment) + variation(return_segment)\r\n>    * sample(send_segment) = average(send_segment) + delta* variation(send_segment)/range\r\n>    * sample(return_segment) = average(return_segment) + delta* variation(return_segment)/range\r\n>    then update average and variation for each segment using the same formulas used for TCP.\r\n> 3. When delay and variation are not estimated for either segment, split the difference:\r\n>    * sample(send_segment) = rtt_sample /2\r\n>    * sample(return_segment) = rtt_sample /2.\r\n>    then initialize average and deviation for each segment based on the sample for that segment.\r\n> 4. When delay and variation are only estimated for return segment, initialize the send segment:\r\n>    * sample(return_segment) = min(average(return_segment), rtt_sample)\r\n>    * sample(send_segment) = rtt_sample - sample(return_segment),\r\n>    then initialize average and deviation for the send segment, but do not update estimates for the receive segment.\r\n> 5. When delay and variation are only estimated for send segment, initialize the return segment:\r\n>    * sample(send_segment) = min(average(send_segment), rtt_sample)\r\n>    * sample(return_segment) = rtt_sample - sample(send_segment)\r\n>    then initialize average and deviation for the receive segment, but do not update estimates for the send segment.\r\n\r\nHi Christian, thank for the explanation. However, there is still sth that is not quite clear to me. You mentioned Kalman filter. My understanding is that your state vector is the one-way-delay for each path in each direction. For example, if I have N paths, then I could write down s=[OWD_inbound_1, ...., OWD_inbound_N, OWD_outbound_1,... OWD_outbound_N]. For the process equation, we can write s_(k+1) = s_k + w_k, where w_k is the process noise/disturbance. The difficult part in the problem is that in the observation equation H is a random matrix, which means in each measurement y, y could be the combination of two one-way delays that the combination could change each time. So to me,  at the first glance, the problem is a bit different from the Kalman's formulation whose observation is y = H*s + v, where v is the noise term and H is fixed. I think this is not that relevant, but I am really curious to learn the technique. ",
+          "createdAt": "2022-07-11T05:15:41Z",
+          "updatedAt": "2022-07-11T05:18:04Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In a Kalman filter, if you have multiple observations, you use a different matrix H for each observation. But you maintain a single evaluation vector, correlation matrix, etc. Each observation operates on a projection of the whole state. \r\n\r\nBut then, I do not suggest that we try implementing a full Kalman filter. That would be a bit too CPU intensive. Also, the Kalman filter is trying for a min-square estimate, which works well for Gaussian variables but is only an approximation for the kind of probability distributions that we are likely to encounter. Implementing a more precise Kalman filter would be more precisely wrong...",
+          "createdAt": "2022-07-11T05:47:36Z",
+          "updatedAt": "2022-07-11T05:47:36Z"
         }
       ]
     }
@@ -10780,24 +10794,26 @@
       "id": "PR_kwDOGNtpaM41s45M",
       "title": "[+] add stand-by status for path management",
       "url": "https://github.com/quicwg/multipath/pull/117",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "For issue #22",
       "createdAt": "2022-04-06T04:12:48Z",
-      "updatedAt": "2022-07-08T14:25:53Z",
+      "updatedAt": "2022-07-11T12:19:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/path_standby",
       "headRefOid": "5abb88200431967913b69606969d3b11efb28464",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-07-11T12:19:39Z",
+      "mergedAt": "2022-07-11T12:19:38Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "269195b3d1dbefcc87b45ae009b2633eeea9622a"
+      },
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -11395,25 +11411,35 @@
       "id": "PR_kwDOGNtpaM47Bbkb",
       "title": "Add some guidance for ACK scheduling",
       "url": "https://github.com/quicwg/multipath/pull/129",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #123.",
       "createdAt": "2022-07-07T13:21:21Z",
-      "updatedAt": "2022-07-08T11:35:43Z",
+      "updatedAt": "2022-07-11T12:30:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "71de7b625e2d1faac4329d2b6dee7ec404288123",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-123",
-      "headRefOid": "49437967de268cf266fe1befe9965780032f9a4e",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "e374c495696bd6ebdcf24bc5d4d79d399bb9b047",
+      "closedAt": "2022-07-11T12:30:49Z",
+      "mergedAt": "2022-07-11T12:30:48Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "dad1f457fb66fcb8dfc4e8937b621cba103e3c0b"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I believe we can merge this now as it is. If we want to add more guidance later we should open a separate issue and another PR.",
+          "createdAt": "2022-07-11T12:24:55Z",
+          "updatedAt": "2022-07-11T12:24:55Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM49jxmP",
@@ -11446,6 +11472,19 @@
           "body": "Need to add guidance for one-way-delay calculation and impact on congestion control, if we want to recommend the fastest path ACK scheduling strategy.",
           "createdAt": "2022-07-08T11:35:43Z",
           "updatedAt": "2022-07-08T11:35:43Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49o9DS",
+          "commit": {
+            "abbreviatedOid": "e374c49"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-11T10:48:12Z",
+          "updatedAt": "2022-07-11T10:48:12Z",
           "comments": []
         }
       ]
@@ -11517,18 +11556,26 @@
       "labels": [],
       "body": "For issue #125 , add some considerations for RTT computation in our single pns implementation. Not sure if it is easy enough to understand. Please feel free to change.",
       "createdAt": "2022-07-08T09:49:57Z",
-      "updatedAt": "2022-07-09T13:57:06Z",
+      "updatedAt": "2022-07-11T12:30:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a4283cf44ce7ee1e832b680b3440610936d15cdc",
       "headRepository": "yfmascgy/multipath",
       "headRefName": "dev/rtt-spns-consideration",
-      "headRefOid": "df87c8f16223428589f41fad091c10138af52f30",
+      "headRefOid": "1e5852b4c746276a27a68dbf2f93f55d56c03c80",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, this needs more discussion. Also maybe we want to move this text rather in the \"Implementation Considerations\" section?",
+          "createdAt": "2022-07-11T12:30:48Z",
+          "updatedAt": "2022-07-11T12:30:48Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM49j3TQ",
@@ -11574,6 +11621,131 @@
           "createdAt": "2022-07-09T13:57:06Z",
           "updatedAt": "2022-07-09T13:57:06Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49nmjX",
+          "commit": {
+            "abbreviatedOid": "df87c8f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-11T04:49:50Z",
+          "updatedAt": "2022-07-11T04:49:50Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "I am trying to understand your algorithm. I guess it sums up as:\r\n\r\n* For each path, the sender maintains knowledge of the largest PN acknowledged on path.\r\n* The sender also keeps track of a list of sent packets for each path that are not yet acknowledged by\r\n  ACKs received from the same path.\r\n  \r\nWhen a same path ACK is received:\r\n\r\n* process the acknowledged ranges until finding a packet that:\r\n      1) Was sent on the path\r\n      2) Has a packet number larger than the largest PN acknowledged on path\r\n* if several packets match the criteria above, retain only the one with the largest PN\r\n* the remaining list may be empty, in which case do nothing\r\n* if one packet matches the criteria above:\r\n      1) Compute the RTT sample as the difference between the ACK received time and the packet sent time.\r\n      2) Update RTT average, etc.\r\n      3) Set the largest PN acknowledged on path to the PN that was just processed\r\n      3) Remove all packets with PN lower or equal than this largest acknowledged PN from the list of sent packets for each path that are not yet acknowledged by ACKs received from the same path\r\n\r\nThe downside of that method is that the RTT sample may include some or all of the ACK Delay of the ACK frame. The possible rule is:\r\n\r\n* if the largest acknowledged number in the ACK frame matches the largest acknowledged number on path, remove the ACK Delay from the RTT sample.\r\n* if not, accept that the measurement may be imprecise.\r\n\r\nDo I understand correctly?",
+              "createdAt": "2022-07-11T04:49:50Z",
+              "updatedAt": "2022-07-11T04:49:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49nn8g",
+          "commit": {
+            "abbreviatedOid": "df87c8f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-11T05:01:32Z",
+          "updatedAt": "2022-07-11T05:01:32Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "Of course, we need to also specify the receiver behavior. Specifying that behavior may help deal with the \"ACK Delay\" issue. I assume that this why you write:\r\n\r\n* The receiver counts the number of ACK-eliciting packets received for each paths,\r\n  and keeps a per-path ACK timer. An ACK from that path is triggered when the\r\n  number of ACK-eliciting packets received on that path surpasses the path's\r\n  ACK-eliciting threshold or the path's ACK-timer expires.\r\n\r\nI am not too sure about that, because the net effect of that rule is to get at least one new ACK **for each path** per ACK Timer. If the goal is to provide accurate measurement of RTT, we don't need that many \"on path ACK\". One per RTT would be enough. Maybe 2 per RTT to be safe. Or the max value of \"ACK Timer\" and \"Path RTT / 2\". Reset that timer for each path after sending an on path RTT. Then, trigger an on path ACK as soon as (1) the timer has expired and (2) a packet has been received. (Ack eliciting or not does not matter.)\r\n\r\nThat way, the sender can assume that for the on-path packet, the ACK delay is set to zero.",
+              "createdAt": "2022-07-11T05:01:32Z",
+              "updatedAt": "2022-07-11T05:01:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49nrao",
+          "commit": {
+            "abbreviatedOid": "df87c8f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-11T05:29:03Z",
+          "updatedAt": "2022-07-11T05:29:03Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "Correction. My concern about ACK Delay is misplaced. We are speaking about ACK_(MP), so the largest packet acknowledged is always a packet sent on that same path. See the modification that I propose on PR #129, a simple guidance for always sending at least some ACK on the same path. If we accept that guidance, then the text becomes simpler -- no need to specify a receiver side strategy. So the entire addition becomes:\r\n\r\n\r\n* For each path, the sender maintains knowledge of the largest PN acknowledged on path.\r\n\r\n* The sender also keeps track of a list of sent packets for each path that are not yet acknowledged by ACKs received from the same path.\r\n\r\n* When a same path ACK is received, the sender checks whether the largest packet acknowledged is larger than the largest PN acknowledged on path. If it is, the sender will:\r\n\r\n    - Compute a new path RTT sample using the ACK arrival time, the ACK delay indication, and the time at which the packet with this largest PN was sent.\r\n    - Set the largest PN acknowledged on path to the PN that was just processed\r\n    - Remove all packets with PN lower or equal than this largest acknowledged PN from the list of packets sent on this path that are not yet acknowledged by ACKs received from the same path.\r\n\r\n\r\n ",
+              "createdAt": "2022-07-11T05:29:03Z",
+              "updatedAt": "2022-07-11T05:29:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49nr42",
+          "commit": {
+            "abbreviatedOid": "df87c8f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-11T05:32:30Z",
+          "updatedAt": "2022-07-11T05:32:30Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "Of course, there is the issue of packets sent with zero-length CID. In that case, the simple algorithm above does not work very well. The ACK_(MP) will contain ack ranges received on many paths. Instead of using the largest number in the ACK_(MP) frame, the sender needs to filter the ACK ranges and retrieve the largest number acknowledged for the path.",
+              "createdAt": "2022-07-11T05:32:30Z",
+              "updatedAt": "2022-07-11T05:32:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49oGFh",
+          "commit": {
+            "abbreviatedOid": "df87c8f"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-11T07:41:51Z",
+          "updatedAt": "2022-07-11T08:23:51Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\n  and keeps a per-path ACK timer. An ACK from that path is triggered when either\r\n  a) the number of ACK-eliciting packets received on that path surpasses the path's\r\n  ACK-eliciting threshold or b) the path's ACK-timer expires.\r\n```",
+              "createdAt": "2022-07-11T07:41:51Z",
+              "updatedAt": "2022-07-11T08:23:51Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "Which parts of the \"largest packet (number ?) received\" should be recorded in addition to the reception time?",
+              "createdAt": "2022-07-11T07:42:41Z",
+              "updatedAt": "2022-07-11T08:23:51Z"
+            },
+            {
+              "originalPosition": 24,
+              "body": "It sounds odd to me to change the meaning of the ACK Delay field for a particular use case...",
+              "createdAt": "2022-07-11T08:21:24Z",
+              "updatedAt": "2022-07-11T08:23:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49o-jW",
+          "commit": {
+            "abbreviatedOid": "1e5852b"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Need more discussion about the mechanism.",
+          "createdAt": "2022-07-11T10:54:03Z",
+          "updatedAt": "2022-07-11T10:54:03Z",
+          "comments": []
         }
       ]
     },
@@ -11582,25 +11754,35 @@
       "id": "PR_kwDOGNtpaM47GtJs",
       "title": "add some text to refuse path initiation",
       "url": "https://github.com/quicwg/multipath/pull/133",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Should fix #120.",
       "createdAt": "2022-07-08T12:32:43Z",
-      "updatedAt": "2022-07-09T07:06:58Z",
+      "updatedAt": "2022-07-11T12:23:05Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
       "headRepository": "quicwg/multipath",
       "headRefName": "refuse-path",
-      "headRefOid": "ff0471f90f9aea5bcd6a5bade69004bfa98d7cfe",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "f081e77d44c52eea1cacac7ad808c5845f3bb0c2",
+      "closedAt": "2022-07-11T12:23:05Z",
+      "mergedAt": "2022-07-11T12:23:05Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "f54fe39a7b7a98dfe2cfbec7985312acde79428a"
+      },
+      "comments": [
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I rewrote the text based on the suggestion from @huitema to discuss the case of zero-length CIDs.",
+          "createdAt": "2022-07-11T07:38:04Z",
+          "updatedAt": "2022-07-11T07:38:04Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM49mckX",
@@ -11613,6 +11795,65 @@
           "body": "Yes, good idea. Specifying \"on another path\" is indeed the key, because otherwise the responder needs to consume a CID. \r\n\r\nThere is a corner case when the Path Challenge arrives with a NULL CID. What happens then?",
           "createdAt": "2022-07-09T07:06:58Z",
           "updatedAt": "2022-07-09T07:06:58Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49nC7-",
+          "commit": {
+            "abbreviatedOid": "ff0471f"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I'm ok with the new text, but I agree with Christian that we need to explain what would happen when endpoints use NULL CID.",
+          "createdAt": "2022-07-10T14:38:51Z",
+          "updatedAt": "2022-07-10T14:38:51Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49nFoM",
+          "commit": {
+            "abbreviatedOid": "ff0471f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-10T16:34:46Z",
+          "updatedAt": "2022-07-10T16:34:46Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "Hw about the following text:\r\n\r\nThe standard way to deny the establishment of a path, according to {{RFC9000}}, is\r\nto not send a PATH_RESPONSE  in response to the peer's\r\nPATH_CHALLENGE. An endpoint that has negotiated use of multipath can\r\nuse a more direct method, but only if the PATH_CHALLENGE arrives with\r\na non-zero length CID. This endpoint MAY send  on another active path\r\na PATH_ABANDON frame containing the Path Identifier of the refused path.\r\n\r\n",
+              "createdAt": "2022-07-10T16:34:46Z",
+              "updatedAt": "2022-07-10T16:36:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49o8mk",
+          "commit": {
+            "abbreviatedOid": "f081e77"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good to me.",
+          "createdAt": "2022-07-11T10:46:27Z",
+          "updatedAt": "2022-07-11T10:46:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49pV6F",
+          "commit": {
+            "abbreviatedOid": "f081e77"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-11T12:22:46Z",
+          "updatedAt": "2022-07-11T12:22:46Z",
           "comments": []
         }
       ]
@@ -11705,24 +11946,26 @@
       "id": "PR_kwDOGNtpaM47HITr",
       "title": "[~] Receiving old packet number space identifier in ACK_MP",
       "url": "https://github.com/quicwg/multipath/pull/135",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fix issue #128 ",
       "createdAt": "2022-07-08T14:20:15Z",
-      "updatedAt": "2022-07-09T14:04:46Z",
+      "updatedAt": "2022-07-11T12:57:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/proto_violation",
-      "headRefOid": "cf794b205911fdae1b2ebdf67141b07d3b0741d1",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "57700dc1d34f7c9435c72e6d358f7c965629e172",
+      "closedAt": "2022-07-11T12:57:37Z",
+      "mergedAt": "2022-07-11T12:57:37Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "68e5e02c4cca6057c8181a22e8fc9f3084791de0"
+      },
       "comments": [],
       "reviews": [
         {
@@ -11782,6 +12025,26 @@
               "body": "Replaced with _MUST_",
               "createdAt": "2022-07-09T14:04:45Z",
               "updatedAt": "2022-07-09T14:04:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM49pfid",
+          "commit": {
+            "abbreviatedOid": "cf794b2"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-07-11T12:54:10Z",
+          "updatedAt": "2022-07-11T12:54:15Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\nIf an endpoint receives an ACK_MP frame with a packet number\r\nspace ID which was never issued by endpoints (i.e., with a Connection ID\r\nsequence number larger than the largest one advertised), it MUST treat\r\nthis as a connection error of type MP_PROTOCOL_VIOLATION and close\r\nthe connection. If an endpoint receives an ACK_MP frame with a packet\r\nnumber space ID which is no more active (e.g., retired by a\r\nRETIRE_CONNECTION_ID frame or belonging to closed paths), it MUST\r\nignore the ACK_MP frame without causing a connection error.\r\n```",
+              "createdAt": "2022-07-11T12:54:10Z",
+              "updatedAt": "2022-07-11T12:55:11Z"
             }
           ]
         }
