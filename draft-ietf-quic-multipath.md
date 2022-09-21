@@ -253,7 +253,7 @@ mechanism defined in this document.
 
 If endpoint receives an unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
-MP_CONNECTION_ERROR and close the connection.
+TRANSPORT_PARAMETER_ERROR {{Section 20.1. of QUIC-TRANSPORT}} and close the connection.
 
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
