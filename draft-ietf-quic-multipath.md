@@ -831,7 +831,7 @@ Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified
 based on the Destination Connection ID in each packet.
 
-As soon as the negotiation of multipath support with value 2 is completed,
+As soon as the negotiation of multipath support is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames for
 acknowledgements of 1-RTT packets on path 0, as well as for 0-RTT packets
 that are acknowledged after the handshake concluded.
