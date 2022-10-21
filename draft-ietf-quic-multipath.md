@@ -663,7 +663,7 @@ If the initial path carries no Connection ID and a QUIC packet without
 a Connection ID is received on a 5-tuple of a non validated path,
 the receiver may try to decrypt the packet assuming the packet number
 space of the initial path with Path ID 0. This usually is only plausible
-if only the source address or port are different or if a specific 
+if only the source address or port are different or if a specific
 alternative address was previously announced by the receiver.
 If this packet does not contain a PATH_VALIDATION frame, it must be
 treated as a path mirgation event as specified in {{Section 9 of QUIC-TRANSPORT}}.
@@ -741,7 +741,7 @@ In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
 and with the path identifier.
 
-The path ID for 1-RTT packets is the sequence number of the Connection ID 
+The path ID for 1-RTT packets is the sequence number of the Connection ID
 as specfied in {{QUIC-TRANSPORT}}, or
 zero if the Connection ID is zero-length.  {{Section 19 of QUIC-TRANSPORT}}
 encodes the Connection ID Sequence Number as a variable-length integer,
@@ -1267,7 +1267,6 @@ be controlled by the combination of one or several of the following:
    operation, so that a series of packets sent from a single path
    uses a series of consecutive sequence numbers without creating
    holes.
- 
 
 ## Loss and Congestion Handling With Zero-Length CID {#zero-length-cid-loss-and-congestion}
 
