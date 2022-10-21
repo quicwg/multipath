@@ -1061,7 +1061,7 @@ on another path without further frame scheduling adaptations.
 
 ## Keep Alive
 
-The QUIC specification defines an optional keep alive process, see {{Section 5.3 of RFC9000}}.
+The QUIC specification defines an optional keep alive process, see {{Section 5.3 of QUIC-TRANSPORT}}.
 Implementations of the multipath extension should map this keep alive process to a number of paths.
 Some applications may wish to ensure that one path remains active, while others could prefer to have
 two or more active paths during the connection lifetime. Different applications will likely require different strategies.
