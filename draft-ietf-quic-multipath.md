@@ -1059,6 +1059,16 @@ each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.
 
+## Keep Alive
+
+The QUIC specification defines an optional keep alive process, see {{Section 5.3 of RFC9000}}.
+Implementations of the multipath extension should map this keep alive process to a number of paths.
+Some applications may wish to ensure that one path remains active, while others could prefer to have
+two or more active paths during the connection lifetime. Different applications will likely require different strategies.
+Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
+on each of these paths before the idle timeout expires. Implementations should jitter their timers
+to avoid sending Ping frames at the same time over different paths.
+
 # New Frames {#frames}
 
 All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
