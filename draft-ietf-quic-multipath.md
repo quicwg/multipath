@@ -1296,6 +1296,7 @@ Value                                              | Frame Name          | Speci
 ---------------------------------------------------|---------------------|-----------------
 TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{ack-mp-frame}}
 TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON        | {{path-abandon-frame}}
+TBD-03 (experiments use 0xbaba06)                  | PATH_STATUS         | {{path-status-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
