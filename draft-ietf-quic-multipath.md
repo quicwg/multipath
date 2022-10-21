@@ -1196,7 +1196,7 @@ TBD
 
 --- back
 
-# Sending packet on multiple paths with zero length connection ID
+# Sending packets on multiple paths with zero length connection ID {#using-zero-length}
 
 This section describes, if carefully considered, how packets can be send on
 multiple paths even if a zero-length connection ID is used on all paths.
@@ -1213,7 +1213,7 @@ to take special care to minimize the impact of multipath
 delivery on loss detection, congestion control, and ECN handling.
 This proposal specifies algorithms for
 controlling the size of acknowledgement packets and ECN handling in
-Section {{using-zero-length}} and {{ecn-handling}}.
+{{ecn-handling}}.
 
 ## Path ID and Packet Numbers
 
