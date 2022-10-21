@@ -679,7 +679,7 @@ packets sent on path 0.
 
 Further, if the initial path uses zero-length Connection ID and
 packets without a Connection ID are successfully received over another validated path,
-these packet MUST either be acknowledged using ACK_MP frames with packet number space ID 0,
+these packets MUST either be acknowledged using ACK_MP frames with packet number space ID 0,
 or ACK frames, as specified in {{QUIC-TRANSPORT}}.
 
 However, even if packet without a Connection ID are successfully received
