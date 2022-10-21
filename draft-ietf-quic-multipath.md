@@ -682,7 +682,7 @@ packets without a Connection ID are successfully received over another validated
 these packets MUST either be acknowledged using ACK_MP frames with packet number space ID 0,
 or ACK frames, as specified in {{QUIC-TRANSPORT}}.
 
-However, even if packet without a Connection ID are successfully received
+However, even if packets without a Connection ID are successfully received
 on multiple paths, it is RECOMMENDED to only use one of the active paths
 for sending of ack-elicting packets with zero-length Connection ID as this
 avoids large ACK frames and ambiguity if loss detection and RTT estimation
