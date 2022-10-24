@@ -714,17 +714,17 @@ packet was sent. However, when applying the above algorithm with SPNS, one may
 encounter the following issues: (1) RTT of some paths are not updated timely if
 ACKs are mostly returned from other paths, and (2) ACK frames depend on the
 largest received packet of the connection, not the path, and the resulted RTT
-sample may be the sum of the uplink delay of one path and the downlink delay of
-another path. One solution for accurate RTT measurements is to employ
-time-stamps as described in {{QUIC-Timestamp}}. If one chooses not to use
-time-stamps but wants to get reasonable estimation of RTTs on multiple paths
-with single packet number space, the following practices can be used:
+sample may be the sum of the one-way delays of two different paths. One
+solution for accurate RTT measurements is to employ time-stamps as described in
+{{QUIC-Timestamp}}. If one chooses not to use time-stamps but wants to get
+reasonable estimation of RTTs on multiple paths with single packet number
+space, the following practices can be used:
 
 For packet receiver (ACK sender):
 
 * Maintain an ACK threshold and an ACK timer for each path. A path should send
-an ACK when it receives ack-eliciting threshold number of ack-eliciting
-packets (e.g., two). And an ack-eliciting packet must be acknowledged within
+an ACK when it receives ack-eliciting-threshold number of ack-eliciting
+packets (e.g., two) on this path, and an ack-eliciting packet must be acknowledged within
 MAX_ACK_DELAY.
 
 * Write ACK frame based on the largest received packet of the path. Start the ACK
