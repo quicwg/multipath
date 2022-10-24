@@ -768,14 +768,45 @@ maintaining an order list of packets sent on each path. That ordered
 list can then be used to compute acknowledgement gaps per path in
 Packet Threshold tests.
 
-### ACK Delay and Zero-Length CID Considerations
+### RTT Estimation Considerations when SPNS is Used {#ack-delay-and-zero-length-cid-considerations}
 
-The ACK Delay field of the ACK frame is relative to the largest
-acknowledged packet number (see {{Section 13.2.5 of QUIC-TRANSPORT}}).
-When using paths with different transmission delays, the reported host
-delay will most of the time relate to the path with the shortest latency.
-To collect ACK delays on all the paths, hosts should rely on time stamps
-as described in {{QUIC-Timestamp}}.
+When SPNS is in use, accurate RTT estimation requires more careful
+considerations. According to {{QUIC-RECOVERY}}, an endpoint generates an RTT
+sample on receiving an ACK frame that meets the following two conditions: (1)
+the largest acknowledged packet number is newly acknowledged, and (2) at least
+one of the newly acknowledged packets was ack-eliciting. The RTT sample,
+latest_rtt is calculated as the time elapsed since the largest acknowledged
+packet was sent. However, when applying the above algorithm with SPNS, one may
+encounter the following issues: (1) RTT of some paths are not updated timely if
+ACKs are mostly returned from other paths, and (2) ACK frames depend on the
+largest received packet of the connection, not the path, and the resulted RTT
+sample may be the sum of the one-way delays of two different paths. One
+solution for accurate RTT measurements is to employ time-stamps as described in
+{{QUIC-Timestamp}}. If one chooses not to use time-stamps but wants to get
+reasonable estimation of RTTs on multiple paths with single packet number
+space, the following practices can be used:
+
+For packet receiver (ACK sender):
+
+* Maintain an ACK threshold and an ACK timer for each path. A path should send
+an ACK when it receives ack-eliciting-threshold number of ack-eliciting
+packets (e.g., two) on this path, and an ack-eliciting packet must be acknowledged within
+MAX_ACK_DELAY.
+
+* Write ACK frame based on the largest received packet of the path. Start the ACK
+ranges with the largest received packet number of that path, which means that
+the "Largest Acknowledged" field is the path's largest packet number and the
+"ACK Delay" field is the delay time of the path's largest received packet.
+
+For packet sender (ACK receiver):
+
+* Maintain an unacked list for each path to retrieve the packets that has been
+sent when an ACK is received. It can coexist with the unacked list of the
+connection layer or packet number space layer.
+
+* Generate RTT sample for a path when the following conditions are met: (1) the
+largest acknowledged packet number is newly acknowledged by the ACK received
+from this path, and (2) at least one of the newly acknowledged packets was ack-eliciting.
 
 ### ECN and Zero-Length CID Considerations {#ecn-handling}
 
