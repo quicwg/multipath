@@ -1066,8 +1066,7 @@ Implementations of the multipath extension should map this keep alive process to
 Some applications may wish to ensure that one path remains active, while others could prefer to have
 two or more active paths during the connection lifetime. Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
-on each of these paths before the idle timeout expires. Implementations should jitter their timers
-to avoid sending Ping frames at the same time over different paths.
+on each of these paths before the idle timeout expires.
 
 # New Frames {#frames}
 
