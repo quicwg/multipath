@@ -174,7 +174,7 @@ We assume that the reader is familiar with the terminology used in
   in multipath control frames (etc. PATH_ABANDON frame) to identify
   a path. The Path ID is defined as the sequence number of
   the destination Connection ID used for sending packets on that
-  particular path. 
+  particular path.
 
 - Packet Number Space Identifier (PNS ID): An identifier that is
   used to distinguish packet number spaces for different paths. It is
