@@ -697,7 +697,7 @@ using N paths, the limit is reached. If the client wants to start
 a new path, it has to retire one of the established paths.
 
 ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be send on the same path 
-as identified by the Path Identifier. However, an endpoint can be returned via either a
+as identified by the Path Identifier. However, an ACK_MP frame can be returned via either a
 different path, based on different strategies of sending ACK_MP frames.
 
 Using multiple packet number spaces requires changes in the way AEAD is
