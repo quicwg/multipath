@@ -174,8 +174,7 @@ We assume that the reader is familiar with the terminology used in
   in multipath control frames (etc. PATH_ABANDON frame) to identify
   a path. The Path ID is defined as the sequence number of
   the destination Connection ID used for sending packets on that
-  particular path. If the initial path does have a zero-length Connection
-  ID the Path ID is 0.
+  particular path. 
 
 - Packet Number Space Identifier (PNS ID): An identifier that is
   used to distinguish packet number spaces for different paths. It is
@@ -724,8 +723,7 @@ calculated by combining the packet protection IV with the packet number
 and with the path identifier.
 
 The path ID for 1-RTT packets is the sequence number of the Connection ID
-as specfied in {{QUIC-TRANSPORT}}, or
-zero if the Connection ID is zero-length.  {{Section 19 of QUIC-TRANSPORT}}
+as specfied in {{QUIC-TRANSPORT}}.  {{Section 19 of QUIC-TRANSPORT}}
 encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification, a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
@@ -832,8 +830,7 @@ In this example, the client detects the network environment change
 or the quality of RTT or loss rate is becoming worse) and wants to close
 the initial path.
 
-{{fig-example-path-close1}} illustrates an example of path closing when both
-the client and the server use non-zero-length CIDs. For the first path, the
+{{fig-example-path-close1}} illustrates an example of path closing. For the first path, the
 server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
 client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
 second path, the server's 1-RTT packets use DCID C2, which has a sequence
@@ -861,43 +858,7 @@ Client                                                      Server
                             (server retires the corresponding CID)
  <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
 ~~~
-{: #fig-example-path-close1 title="Example of closing a path when both the
-client and the server choose to receive non-zero-length CIDs."}
-
-{{fig-example-path-close2}} illustrates an example of path closing when the
-client chooses to receive zero-length CIDs while the server chooses to receive
-non-zero-length CIDs.  Because there is a zero-length CID in one direction,
-single packet number spaces are used. For the first path, the client's 1-RTT
-packets use DCID S2, which has a sequence number of 2. For the second path, the
-client's 1-RTT packets use DCID S3, which has a sequence number of 3. Again, in
-this case, the client is going to close the first path. Because the client now
-receives zero-length CID packets, it needs to use path identifier type 0x01,
-which identifies a path by the DCID sequence number of the packets it sends
-over that path, and hence, it uses a path_id 2 in its PATH_ABANDON frame. The
-server SHOULD stop sending new data on the path indicated by the PATH_ABANDON
-frame after receiving it. However, The client may want to repeat the
-PATH_ABANDON frame if it sees the server continuing to send data. When the
-client's PATH_ABANDON frame is acknowledged, it sends out a
-RETIRE_CONNECTION_ID frame for the CID used on the first path. The server can
-readily close the first path when it receives the RETIRE_CONNECTION_ID frame
-from the client.  However, since the client will not receive a
-RETIRE_CONNECTION_ID frame, after sending out the RETIRE_CONNECTION_ID frame, the
-client waits for 3 RTO before closing the path.
-
-~~~
-  Client                                                      Server
-
-  (client tells server to abandon a path)
-  1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=1, path_id=2]->
-                             (server stops sending on that path after
-                                              receiving PATH_ABANDON)
-  (client retires the corresponding CID
-      after PATH_ABANDON is acknowledged)
-  1-RTT[X+1]: DCID=S3 RETIRE_CONNECTION_ID[2]->
-~~~
-{: #fig-example-path-close2 title="Example of closing a path when the client
-chooses to receive zero-length CIDs while the server chooses to receive
-non-zero-length CIDs"}
+{: #fig-example-path-close1 title="Example of closing a path."}
 
 # Implementation Considerations
 
@@ -950,14 +911,11 @@ path identifier.
     the control frame.
     Note that this is the connection identifier used by the peer
     when sending packets on the to-be-closed path.
-    This method SHOULD be used if this connection identifier is non-zero
-    length. This method MUST NOT be used if this connection identifier
-    is zero-length.
+    This method SHOULD be used by default.
   - Type 1: Refer to the connection identifier issued by the receiver of
     the control frame.
     Note that this is the connection identifier used by the sender
     when sending packets on the to-be-closed path.
-    This method MUST NOT be used if this connection identifier is zero-length.
   - Type 2: Refer to the path over which the control frame is sent or
     received.
 - Path Identifier Content: A variable-length integer specifying the path
@@ -971,15 +929,6 @@ be empty.
   }
 ~~~
 {: #fig-path-identifier-format title="Path Identifier Format"}
-
-Note: If the receiver of the PATH_ABANDON frame is using non-zero
-length Connection ID on that path, endpoint SHOULD use type 0x00
-for path identifier in the control frame. If the receiver of
-the PATH_ABANDON frame is using zero-length Connection ID, but the peer
-is using non-zero length Connection ID on that path, endpoints SHOULD
-use type 0x01 for path identifier. If both endpoints are using 0-length
-Connection IDs on that path, endpoints SHOULD only use type 0x02
-for path identifier.
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
@@ -1092,8 +1041,6 @@ field is added.
 Packet Number Space Identifier: An identifier of the path packet number
 space, which is the sequence number of Destination Connection ID of
 the 1-RTT packets which are acknowledged by the ACK_MP frame.
-If the endpoint receives 1-RTT packets with zero-length Connection ID,
-it SHOULD use Packet Number Space Identifier 0 in ACK_MP frames.
 If an endpoint receives an ACK_MP frame with a packet number
 space ID which was never issued by endpoints (i.e., with a sequence number
 larger than the largest one advertised), it MUST treat this as a connection
@@ -1103,11 +1050,6 @@ which is no more active (e.g., retired by a RETIRE_CONNECTION_ID
 frame or belonging to closed paths), it MUST ignore the ACK_MP frame
 without causing a connection error.
 
-
-When using a single packet number space, endhosts MUST NOT send ACK_MP frames.
-If an endhost receives an ACK_MP frame while a single packet number space
-was negotiated, it MUST treat this as a connection error of type
-MP_PROTOCOL_VIOLATION and close the connection.
 
 # Error Codes {#error-codes}
 Multipath QUIC transport error codes are 62-bit unsigned integers
