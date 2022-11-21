@@ -104,9 +104,14 @@ QUIC version 1)
   * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
 which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
+  * The use of this multipath extension requires the use of non-zero
+Connection IDs in both directions.
   * A path is determined by the 4-tuple of source and destination IP
 address as well as source and destination port. Therefore, there can be
 at most one active paths/connection ID per 4-tuple.
+  * If the 4-tuple changes without the use of a new connection ID (e.g.
+due to a NAT rebinding), this is considered as a migration events and not
+an new path.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
@@ -132,17 +137,13 @@ Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}}.
 
-Some deployments of QUIC use zero-length connection IDs.
-When a node selects to use zero-length connection IDs, it is not
-possible to use different connection IDs for distinguishing packets
-sent to that node over different paths. Therefore this specification
+This specification
 requires the sender to use a non-zero connection ID when opening an
-additional path. Similar as for path migration in {{Section 9 of QUIC-TRANSPORT}}
-an endpoint cannot threat the receipt of a packet with zero-length connection ID
-as an error as that would create an attack vector that would cause connection closure.
-Therefore if a packet with zero-length connection ID is received, the receiver
-can silently drop the packet or initiate path validation as described in
-{{using-zero-length}}.
+additional path.
+Some deployments of QUIC use zero-length connection IDs.
+However, when a node selects to use zero-length connection IDs, it is not
+possible to use different connection IDs for distinguishing packets
+sent to that node over different paths.
 
 This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
@@ -241,6 +242,12 @@ If for any one of the endpoints, the parameter is absent or set to 0,
 the endpoints MUST fallback to
 {{QUIC-TRANSPORT}} with single active path and MUST NOT use any frame or
 mechanism defined in this document.
+
+If the parameter is set to 1, both endpoints MUST use non-zero connection
+IDs. If an enable_multipath parameter set to 1 is received and the carrying packet
+does not contain a non-zero legnth connection, the receiver MUST treat this as a connection error of type
+TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
+and close the connection.
 
 If endpoint receives an unexpected value for the transport parameter
 "enable_multipath", it MUST treat this as a connection error of type
@@ -651,24 +658,12 @@ has the path ID 0 and therefore all 0-RTT packets are also tracked and
 processed with the path ID 0.
 For 1-RTT packets, the path ID is the sequence number of
 the Destination Connection ID present in the packet header, as defined
-in {{Section 5.1.1 of QUIC-TRANSPORT}}, or also 0 if the Connection ID
-is zero-length.
+in {{Section 5.1.1 of QUIC-TRANSPORT}}.
 
 To open a new path, an endpoint SHALL use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different
 4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
 as specified in {{Section 9.3 of QUIC-TRANSPORT}}.
-
-If the initial path carries no Connection ID and a QUIC packet without
-a Connection ID is received on a 5-tuple of a non validated path,
-the receiver may try to decrypt the packet assuming the packet number
-space of the initial path with Path ID 0. This usually is only plausible
-if only the source address or port are different or if a specific
-alternative address was previously announced by the receiver.
-If this packet does not contain a PATH_VALIDATION frame, it must be
-treated as a path mirgation event as specified in {{Section 9 of QUIC-TRANSPORT}}.
-Alternatively, the receiver MAY decide to simple drop the packet without
-even attempting to decrypt.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using
 ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
@@ -677,20 +672,8 @@ ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
 
-Further, if the initial path uses zero-length Connection ID and
-packets without a Connection ID are successfully received over another validated path,
-these packets MUST either be acknowledged using ACK_MP frames with packet number space ID 0,
-or ACK frames, as specified in {{QUIC-TRANSPORT}}.
-
-However, even if packets without a Connection ID are successfully received
-on multiple paths, it is RECOMMENDED to only use one of the active paths
-for sending of ack-elicting packets with zero-length Connection ID as this
-avoids large ACK frames and ambiguity in loss detection and RTT estimation
-(see Appendix {{using-zero-length}}).
-
-If packets contain a non-zero CID, each path has
-its own packet number space for transmitting 1-RTT packets and a new
-ACK frame format is used as specified in {{ack-mp-frame}}.
+A new ACK frame format is used as specified in {{ack-mp-frame}} that
+MUST be used for for acknolowing 1-RTT packets.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally
 contains a Packet Number Space Identifier (PN Space ID).
 The PN Space ID used to distinguish packet number spaces for different
@@ -700,9 +683,8 @@ Therefore, the packet number space for 1-RTT packets can be identified
 based on the Destination Connection ID in each packet.
 
 As soon as the negotiation of multipath support is completed,
-endpoints SHOULD use ACK_MP frames instead of ACK frames for
-acknowledgements of 1-RTT packets on path 0, as well as for 0-RTT packets
-that are acknowledged after the handshake concluded.
+endpoints SHOULD use ACK_MP frames instead of ACK frames also for 0-RTT packets
+that are acknowledged after the handshake concluded using the Packet Number Space Identifier 0.
 
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames
 to issue usable connections IDs to reach it. Before an endpoint adds
@@ -714,9 +696,9 @@ the server provided N Connection IDs, and the client is already actively
 using N paths, the limit is reached. If the client wants to start
 a new path, it has to retire one of the established paths.
 
-ACK_MP frame (defined in {{ack-mp-frame}}) can be returned via either a
-different path, or the same path identified by the Path Identifier, based on
-different strategies of sending ACK_MP frames.
+ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be send on the same path 
+as identified by the Path Identifier. However, an endpoint can be returned via either a
+different path, based on different strategies of sending ACK_MP frames.
 
 Using multiple packet number spaces requires changes in the way AEAD is
 applied for packet protection, as explained in {{multipath-aead}},
@@ -1193,140 +1175,3 @@ one of the original proposals are:
 # Acknowledgments
 
 TBD
-
---- back
-
-# Sending packets on multiple paths with zero length connection ID {#using-zero-length}
-
-This section describes, if carefully considered, how packets can be send on
-multiple paths even if a zero-length connection ID is used on all paths.
-As there is no way for the receiver to distingliush different packet number
-spaces before decryption based on the connection ID, using
-zero-length CIDs also implies that the same packet number space is used on all paths.
-
-When using the same packet number space
-on multiple paths, out of order delivery is likely. This causes inflation of the number of
-acknowledgement ranges and therefore of the
-the size of ACK frames. Senders that accept to use a single number
-space on multiple paths when sending to a node using zero-length CID need
-to take special care to minimize the impact of multipath
-delivery on loss detection, congestion control, and ECN handling.
-This proposal specifies algorithms for
-controlling the size of acknowledgement packets and ECN handling in
-{{ecn-handling}}.
-
-## Path ID and Packet Numbers
-
-If the connection ID is present (non-zero length) in the packet header,
-the connection ID is used to identify the path.
-If no connection ID is present, the 4 tuple identifies the path.
-
-If a zero-length connection ID is used, one packet number space
-for all paths. That means the packet sequence numbers are allocated
-from the common
-number space, so that, for example, packet number N could be sent
-on one path and packet number N+1 on another.
-
-In this case, ACK frames report the numbers of packets that have been
-received so far,
-regardless of the path on which they have been received. That means
-the sender needs to maintain an association between sent packet numbers
-and the path over which these packets were sent. This is necessary
-to implement per path congestion control, as explained
-in {{zero-length-cid-loss-and-congestion}}.
-
-### Sending Acknowledgements and Handling Ranges {#sending-acknowledgements-and-handling-ranges}
-
-If zero-length CID and therefore also a single packet number space
-is used by the sender, the receiver MAY send ACK frames instead
-of ACK_MP frames to reduce overhead as the additional path ID field
-will anyway always carry the same value.
-
-If senders decide to send packets on paths with different
-transmission delays, some packets will very likely be received out
-of order. This will cause the ACK frames to carry multiple ranges of
-received packets. The large number of range increases the size of
-ACK frames, causing transmission and processing overhead.
-
-The size and overhead of the ACK frames can
-be controlled by the combination of one or several of the following:
-
-*  Not transmitting again ACK ranges that were present in an ACK
-   frame acknowledged by the peer.
-
-*  Delay acknowledgements to allow for arrival of "hole filling"
-   packets.
-
-*  Limit the total number of ranges sent in an ACK frame.
-
-*  Limiting the number of transmissions of a specific ACK range, on
-   the assumption that a sufficient number of transmissions almost
-   certainly ensures reception by the peer.
-
-*  Send multiple messages for a given path in a single socket
-   operation, so that a series of packets sent from a single path
-   uses a series of consecutive sequence numbers without creating
-   holes.
-
-## Loss and Congestion Handling With Zero-Length CID {#zero-length-cid-loss-and-congestion}
-
-When sending to a zero-length CID
-receiver, senders may receive acknowledgements that combine packet
-numbers received over multiple paths.
-However, even if one packet number space is used on multiple path
-the sender MUST maintain separate congestion control state for each
-path. Therefore, senders MUST be able to infer the
-sending path from the acknowledged packet numbers, for example by remembering
-which packet was sent on what path. The senders MUST use that information to
-perform congestion control on the relevant paths, and to correctly
-estimate the transmission delays on each path. (See
-{{ack-delay-and-zero-length-cid-considerations}} for specific considerations
-about using the ACK Delay field of ACK frames, and
-{{ecn-handling}} for issues on using ECN marks.)
-
-Loss detection as specified in {{QUIC-RECOVERY}} uses algorithms
-based on timers and on sequence numbers. When packets are sent over
-multiple paths, loss detection must be adapted to allow for different RTTs
-on different paths. When sending to zero-length CID receivers, packets sent
-on different paths may be received out of order. Therefore, senders cannot
-directly use the packet sequence numbers to
-compute the Packet Thresholds defined in {{Section 6.1.1 of QUIC-RECOVERY}}.
-Relying only on Time Thresholds produces correct results, but is somewhat
-suboptimal. Some implementations have been getting good results by
-not just remembering the path over which a packet was sent, but also
-maintaining an order list of packets sent on each path. That ordered
-list can then be used to compute acknowledgement gaps per path in
-Packet Threshold tests.
-
-### ACK Delay and Zero-Length CID Considerations
-
-The ACK Delay field of the ACK frame is relative to the largest
-acknowledged packet number (see {{Section 13.2.5 of QUIC-TRANSPORT}}).
-When using paths with different transmission delays, the reported host
-delay will most of the time relate to the path with the shortest latency.
-To collect ACK delays on all the paths, hosts should rely on time stamps
-as described in {{QUIC-Timestamp}}.
-
-### ECN and Zero-Length CID Considerations {#ecn-handling}
-
-ECN feedback in QUIC is provided based on counters in the ACK frame
-(see {{Section  19.3.2. of QUIC-TRANSPORT}}). That means if an ACK
-frame acknowledges multiple packets, the ECN feedback cannot be accounted
-to a specific packet.
-
-There are separate counters for each packet number space. However, sending
-to zero-length CID receivers, the same number space is used for multiple paths.
-Respectively, if an ACK frames acknowledges multiple packets from different paths,
-the ECN feedback cannot unambiguously be assigned to a path.
-
-If the sender marks its packets with the ECN capable flags, the network
-will expect standard reactions to ECN marks, such as slowing down
-transmission on the sending path. If zero-length CID is used,
-the sending path is however ambiguous. Therefore, the sender MUST
-treat a CE marking as a congestion signal on all sending paths that
-have been by a packet that was acknowledged in the ACK frame signaling
-the CE counter increase.
-
-A host that is sending over multiple paths to a zero-length CID receiver
-MAY disable ECN marking and
-send all subsequent packets as Not-ECN capable.
