@@ -244,7 +244,7 @@ mechanism defined in this document.
 
 If the parameter is set to 1, both endpoints MUST use non-zero connection
 IDs. If an enable_multipath parameter set to 1 is received and the carrying packet
-does not contain a non-zero legnth connection, the receiver MUST treat this as a connection error of type
+does not contain a non-zero length connection ID, the receiver MUST treat this as a connection error of type
 TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
 and close the connection.
 
