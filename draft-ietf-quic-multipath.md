@@ -110,8 +110,8 @@ Connection IDs in both directions.
 address as well as source and destination port. Therefore, there can be
 at most one active paths/connection ID per 4-tuple.
   * If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration events and not
-an new path.
+due to a NAT rebinding), this is considered as a migration event and not
+as a new path.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
@@ -671,8 +671,8 @@ ACK frames are received in 1-RTT packets while the state of multipath
 negotiation is ambiguous, they MUST be interpreted as acknowledging
 packets sent on path 0.
 
-A new ACK frame format is used as specified in {{ack-mp-frame}} that
-MUST be used for for acknolowing 1-RTT packets.
+The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
+acknowledge 1-RTT packets.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally
 contains a Packet Number Space Identifier (PN Space ID).
 The PN Space ID used to distinguish packet number spaces for different
@@ -682,8 +682,8 @@ Therefore, the packet number space for 1-RTT packets can be identified
 based on the Destination Connection ID in each packet.
 
 As soon as the negotiation of multipath support is completed,
-endpoints SHOULD use ACK_MP frames instead of ACK frames also for 0-RTT packets
-that are acknowledged after the handshake concluded using the Packet Number Space Identifier 0.
+endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
+data packets, including 0-RTT packets, received on path ID 0 after the handshake concluded.
 
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames
 to issue usable connections IDs to reach it. Before an endpoint adds
@@ -723,7 +723,7 @@ calculated by combining the packet protection IV with the packet number
 and with the path identifier.
 
 The path ID for 1-RTT packets is the sequence number of the Connection ID
-as specfied in {{QUIC-TRANSPORT}}.  {{Section 19 of QUIC-TRANSPORT}}
+as specified in {{QUIC-TRANSPORT}}.  {{Section 19 of QUIC-TRANSPORT}}
 encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification, a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
