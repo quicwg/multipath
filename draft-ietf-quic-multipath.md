@@ -1314,7 +1314,7 @@ more specific error codes.
 # IANA Considerations
 
 This document defines a new transport parameter for the negotiation of
-enable multiple paths for QUIC, and two new frame types. The draft defines
+enable multiple paths for QUIC, and three new frame types. The draft defines
 provisional values for experiments, but we expect IANA to allocate
 short values if the draft is approved.
 
