@@ -695,7 +695,7 @@ the server provided N Connection IDs, and the client is already actively
 using N paths, the limit is reached. If the client wants to start
 a new path, it has to retire one of the established paths.
 
-ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be send on the same path
+ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the same path
 as identified by the Path Identifier. However, an ACK_MP frame can be returned via a
 different path, based on different strategies of sending ACK_MP frames.
 
