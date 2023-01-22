@@ -837,11 +837,11 @@ second path, the server's 1-RTT packets use DCID C2, which has a sequence
 number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
-number of the received packet's DCID over that path (path identifier type
-0x00), hence using the path_id 1. Optionally, the server confirms the path closure
+number of the received packet's DCID over that path,
+hence using the path_id 1. Optionally, the server confirms the path closure
 by sending an PATH_ABANDON frame using
-the sequence number of the received packet's DCID over that path (path
-identifier type 0x00) as path identifier, which corresponds to the path_id 2. Both the client and
+the sequence number of the received packet's DCID over that path as path
+identifier, which corresponds to the path_id 2. Both the client and
 the server can close the path after receiving the RETIRE_CONNECTION_ID frame
 for that path.
 
@@ -849,9 +849,9 @@ for that path.
 Client                                                      Server
 
 (client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[path_id_type=0, path_id=1]->
+1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=1]->
                            (server tells client to abandon a path)
-      <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id_type=0, path_id=2],
+                      <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=2],
                                                ACK_MP[Seq=2, PN=X]
 (client retires the corresponding CID)
 1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
@@ -901,7 +901,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 ~~~
   PATH_ABANDON Frame {
     Type (i) = TBD-02 (experiments use 0xbaba05),
-    Path Identifier (..),
+    Packet Number Space Identifier (i),
     Error Code (i),
     Reason Phrase Length (i),
     Reason Phrase (..),
@@ -911,37 +911,12 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 PATH_ABANDON frames contain the following fields:
 
-Path Identifier: An identifier of the path, which is formatted as shown
-in {{fig-path-identifier-format}}.
-
-- Identifier Type: Identifier Type field is set to indicate the type of
-path identifier.
-  - Type 0: Refer to the connection identifier issued by the sender of
-    the control frame.
-    Note that this is the connection identifier used by the peer
-    when sending packets on the to-be-closed path.
-    This method SHOULD be used by default.
-  - Type 1: Refer to the connection identifier issued by the receiver of
-    the control frame.
-    Note that this is the connection identifier used by the sender
-    when sending packets on the to-be-closed path.
-  - Type 2: Refer to the path over which the control frame is sent or
-    received.
-- Path Identifier Content: A variable-length integer specifying the path
-identifier. If Identifier Type is 2, the Path Identifier Content MUST
-be empty.
-
-~~~
-  Path Identifier {
-    Identifier Type (i) = 0x00..0x02,
-    [Path Identifier Content (i)],
-  }
-~~~
-{: #fig-path-identifier-format title="Path Identifier Format"}
+Path Identifier: 
+: The identifier of the path that should be abandoned.
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
-this path.
+  this path.
 
 Reason Phrase Length:
 : A variable-length integer specifying the length of the reason phrase
@@ -960,11 +935,9 @@ Reason Phrase:
 PATH_ABANDON frames SHOULD be acknowledged. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-If the Identifier Type is 0x00 or 0x01, PATH_ABANDON frames MAY be sent
-on any path, not only the path identified by the Path Identifier Content
-field. If the Identifier Type if 0x02, the PATH_ABANDON frame MUST only
-be sent on the path that is intended to be abandoned.
-
+PATH_ABANDON frames MAY be sent
+on any path, not only the path identified by the Packet Number Space 
+Identifier.
 
 ## PATH_STATUS frame {#path-status-frame}
 
@@ -976,7 +949,7 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 ~~~
   PATH_STATUS Frame {
     Type (i) = TBD-03 (experiments use 0xbaba06),
-    Path Identifier (..),
+    Packet Number Space Identifier (i),
     Path Status sequence number (i),
     Path Status (i),
   }
@@ -985,11 +958,11 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 
 PATH_STATUS Frames contain the following fields:
 
-Path Identifier: An identifier of the path, which is formatted
-  as shown in {{fig-path-identifier-format}}. Exactly the same as
-  the definition of Path Identifier in {#path-abandon-frame}.
+Path Identifier:
+: The identifier of the path that the status update correspondes to.
 
-Path Status sequence number: A variable-length integer specifying
+Path Status sequence number:
+: A variable-length integer specifying
   the sequence number assigned for this PATH_STATUS frame. The sequence
   number MUST be monotonically increasing generated by the sender of
   the Path Status frame in the same connection. The receiver of
@@ -1047,9 +1020,10 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
 field is added.
 
-Packet Number Space Identifier: An identifier of the path packet number
-space, which is the sequence number of Destination Connection ID of
-the 1-RTT packets which are acknowledged by the ACK_MP frame.
+Packet Number Space Identifier:
+: The identifier of the path packet number
+  space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
+
 If an endpoint receives an ACK_MP frame with a packet number
 space ID which was never issued by endpoints (i.e., with a sequence number
 larger than the largest one advertised), it MUST treat this as a connection
