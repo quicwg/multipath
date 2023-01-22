@@ -911,7 +911,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 PATH_ABANDON frames contain the following fields:
 
-Path Identifier: 
+Path Identifier:
 : The identifier of the path that should be abandoned.
 
 Error Code:
@@ -936,7 +936,7 @@ PATH_ABANDON frames SHOULD be acknowledged. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 PATH_ABANDON frames MAY be sent
-on any path, not only the path identified by the Packet Number Space 
+on any path, not only the path identified by the Packet Number Space
 Identifier.
 
 ## PATH_STATUS frame {#path-status-frame}
