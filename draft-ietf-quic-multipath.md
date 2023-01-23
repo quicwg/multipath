@@ -901,7 +901,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 ~~~
   PATH_ABANDON Frame {
     Type (i) = TBD-02 (experiments use 0xbaba05),
-    Packet Number Space Identifier (i),
+    Path Identifier (i),
     Error Code (i),
     Reason Phrase Length (i),
     Reason Phrase (..),
@@ -949,7 +949,7 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 ~~~
   PATH_STATUS Frame {
     Type (i) = TBD-03 (experiments use 0xbaba06),
-    Packet Number Space Identifier (i),
+    Path Identifier (i),
     Path Status sequence number (i),
     Path Status (i),
   }
