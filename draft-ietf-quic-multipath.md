@@ -189,6 +189,13 @@ used in 1-RTT packets and ACK_MP frames to distinguish packet number
 spaces for different paths. Both identifiers have the same value, which
 is the sequence number of the connection ID, when a new path is established.
 
+The initial path that is used during the handshake (and multipath negotiation)
+has the path ID 0 and therefore all 0-RTT packets are also tracked and
+processed with the path ID 0.
+For 1-RTT packets, the path ID is the sequence number of
+the Destination Connection ID present in the packet header, as defined
+in {{Section 5.1.1 of QUIC-TRANSPORT}}.
+
 # High-level overview {#overview}
 
 The multipath extensions to QUIC proposed in this document enable the simultaneous utilization of
@@ -217,6 +224,10 @@ In addition to these core features, an application using Multipath QUIC will typ
 need additional algorithms to handle the number of active paths and how they are used to
 send packets. As these differ depending on the application's requirements, their
 specification is out of scope of this document.
+
+Using multiple packet number spaces requires changes in the way AEAD is
+applied for packet protection, as explained in {{multipath-aead}},
+and tighter constraints for key updates, as explained in {{multipath-key-update}}.
 
 # Handshake Negotiation and Transport Parameter {#nego}
 
@@ -280,6 +291,11 @@ Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
 
+To open a new path, an endpoint SHALL use different Connection IDs on different paths.
+Still, the receiver may observe the same Connection ID used on different
+4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
+as specified in {{Section 9.3 of QUIC-TRANSPORT}}.
+
 This proposal adds one multipath control frame for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
@@ -288,6 +304,16 @@ This proposal adds one multipath control frame for path management:
 All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
+
+Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames
+to issue usable connections IDs to reach it. Before an endpoint adds
+a new path by initiating path validation, it MUST check whether at least
+one unused Connection ID is available for each side.
+
+If the transport parameter "active_connection_id_limit" is negotiated as N,
+the server provided N Connection IDs, and the client is already actively
+using N paths, the limit is reached. If the client wants to start
+a new path, it has to retire one of the established paths.
 
 When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
@@ -648,28 +674,7 @@ recommended for general purpose use due to the network
 overhead). While this document does not preclude a specific
 strategy, more detailed specification is out of scope.
 
-# Path ID, Connection ID, Packet Number Spaces, and Acknowledgements
-
-ToDo: Restructure this section; however, keeping changes minimal for now!
-
-The initial path that is used during the handshake (and multipath negotiation)
-has the path ID 0 and therefore all 0-RTT packets are also tracked and
-processed with the path ID 0.
-For 1-RTT packets, the path ID is the sequence number of
-the Destination Connection ID present in the packet header, as defined
-in {{Section 5.1.1 of QUIC-TRANSPORT}}.
-
-To open a new path, an endpoint SHALL use different Connection IDs on different paths.
-Still, the receiver may observe the same Connection ID used on different
-4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
-as specified in {{Section 9.3 of QUIC-TRANSPORT}}.
-
-Acknowledgements of Initial and Handshake packets MUST be carried using
-ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
-in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for any reason
-ACK frames are received in 1-RTT packets while the state of multipath
-negotiation is ambiguous, they MUST be interpreted as acknowledging
-packets sent on path 0.
+# Sending Acknowledgements
 
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
@@ -681,29 +686,22 @@ Destination Connection ID.
 Therefore, the packet number space for 1-RTT packets can be identified
 based on the Destination Connection ID in each packet.
 
+Acknowledgements of Initial and Handshake packets MUST be carried using
+ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
+in {{QUIC-TRANSPORT}}, do not carry path identifiers. If for any reason
+ACK frames are received in 1-RTT packets while the state of multipath
+negotiation is ambiguous, they MUST be interpreted as acknowledging
+packets sent on path 0.
+
 As soon as the negotiation of multipath support is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
 data packets, including 0-RTT packets, received on path ID 0 after the handshake concluded.
-
-Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames
-to issue usable connections IDs to reach it. Before an endpoint adds
-a new path by initiating path validation, it MUST check whether at least
-one unused Connection ID is available for each side.
-
-If the transport parameter "active_connection_id_limit" is negotiated as N,
-the server provided N Connection IDs, and the client is already actively
-using N paths, the limit is reached. If the client wants to start
-a new path, it has to retire one of the established paths.
 
 ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the same path
 as identified by the Path Identifier. However, an ACK_MP frame can be returned via a
 different path, based on different strategies of sending ACK_MP frames.
 
-Using multiple packet number spaces requires changes in the way AEAD is
-applied for packet protection, as explained in {{multipath-aead}},
-and tighter constraints for key updates, as explained in {{multipath-key-update}}.
-
-## Packet Protection {#multipath-aead}
+# Packet Protection {#multipath-aead}
 
 Packet protection for QUIC version 1 is specified in {{Section 5 of QUIC-TLS}}.
 The general principles of packet protection are not changed for
@@ -739,7 +737,7 @@ For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the connection ID sequence number is `3`, and the packet number is `aead`,
 the nonce will be set to `6b2611489cba2b63a9e873e2`.
 
-## Key Update {#multipath-key-update}
+# Key Update {#multipath-key-update}
 
 The Key Phase bit update process for QUIC version 1 is specified in
 {{Section 6 of QUIC-TLS}}.
