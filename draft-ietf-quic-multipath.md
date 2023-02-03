@@ -296,10 +296,12 @@ Still, the receiver may observe the same Connection ID used on different
 4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
 as specified in {{Section 9.3 of QUIC-TRANSPORT}}.
 
-This proposal adds one multipath control frame for path management:
+This proposal adds two multipath control frames for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}})
+- PATH_STATUS frames to express a preference in path usage
+(see {{path-status-frame}}
 
 All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -574,107 +576,14 @@ state, endpoints can send RETIRE_CONNECTION_ID frames on other
 available paths. Consequently, the endhost is not able to send nor
 receive packets on this path anymore.
 
+# Multipath Operation with Multiple Packet Number Spaces
 
-# Congestion Control
+The QUIC multipath exetnsion uses different packet number spaces for each path.
+This also means that the same packet number can occur on each path and the
+packet number is not a unique identifier anymore. This requires changes to
+the ACK frame as well as packet protection as descibed in the following subsections.
 
-Senders MUST manage per-path congestion status, and MUST NOT send more
-data on a given path than congestion control on that path allows.
-This is already a requirement of {{QUIC-TRANSPORT}}.
-
-When a Multipath QUIC connection uses two or more paths, there is no
-guarantee that these paths are fully disjoint. When two (or more paths)
-share the same bottleneck, using a standard congestion control scheme
-could result in an unfair distribution of the bandwidth with
-the multipath connection getting more bandwidth than competing single
-paths connections. Multipath TCP uses the LIA congestion control scheme
-specified in {{RFC6356}} to solve this problem.  This scheme can
-immediately be adapted to Multipath QUIC. Other coupled congestion
-control schemes have been proposed for Multipath TCP such as {{OLIA}}.
-
-# Computing Path RTT {#compute-rtt}
-
-Acknowledgement delays are the sum of two one-way delays, the delay
-on the packet sending path and the delay on the return path chosen
-for the acknowledgements.  When different paths have different
-characteristics, this can cause acknowledgement delays to vary
-widely.  Consider for example a multipath transmission using both a
-terrestrial path, with a latency of 50ms in each direction, and a
-geostationary satellite path, with a latency of 300ms in both
-directions.  The acknowledgement delay will depend on the combination
-of paths used for the packet transmission and the ACK transmission,
-as shown in {{fig-example-ack-delay}}.
-
-
-ACK Path \ Data path         | Terrestrial   | Satellite
------------------------------|-------------------|-----------------
-Terrestrial | 100ms  | 350ms
-Satellite   | 350ms  | 600ms
-{: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
-
-Using the default algorithm specified in {{QUIC-RECOVERY}} would result
-in suboptimal performance, computing average RTT and standard
-deviation from series of different delay measurements of different
-combined paths.  At the same time, early tests showed that it is
-desirable to send ACKs through the shortest path because a shorter
-ACK delay results in a tighter control loop and better performances.
-The tests also showed that it is desirable to send copies of the ACKs
-on multiple paths, for robustness if a path experiences sudden losses.
-
-An early implementation mitigated the delay variation issue by using
-time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
-are present, the implementation can estimate the transmission delay
-on each one-way path, and can then use these one way delays for more
-efficient implementations of recovery and congestion control
-algorithms.
-
-If timestamps are not available, implementations could estimate one
-way delays using statistical techniques.  For example, in the example
-shown in Table 1, implementations can use "same path"
-measurements to estimate the one way delay of the terrestrial path to
-about 50ms in each direction, and that of the satellite path to about
-300ms.  Further measurements can then be used to maintain estimates
-of one way delay variations, using logical similar to Kalman filters.
-But statistical processing is error-prone, and using time stamps
-provides more robust measurements.
-
-# Packet Scheduling
-
-The transmission of QUIC packets on a regular QUIC connection is regulated
-by the arrival of data from the application and the congestion control
-scheme. QUIC packets can only be sent when the congestion window of
-at least one path is open.
-
-Multipath QUIC implementations also need to include a packet scheduler
-that decides, among the paths whose congestion window is open, the path
-over which the next QUIC packet will be sent. Many factors can influence
-the definition of these algorithms and their precise definition is
-outside the scope of this document. Various packet schedulers have been
-proposed and implemented, notably for Multipath TCP. A companion draft
-{{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
-packet schedulers depending on the application goals.
-
-Note that the receiver could use a different scheduling strategy to send
-ACK(_MP) frames. The recommended default behaviour consists in sending
-ACK(_MP) frames on the path they acknowledge packets. Other scheduling
-strategies, such as sending ACK(_MP) frames on the lowest latency
-path, might be considered, but they could impact the sender with side
-effects on, e.g., the RTT estimation or the congestion control scheme.
-When adopting such asymetrical acknowledgment scheduling, the receiver
-should at least ensure that the sender negotiated one-way delay
-calculation mechanism (e.g., [QUIC-Timestamp]).
-
-# Recovery
-
-Simultaneous use of multiple paths enables different
-retransmission strategies to cope with losses such as:
-a) retransmitting lost frames over the
-same path, b) retransmitting lost frames on a different or
-dedicated path, and c) duplicate lost frames on several paths (not
-recommended for general purpose use due to the network
-overhead). While this document does not preclude a specific
-strategy, more detailed specification is out of scope.
-
-# Sending Acknowledgements
+## Sending Acknowledgements
 
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
@@ -701,7 +610,7 @@ ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the same path
 as identified by the Path Identifier. However, an ACK_MP frame can be returned via a
 different path, based on different strategies of sending ACK_MP frames.
 
-# Packet Protection {#multipath-aead}
+## Packet Protection {#multipath-aead}
 
 Packet protection for QUIC version 1 is specified in {{Section 5 of QUIC-TLS}}.
 The general principles of packet protection are not changed for
@@ -737,7 +646,7 @@ For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the connection ID sequence number is `3`, and the packet number is `aead`,
 the nonce will be set to `6b2611489cba2b63a9e873e2`.
 
-# Key Update {#multipath-key-update}
+## Key Update {#multipath-key-update}
 
 The Key Phase bit update process for QUIC version 1 is specified in
 {{Section 6 of QUIC-TLS}}.
@@ -860,6 +769,104 @@ Client                                                      Server
 
 # Implementation Considerations
 
+## Congestion Control
+
+Senders MUST manage per-path congestion status, and MUST NOT send more
+data on a given path than congestion control on that path allows.
+This is already a requirement of {{QUIC-TRANSPORT}}.
+
+When a Multipath QUIC connection uses two or more paths, there is no
+guarantee that these paths are fully disjoint. When two (or more paths)
+share the same bottleneck, using a standard congestion control scheme
+could result in an unfair distribution of the bandwidth with
+the multipath connection getting more bandwidth than competing single
+paths connections. Multipath TCP uses the LIA congestion control scheme
+specified in {{RFC6356}} to solve this problem.  This scheme can
+immediately be adapted to Multipath QUIC. Other coupled congestion
+control schemes have been proposed for Multipath TCP such as {{OLIA}}.
+
+## Computing Path RTT {#compute-rtt}
+
+Acknowledgement delays are the sum of two one-way delays, the delay
+on the packet sending path and the delay on the return path chosen
+for the acknowledgements.  When different paths have different
+characteristics, this can cause acknowledgement delays to vary
+widely.  Consider for example a multipath transmission using both a
+terrestrial path, with a latency of 50ms in each direction, and a
+geostationary satellite path, with a latency of 300ms in both
+directions.  The acknowledgement delay will depend on the combination
+of paths used for the packet transmission and the ACK transmission,
+as shown in {{fig-example-ack-delay}}.
+
+
+ACK Path \ Data path         | Terrestrial   | Satellite
+-----------------------------|-------------------|-----------------
+Terrestrial | 100ms  | 350ms
+Satellite   | 350ms  | 600ms
+{: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
+
+Using the default algorithm specified in {{QUIC-RECOVERY}} would result
+in suboptimal performance, computing average RTT and standard
+deviation from series of different delay measurements of different
+combined paths.  At the same time, early tests showed that it is
+desirable to send ACKs through the shortest path because a shorter
+ACK delay results in a tighter control loop and better performances.
+The tests also showed that it is desirable to send copies of the ACKs
+on multiple paths, for robustness if a path experiences sudden losses.
+
+An early implementation mitigated the delay variation issue by using
+time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
+are present, the implementation can estimate the transmission delay
+on each one-way path, and can then use these one way delays for more
+efficient implementations of recovery and congestion control
+algorithms.
+
+If timestamps are not available, implementations could estimate one
+way delays using statistical techniques.  For example, in the example
+shown in Table 1, implementations can use "same path"
+measurements to estimate the one way delay of the terrestrial path to
+about 50ms in each direction, and that of the satellite path to about
+300ms.  Further measurements can then be used to maintain estimates
+of one way delay variations, using logical similar to Kalman filters.
+But statistical processing is error-prone, and using time stamps
+provides more robust measurements.
+
+## Packet Scheduling
+
+The transmission of QUIC packets on a regular QUIC connection is regulated
+by the arrival of data from the application and the congestion control
+scheme. QUIC packets can only be sent when the congestion window of
+at least one path is open.
+
+Multipath QUIC implementations also need to include a packet scheduler
+that decides, among the paths whose congestion window is open, the path
+over which the next QUIC packet will be sent. Many factors can influence
+the definition of these algorithms and their precise definition is
+outside the scope of this document. Various packet schedulers have been
+proposed and implemented, notably for Multipath TCP. A companion draft
+{{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
+packet schedulers depending on the application goals.
+
+Note that the receiver could use a different scheduling strategy to send
+ACK(_MP) frames. The recommended default behaviour consists in sending
+ACK(_MP) frames on the path they acknowledge packets. Other scheduling
+strategies, such as sending ACK(_MP) frames on the lowest latency
+path, might be considered, but they could impact the sender with side
+effects on, e.g., the RTT estimation or the congestion control scheme.
+When adopting such asymetrical acknowledgment scheduling, the receiver
+should at least ensure that the sender negotiated one-way delay
+calculation mechanism (e.g., [QUIC-Timestamp]).
+
+## Retransmissions
+
+Simultaneous use of multiple paths enables different
+retransmission strategies to cope with losses such as:
+a) retransmitting lost frames over the
+same path, b) retransmitting lost frames on a different or
+dedicated path, and c) duplicate lost frames on several paths (not
+recommended for general purpose use due to the network
+overhead). While this document does not preclude a specific
+strategy, more detailed specification is out of scope.
 
 ## Handling different PMTU sizes
 
