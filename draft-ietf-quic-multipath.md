@@ -300,7 +300,7 @@ This proposal adds two multipath control frames for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}})
-- PATH_STATUS frames to express a preference in path usage
+- PATH_STATUS frame to express a preference in path usage
 (see {{path-status-frame}}
 
 All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
@@ -578,10 +578,10 @@ receive packets on this path anymore.
 
 # Multipath Operation with Multiple Packet Number Spaces
 
-The QUIC multipath exetnsion uses different packet number spaces for each path.
+The QUIC multipath extension uses different packet number spaces for each path.
 This also means that the same packet number can occur on each path and the
 packet number is not a unique identifier anymore. This requires changes to
-the ACK frame as well as packet protection as descibed in the following subsections.
+the ACK frame as well as packet protection as described in the following subsections.
 
 ## Sending Acknowledgements
 
