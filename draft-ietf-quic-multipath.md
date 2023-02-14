@@ -771,9 +771,14 @@ Client                                                      Server
 
 ## Congestion Control
 
-Senders MUST manage per-path congestion status, and MUST NOT send more
-data on a given path than congestion control on that path allows.
-This is already a requirement of {{QUIC-TRANSPORT}}.
+When the QUIC multipath extension is used, senders manage per-path 
+congestion status as required in {{Section 9.4 of QUIC-TRANSPORT}}.
+However, in {{QUIC-TRANSPORT}} only one active path is assumed and as such
+the requirement is to reset the congestion control status on path migration.
+With the multipath extension, multiple paths can be used simultaneously,
+therefore separate congestion control state is maintained for each path.
+This means a sender is not allowed to send more data on a given path 
+than congestion control for that path indicates.
 
 When a Multipath QUIC connection uses two or more paths, there is no
 guarantee that these paths are fully disjoint. When two (or more paths)
