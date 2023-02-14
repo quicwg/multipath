@@ -174,7 +174,7 @@ We assume that the reader is familiar with the terminology used in
   in multipath control frames (etc. PATH_ABANDON frame) to identify
   a path. The initial path that is used during the handshake (and multipath negotiation)
   has the path ID 0 and therefore all 0-RTT packets are also tracked and
-  processed with the path ID 0. For 1-RTT packets, the path ID is the 
+  processed with the path ID 0. For 1-RTT packets, the path ID is the
   sequence number of the Destination Connection ID present in the packet
   header, as defined in {{Section 5.1.1 of QUIC-TRANSPORT}} that is used
   for sending packets on that particular path.
