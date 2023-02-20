@@ -145,10 +145,23 @@ However, when a node selects to use zero-length connection IDs, it is not
 possible to use different connection IDs for distinguishing packets
 sent to that node over different paths.
 
+Each endhost may use several IP addresses to serve the connection. In
+particular, the multipath extension supports the following scenarios.
+
+  * The client uses multiple IP addresses and the server listens on only
+    one.
+  * The client uses only one IP address and the server listens on
+    several ones.
+  * The client uses multiple IP addresses and the server listens on
+    several ones.
+
 This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
 to be handled by the application that is using the QUIC multipath
-extension. Further, this proposal only specifies a simple basic packet
+extension. This is sufficient to address the first aforementioned
+scenario. However, this document does not prevent future extensions from
+defining mechanisms to address the remaining scenarios.
+Further, this proposal only specifies a simple basic packet
 scheduling algorithm, in order to provide some basic implementation
 guidance. However, more advanced algorithms as well as potential
 extensions to enhance signaling of the current path state are expected
