@@ -885,6 +885,37 @@ two or more active paths during the connection lifetime. Different applications 
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
+## Migration
+
+Even when the multipath extension is used, migration can happen.
+E.g. the client's source port and/or IP address may change due to changes
+in network topology or address mappings, such as caused by NAT rebinding.
+In this case the server performs path validation (see {{Section 9 of QUIC-TRANSPORT}}
+and both peers are expected to use new connection IDs during this process.
+
+Even is the path validation is causes by a migration event, when
+the multipath extension is used, the
+endpoint treats the receipt of a PATH_CHALLENGE frame as a new path
+and also initiates path validation to open the path.
+This is important to ensure
+that both peers have the same view on the number of active paths. However,
+this also implicitly means that every migration event will cause a congestion
+control reset, even if e.g. only the source port changed. Further, if the
+old path after a migration event is not usable anymore, with the multipath
+extension the endpoint might send a PATH_ABANDON frame to close the path.
+
+{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
+a peer address if that address has been seen recently. However, when the
+multipath extension is used and an endpoint has multiple addresses that
+could lead to switching between different paths, it should rather maintain
+multiple open paths instead. Otherwise switching paths without path validation
+could cause an inconsistent view of open paths at both peer.
+
+Moreover, {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the connection ID it uses for a peer to another available one
+at any time during the connection. As such a sole change of the Connection
+ID without any change in the address does open a new path.
+
 # New Frames {#frames}
 
 All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
