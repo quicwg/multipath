@@ -744,10 +744,10 @@ second path, the server's 1-RTT packets use DCID C2, which has a sequence
 number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
-number of the DCID used for sending packets over that path,
+number of the DCID it uses for sending packets over that path,
 hence using the path_id 2. Optionally, the server confirms the path closure
 by sending an PATH_ABANDON frame using
-the sequence number of the DCID used to send over that path as path
+the sequence number of the DCID it uses to send over that path as path
 identifier, which corresponds to the path_id 1. Both the client and
 the server can close the path after receiving the RETIRE_CONNECTION_ID frame
 for that path.
@@ -761,9 +761,9 @@ Client                                                      Server
                       <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=1],
                                                ACK_MP[Seq=2, PN=X]
 (client retires the corresponding CID)
-1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=1, PN=Y] ->
+1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
                             (server retires the corresponding CID)
- <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=3, PN=U]
+ <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
