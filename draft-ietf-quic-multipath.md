@@ -398,7 +398,7 @@ if any.
 
 The receiver of a PATH_ABANDON frame SHOULD NOT release its resources
 immediately, but SHOULD wait for the reception of the RETIRE_CONNECTION_ID
-frame for the used connection IDs but at least three times the current 
+frame for the used connection IDs but at least three times the current
 Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}.
 This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
 to ensure that paths close cleanly and that delayed or reordered packets
