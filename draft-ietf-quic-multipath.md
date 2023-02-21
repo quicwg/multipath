@@ -454,7 +454,7 @@ the resources include the list of received packets used to send
 acknowledgements. The peer can keep sending data using
 the same IP addresses and UDP ports previously associated with
 the connection ID, but MUST use a different connection ID when doing so.
-E.g this can happen if the Connection ID issuer requests retirement of a 
+E.g this can happen if the Connection ID issuer requests retirement of a
 Connection ID using the Retire Prior To field in the NEW_CONNECTION_ID Frame.
 If no new connection ID is available anymore, the endpoint cannot send on
 this path anymore but has to wait for the idle time-out before closing
