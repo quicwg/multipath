@@ -388,7 +388,7 @@ Respectively, if the to-be-closed path is assumed to be not working anymore,
 the endpoint might consider to send the PATH_ABANDON frame on another path.
 If the expiration of the PTO causes a retransmission of the PATH_ABANDON frame,
 this might be an inidcation that the path is not usable anymore and the
-endpoint respectively might consider to retransmit on another path. 
+endpoint respectively might consider to retransmit on another path.
 
 Once a path is
 marked as "abandoned", it means that the resources related to the path,
