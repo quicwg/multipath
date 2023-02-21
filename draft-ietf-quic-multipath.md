@@ -448,12 +448,19 @@ PATH_CHALLENGE arrives in a packet using a non-zero length Connection ID.
 ### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
 Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
-the resources associated with that connection ID. If the connection ID
+the resources associated with that Connection ID. If the connection ID
 was used by the peer to identify a path from the peer to this endpoint,
 the resources include the list of received packets used to send
-acknowledgements. The peer MAY decide to keep sending data using
+acknowledgements. The peer can keep sending data using
 the same IP addresses and UDP ports previously associated with
 the connection ID, but MUST use a different connection ID when doing so.
+E.g this can happen if the Connection ID issuer requests retirement of a 
+Connection ID using the Retire Prior To field in the NEW_CONNECTION_ID Frame.
+If no new connection ID is available anymore, the endpoint cannot send on
+this path anymore but has to wait for the idle time-out before closing
+the path. If another active path is available, the enpoint can re-active
+the path before the timer expired if a new Connection ID gets issued
+by its peer.
 
 Note that if the sender retires a Connection ID that is still used by
 in-flight packets, it may receive ACK_MP frames referencing the retired
