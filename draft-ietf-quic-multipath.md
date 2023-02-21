@@ -777,7 +777,7 @@ However, in {{QUIC-TRANSPORT}} only one active path is assumed and as such
 the requirement is to reset the congestion control status on path migration.
 With the multipath extension, multiple paths can be used simultaneously,
 therefore separate congestion control state is maintained for each path.
-This means a sender is not allowed sending more data on a given path
+This means a sender is not allowed to send more data on a given path
 than congestion control for that path indicates.
 
 When a Multipath QUIC connection uses two or more paths, there is no
