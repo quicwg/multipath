@@ -382,7 +382,15 @@ Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
 Both endpoints, namely the client and the server, can close a path,
 by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
-abandons the path with a corresponding Path Identifier. Once a path is
+abandons the path with a corresponding Path Identifier. The PATH_ABANDON
+frame contains the Path Identifier and therefore can be sent on any path.
+Respectively, if the to-be-closed path is assumed to be not working anymore,
+the endpoint might consider to send the PATH_ABANDON frame on another path.
+If the expiration of the PTO causes a retransmission of the PATH_ABANDON frame,
+this might be an inidcation that the path is not usable anymore and the
+endpoint respectively might consider to retransmit on another path. 
+
+Once a path is
 marked as "abandoned", it means that the resources related to the path,
 such as the used connection IDs, can be released.
 However, information related to data delivered over that path SHOULD
