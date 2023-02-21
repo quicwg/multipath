@@ -53,11 +53,11 @@ normative:
   RFC2119:
   QUIC-TRANSPORT: rfc9000
   QUIC-TLS: rfc9001
+  QUIC-RECOVERY: rfc9002
 
 informative:
   RFC6356:
   I-D.bonaventure-iccrg-schedulers:
-  QUIC-RECOVERY: rfc9002
   QUIC-Invariants: rfc8999
   QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
@@ -398,7 +398,11 @@ if any.
 
 The receiver of a PATH_ABANDON frame SHOULD NOT release its resources
 immediately, but SHOULD wait for the reception of the RETIRE_CONNECTION_ID
-frame for the used connection IDs or 3 RTOs.
+frame for the used connection IDs but at least three times the current 
+Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}.
+This is inline with the requirement of {{Sectuion 10.2 of QUIC-TRANSPORT}}
+to ensure that paths close cleanly and that delayed or reordered packets
+are properly discarded.
 
 Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
@@ -430,7 +434,7 @@ and enters the closing state. If the client received a PATH_ABANDON
 frame for the last open path, it MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly
-the server MAY wait for a short, limited time such as one RTO if a path
+the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
