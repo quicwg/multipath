@@ -171,7 +171,7 @@ We assume that the reader is familiar with the terminology used in
 
 - Path Identifier (Path ID): An identifier that is used to identify
   a path in a QUIC connection at an endpoint. Path Identifier is used
-  in multipath control frames (etc. PATH_ABANDON frame) to identify
+  in multipath control frames (e.g., PATH_ABANDON frame) to identify
   a path. The initial path that is used during the handshake (and multipath negotiation)
   has the path ID 0 and therefore all 0-RTT packets are also tracked and
   processed with the path ID 0. For 1-RTT packets, the path ID is the
