@@ -572,7 +572,7 @@ The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frame additionally
 contains a Path ID.
-The Path ID used to distinguish packet number spaces for different
+The Path ID is used to distinguish packet number spaces for different
 paths and is simply derived from the sequence number of
 Destination Connection ID.
 Therefore, the Path ID for 1-RTT packets can be identified
