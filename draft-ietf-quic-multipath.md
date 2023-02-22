@@ -184,30 +184,13 @@ We assume that the reader is familiar with the terminology used in
 
 - Path Identifier (Path ID): An identifier that is used to identify
   a path in a QUIC connection at an endpoint. Path Identifier is used
-  in multipath control frames (etc. PATH_ABANDON frame) to identify
-  a path. The Path ID is defined as the sequence number of
-  the destination Connection ID used for sending packets on that
-  particular path.
-
-- Packet Number Space Identifier (PNS ID): An identifier that is
-  used to distinguish packet number spaces for different paths. It is
-  used in 1-RTT packets and ACK_MP frames. Each node maintains a list of
-  "Received Packets" for each of the CID that it provided to the peer,
-  which is used for acknowledging packets received with that CID.
-
-The difference between Path Identifier and Packet Number Space
-Identifier, is that the Path Identifier is used in multipath control
-frames to identify a path, and the Packet Number Space Identifier is
-used in 1-RTT packets and ACK_MP frames to distinguish packet number
-spaces for different paths. Both identifiers have the same value, which
-is the sequence number of the connection ID, when a new path is established.
-
-The initial path that is used during the handshake (and multipath negotiation)
-has the path ID 0 and therefore all 0-RTT packets are also tracked and
-processed with the path ID 0.
-For 1-RTT packets, the path ID is the sequence number of
-the Destination Connection ID present in the packet header, as defined
-in {{Section 5.1.1 of QUIC-TRANSPORT}}.
+  in multipath control frames (e.g., PATH_ABANDON frame) to identify
+  a path. The initial path that is used during the handshake (and multipath negotiation)
+  has the path ID 0 and therefore all 0-RTT packets are also tracked and
+  processed with the path ID 0. For 1-RTT packets, the path ID is the
+  sequence number of the Destination Connection ID present in the packet
+  header, as defined in {{Section 5.1.1 of QUIC-TRANSPORT}} that is used
+  for sending packets on that particular path.
 
 # High-level overview {#overview}
 
@@ -552,12 +535,12 @@ destination port) used by the endhost to send packets over the path.
 - Associated Destination Connection ID: The Connection ID used to send
 packets over the path.
 
-If multiple packet number spaces are used over the connection, hosts
-MUST also track the following information.
+In Active state, hosts MUST also track the following information:
 
-- Path Packet Number Space: The endpoint maintains a separate packet
-number for sending and receiving packets over this path. Packet number
-considerations described in {{QUIC-TRANSPORT}} apply within the given path.
+- Path ID: The endpoint maintains a separate packet
+number space for sending and receiving packets over this path which is
+identified by the path ID. Packet number considerations as described in
+{{Section 12.3 of QUIC-TRANSPORT}} apply within the given path.
 
 In the "Active" state, hosts MUST also track the following information.
 
@@ -600,12 +583,12 @@ the ACK frame as well as packet protection as described in the following subsect
 
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
-Compared to the QUIC version 1 ACK frame, the ACK_MP frames additionally
-contains a Packet Number Space Identifier (PN Space ID).
-The PN Space ID used to distinguish packet number spaces for different
+Compared to the QUIC version 1 ACK frame, the ACK_MP frame additionally
+contains a Path ID.
+The Path ID is used to distinguish packet number spaces for different
 paths and is simply derived from the sequence number of
 Destination Connection ID.
-Therefore, the packet number space for 1-RTT packets can be identified
+Therefore, the Path ID for 1-RTT packets can be identified
 based on the Destination Connection ID in each packet.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using
@@ -635,14 +618,14 @@ for 1-RTT packets requires changes in AEAD usage.
 
 {{Section 5.3 of QUIC-TLS}} specifies AEAD usage, and in particular
 the use of a nonce, N, formed by combining the packet protection IV
-with the packet number. If multiple packet number spaces are used,
+with the packet number. When multiple packet number spaces are used,
 the packet number alone would not guarantee the uniqueness of the nonce.
 
 In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
 and with the path identifier.
 
-The path ID for 1-RTT packets is the sequence number of the Connection ID
+The Path ID for 1-RTT packets is the sequence number of the Connection ID
 as specified in {{QUIC-TRANSPORT}}.  {{Section 19 of QUIC-TRANSPORT}}
 encodes the Connection ID Sequence Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification, a range of less than 2^32-1
@@ -656,7 +639,7 @@ left-padded with zeros to the size of the IV. The exclusive OR
 of the padded packet number and the IV forms the AEAD nonce.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
-the connection ID sequence number is `3`, and the packet number is `aead`,
+the Connection ID Sequence Number is `3`, and the packet number is `aead`,
 the nonce will be set to `6b2611489cba2b63a9e873e2`.
 
 ## Key Update {#multipath-key-update}
@@ -717,10 +700,10 @@ using multiple packet number spaces.
    1-RTT[0]: DCID=S2, PATH_CHALLENGE[X] -->
                    Checks AEAD using nonce(CID sequence 2, PN 0)
      <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
-                                              ACK_MP[Seq=2,PN=0]
+                                              ACK_MP[PID=2,PN=0]
    Checks AEAD using nonce(CID sequence 1, PN 0)
    1-RTT[1]: DCID=S2, PATH_RESPONSE[Y],
-             ACK_MP[Seq=1, PN=0], ... -->
+             ACK_MP[PID=1, PN=0], ... -->
 
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
@@ -740,7 +723,7 @@ as the Destination Connection ID in the new path.
 If the client has used all the allocated CID, it is supposed to retire
 those that are not used anymore, and the server is supposed to provide
 replacements, as specified in {{QUIC-TRANSPORT}}.
-Usually, it is desired to provide one more connection ID as currently
+Usually, it is desired to provide one more Connection ID as currently
 in use, to allow for new paths or migration.
 
 ## Path Closure
@@ -772,11 +755,11 @@ Client                                                      Server
 1-RTT[X]: DCID=S2 PATH_ABANDON[path_id=2]->
                            (server tells client to abandon a path)
                       <-1-RTT[Y]: DCID=C1 PATH_ABANDON[path_id=1],
-                                               ACK_MP[Seq=2, PN=X]
+                                               ACK_MP[PID=2, PN=X]
 (client retires the corresponding CID)
-1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[Seq=1, PN=Y] ->
+1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[PID=1, PN=Y] ->
                             (server retires the corresponding CID)
- <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[Seq=3, PN=U]
+ <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[PID=3, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
@@ -959,8 +942,7 @@ PATH_ABANDON frames SHOULD be acknowledged. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 PATH_ABANDON frames MAY be sent
-on any path, not only the path identified by the Packet Number Space
-Identifier.
+on any path, not only the path identified by the Path Identifier.
 
 ## PATH_STATUS frame {#path-status-frame}
 
@@ -1019,7 +1001,7 @@ the sequence number.
 
 The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
 is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
-used to acknowledge packets that were sent on different paths when using
+used to acknowledge packets that were sent on different paths using
 multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the connection up to this point.
@@ -1029,7 +1011,7 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 ~~~
   ACK_MP Frame {
     Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
-    Packet Number Space Identifier (i),
+    Path Identifier (i),
     Largest Acknowledged (i),
     ACK Delay (i),
     ACK Range Count (i),
@@ -1043,15 +1025,15 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
 field is added.
 
-Packet Number Space Identifier:
-: The identifier of the path packet number
+Path Identifier:
+: The identifier of the path to identify the packet number
   space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
 
-If an endpoint receives an ACK_MP frame with a packet number
-space ID which was never issued by endpoints (i.e., with a sequence number
+If an endpoint receives an ACK_MP frame with a Path
+ID which was never issued by endpoints (i.e., with a sequence number
 larger than the largest one advertised), it MUST treat this as a connection
 error of type MP_PROTOCOL_VIOLATION and close the connection.
-If an endpoint receives an ACK_MP frame with a packet number space ID
+If an endpoint receives an ACK_MP frame with a Path ID
 which is no more active (e.g., retired by a RETIRE_CONNECTION_ID
 frame or belonging to closed paths), it MUST ignore the ACK_MP frame
 without causing a connection error.
