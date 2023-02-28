@@ -890,10 +890,10 @@ on each of these paths before the idle timeout expires.
 Even when the multipath extension is used, migration can happen.
 E.g. the client's source port and/or IP address may change due to changes
 in network topology or address mappings, such as caused by NAT rebinding.
-In this case the server performs path validation (see {{Section 9 of QUIC-TRANSPORT}}
+In this case the server performs path validation (see {{Section 9 of QUIC-TRANSPORT}})
 and both peers are expected to use new connection IDs during this process.
 
-Even is the path validation is causes by a migration event, when
+Even is the path validation is caused by a migration event, when
 the multipath extension is used, the
 endpoint treats the receipt of a PATH_CHALLENGE frame as a new path
 and also initiates path validation to open the path.
