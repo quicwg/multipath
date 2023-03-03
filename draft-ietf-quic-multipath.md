@@ -358,7 +358,7 @@ transmission. At any time in the connection, each endpoint can decide to
 abandon one of these paths, following for example changes in local
 connectivity or changes in local preferences. After an endpoint abandons
 a path, the peer will not receive any more non-probing packets on
-that path.
+that path. Non-probing packets are defined in {{Section 9.1 of QUIC-TRANSPORT}}.
 
 An endpoint that wants to close a path SHOULD use explicit request to
 terminate the path by sending the PATH_ABANDON frame (see
