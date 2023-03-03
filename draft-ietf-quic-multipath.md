@@ -110,8 +110,7 @@ Connection IDs in both directions.
 address as well as source and destination port. Therefore, there can be
 at most one active paths/connection ID per 4-tuple.
   * If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration event and not
-as a new path.
+due to a NAT rebinding), this is considered as a migration event.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
