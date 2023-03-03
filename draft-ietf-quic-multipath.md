@@ -747,7 +747,7 @@ Client                                                      Server
 (client tells server to abandon a path)
 1-RTT[X]: DCID=S2 PATH_ABANDON[sender_dcid_seq_num=2]->
                            (server tells client to abandon a path)
-                      <-1-RTT[Y]: DCID=C1 PATH_ABANDON[sender_dcid_seq_num=1],
+               <-1-RTT[Y]: DCID=C1 PATH_ABANDON[sender_dcid_seq_num=1],
                                                ACK_MP[PID=2, PN=X]
 (client retires the corresponding CID)
 1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[PID=1, PN=Y] ->
@@ -1028,7 +1028,7 @@ Receiver's Destination Connection ID Sequence Number:
 : The sequence number of the Connection ID identifying the packet number
   space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
 
-If an endpoint receives an ACK_MP frame with a Connection ID sequence 
+If an endpoint receives an ACK_MP frame with a Connection ID sequence
 number which was never issued (i.e., with a sequence number
 larger than the largest one advertised), it MUST treat this as a connection
 error of type MP_PROTOCOL_VIOLATION and close the connection.
