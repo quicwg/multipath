@@ -529,11 +529,7 @@ In non-final states, hosts have to track the following information.
 destination port) used by the endhost to send packets over the path.
 
 - Associated Destination Connection ID: The Connection ID used to send
-packets over the path. The endpoint relies on its sequence number to
-maintain a Destination Connection ID-specific packet number space for
-sending packets over this path. Packet number considerations as
-described in {{Section 12.3 of QUIC-TRANSPORT}} apply within the given
-path.
+packets over the path.
 
 In Active state, hosts MUST also track the following information:
 
