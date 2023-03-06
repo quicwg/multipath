@@ -768,7 +768,89 @@ Client                                                      Server
 
 # Implementation Considerations
 
-## Congestion Control
+## Number Spaces
+
+As stated in {{introduction}}, when multipath is negotiated, each
+destination connection ID is linked to a separate packet number space.
+This a big difference between implementations of QUIC as specified in
+RFC 9000, which only have to three manage number spaces for Initial,
+Handshake and Application packets. 
+
+Implementation of multipath capable QUIC will need to carefully
+model the relations between Paths and number spaces, as shown
+in  {fig-number-spaces}.
+~~~
++-------------------------+
+| CID received from peer: |
+| Previous Sender Number  |<- - - - - - +
+| Space                   |              
++-------------------------+             |
+                                         
++-------------------------+             |
+| CID received from peer: |              
+| Sender Number Space     |             |
++-------------------------+             v
+                      ^             +----------------+
+                      |             | Path (4 tuple) |
+                      +-------------| - RTT          |
+                +------------------>| - Congestion   |
+                |                   |   state        |
+                v                   +----------------+
++-------------------------+             ^
+| CID provided to peer:   |             |
+| Receiver Number Space   |              
++-------------------------+             |
+                                         
++-------------------------+             |
+| CID previously used by  |     
+| Peer: old Receiver      |<- - - - - - +
+| Number Space            |
++-------------------------+
+~~~~                                 
+{: #fig-number-spaces title="Send and Receive number spaces"}
+
+The path is defined by the four tuple through which packets are
+received and sent. Packets sent on the path will include the
+Destination Connection ID currently used for that path, selected
+from the list of CID provided by the peer. Packets received
+on the path carry a Destination CID selected by the peer from
+the list provided to that peer.
+
+The relation between CID and paths is not fixed. A node may
+decide to rotate this CID, a NAT may decide to change the
+four tuple over which packets from that path will be received.
+Implementation will have to manage these evolving relations.
+
+Data associated with the transmission and reception on a given
+path can be associated to either the "path state", or to the
+state of either the sender or receiver number spaces. For example:
+
+* RTT measurements and congestion state are logically associated
+  with the 4 tuple. They will remain unchanged if data starts
+  being received or sent through the same 4 tuple using new CIDs.
+
+* Implementations of loss recovery (see {retransmissions}) typically maintain lists of
+  packets sent and not yet acknowledged. Such information, along
+  with the value of the next PN to use for sending, is
+  logically associated with the "Sender Number Space", and
+  with the peer-provided CID used for sending on the path.
+
+* Sending of acknowledgement requires keeping track of the PN of
+  received packets and of acknowledgements previously sent. Such
+  information is logically associated with the "Receiver Number Space",
+  and with the CID used by the peer for sending on the path.
+
+When the link between paths and CID changes, the information tied
+to the now unused CID remains useful for some time. For example,
+the list of packet numbers to acknowledge maintained in the old
+receiver number space could still used to send MP_ACK frames
+for that number space. Similarly, the list of packets sent but
+not yet acknowledged with an old sender number space can be used
+when processing incoming MP_ACK frames for that number space. Such
+data should not be discarded immediately after a CID change, but
+only later, for example when the CID is retired.
+
+## Congestion Control {#congestion-control}
 
 When the QUIC multipath extension is used, senders manage per-path
 congestion status as required in {{Section 9.4 of QUIC-TRANSPORT}}.
