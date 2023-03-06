@@ -779,33 +779,34 @@ Handshake and Application packets.
 Implementation of multipath capable QUIC will need to carefully
 model the relations between Paths and number spaces, as shown
 in  {fig-number-spaces}.
+
 ~~~
-+-------------------------+
-| CID received from peer: |
-| Previous Sender Number  |&lt;- - - - - - +
-| Space                   |              
-+-------------------------+             |
-                                         
-+-------------------------+             |
-| CID received from peer: |              
-| Sender Number Space     |             |
-+-------------------------+             v
+   +-------------------------+
+   | CID received from peer: |
+   | Previous Sender Number  |&lt;- - - - - - +
+   | Space                   |              
+   +-------------------------+             |
+                                             
+   +-------------------------+             |
+   | CID received from peer: |              
+   | Sender Number Space     |             |
+   +-------------------------+             v
                       ^             +----------------+
                       |             | Path (4 tuple) |
                       +-------------| - RTT          |
                 +------------------>| - Congestion   |
                 |                   |   state        |
                 v                   +----------------+
-+-------------------------+             ^
-| CID provided to peer:   |             |
-| Receiver Number Space   |              
-+-------------------------+             |
-                                         
-+-------------------------+             |
-| CID previously used by  |     
-| Peer: old Receiver      |&lt;- - - - - - +
-| Number Space            |
-+-------------------------+
+   +-------------------------+             ^
+   | CID provided to peer:   |             |
+   | Receiver Number Space   |              
+   +-------------------------+             |
+                                            
+   +-------------------------+             |
+   | CID previously used by  |     
+   | Peer: old Receiver      |&lt;- - - - - - +
+   | Number Space            |
+   +-------------------------+
 ~~~                                
 {: #fig-number-spaces title="Send and Receive number spaces"}
 
