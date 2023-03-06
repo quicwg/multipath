@@ -539,7 +539,7 @@ In Active state, hosts MUST also track the following information:
 
 - Associated Source Connection ID: The Connection ID used to receive
 packets over the path. The endpoint relies on its sequence number to
-receive and acknowledge packets belonging to that Connection ID-specific
+send path control information and specifically acknowledge packets belonging to that Connection ID-specific
 packet number space.
 
 A path in the "Validating" state performs path validation as described
