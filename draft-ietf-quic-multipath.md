@@ -782,7 +782,7 @@ in  {fig-number-spaces}.
 ~~~
 +-------------------------+
 | CID received from peer: |
-| Previous Sender Number  |<- - - - - - +
+| Previous Sender Number  |&lt;- - - - - - +
 | Space                   |              
 +-------------------------+             |
                                          
@@ -803,10 +803,10 @@ in  {fig-number-spaces}.
                                          
 +-------------------------+             |
 | CID previously used by  |     
-| Peer: old Receiver      |<- - - - - - +
+| Peer: old Receiver      |&lt;- - - - - - +
 | Number Space            |
 +-------------------------+
-~~~~                                 
+~~~                                
 {: #fig-number-spaces title="Send and Receive number spaces"}
 
 The path is defined by the four tuple through which packets are
