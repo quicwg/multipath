@@ -774,7 +774,7 @@ As stated in {{introduction}}, when multipath is negotiated, each
 Destination Connection ID is linked to a separate packet number space.
 This a big difference between implementations of QUIC as specified in
 RFC 9000, which only have to manage three number spaces for Initial,
-Handshake and Application packets. 
+Handshake and Application packets.
 
 Implementation of multipath capable QUIC will need to carefully
 model the relations between paths and number spaces, as shown
@@ -783,9 +783,9 @@ in {{fig-number-spaces}}.
 ~~~
    +-------------------------+
    | CID received from peer: |
-   | Previous Sender Number  |-- - - - - - +
-   | Space                   |
-   +-------------------------+             |
+   | Previous Sender Number  |
+   | Space                   |-- - - - - - +
+   +-------------------------+
    +-------------------------+             |
    | CID received from peer: |
    | Sender Number Space     |             |
@@ -800,9 +800,9 @@ in {{fig-number-spaces}}.
    | CID provided to peer:   |             |
    | Receiver Number Space   |
    +-------------------------+             |
-   +-------------------------+             |
-   | CID previously used by  |
-   | Peer: old Receiver      |-- - - - - - +
+   +-------------------------+
+   | CID previously used by  |-- - - - - - +
+   | Peer: old Receiver      |
    | Number Space            |
    +-------------------------+
 ~~~
