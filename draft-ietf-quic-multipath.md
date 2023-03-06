@@ -778,12 +778,12 @@ Handshake and Application packets.
 
 Implementation of multipath capable QUIC will need to carefully
 model the relations between Paths and number spaces, as shown
-in  {fig-number-spaces}.
+in  {{fig-number-spaces}}.
 
 ~~~
    +-------------------------+
    | CID received from peer: |
-   | Previous Sender Number  |&lt;- - - - - - +
+   | Previous Sender Number  |-- - - - - - +
    | Space                   |              
    +-------------------------+             |
                                              
@@ -804,7 +804,7 @@ in  {fig-number-spaces}.
                                             
    +-------------------------+             |
    | CID previously used by  |     
-   | Peer: old Receiver      |&lt;- - - - - - +
+   | Peer: old Receiver      |-- - - - - - +
    | Number Space            |
    +-------------------------+
 ~~~                                
@@ -830,7 +830,7 @@ state of either the sender or receiver number spaces. For example:
   with the 4 tuple. They will remain unchanged if data starts
   being received or sent through the same 4 tuple using new CIDs.
 
-* Implementations of loss recovery (see {retransmissions}) typically maintain lists of
+* Implementations of loss recovery typically maintain lists of
   packets sent and not yet acknowledged. Such information, along
   with the value of the next PN to use for sending, is
   logically associated with the "Sender Number Space", and
