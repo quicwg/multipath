@@ -204,10 +204,10 @@ To add a new path to an existing multipath QUIC connection, a client starts a pa
 the chosen path, as further described in {{setup}}.
 In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
-A new path can only be used once it has been validated. Each endpoint
-identifies its paths by the sequence number of the Destination
-Connection ID it uses over them. Such numerical identifier is notably
-used when an endpoint sends a PATH_ABANDON frame to request its peer to
+A new path can only be used once it has been validated. The Destination
+Connection ID is used to associate a packet to a valid path. Further, the
+sequence number of Destination Connection ID is used as numerical identifier
+in control frames. E.g. an endpoint sends a PATH_ABANDON frame to request its peer to
 abandon the path on which the sender uses the Destination Connection ID
 with the sequence number contained in the PATH_ABANDON frame.
 
@@ -580,8 +580,7 @@ The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frame additionally
 contains the Receiver's Destination Connection ID Sequence Number field
-to distinguish the Connection ID-specific packet number space
-acknowledged.
+to distinguish the Connection ID-specific packet number space.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using
 ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
@@ -592,7 +591,7 @@ the Connection ID having sequence number 0.
 
 As soon as the negotiation of multipath support is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
-data packets, including 0-RTT packets, using the Connection ID with
+data packets, including 0-RTT packets, using the initial Connection ID with
 sequence number 0 after the handshake concluded.
 
 ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the path
@@ -961,7 +960,7 @@ PATH_STATUS Frames contain the following fields:
 Sender's Destination Connection ID Sequence Number:
 : The sequence number of the Destination Connection ID used by the
   sender of this frame to send packets over the path the status update
-  corresponds.
+  corresponds to.
 
 Path Status sequence number:
 : A variable-length integer specifying
