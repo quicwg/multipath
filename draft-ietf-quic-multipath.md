@@ -458,7 +458,7 @@ This can happen if, e.g., the Connection ID issuer requests retirement of a
 Connection ID using the Retire Prior To field in the NEW_CONNECTION_ID frame.
 If no new connection ID is available anymore, the endpoint cannot send on
 this path and is not able to send control frames associated to this path anymore.
-However, it can still acknowledge packets received on the path, by sending ACK_MP frames 
+However, it can still acknowledge packets received on the path, by sending ACK_MP frames
 on another path, if available. If no data is received on this path, the idle time-out will close
 the path. The endpoint can re-activate the path if a new Connection ID gets issued
 by its peer over another path before the idle timer expires.
