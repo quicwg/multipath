@@ -508,7 +508,7 @@ after a spurious estimate of path abandonment by the client.
  |   Active   |----------------------------------+
  +------------+                                  |
        |                                         |
-       | PATH_ABANDONED sent/received            |
+       | PATH_ABANDON sent/received              |
        v                                         |
  +------------+                                  |
  |   Closing  |                                  |
@@ -546,12 +546,12 @@ guarantee that packets will actually reach the peer.
 The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
 of new data on a path. Note that if a path became idle due to a timeout,
-endpoints SHOULD send PATH_ABANDONED frame before closing the path.
+endpoints SHOULD send PATH_ABANDON frame before closing the path.
 
 In the "Closing" state, the endhost SHOULD NOT send packets on this
 path anymore, as there is no guarantee that the peer can still map
 the packets to the connection. The endhost SHOULD wait for
-the acknowledgment of the PATH_ABANDONED frame before moving the path
+the acknowledgment of the PATH_ABANDON frame before moving the path
 to the "Closed" state to ensure a graceful termination of the path.
 
 When a path reaches the "Closed" state, the endhost releases all the
