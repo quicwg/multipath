@@ -204,8 +204,10 @@ To add a new path to an existing multipath QUIC connection, a client starts a pa
 the chosen path, as further described in {{setup}}.
 In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
-A new path can only be used once it has been validated. The Destination
-Connection ID is used to associate a packet to a valid path. Further, the
+A new path can only be used once the associated 4-tuple has been validated
+by ensuring that the peer is able to receive packets at that address
+(see {{Section 8 of RFC9000}}). The Destination Connection ID is used
+to associate a packet to a packet number space that is used on a valid path. Further, the
 sequence number of Destination Connection ID is used as numerical identifier
 in control frames. E.g. an endpoint sends a PATH_ABANDON frame to request its peer to
 abandon the path on which the sender uses the Destination Connection ID
@@ -372,9 +374,9 @@ Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
 ### Use PATH_ABANDON Frame to Close a Path {#path-abandon-close}
 
-Both endpoints, namely the client and the server, can close a path,
+Both endpoints, namely the client and the server, can initiate path closure,
 by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
-abandons the path with the corresponding Destination Connection ID.
+which requests the peer to stop sending packets with the corresponding Destination Connection ID.
 The PATH_ABANDON frame contains the Destination Connection
 ID Sequence Number and therefore can be sent on any path.
 
@@ -581,7 +583,8 @@ to distinguish the Connection ID-specific packet number space.
 Acknowledgements of Initial and Handshake packets MUST be carried using
 ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
 in {{QUIC-TRANSPORT}}, do not carry the Destination Connection ID
-Sequence Number field. If multipath has been successfully
+Sequence Number field to identify the packet number space.
+If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets sent with
 the Connection ID having sequence number 0.
 
@@ -591,7 +594,7 @@ data packets, including 0-RTT packets, using the initial Connection ID with
 sequence number 0 after the handshake concluded.
 
 ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the path
-it perceives the Connection ID of the packet number space it acknowledges.
+it received packet with the Connection ID of the packet number space it acknowledges.
 However, an ACK_MP frame can be returned via a
 different path, based on different strategies of sending ACK_MP frames.
 
