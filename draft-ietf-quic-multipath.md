@@ -206,7 +206,7 @@ In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
-(see {{Section 8 of RFC9000}}). The Destination Connection ID is used
+(see {{Section 8 of QUIC-TRANSPORT}}). The Destination Connection ID is used
 to associate a packet to a packet number space that is used on a valid path. Further, the
 sequence number of Destination Connection ID is used as numerical identifier
 in control frames. E.g. an endpoint sends a PATH_ABANDON frame to request its peer to
