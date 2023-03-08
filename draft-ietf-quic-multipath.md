@@ -912,7 +912,7 @@ the receiving endpoint may not be able to associate the packet to
 an existing path and will therefore consider this as a new path.
 This leads to an inconsistent view of open paths at both peers,
 however, as the "old" path will not work anymore, it will be silently
-closed after the idle timeout expires. 
+closed after the idle timeout expires.
 
 
 # New Frames {#frames}
