@@ -1028,10 +1028,6 @@ If an endpoint receives an ACK_MP frame with a Connection ID sequence
 number which was never issued (i.e., with a sequence number
 larger than the largest one advertised), it MUST treat this as a connection
 error of type MP_PROTOCOL_VIOLATION and close the connection.
-If an endpoint receives an ACK_MP frame with a Connection ID sequence
-number which is no more active (e.g., retired by a RETIRE_CONNECTION_ID
-frame or belonging to closed paths), it MUST ignore the ACK_MP frame
-without causing a connection error.
 
 
 # Error Codes {#error-codes}
