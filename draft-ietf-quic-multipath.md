@@ -897,7 +897,7 @@ networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
 performs path validation (see {{Section 9 of QUIC-TRANSPORT}}).
 If the path validation process succeeds, the endpoints need to reset
-their congestion controller and round-trip time estimator for he new
+their congestion controller and round-trip time estimator for the new
 path as specficied in  {{Section 9.4 of QUIC-TRANSPORT}}.
 
 {{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
