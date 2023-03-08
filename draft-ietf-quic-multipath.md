@@ -887,7 +887,7 @@ on each of these paths before the idle timeout expires.
 ## Connection ID Changes and NAT Rebindings
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
-can change the connection ID it uses for to another available one
+can change the Connection ID it uses for to another available one
 at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint will keep the same congestion control and RTT measurement state.
