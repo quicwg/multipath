@@ -391,7 +391,7 @@ acknowledged.
 The receiver of a PATH_ABANDON frame SHOULD NOT release its resources
 immediately, but SHOULD wait for at least three times the current
 Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}
-after the last time a packet with the corresponding CID or until it receives
+after receive of the PATH_ABANDON frame or until it receives
 a RETIRE_CONNECTION_ID frame for that CID, whichever happens sooner.
 
 Similarly, an endpoint SHOULD wait for three PTOs after the last sent packet
