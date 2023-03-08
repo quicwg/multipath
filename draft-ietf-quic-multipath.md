@@ -894,7 +894,7 @@ In this case the server performs path validation (see {{Section 9 of QUIC-TRANSP
 Moreover, {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses for a peer to another available one
 at any time during the connection. As such a sole change of the Connection
-ID without any change in the address does indiacte a path. 
+ID without any change in the address does not indicate a new change. 
 
 If an endpoint uses a new Connection ID after an idle period
 and a NAT binding leads to a 4-tuple changes on the same packet,
