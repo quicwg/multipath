@@ -582,6 +582,13 @@ This also means that the same packet number can occur on each path and the
 packet number is not a unique identifier anymore. This requires changes to
 the ACK frame as well as packet protection as described in the following subsections.
 
+When multipath is negotiated,
+each destination connection ID is linked to a separate packet number space.
+When an existing path switches to a new CID or a new CID is used to open a new path,
+the largest packet number (largest_acked) that has been acknowledged by the
+peer in this new CID's packet number space SHOULD be reset to "None"
+for packet number encodings, as specified in ({{Section A.2 of QUIC-TRANSPORT}}).
+
 ## Sending Acknowledgements
 
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
