@@ -375,8 +375,8 @@ Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 ### Use PATH_ABANDON Frame to Close a Path {#path-abandon-close}
 
 Both endpoints, namely the client and the server, can initiate path closure,
-by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
-which requests the peer to stop sending packets with the corresponding Destination Connection ID.
+by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
+requests the peer to stop sending packets with the corresponding Destination Connection ID.
 The PATH_ABANDON frame contains the Destination Connection
 ID Sequence Number and therefore can be sent on any path.
 
