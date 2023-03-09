@@ -839,27 +839,21 @@ provides more robust measurements.
 
 The transmission of QUIC packets on a regular QUIC connection is regulated
 by the arrival of data from the application and the congestion control
-scheme. QUIC packets can only be sent when the congestion window of
-at least one path is open.
+scheme. QUIC packets can only be sent when the congestion window is open.
 
 Multipath QUIC implementations also need to include a packet scheduler
 that decides, among the paths whose congestion window is open, the path
-over which the next QUIC packet will be sent. Many factors can influence
-the definition of these algorithms and their precise definition is
-outside the scope of this document. Various packet schedulers have been
-proposed and implemented, notably for Multipath TCP. A companion draft
-{{I-D.bonaventure-iccrg-schedulers}} provides several general-purpose
-packet schedulers depending on the application goals.
+over which the next QUIC packet will be sent. Most frames, including
+control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
+exceptions), can be sent and received on any active path. The scheduling
+is a local choice, based on the preferences of the application and the
+implementation.
 
-Note that the receiver could use a different scheduling strategy to send
-ACK(_MP) frames. The recommended default behaviour consists in sending
-ACK(_MP) frames on the path they acknowledge packets. Other scheduling
-strategies, such as sending ACK(_MP) frames on the lowest latency
-path, might be considered, but they could impact the sender with side
-effects on, e.g., the RTT estimation or the congestion control scheme.
-When adopting such asymetrical acknowledgment scheduling, the receiver
-should at least ensure that the sender negotiated one-way delay
-calculation mechanism (e.g., [QUIC-Timestamp]).
+Note that this implies that an endpoint may send and receive ACK_MP
+frames on a path different from the one that carried the acknowledged
+packets. A reasonable default consists in sending ACK_MP frames on the
+path they acknowledge packets, but the receiver must not assume its
+peer will do so.
 
 ## Retransmissions
 
