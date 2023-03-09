@@ -584,10 +584,10 @@ the ACK frame as well as packet protection as described in the following subsect
 
 When multipath is negotiated,
 each Destination Connection ID is linked to a separate packet number space.
-When an existing path switches to a new CID or a new CID is used to open a new path,
+Each CID-specific packet number space starts at packet number 0. When following
+the packet number encoding algorithm described in {{Section A.2 of QUIC-TRANSPORT}},
 the largest packet number (largest_acked) that has been acknowledged by the
-peer in this new CID's packet number space SHOULD be reset to "None"
-for packet number encodings, as specified in ({{Section A.2 of QUIC-TRANSPORT}}).
+peer in this new CID's packet number space is initially set to "None".
 
 ## Sending Acknowledgements
 
