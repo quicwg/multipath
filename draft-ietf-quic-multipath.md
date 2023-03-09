@@ -176,13 +176,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 capitals, as shown here.
 
 We assume that the reader is familiar with the terminology used in
-{{QUIC-TRANSPORT}}. In addition, we define the following term:
-
-- Path: refers to the 4-tuple {source IP address, source port number,
-  destination IP address, destination port number}. A path refers to
-  "network path" used in {{QUIC-TRANSPORT}}. Endpoints identify a path
-  by the sequence number of the Destination Connection ID they use over
-  that path.
+{{QUIC-TRANSPORT}}. When this document uses the term "path", it refers
+to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
 # High-level overview {#overview}
 
