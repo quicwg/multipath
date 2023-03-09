@@ -449,9 +449,9 @@ PATH_CHALLENGE arrives in a packet using a non-zero length Connection ID.
 
 Receiving a RETIRE_CONNECTION_ID frame causes an endpoint to discard
 the resources associated with that Connection ID. Specifically, the endpoint
-should not use the sequence number of the retired connection ID anymore in
+should not use the sequence number of the retired Connection ID anymore in
 any control frames, as the peer will not be able to associate those frames to
-a path and will therefore ingore them. This means an endpoint is also not required
+a path and will therefore ignore them. This means an endpoint is also not required
 to acknowledge any late packets carrying that Connection ID and, hence,
 it can remove the list of received packets used to send acknowledgements after
 receiving the RETIRE_CONNECTION_ID frame.
@@ -473,7 +473,7 @@ as PATH_ABANDON or PATH_STATUS.
 
 If the peer cannot send on a path and no data is received on the path, the idle time-out will close
 the path. If, before the idle timer expires, a new Connection ID gets issued
-by its peer over another path, the endpoint can re-activate the path by
+by its peer, the endpoint can re-activate the path by
 sending a packet with a new Connection ID on that path.
 
 If the sender retires a Connection ID that is still used by
