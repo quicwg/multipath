@@ -583,7 +583,7 @@ packet number is not a unique identifier anymore. This requires changes to
 the ACK frame as well as packet protection as described in the following subsections.
 
 When multipath is negotiated,
-each destination connection ID is linked to a separate packet number space.
+each Destination Connection ID is linked to a separate packet number space.
 When an existing path switches to a new CID or a new CID is used to open a new path,
 the largest packet number (largest_acked) that has been acknowledged by the
 peer in this new CID's packet number space SHOULD be reset to "None"
