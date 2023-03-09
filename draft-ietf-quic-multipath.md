@@ -405,7 +405,7 @@ the path is or will be not usable anymore, e.g. in case of a mobility
 event. The PATH_ABANDON frame therefore recommends to the receiver
 that no packets should be sent on that path anymore.
 In addition, the RETIRE_CONNECTION_ID frame is used indicate to the receiving peer
-that the sender does not intend to send any packets assiciated to the
+that the sender will not send any packets associated to the
 Connection ID used on that path anymore.
 The receiver of an PATH_ABANDON frame MAY also send
 an PATH_ABANDON frame to indicate its own unwillingness to receive
