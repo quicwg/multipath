@@ -407,8 +407,8 @@ that no packets should be sent on that path anymore.
 In addition, the RETIRE_CONNECTION_ID frame is used indicate to the receiving peer
 that the sender will not send any packets associated to the
 Connection ID used on that path anymore.
-The receiver of an PATH_ABANDON frame MAY also send
-an PATH_ABANDON frame to indicate its own unwillingness to receive
+The receiver of a PATH_ABANDON frame MAY also send
+a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
 PATH_ABANDON frames can be sent on any path,
