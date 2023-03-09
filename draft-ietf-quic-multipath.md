@@ -384,9 +384,6 @@ Both endpoints, namely the client and the server, can close a path,
 by sending PATH_ABANDON frame (see {{path-abandon-frame}}) which
 abandons the path with a corresponding Path Identifier.
 
-The endpoint sending the PATH_ABANDON frame can consider a path as
-abandoned when the packet that contained the PATH_ABANDON frame is
-acknowledged.
 
 The receiver of a PATH_ABANDON frame should not release its resources
 immediately, but SHOULD wait for at least three times the current
