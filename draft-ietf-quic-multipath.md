@@ -110,8 +110,7 @@ Connection IDs in both directions.
 address as well as source and destination port. Therefore, there can be
 at most one active paths/connection ID per 4-tuple.
   * If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration event and not
-as a new path.
+due to a NAT rebinding), this is considered as a migration event.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
@@ -975,6 +974,37 @@ Some applications may wish to ensure that one path remains active, while others 
 two or more active paths during the connection lifetime. Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
+
+## Connection ID Changes and NAT Rebindings
+
+{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the Connection ID it uses for to another available one
+at any time during the connection. As such a sole change of the Connection
+ID without any change in the address does not indicate a path change and
+the endpoint can keep the same congestion control and RTT measurement state.
+
+While endpoints assign a Connection ID to a specific sending 4-tuple,
+networks events such as NAT rebinding may make the packet's receiver
+observe a different 4-tuple. Servers observing a 4-tuple change will
+performs path validation (see {{Section 9 of QUIC-TRANSPORT}}).
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
+
+{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
+a peer address if that address has been seen recently. However, when the
+multipath extension is used and an endpoint has multiple addresses that
+could lead to switching between different paths, it should rather maintain
+multiple open paths instead.
+
+If an endpoint uses a new Connection ID after an idle period
+and a NAT rebinding leads to a 4-tuple changes on the same packet,
+the receiving endpoint may not be able to associate the packet to
+an existing path and will therefore consider this as a new path.
+This leads to an inconsistent view of open paths at both peers,
+however, as the "old" path will not work anymore, it will be silently
+closed after the idle timeout expires.
+
 
 # New Frames {#frames}
 
