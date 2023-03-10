@@ -436,15 +436,36 @@ is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
 ### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
-Receiving a RETIRE_CONNECTION_ID frame causes the endpoint to discard
-the resources associated with that connection ID. If the connection ID
-was used by the peer to identify a path from the peer to this endpoint,
-the resources include the list of received packets used to send
-acknowledgements. The peer MAY decide to keep sending data using
-the same IP addresses and UDP ports previously associated with
-the connection ID, but MUST use a different connection ID when doing so.
+Receiving a RETIRE_CONNECTION_ID frame causes an endpoint to discard
+the resources associated with that Connection ID. Specifically, the endpoint
+should not use the sequence number of the retired Connection ID anymore in
+any control frames, as the peer will not be able to associate those frames to
+a path and will therefore ignore them. This means an endpoint is also not required
+to acknowledge any late packets carrying that Connection ID and, hence,
+it can remove the list of received packets used to send acknowledgements after
+receiving the RETIRE_CONNECTION_ID frame.
 
-Note that if the sender retires a Connection ID that is still used by
+The peer, that sent RETIRE_CONNECTION_ID frame, can keep sending data using
+the same IP addresses and UDP ports previously associated with
+that Connection ID, but MUST use a different connection ID when doing so.
+If no new connection ID is available anymore, the endpoint cannot send on
+this path. This can happen if, e.g., the Connection ID issuer requests retirement of a
+Connection ID using the Retire Prior To field in the NEW_CONNECTION_ID frame but does
+provide sufficient new CIDs.
+
+Note that even if a peer cannot send on a path anymore because it does not have
+a valid Connection ID to use, it can still acknowledge packets received on the path,
+by sending ACK_MP frames on another path, if available. But also note that,
+as there is no valid CID associated with the path, the other end cannot send
+multipath control frames that contain the sequence number of a Connection ID, such
+as PATH_ABANDON or PATH_STATUS.
+
+If the peer cannot send on a path and no data is received on the path, the idle time-out will close
+the path. If, before the idle timer expires, a new Connection ID gets issued
+by its peer, the endpoint can re-activate the path by
+sending a packet with a new Connection ID on that path.
+
+If the sender retires a Connection ID that is still used by
 in-flight packets, it may receive ACK_MP frames referencing the retired
 Connection ID. If the sender stops tracking sent packets with retired
 Connection ID, these would be spuriously marked as lost. To avoid such
