@@ -890,15 +890,15 @@ on each of these paths before the idle timeout expires.
 can change the Connection ID it uses for to another available one
 at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
-the endpoint will keep the same congestion control and RTT measurement state.
+the endpoint can keep the same congestion control and RTT measurement state.
 
 While endpoints assign a Connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
 performs path validation (see {{Section 9 of QUIC-TRANSPORT}}).
-If the path validation process succeeds, the endpoints need to reset
-their congestion controller and round-trip time estimator for the new
-path as specficied in  {{Section 9.4 of QUIC-TRANSPORT}}.
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
 
 {{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
 a peer address if that address has been seen recently. However, when the
