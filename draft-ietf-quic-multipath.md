@@ -1012,6 +1012,11 @@ This leads to an inconsistent view of open paths at both peers,
 however, as the "old" path will not work anymore, it will be silently
 closed after the idle timeout expires.
 
+If an endpoint receives a PATH_CHALLENGE frame with a new CID on a existing path
+and did not receive a RETIRED_CONNECTION_ID frame for the old CID yet,
+it can send an PATH_ABANDON frame for that CID in order to indicate
+that the "old" path is not usable anymore.
+
 
 # New Frames {#frames}
 
