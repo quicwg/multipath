@@ -964,6 +964,12 @@ If an endpoint receives multipath-specific frames from packets of
 other encryption levels, it MUST return MP_PROTOCOL_VIOLATION
 as a connection error and close the connection.
 
+All these multipath-specific frames relate to a Destination Connection
+ID sequence number. If an endpoint receives a multipath-specific frame
+with a Destination Connection ID sequence number that it cannot process
+anymore (e.g., because the Connection ID might have been retired), it
+MUST silently ignore the frame.
+
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
 The PATH_ABANDON frame informs the peer to abandon a
