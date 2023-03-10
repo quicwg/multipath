@@ -773,7 +773,7 @@ Client                                                      Server
 As stated in {{introduction}}, when multipath is negotiated, each
 Destination Connection ID is linked to a separate packet number space.
 This a big difference between implementations of QUIC as specified in
-RFC 9000, which only have to manage three number spaces for Initial,
+{{QUIC-TRANSPORT}}, which only have to manage three number spaces for Initial,
 Handshake and Application packets.
 
 Implementation of multipath capable QUIC will need to carefully
