@@ -846,7 +846,7 @@ that decides, among the paths whose congestion window is open, the path
 over which the next QUIC packet will be sent. Most frames, including
 control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
 exceptions), can be sent and received on any active path. The scheduling
-is a local choice, based on the preferences of the application and the
+is a local decision, based on the preferences of the application and the
 implementation.
 
 Note that this implies that an endpoint may send and receive ACK_MP
