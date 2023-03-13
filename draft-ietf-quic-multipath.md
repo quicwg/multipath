@@ -373,7 +373,7 @@ Both endpoints, namely the client and the server, can initiate path closure,
 by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
 requests the peer to stop sending packets with the corresponding Destination Connection ID.
 
-The receiver of a PATH_ABANDON frame should not release its resources
+The sender and receiver of a PATH_ABANDON frame should not release its resources
 immediately, but SHOULD wait for at least three times the current
 Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}
 after the last sent packet before sending the RETIRE_CONNECTION_ID frame
