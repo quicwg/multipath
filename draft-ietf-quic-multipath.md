@@ -53,11 +53,11 @@ normative:
   RFC2119:
   QUIC-TRANSPORT: rfc9000
   QUIC-TLS: rfc9001
+  QUIC-RECOVERY: rfc9002
 
 informative:
   RFC6356:
   I-D.bonaventure-iccrg-schedulers:
-  QUIC-RECOVERY: rfc9002
   QUIC-Invariants: rfc8999
   QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
@@ -371,58 +371,45 @@ Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 Both endpoints, namely the client and the server, can initiate path closure,
 by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
 requests the peer to stop sending packets with the corresponding Destination Connection ID.
-The PATH_ABANDON frame contains the Destination Connection
-ID Sequence Number and therefore can be sent on any path.
 
-Once a path is
-marked as "abandoned", it means that the resources related to the path,
-such as the used connection IDs, can be released.
-However, information related to data delivered over that path SHOULD
-not be released immediately as acknowledgments can still be received
-or other frames that also may trigger retransmission of data on another
-path.
-
-The endpoint sending the PATH_ABANDON frame SHOULD consider a path as
-abandoned when the packet that contained the PATH_ABANDON frame is
-acknowledged. When releasing resources of a path, the endpoint SHOULD
-send a RETIRE_CONNECTION_ID frame for the connection IDs used on the path,
-if any.
-
-The receiver of a PATH_ABANDON frame SHOULD NOT release its resources
-immediately, but SHOULD wait for the reception of the RETIRE_CONNECTION_ID
-frame for the used connection IDs or 3 RTOs.
+The sender and receiver of a PATH_ABANDON frame should not release its resources
+immediately, but SHOULD wait for at least three times the current
+Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}
+after the last sent packet before sending the RETIRE_CONNECTION_ID frame
+for the corresponding CID.
+This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
+to ensure that paths close cleanly and that delayed or reordered packets
+are properly discarded.
+The effect of receiving a RETIRE_CONNECTION_ID frame is specified in the
+next section.
 
 Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
 the path is or will be not usable anymore, e.g. in case of a mobility
-event. The PATH_ABANDON frame therefore indicates to the receiving peer
-that the sender does not intend to send any packets on that path anymore
-but also recommends to the receiver that no packets should be sent in
-either direction. The receiver of an PATH_ABANDON frame MAY also send
-an PATH_ABANDON frame to signal its own willingness to not send
+event. The PATH_ABANDON frame therefore recommends to the receiver
+that no packets should be sent on that path anymore.
+In addition, the RETIRE_CONNECTION_ID frame is used indicate to the receiving peer
+that the sender will not send any packets associated to the
+Connection ID used on that path anymore.
+The receiver of a PATH_ABANDON frame MAY also send
+a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
-If connection IDs are used, PATH_ABANDON frames can be sent on any path,
+PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
-If no connection IDs are used and the PATH_ABANDON frame has to send
-on the path that is intended to be closed, it is possible that the packet
-containing the PATH_ABANDON frame or the packet containing the ACK
-for the PATH_ABANDON frame cannot be received anymore and the endpoint
-might need to rely on an idle time out to close the path, as described
-in {{idle-time-close}}.
 
 Retransmittable frames, that have previously been sent on the abandoned
-path and are considered lost, SHOULD be retransmitted on a different
+path and are considered lost, will be retransmitted on a different
 path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
-and enters the closing state. If the client received a PATH_ABANDON
+and enter the closing state. If the client received a PATH_ABANDON
 frame for the last open path, it MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly
-the server MAY wait for a short, limited time such as one RTO if a path
+the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
