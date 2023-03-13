@@ -521,7 +521,7 @@ after a spurious estimate of path abandonment by the client.
  |   Closing  |                                  |
  +------------+                                  |
        |                                         |
-       | RETIRE_CONNECTION_ID sent/received      |
+       | RETIRE_CONNECTION_ID sent && received   |
        | or                                      |
        | Path's draining timeout                 |
        | (at least 3 PTO)                        |
