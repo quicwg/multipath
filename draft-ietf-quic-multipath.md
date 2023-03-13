@@ -965,7 +965,10 @@ other encryption levels, it MUST return MP_PROTOCOL_VIOLATION
 as a connection error and close the connection.
 
 All multipath-specific frames relate to a Destination Connection
-ID sequence number. If an endpoint receives a multipath-specific frame
+ID sequence number. If an endpoint receives a Destination Connection ID
+sequence number greater than any previously sent to the peer, it MUST
+treat this as a connection error of type MP_PROTOCOL_VIOLATION. If an
+endpoint receives a multipath-specific frame
 with a Destination Connection ID sequence number that it cannot process
 anymore (e.g., because the Connection ID might have been retired), it
 MUST silently ignore the frame.
@@ -1109,11 +1112,6 @@ field is added.
 Destination Connection ID Sequence Number:
 : The sequence number of the Connection ID identifying the packet number
   space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
-
-If an endpoint receives an ACK_MP frame with a Connection ID sequence
-number which was never issued (i.e., with a sequence number
-larger than the largest one advertised), it MUST treat this as a connection
-error of type MP_PROTOCOL_VIOLATION and close the connection.
 
 
 # Error Codes {#error-codes}
