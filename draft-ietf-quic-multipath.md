@@ -839,8 +839,8 @@ provides more robust measurements.
 
 The transmission of QUIC packets on a regular QUIC connection is regulated
 by the arrival of data from the application and the congestion control
-scheme. QUIC packets can only be sent when the congestion window is open.
-QUIC packets that increase the number of bytes in flight can only be sent when the congestion window is open.
+scheme. QUIC packets that increase the number of bytes in flight can only be sent
+when the congestion window allows it.
 Multipath QUIC implementations also need to include a packet scheduler
 that decides, among the paths whose congestion window is open, the path
 over which the next QUIC packet will be sent. Most frames, including
