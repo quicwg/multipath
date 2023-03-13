@@ -1018,12 +1018,41 @@ with a Destination Connection ID sequence number that it cannot process
 anymore (e.g., because the Connection ID might have been retired), it
 MUST silently ignore the frame.
 
+## ACK_MP Frame {#ack-mp-frame}
+
+The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
+is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
+used to acknowledge packets that were sent on different paths using
+multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
+also contain the sum of QUIC packets with associated ECN marks received
+on the connection up to this point.
+
+ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
+
+~~~
+  ACK_MP Frame {
+    Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
+    Destination Connection ID Sequence Number (i),
+    Largest Acknowledged (i),
+    ACK Delay (i),
+    ACK Range Count (i),
+    First ACK Range (i),
+    ACK Range (..) ...,
+    [ECN Counts (..)],
+  }
+~~~
+{: #fig-ack-mp-format title="ACK_MP Frame Format"}
+
+Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
+field is added.
+
+Destination Connection ID Sequence Number:
+: The sequence number of the Connection ID identifying the packet number
+  space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
+
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
-The PATH_ABANDON frame informs the peer to abandon a
-path. More complex path management can
-be made possible with additional extensions (e.g., PATH_STATUS frame in
-{{?I-D.liu-multipath-quic}} ).
+The PATH_ABANDON frame informs the peer to abandon a path.
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
@@ -1064,10 +1093,6 @@ Reason Phrase:
 
 PATH_ABANDON frames SHOULD be acknowledged. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
-
-PATH_ABANDON frames MAY be sent
-on any path, not only the path on which the referenced Destination
-Connection ID is used.
 
 ## PATH_STATUS frame {#path-status-frame}
 
@@ -1124,39 +1149,6 @@ PATH_STATUS frames SHOULD be acknowledged. If a packet containing
 a PATH_STATUS frame is considered lost, the peer should only repeat it
 if it was the last status sent for that path -- as indicated by
 the sequence number.
-
-
-## ACK_MP Frame {#ack-mp-frame}
-
-The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
-is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
-used to acknowledge packets that were sent on different paths using
-multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
-also contain the sum of QUIC packets with associated ECN marks received
-on the connection up to this point.
-
-ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
-
-~~~
-  ACK_MP Frame {
-    Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
-    Destination Connection ID Sequence Number (i),
-    Largest Acknowledged (i),
-    ACK Delay (i),
-    ACK Range Count (i),
-    First ACK Range (i),
-    ACK Range (..) ...,
-    [ECN Counts (..)],
-  }
-~~~
-{: #fig-ack-mp-format title="ACK_MP Frame Format"}
-
-Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
-field is added.
-
-Destination Connection ID Sequence Number:
-: The sequence number of the Connection ID identifying the packet number
-  space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
 
 
 # Error Codes {#error-codes}
