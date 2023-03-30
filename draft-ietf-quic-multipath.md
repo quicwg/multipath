@@ -98,9 +98,6 @@ This proposal is based on several basic design points:
 particular, this proposal uses path validation as specified for QUIC
 version 1 and aims to re-use as much as possible of QUIC's connection
 migration.
-  * Use the same packet header formats as QUIC version 1 to avoid the
-risk of packets being dropped by middleboxes (which may only support
-QUIC version 1)
   * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
 which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
