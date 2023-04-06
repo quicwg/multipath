@@ -915,7 +915,7 @@ the new values. There is however an exception: some congestion
 control functions rely on estimates of the minimum RTT. It might be prudent
 for nodes to remember the path over which the ACK MP that produced
 the minimum RTT was received, and to restart the minimum RTT computation
-if that path is abandoned. 
+if that path is abandoned.
 
 ## Packet Scheduling
 
@@ -938,7 +938,7 @@ the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of ACK_MP frames. The estimates will converge
 faster if the scheduling strategy is stable, but besides that
 implementations can choose between multiple strategies such as sending
-ACK_MP frames on the path they acknowledge packets, or sending 
+ACK_MP frames on the path they acknowledge packets, or sending
 ACK_MP frames on the shortest path, which results in shorter control loops
 and thus better performance.
 
