@@ -889,31 +889,33 @@ Terrestrial | 100ms  | 350ms
 Satellite   | 350ms  | 600ms
 {: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
 
-Using the default algorithm specified in {{QUIC-RECOVERY}} would result
-in suboptimal performance, computing average RTT and standard
-deviation from series of different delay measurements of different
-combined paths.  At the same time, early tests showed that it is
-desirable to send ACKs through the shortest path because a shorter
-ACK delay results in a tighter control loop and better performances.
-The tests also showed that it is desirable to send copies of the ACKs
-on multiple paths, for robustness if a path experiences sudden losses.
+The ACK_MP frames describe packets that were sent on the specified path,
+but they may be received through any available path. There is an
+understandable concern that if successive acknowledgements are received
+on different paths, the measured RTT samples will fluctuate widely,
+and that might result in poor performance. In fact, this concern is
+probably not justified.
 
-An early implementation mitigated the delay variation issue by using
-time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
-are present, the implementation can estimate the transmission delay
-on each one-way path, and can then use these one way delays for more
-efficient implementations of recovery and congestion control
-algorithms.
+The computed values reflect both the state of the network path and the
+scheduling decisions by the sender of the ACK_MP frames. In the example
+above, we may assume that the ACK_MP will be sent over the terrestrial
+link, because that provides the best response time. In that case, the
+computed RTT value for the satellite path will be about 350ms. This
+lower than the 600ms that would be measured if the ACK_MP came over
+the satellite channel, but it is still the right value for computing
+for example the PTO timeout: if an ACK_MP is not received after more
+than 350ms, either the data packet or its ACK_MP were probably lost.
 
-If timestamps are not available, implementations could estimate one
-way delays using statistical techniques.  For example, in the example
-shown in Table 1, implementations can use "same path"
-measurements to estimate the one way delay of the terrestrial path to
-about 50ms in each direction, and that of the satellite path to about
-300ms.  Further measurements can then be used to maintain estimates
-of one way delay variations, using logical similar to Kalman filters.
-But statistical processing is error-prone, and using time stamps
-provides more robust measurements.
+In general, using the algorithm above will provide good results,
+except if the set of path changes and the ACK_MP sender
+revisits its sending preferences. This is not very
+different from what happens on a single path if the routing changes,
+and the RTT, RTT variance and PTO estimates will rapidly converge to
+the new values. There is however an exception: some congestion
+control functions rely on estimates of the minimum RTT. It might be prudent
+for nodes to remember the path over which the ACK MP that produced
+the minimum RTT was received, and to restart the minimum RTT computation
+if that path is abandoned. 
 
 ## Packet Scheduling
 
@@ -931,9 +933,14 @@ implementation.
 
 Note that this implies that an endpoint may send and receive ACK_MP
 frames on a path different from the one that carried the acknowledged
-packets. A reasonable default consists in sending ACK_MP frames on the
-path they acknowledge packets, but the receiver must not assume its
-peer will do so.
+packets. As noted in {{compute-rtt}} the values computed using
+the standard algorithm reflect both the characteristics of the
+path and the scheduling algorithm of ACK_MP frames. The estimates will converge
+faster if the scheduling strategy is stable, but besides that
+implementations can choose between multiple strategies such as sending
+ACK_MP frames on the path they acknowledge packets, or sending 
+ACK_MP frames on the shortest path, which results in shorter control loops
+and thus better performance.
 
 ## Retransmissions
 
