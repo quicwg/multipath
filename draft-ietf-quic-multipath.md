@@ -263,7 +263,7 @@ The transport parameter "active_connection_id_limit"
 limits the number of concurrent paths. However, unless NAT rebinding
 ({{Section 7.8. of QUIC-TRANSPORT}}) is a nonconcern, endpoints SHOULD
 refrain from using all available Connection IDs to actively open
-additional paths. This is because spare Connection IDs are need to
+additional paths. This is because spare Connection IDs are needed to
 respond to unintentional migration events.
 
 
