@@ -260,9 +260,11 @@ preferred_address transport parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
 
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
-limits the number of concurrent paths. For the QUIC multipath extension
-this limit even applies when no connection ID is exposed in the QUIC
-header.
+limits the number of concurrent paths. However, unless NAT rebinding
+({{Section 7.8. of QUIC-TRANSPORT}}) is a nonconcern, endpoints SHOULD
+refrain from using all available Connection IDs to actively open
+additional paths. This is because spare Connection IDs are need to
+respond to unintentional migration events.
 
 
 # Path Setup and Removal {#setup}
