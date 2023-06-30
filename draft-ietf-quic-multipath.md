@@ -998,7 +998,7 @@ All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
 use other encryption levels.
 
 If an endpoint receives multipath-specific frames from packets of
-other encryption levels, it MUST return MP_PROTOCOL_VIOLATION
+other encryption levels, it MUST return FRAME_ENCODING_ERROR
 as a connection error and close the connection.
 
 All multipath-specific frames relate to a Destination Connection
