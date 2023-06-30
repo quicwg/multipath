@@ -397,10 +397,6 @@ PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
 
-Retransmittable frames, that have previously been sent on the abandoned
-path and are considered lost, will be retransmitted on a different
-path.
-
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. If the client received a PATH_ABANDON
