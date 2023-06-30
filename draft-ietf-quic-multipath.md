@@ -337,7 +337,7 @@ PATH_STATUS frame describes 2 kinds of path states:
 Endpoints use Destination Connection ID Sequence Number field
 in PATH_STATUS frame to identify which path state is going to be
 changed. Notice that PATH_STATUS frame
-can be sent via a different path. 
+can be sent via a different path.
 
 If all available path are marked as "standby", no guidance is provided about
 which path should be used preferably, however, the sender might consider
