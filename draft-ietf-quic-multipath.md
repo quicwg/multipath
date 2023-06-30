@@ -1021,7 +1021,7 @@ is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
 used to acknowledge packets that were sent on different paths using
 multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
 also contain the sum of QUIC packets with associated ECN marks received
-on the connection up to this point.
+on the acknowledged packet number space up to this point.
 
 ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 
@@ -1044,7 +1044,8 @@ field is added.
 
 Destination Connection ID Sequence Number:
 : The sequence number of the Connection ID identifying the packet number
-  space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
+  space of the 0-RTT and 1-RTT packets which are acknowledged by the ACK_MP
+  frame.
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
@@ -1087,7 +1088,7 @@ Reason Phrase:
   that would aid comprehension by any entity other than the one
   that created the text.
 
-PATH_ABANDON frames SHOULD be acknowledged. If a packet containing
+PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 ## PATH_STATUS frame {#path-status-frame}
@@ -1141,10 +1142,10 @@ for the same Destination Connection ID Sequence Number with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.
 
-PATH_STATUS frames SHOULD be acknowledged. If a packet containing
-a PATH_STATUS frame is considered lost, the peer should only repeat it
-if it was the last status sent for that path -- as indicated by
-the sequence number.
+PATH_STATUS frames are ack-eliciting. If a packet containing a
+PATH_STATUS frame is considered lost, the peer SHOULD resend the frame
+only if it contains the last status sent for that path -- as indicated
+by the sequence number.
 
 
 # Error Codes {#error-codes}
