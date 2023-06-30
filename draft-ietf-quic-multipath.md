@@ -1042,7 +1042,8 @@ field is added.
 
 Destination Connection ID Sequence Number:
 : The sequence number of the Connection ID identifying the packet number
-  space of the 1-RTT packets which are acknowledged by the ACK_MP frame.
+  space of the 0-RTT and 1-RTT packets which are acknowledged by the ACK_MP
+  frame.
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
