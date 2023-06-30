@@ -1017,7 +1017,7 @@ is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
 used to acknowledge packets that were sent on different paths using
 multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
 also contain the sum of QUIC packets with associated ECN marks received
-on the connection up to this point.
+on the acknowledged packet number space up to this point.
 
 ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 
