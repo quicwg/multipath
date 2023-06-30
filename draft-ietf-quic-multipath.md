@@ -541,9 +541,14 @@ send path control information and specifically acknowledge packets belonging to 
 packet number space.
 
 A path in the "Validating" state performs path validation as described
-in {{Section 8.2 of QUIC-TRANSPORT}}. An endhost should not send
+in {{Section 8.2 of QUIC-TRANSPORT}}. An endhost SHOULD NOT send
 non-probing frames on a path in "Validating" state, as it has no
-guarantee that packets will actually reach the peer.
+guarantee that packets will actually reach the peer, with an exception
+of the ACK_MP frame. An endhost MAY bundle the ACK_MP frame with the 
+PATH_RESPONSE frame; in this case it is RECOMMANDED to consider
+the acknowledgement information as opportunistic and repeat
+the acknowledged pacjet ranges in the next ACK_MP frame.
+Alternatively ACK_MP frames can be sent any other active path.
 
 The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
