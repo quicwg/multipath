@@ -544,7 +544,7 @@ A path in the "Validating" state performs path validation as described
 in {{Section 8.2 of QUIC-TRANSPORT}}. An endhost SHOULD NOT send
 non-probing frames on a path in "Validating" state, as it has no
 guarantee that packets will actually reach the peer, with an exception
-of the ACK_MP frame. An endhost MAY bundle the ACK_MP frame with the 
+of the ACK_MP frame. An endhost MAY bundle the ACK_MP frame with the
 PATH_RESPONSE frame; in this case it is RECOMMANDED to consider
 the acknowledgement information as opportunistic and repeat
 the acknowledged pacjet ranges in the next ACK_MP frame.
