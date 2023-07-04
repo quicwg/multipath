@@ -229,8 +229,7 @@ defined as follows:
   a zero-length value.
 
 If any of the endpoints does not advertise the enable_multipath transport
-parameter, then the endpoints MUST fallback to {{QUIC-TRANSPORT}} with
-a single active path and MUST NOT use any frame or
+parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
 When advertising the enable_multipath transport parameter, the endpoint
