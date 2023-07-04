@@ -907,7 +907,7 @@ for example the PTO timeout: if an ACK_MP is not received after more
 than 350ms, either the data packet or its ACK_MP were probably lost.
 
 The simplest implementation is to compute smoothedRTT and RTTvar per
-{{section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACKs are
+{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACKs are
 received. This algorithm will provide good results,
 except if the set of paths changes and the ACK_MP sender
 revisits its sending preferences. This is not very
