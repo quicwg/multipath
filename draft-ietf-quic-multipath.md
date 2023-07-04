@@ -906,12 +906,15 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if an ACK_MP is not received after more
 than 350ms, either the data packet or its ACK_MP were probably lost.
 
-In general, using the algorithm above will provide good results,
-except if the set of path changes and the ACK_MP sender
+The simplest implementation is to compute smoothedRTT and RTTvar per
+{{section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACKs are
+received. This algorithm will provide good results,
+except if the set of paths changes and the ACK_MP sender
 revisits its sending preferences. This is not very
-different from what happens on a single path if the routing changes,
-and the RTT, RTT variance and PTO estimates will rapidly converge to
-the new values. There is however an exception: some congestion
+different from what happens on a single path if the routing changes.
+The RTT, RTT variance and PTO estimates will rapidly converge to
+reflect the new conditions.
+There is however an exception: some congestion
 control functions rely on estimates of the minimum RTT. It might be prudent
 for nodes to remember the path over which the ACK MP that produced
 the minimum RTT was received, and to restart the minimum RTT computation
