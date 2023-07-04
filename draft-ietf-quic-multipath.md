@@ -1205,4 +1205,4 @@ one of the original proposals are:
 
 # Acknowledgments
 
-TBD
+Thanks to Marten Seemann and Kazuho Oku for their thorough reviews and valuable contributions!
