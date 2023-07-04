@@ -994,11 +994,10 @@ closed after the idle timeout expires.
 
 # New Frames {#frames}
 
-All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
-use other encryption levels.
+All the new frames MUST only be sent in 1-RTT packet.
 
-If an endpoint receives multipath-specific frames from packets of
-other encryption levels, it MUST return MP_PROTOCOL_VIOLATION
+If an endpoint receives multipath-specific frames from other
+types of packets, it MUST return MP_PROTOCOL_VIOLATION
 as a connection error and close the connection.
 
 All multipath-specific frames relate to a Destination Connection
