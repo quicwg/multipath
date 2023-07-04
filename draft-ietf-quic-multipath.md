@@ -262,7 +262,7 @@ The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
 limits the number of concurrent paths.
 
-Cipher suites with nonce size below 12 bytes cannot be used together with
+Cipher suites with nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
 TRANSPORT_PARAMETER error.
