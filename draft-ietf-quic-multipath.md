@@ -622,23 +622,28 @@ the packet number alone would not guarantee the uniqueness of the nonce.
 
 In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
-and with the Destination Connection ID sequence number.
+and with the least significant 32 bits of the Destination Connection ID
+sequence number.
 
 {{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence
 Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification, a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
 
-To calculate the nonce, a 96 bit path-and-packet-number is composed of
-the 32 bit Connection ID Sequence Number in byte order, two zero bits,
-and the 62 bits of the reconstructed QUIC packet number in network byte order.
-If the IV is larger than 96 bits, the path-and-packet-number is
-left-padded with zeros to the size of the IV. The exclusive OR
-of the padded packet number and the IV forms the AEAD nonce.
+To calculate the nonce, a 96 bit path-and-packet-number is composed of the least
+significant 32 bits of the Connection ID Sequence Number in network byte order,
+two zero bits, and the 62 bits of the reconstructed QUIC packet number in
+network byte order. If the IV is larger than 96 bits, the path-and-packet-number
+is left-padded with zeros to the size of the IV. The exclusive OR of the padded
+packet number and the IV forms the AEAD nonce.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the Connection ID Sequence Number is `3`, and the packet number is `aead`,
 the nonce will be set to `6b2611489cba2b63a9e873e2`.
+
+Due to the way the nonce is constructed, cipher suites with nonce size below 12
+bytes MUST NOT be used. Also, endpoints MUST NOT use more than 2^32 Connection
+IDs without a key update.
 
 ## Key Update {#multipath-key-update}
 
