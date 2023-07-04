@@ -95,7 +95,7 @@ connection.
 This proposal is based on several basic design points:
 
   * Re-use as much as possible mechanisms of QUIC version 1. In
-particular, this proposal uses path validation as specified for QUIC
+particular, this proposal uses packet headers and path validation as specified for QUIC
 version 1 and aims to re-use as much as possible of QUIC's connection
 migration.
   * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
