@@ -223,31 +223,20 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- name: enable_multipath (current version uses 0x0f739bbc1b666d04)
-- value: 0 (default) for disabled.
+- enable_multipath (current version uses 0x0f739bbc1b666d05): the
+  enable_multipath transport parameter is included if the endpoint supports
+  the multipath extension as defined in this document. This parameter has
+  a zero-length value.
 
-The valid options for the value field are listed in
-{{param_value_definition}}:
-
-Option | Definition
----------|---------------------------------------
-0x0      | don't support multipath
-0x1      | supports multipath as defined in this document
-{: #param_value_definition title="Available value for enable_multipath"}
-
-If for any one of the endpoints, the parameter is absent or set to 0,
-the endpoints MUST fallback to
-{{QUIC-TRANSPORT}} with single active path and MUST NOT use any frame or
+If any of the endpoints does not advertise the enable_multipath transport
+parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
-If the parameter is set to 1, both endpoints MUST use non-zero connection
-IDs. If an enable_multipath parameter set to 1 is received and the carrying packet
-does not contain a non-zero length connection ID, the receiver MUST treat this as a connection error of type
-TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
-and close the connection.
-
-If endpoint receives an unexpected value for the transport parameter
-"enable_multipath", it MUST treat this as a connection error of type
+When advertising the enable_multipath transport parameter, the endpoint
+MUST use non-zero source and destination connection IDs.
+If an enable_multipath transport
+parameter is received and the carrying packet does not contain a non-zero
+length connection ID, the receiver MUST treat this as a connection error of type
 TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
 and close the connection.
 
@@ -1167,7 +1156,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d04) | enable_multipath  | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d05) | enable_multipath  | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
