@@ -376,8 +376,7 @@ When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
 least three times the current Probe Timeout (PTO) interval as defined in
 {{Section 6.2 of QUIC-RECOVERY}} after the last packet was sent on the path,
 before sending the RETIRE_CONNECTION_ID frame for the corresponding Connection
-ID.
-This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
+ID. This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
 The effect of receiving a RETIRE_CONNECTION_ID frame is specified in the
