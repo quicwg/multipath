@@ -285,7 +285,7 @@ This proposal adds two multipath control frames for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}})
-- PATH_STANDBY and PATH_AVAILABLE frames to express a preference 
+- PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame} and {path-available-frame}}
 
 All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
@@ -327,7 +327,7 @@ Note that the endpoint might not follow the peer’s advertisements,
 but thes frames is still a clear signal of suggestion
 for the preference of path usage by the peer.
 
-PATH_AVAILABLE indiactes that a path as "available", i.e., allow 
+PATH_AVAILABLE indiactes that a path as "available", i.e., allow
 the peer to use its own logic to split traffic among available paths.
 PATH_STANDBY marks a path as "standby", i.e., suggest that no traffic
 should be sent on that path if another path is available.
@@ -1085,8 +1085,8 @@ a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 ## PATH_STANDBY frame {#path-standby-frame}
 
-PATH_STANDBY Frames are used by endpoints to inform the peer 
-about its preference to not use the path associated to 
+PATH_STANDBY Frames are used by endpoints to inform the peer
+about its preference to not use the path associated to
 the Destination Connection IDs in the frame for sending.
 PATH_STANDBY frames are formatted as shown in {{fig-path-standby-format}}.
 
@@ -1129,8 +1129,8 @@ by the sequence number.
 
 ## PATH_AVAILABLE frame {#path-available-frame}
 
-PATH_AVAILABLE Frames are used by endpoints to inform the peer 
-that the path associated to 
+PATH_AVAILABLE Frames are used by endpoints to inform the peer
+that the path associated to
 the Destination Connection IDs in the frame is available for sending.
 PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
