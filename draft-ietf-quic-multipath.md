@@ -98,9 +98,9 @@ This proposal is based on several basic design points:
 particular, this proposal uses path validation as specified for QUIC
 version 1 and aims to re-use as much as possible of QUIC's connection
 migration.
-  * Use the same packet header formats as QUIC version 1 to avoid the
-risk of packets being dropped by middleboxes (which may only support
-QUIC version 1)
+  * Use the same packet header formats as QUIC version 1 to minimize
+    the difference between multipath and non-multipath traffic being
+    exposed on wire.
   * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
 which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
@@ -223,31 +223,20 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- name: enable_multipath (current version uses 0x0f739bbc1b666d04)
-- value: 0 (default) for disabled.
+- enable_multipath (current version uses 0x0f739bbc1b666d05): the
+  enable_multipath transport parameter is included if the endpoint supports
+  the multipath extension as defined in this document. This parameter has
+  a zero-length value.
 
-The valid options for the value field are listed in
-{{param_value_definition}}:
-
-Option | Definition
----------|---------------------------------------
-0x0      | don't support multipath
-0x1      | supports multipath as defined in this document
-{: #param_value_definition title="Available value for enable_multipath"}
-
-If for any one of the endpoints, the parameter is absent or set to 0,
-the endpoints MUST fallback to
-{{QUIC-TRANSPORT}} with single active path and MUST NOT use any frame or
+If any of the endpoints does not advertise the enable_multipath transport
+parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
-If the parameter is set to 1, both endpoints MUST use non-zero connection
-IDs. If an enable_multipath parameter set to 1 is received and the carrying packet
-does not contain a non-zero length connection ID, the receiver MUST treat this as a connection error of type
-TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
-and close the connection.
-
-If endpoint receives an unexpected value for the transport parameter
-"enable_multipath", it MUST treat this as a connection error of type
+When advertising the enable_multipath transport parameter, the endpoint
+MUST use non-zero source and destination connection IDs.
+If an enable_multipath transport
+parameter is received and the carrying packet does not contain a non-zero
+length connection ID, the receiver MUST treat this as a connection error of type
 TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
 and close the connection.
 
@@ -260,7 +249,9 @@ preferred_address transport parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
 
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
-limits the number of concurrent paths.
+limits the number of concurrent paths. However, endpoints might prefer to retain
+spare Connection IDs so that they can respond to unintentional migration events
+({{Section 9.5 of QUIC-TRANSPORT}}).
 
 
 # Path Setup and Removal {#setup}
@@ -370,12 +361,11 @@ Both endpoints, namely the client and the server, can initiate path closure,
 by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
 requests the peer to stop sending packets with the corresponding Destination Connection ID.
 
-The sender and receiver of a PATH_ABANDON frame should not release its resources
-immediately, but SHOULD wait for at least three times the current
-Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}
-after the last sent packet before sending the RETIRE_CONNECTION_ID frame
-for the corresponding CID.
-This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
+When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
+least three times the current Probe Timeout (PTO) interval as defined in
+{{Section 6.2 of QUIC-RECOVERY}} after the last packet was sent on the path,
+before sending the RETIRE_CONNECTION_ID frame for the corresponding Connection
+ID. This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
 The effect of receiving a RETIRE_CONNECTION_ID frame is specified in the
@@ -396,10 +386,6 @@ any packet on this path anymore.
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
-
-Retransmittable frames, that have previously been sent on the abandoned
-path and are considered lost, will be retransmitted on a different
-path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
@@ -516,6 +502,8 @@ after a spurious estimate of path abandonment by the client.
  |   Closing  |                                  |
  +------------+                                  |
        |                                         |
+       | RETIRE_CONNECTION_ID sent && received   |
+       | or                                      |
        | Path's draining timeout                 |
        | (at least 3 PTO)                        |
        v                                         |
@@ -997,7 +985,7 @@ closed after the idle timeout expires.
 All the new frames MUST only be sent in 1-RTT packet.
 
 If an endpoint receives a multipath-specific frame in a different packet type,
-it MUST close the connection with an error of type MP_PROTOCOL_VIOLATION.
+it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
 All multipath-specific frames relate to a Destination Connection
 ID sequence number. If an endpoint receives a Destination Connection ID
@@ -1167,7 +1155,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d04) | enable_multipath  | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d05) | enable_multipath  | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
