@@ -16,14 +16,14 @@ pi: [toc, sortrefs, symrefs]
 author:
 -
   fullname:
-      :: :: "刘彦梅"
+      :: "刘彦梅"
       ascii: "Yanmei Liu"
   role: editor
   org: Alibaba Inc.
   email: miaoji.lym@alibaba-inc.com
 -
    fullname:
-     :: :: "马云飞"
+     :: "马云飞"
      ascii: "Yunfei Ma"
    org: Alibaba Inc.
    email: yunfei.ma@alibaba-inc.com
