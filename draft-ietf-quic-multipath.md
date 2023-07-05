@@ -237,7 +237,7 @@ mechanism defined in this document.
 When advertising the enable_multipath transport parameter, the endpoint
 MUST use non-zero source and destination connection IDs.
 If an enable_multipath transport
-parameter is received and the carrying packet does not contain a non-zero
+parameter is received and the carrying packet contains a zero
 length connection ID, the receiver MUST treat this as a connection error of type
 MP_PROTOCOL_VIOLATION and close the connection.
 
