@@ -340,8 +340,7 @@ changed. Notice that PATH_STATUS frame
 can be sent via a different path.
 
 If all available path are marked as "standby", no guidance is provided about
-which path should be used preferably, however, the sender might consider
-to minimize the number of concurrently used paths.
+which path should be used preferably.
 
 
 ## Path Close
