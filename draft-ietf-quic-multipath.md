@@ -996,9 +996,8 @@ closed after the idle timeout expires.
 
 All the new frames MUST only be sent in 1-RTT packet.
 
-If an endpoint receives multipath-specific frames from other
-types of packets, it MUST return MP_PROTOCOL_VIOLATION
-as a connection error and close the connection.
+If an endpoint receives a multipath-specific frame in a different packet type,
+it MUST close the connection with an error of type MP_PROTOCOL_VIOLATION.
 
 All multipath-specific frames relate to a Destination Connection
 ID sequence number. If an endpoint receives a Destination Connection ID
