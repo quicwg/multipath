@@ -16,7 +16,9 @@ pi: [toc, sortrefs, symrefs]
 author:
 -
   ins: Y. Liu
-  name: Yanmei Liu
+  fullname:
+      :: "马云飞"
+      ascii: "Yanmei Liu"
   role: editor
   org: Alibaba Inc.
   email: miaoji.lym@alibaba-inc.com
