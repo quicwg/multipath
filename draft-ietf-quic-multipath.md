@@ -249,7 +249,9 @@ preferred_address transport parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
 
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
-limits the number of concurrent paths.
+limits the number of concurrent paths. However, endpoints might prefer to retain
+spare Connection IDs so that they can respond to unintentional migration events
+({{Section 9.5 of QUIC-TRANSPORT}}).
 
 
 # Path Setup and Removal {#setup}
