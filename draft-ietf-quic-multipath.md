@@ -986,12 +986,10 @@ closed after the idle timeout expires.
 
 # New Frames {#frames}
 
-All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
-use other encryption levels.
+All the new frames MUST only be sent in 1-RTT packet.
 
-If an endpoint receives multipath-specific frames from packets of
-other encryption levels, it MUST return FRAME_ENCODING_ERROR
-as a connection error and close the connection.
+If an endpoint receives a multipath-specific frame in a different packet type,
+it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
 All multipath-specific frames relate to a Destination Connection
 ID sequence number. If an endpoint receives a Destination Connection ID
