@@ -283,10 +283,12 @@ All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
 
+Connection IDs cannot be reused, thus opening a new path requires the
+use of a new Connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames
-to issue usable connections IDs to reach it. Before an endpoint adds
-a new path by initiating path validation, it MUST check whether at least
-one unused Connection ID is available for each side.
+to issue usable connections IDs to reach it. As such to open
+a new path by initiating path validation, both sides need at least
+one unused Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}).
 
 If the transport parameter "active_connection_id_limit" is negotiated as N,
 the server provided N Connection IDs, and the client is already actively
