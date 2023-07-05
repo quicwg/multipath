@@ -239,8 +239,7 @@ MUST use non-zero source and destination connection IDs.
 If an enable_multipath transport
 parameter is received and the carrying packet does not contain a non-zero
 length connection ID, the receiver MUST treat this as a connection error of type
-TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
-and close the connection.
+MP_PROTOCOL_VIOLATION and close the connection.
 
 The enable_multipath parameter MUST NOT be remembered
 ({{Section 7.4.1 of QUIC-TRANSPORT}}).
