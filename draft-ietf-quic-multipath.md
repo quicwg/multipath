@@ -240,6 +240,10 @@ length connection ID, the receiver MUST treat this as a connection error of type
 TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
 and close the connection.
 
+The enable_multipath parameter MUST NOT be remembered
+({{Section 7.4.1 of QUIC-TRANSPORT}}).
+New paths can only be used after handshake completion.
+
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
