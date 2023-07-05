@@ -893,8 +893,8 @@ The ACK_MP frames describe packets that were sent on the specified path,
 but they may be received through any available path. There is an
 understandable concern that if successive acknowledgements are received
 on different paths, the measured RTT samples will fluctuate widely,
-and that might result in poor performance. In fact, this concern is
-probably not justified.
+and that might result in poor performance. While this may be a concern,
+the actual behavior is complex.
 
 The computed values reflect both the state of the network path and the
 scheduling decisions by the sender of the ACK_MP frames. In the example
