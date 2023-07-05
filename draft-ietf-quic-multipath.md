@@ -602,10 +602,7 @@ endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge applicat
 data packets, including 0-RTT packets, using the initial Connection ID with
 sequence number 0 after the handshake concluded.
 
-ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the path
-it received packet with the Connection ID of the packet number space it acknowledges.
-However, an ACK_MP frame can be returned via a
-different path, based on different strategies of sending ACK_MP frames.
+ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
 
 ## Packet Protection {#multipath-aead}
 
