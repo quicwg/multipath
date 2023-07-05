@@ -15,7 +15,6 @@ pi: [toc, sortrefs, symrefs]
 
 author:
 -
-  ins: Y. Liu
   fullname:
       :: "马云飞"
       ascii: "Yanmei Liu"
