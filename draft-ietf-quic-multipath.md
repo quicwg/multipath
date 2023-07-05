@@ -1025,7 +1025,8 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 
 ~~~
   ACK_MP Frame {
-    Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
+    Type (i) = TBD-00..TBD-01
+         (experiments use  0x15228c00-0x15228c01),
     Destination Connection ID Sequence Number (i),
     Largest Acknowledged (i),
     ACK Delay (i),
@@ -1052,7 +1053,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
   PATH_ABANDON Frame {
-    Type (i) = TBD-02 (experiments use 0xbaba05),
+    Type (i) = TBD-02 (experiments use 0x15228c05),
     Destination Connection ID Sequence Number (i),
     Error Code (i),
     Reason Phrase Length (i),
@@ -1097,7 +1098,7 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 
 ~~~
   PATH_STATUS Frame {
-    Type (i) = TBD-03 (experiments use 0xbaba06),
+    Type (i) = TBD-03 (experiments use 0x15228c06),
     Destination Connection ID Sequence Number (i),
     Path Status sequence number (i),
     Path Status (i),
@@ -1153,7 +1154,7 @@ This section lists the defined multipath QUIC transport error codes
 that can be used in a CONNECTION_CLOSE frame with a type of 0x1c.
 These errors apply to the entire connection.
 
-MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected
+MP_PROTOCOL_VIOLATION (experiments use 0x1001d76d3ded42f3): An endpoint detected
 an error with protocol compliance that was not covered by
 more specific error codes.
 
@@ -1180,9 +1181,9 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.
 
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{ack-mp-frame}}
-TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON        | {{path-abandon-frame}}
-TBD-03 (experiments use 0xbaba06)                  | PATH_STATUS         | {{path-status-frame}}
+TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | ACK_MP              | {{ack-mp-frame}}
+TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
+TBD-03 (experiments use 0x15228c06)                  | PATH_STATUS         | {{path-status-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
@@ -1191,7 +1192,7 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
+TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
 {: #tab-error-code title="Error Code for Multipath QUIC"}
 
 
