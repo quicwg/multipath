@@ -651,32 +651,22 @@ The general principles of key update are not changed in this
 specification. Following QUIC version 1, the Key Phase bit is used to
 indicate which packet protection keys are used to protect the packet.
 The Key Phase bit is toggled to signal each subsequent key update.
+
 Because of network delays, packets protected with the older key might
-arrive later than the packets protected with the new key. Therefore,
-the endpoint needs to retain old packet keys to allow these delayed
-packets to be processed and it must distinguish between the new key
-and the old key. In QUIC version 1, this is done using packet numbers
-so that the rule is made simple: Use the older key if packet number is
-lower than any packet number frame the current key phase.
+arrive later than the packets protected with the new key. QUIC v1 defines two
+ways of dealing with such packets arriving out of order. Receivers can either
+retain up to three decryption keys and use the packet number in conjunction with
+the Key Phase bit to determine the decryption key, or retain up to two
+decryption keys and solely rely on the Key Phase bit
+({{Section 6.5 of QUIC-TLS}}). To accommodate the latter approach, senders are
+encouraged to wait for at least three times the PTO after receiving an
+acknowledgement confirming the receipt of the previous key update before
+initiating a new key update.
 
-When using multiple packet number spaces on different paths,
-some care is needed when initiating the Key Update process,
-as different paths use different packet number spaces but share
-a single key. When a key update is initiated on one path, packets sent to
-another path needs to know when the transition is complete. Otherwise,
-it is possible that the other paths send packets with the old keys,
-but skip sending any packets in the current key phase and directly
-jump to sending packet in the next key phase. When that happens,
-as the endpoint can only retain two sets of packet protection keys
-with the 1-bit Key Phase bit, the other paths cannot distinguish
-which key should be used to decode received packets, which results in
-a key rotation synchronization problem.
-
-To address such a synchronization issue, if key update is
-initialized on one path, the sender SHOULD send at least one packet
-with the new key on all active paths. Further, an endpoint MUST NOT
-initiate a subsequent key update until a packet with the current key
-has been acknowledged on each path.
+As this specification allows the use of multiple paths with separate packet
+number spaces, the latter approach is adopted with the period between the
+confirmation of the previous key update and the initiation of new key update
+being extended to three times the largest PTO among all the paths.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
