@@ -273,8 +273,9 @@ This document
 does not specify how an endpoint that is reachable via several addresses
 announces these addresses to the other endpoint. In particular, if the
 server uses the preferred_address transport parameter, clients
-SHOULD NOT assume that the initial server address and the addresses
-contained in this parameter can be simultaneously used for multipath.
+cannot assume that the initial server address and the addresses
+contained in this parameter can be simultaneously used for multipath
+({{Section 9.6.2 of QUIC-TRANSPORT}}).
 Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
