@@ -653,7 +653,7 @@ indicate which packet protection keys are used to protect the packet.
 The Key Phase bit is toggled to signal each subsequent key update.
 
 Because of network delays, packets protected with the older key might
-arrive later than the packets protected with the new key. QUIC v1 defines two
+arrive later than the packets protected with the new key. QUIC version 1 defines two
 ways of dealing with such packets arriving out of order. Receivers can either
 retain up to three decryption keys and use the packet number in conjunction with
 the Key Phase bit to determine the decryption key, or retain up to two
