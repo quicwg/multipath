@@ -653,20 +653,15 @@ indicate which packet protection keys are used to protect the packet.
 The Key Phase bit is toggled to signal each subsequent key update.
 
 Because of network delays, packets protected with the older key might
-arrive later than the packets protected with the new key. QUIC version 1 defines two
-ways of dealing with such packets arriving out of order. Receivers can either
-retain up to three decryption keys and use the packet number in conjunction with
-the Key Phase bit to determine the decryption key, or retain up to two
-decryption keys and solely rely on the Key Phase bit
-({{Section 6.5 of QUIC-TLS}}). To accommodate the latter approach, senders are
-encouraged to wait for at least three times the PTO after receiving an
-acknowledgement confirming the receipt of the previous key update before
-initiating a new key update.
+arrive later than the packets protected with the new key, however receivers
+can solely rely on the Key Phase bit to determine the corresponding packet
+protection key, assuming that there is sufficient interval between two
+consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
 
-As this specification allows the use of multiple paths with separate packet
-number spaces, the latter approach is adopted with the period between the
-confirmation of the previous key update and the initiation of new key update
-being extended to three times the largest PTO among all the paths.
+When this specification is used, endpoints SHOULD wait for at least three times
+the largest PTO among all the paths before initiating a new key update
+after receiving an acknowledgement that confirms receipt of the previous key
+update.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
