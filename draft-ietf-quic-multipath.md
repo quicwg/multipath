@@ -59,8 +59,6 @@ normative:
 
 informative:
   RFC6356:
-  I-D.bonaventure-iccrg-schedulers:
-  QUIC-Invariants: rfc8999
   QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
     title: "MPTCP is not pareto-optimal: performance issues and
