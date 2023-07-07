@@ -661,7 +661,7 @@ consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
 When this specification is used, endpoints SHOULD wait for at least three times
 the largest PTO among all the paths before initiating a new key update
 after receiving an acknowledgement that confirms receipt of the previous key
-update.
+update. This interval is different from that of QUIC version 1 which used three times the PTO of the only one active path.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
