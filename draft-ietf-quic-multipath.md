@@ -15,16 +15,14 @@ pi: [toc, sortrefs, symrefs]
 
 author:
 -
-  fullname:
-      :: "刘彦梅"
-      ascii: "Yanmei Liu"
+  ins: Y. Liu
+  name: Yanmei Liu
   role: editor
   org: Alibaba Inc.
   email: miaoji.lym@alibaba-inc.com
 -
-   fullname:
-     :: "马云飞"
-     ascii: "Yunfei Ma"
+   ins: Y. Ma
+   name: Yunfei Ma
    org: Alibaba Inc.
    email: yunfei.ma@alibaba-inc.com
 -
@@ -59,6 +57,8 @@ normative:
 
 informative:
   RFC6356:
+  I-D.bonaventure-iccrg-schedulers:
+  QUIC-Invariants: rfc8999
   QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
     title: "MPTCP is not pareto-optimal: performance issues and
@@ -98,9 +98,9 @@ This proposal is based on several basic design points:
 particular, this proposal uses path validation as specified for QUIC
 version 1 and aims to re-use as much as possible of QUIC's connection
 migration.
-  * Use the same packet header formats as QUIC version 1 to minimize
-    the difference between multipath and non-multipath traffic being
-    exposed on wire.
+  * Use the same packet header formats as QUIC version 1 to avoid the
+risk of packets being dropped by middleboxes (which may only support
+QUIC version 1)
   * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
 which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
@@ -223,25 +223,33 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- enable_multipath (current version uses 0x0f739bbc1b666d05): the
-  enable_multipath transport parameter is included if the endpoint supports
-  the multipath extension as defined in this document. This parameter has
-  a zero-length value.
+- name: enable_multipath (current version uses 0x0f739bbc1b666d04)
+- value: 0 (default) for disabled.
 
-If any of the endpoints does not advertise the enable_multipath transport
-parameter, then the endpoints MUST NOT use any frame or
+The valid options for the value field are listed in
+{{param_value_definition}}:
+
+Option | Definition
+---------|---------------------------------------
+0x0      | don't support multipath
+0x1      | supports multipath as defined in this document
+{: #param_value_definition title="Available value for enable_multipath"}
+
+If for any one of the endpoints, the parameter is absent or set to 0,
+the endpoints MUST fallback to
+{{QUIC-TRANSPORT}} with single active path and MUST NOT use any frame or
 mechanism defined in this document.
 
-When advertising the enable_multipath transport parameter, the endpoint
-MUST use non-zero source and destination connection IDs.
-If an enable_multipath transport
-parameter is received and the carrying packet contains a zero
-length connection ID, the receiver MUST treat this as a connection error of type
-MP_PROTOCOL_VIOLATION and close the connection.
+If the parameter is set to 1, both endpoints MUST use non-zero connection
+IDs. If an enable_multipath parameter set to 1 is received and the carrying packet
+does not contain a non-zero length connection ID, the receiver MUST treat this as a connection error of type
+TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
+and close the connection.
 
-The enable_multipath parameter MUST NOT be remembered
-({{Section 7.4.1 of QUIC-TRANSPORT}}).
-New paths can only be used after handshake completion.
+If endpoint receives an unexpected value for the transport parameter
+"enable_multipath", it MUST treat this as a connection error of type
+TRANSPORT_PARAMETER_ERROR (specified in {{Section 20.1 of QUIC-TRANSPORT}})
+and close the connection.
 
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
@@ -252,14 +260,7 @@ preferred_address transport parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
 
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
-limits the number of concurrent paths. However, endpoints might prefer to retain
-spare Connection IDs so that they can respond to unintentional migration events
-({{Section 9.5 of QUIC-TRANSPORT}}).
-
-Cipher suites with nonce shorter than 12 bytes cannot be used together with
-the multipath extension. If such cipher suite is selected and the use of the
-multipath extension is negotiated, endpoints MUST abort the handshake with a
-TRANSPORT_PARAMETER error.
+limits the number of concurrent paths.
 
 
 # Path Setup and Removal {#setup}
@@ -291,12 +292,10 @@ All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
 
-Connection IDs cannot be reused, thus opening a new path requires the
-use of a new Connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Following {{QUIC-TRANSPORT}}, each endpoint uses NEW_CONNECTION_ID frames
-to issue usable connections IDs to reach it. As such to open
-a new path by initiating path validation, both sides need at least
-one unused Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}).
+to issue usable connections IDs to reach it. Before an endpoint adds
+a new path by initiating path validation, it MUST check whether at least
+one unused Connection ID is available for each side.
 
 If the transport parameter "active_connection_id_limit" is negotiated as N,
 the server provided N Connection IDs, and the client is already actively
@@ -319,6 +318,14 @@ to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission.
 
+As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server SHOULD send a new
+address validation token to a client following the successful validation of a
+new client address. In situations where multiple paths are activated, the
+client may be recipient of several tokens, each tied to a different address.
+When considering using a token for subsequent connections, the client ought to
+carefully select the token to use, due to the inherent ambiguity associated
+with determining the exact path to which a token is bound.
+
 
 ## Path State Management
 
@@ -338,10 +345,8 @@ PATH_STATUS frame describes 2 kinds of path states:
 Endpoints use Destination Connection ID Sequence Number field
 in PATH_STATUS frame to identify which path state is going to be
 changed. Notice that PATH_STATUS frame
-can be sent via a different path.
-
-If all available path are marked as "standby", no guidance is provided about
-which path should be used preferably.
+can be sent via a different path. An Endpoint MAY ignore the PATH_STATUS frame
+if it would make all the paths unavailable in a single connection.
 
 
 ## Path Close
@@ -373,11 +378,12 @@ Both endpoints, namely the client and the server, can initiate path closure,
 by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
 requests the peer to stop sending packets with the corresponding Destination Connection ID.
 
-When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
-least three times the current Probe Timeout (PTO) interval as defined in
-{{Section 6.2 of QUIC-RECOVERY}} after the last packet was sent on the path,
-before sending the RETIRE_CONNECTION_ID frame for the corresponding Connection
-ID. This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
+The sender and receiver of a PATH_ABANDON frame should not release its resources
+immediately, but SHOULD wait for at least three times the current
+Probe Timeout (PTO) interval as defined in {{Section 6.2. of QUIC-RECOVERY}}
+after the last sent packet before sending the RETIRE_CONNECTION_ID frame
+for the corresponding CID.
+This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
 The effect of receiving a RETIRE_CONNECTION_ID frame is specified in the
@@ -398,6 +404,10 @@ any packet on this path anymore.
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
+
+Retransmittable frames, that have previously been sent on the abandoned
+path and are considered lost, will be retransmitted on a different
+path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
@@ -514,8 +524,6 @@ after a spurious estimate of path abandonment by the client.
  |   Closing  |                                  |
  +------------+                                  |
        |                                         |
-       | RETIRE_CONNECTION_ID sent && received   |
-       | or                                      |
        | Path's draining timeout                 |
        | (at least 3 PTO)                        |
        v                                         |
@@ -600,7 +608,10 @@ endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge applicat
 data packets, including 0-RTT packets, using the initial Connection ID with
 sequence number 0 after the handshake concluded.
 
-ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
+ACK_MP frame (defined in {{ack-mp-frame}}) SHOULD be sent on the path
+it received packet with the Connection ID of the packet number space it acknowledges.
+However, an ACK_MP frame can be returned via a
+different path, based on different strategies of sending ACK_MP frames.
 
 ## Packet Protection {#multipath-aead}
 
@@ -619,27 +630,23 @@ the packet number alone would not guarantee the uniqueness of the nonce.
 
 In order to guarantee the uniqueness of the nonce, the nonce N is
 calculated by combining the packet protection IV with the packet number
-and with the least significant 32 bits of the Destination Connection ID
-sequence number.
+and with the Destination Connection ID sequence number.
 
 {{Section 19 of QUIC-TRANSPORT}} encodes the Connection ID Sequence
 Number as a variable-length integer,
 allowing values up to 2^62-1; in this specification, a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
 
-To calculate the nonce, a 96 bit path-and-packet-number is composed of the least
-significant 32 bits of the Connection ID Sequence Number in network byte order,
-two zero bits, and the 62 bits of the reconstructed QUIC packet number in
-network byte order. If the IV is larger than 96 bits, the path-and-packet-number
-is left-padded with zeros to the size of the IV. The exclusive OR of the padded
-packet number and the IV forms the AEAD nonce.
+To calculate the nonce, a 96 bit path-and-packet-number is composed of
+the 32 bit Connection ID Sequence Number in byte order, two zero bits,
+and the 62 bits of the reconstructed QUIC packet number in network byte order.
+If the IV is larger than 96 bits, the path-and-packet-number is
+left-padded with zeros to the size of the IV. The exclusive OR
+of the padded packet number and the IV forms the AEAD nonce.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the Connection ID Sequence Number is `3`, and the packet number is `aead`,
 the nonce will be set to `6b2611489cba2b63a9e873e2`.
-
-Due to the way the nonce is constructed, endpoints MUST NOT use more than 2^32
-Connection IDs without a key update.
 
 ## Key Update {#multipath-key-update}
 
@@ -888,36 +895,31 @@ Terrestrial | 100ms  | 350ms
 Satellite   | 350ms  | 600ms
 {: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
 
-The ACK_MP frames describe packets that were sent on the specified path,
-but they may be received through any available path. There is an
-understandable concern that if successive acknowledgements are received
-on different paths, the measured RTT samples will fluctuate widely,
-and that might result in poor performance. While this may be a concern,
-the actual behavior is complex.
+Using the default algorithm specified in {{QUIC-RECOVERY}} would result
+in suboptimal performance, computing average RTT and standard
+deviation from series of different delay measurements of different
+combined paths.  At the same time, early tests showed that it is
+desirable to send ACKs through the shortest path because a shorter
+ACK delay results in a tighter control loop and better performances.
+The tests also showed that it is desirable to send copies of the ACKs
+on multiple paths, for robustness if a path experiences sudden losses.
 
-The computed values reflect both the state of the network path and the
-scheduling decisions by the sender of the ACK_MP frames. In the example
-above, we may assume that the ACK_MP will be sent over the terrestrial
-link, because that provides the best response time. In that case, the
-computed RTT value for the satellite path will be about 350ms. This
-lower than the 600ms that would be measured if the ACK_MP came over
-the satellite channel, but it is still the right value for computing
-for example the PTO timeout: if an ACK_MP is not received after more
-than 350ms, either the data packet or its ACK_MP were probably lost.
+An early implementation mitigated the delay variation issue by using
+time stamps, as specified in {{QUIC-Timestamp}}.  When the timestamps
+are present, the implementation can estimate the transmission delay
+on each one-way path, and can then use these one way delays for more
+efficient implementations of recovery and congestion control
+algorithms.
 
-The simplest implementation is to compute smoothedRTT and RTTvar per
-{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACKs are
-received. This algorithm will provide good results,
-except if the set of paths changes and the ACK_MP sender
-revisits its sending preferences. This is not very
-different from what happens on a single path if the routing changes.
-The RTT, RTT variance and PTO estimates will rapidly converge to
-reflect the new conditions.
-There is however an exception: some congestion
-control functions rely on estimates of the minimum RTT. It might be prudent
-for nodes to remember the path over which the ACK MP that produced
-the minimum RTT was received, and to restart the minimum RTT computation
-if that path is abandoned.
+If timestamps are not available, implementations could estimate one
+way delays using statistical techniques.  For example, in the example
+shown in Table 1, implementations can use "same path"
+measurements to estimate the one way delay of the terrestrial path to
+about 50ms in each direction, and that of the satellite path to about
+300ms.  Further measurements can then be used to maintain estimates
+of one way delay variations, using logical similar to Kalman filters.
+But statistical processing is error-prone, and using time stamps
+provides more robust measurements.
 
 ## Packet Scheduling
 
@@ -935,14 +937,9 @@ implementation.
 
 Note that this implies that an endpoint may send and receive ACK_MP
 frames on a path different from the one that carried the acknowledged
-packets. As noted in {{compute-rtt}} the values computed using
-the standard algorithm reflect both the characteristics of the
-path and the scheduling algorithm of ACK_MP frames. The estimates will converge
-faster if the scheduling strategy is stable, but besides that
-implementations can choose between multiple strategies such as sending
-ACK_MP frames on the path they acknowledge packets, or sending
-ACK_MP frames on the shortest path, which results in shorter control loops
-and thus better performance.
+packets. A reasonable default consists in sending ACK_MP frames on the
+path they acknowledge packets, but the receiver must not assume its
+peer will do so.
 
 ## Retransmissions
 
@@ -1005,10 +1002,12 @@ closed after the idle timeout expires.
 
 # New Frames {#frames}
 
-All the new frames MUST only be sent in 1-RTT packet.
+All the new frames MUST only be sent in 1-RTT packet, and MUST NOT
+use other encryption levels.
 
-If an endpoint receives a multipath-specific frame in a different packet type,
-it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
+If an endpoint receives multipath-specific frames from packets of
+other encryption levels, it MUST return MP_PROTOCOL_VIOLATION
+as a connection error and close the connection.
 
 All multipath-specific frames relate to a Destination Connection
 ID sequence number. If an endpoint receives a Destination Connection ID
@@ -1032,8 +1031,7 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 
 ~~~
   ACK_MP Frame {
-    Type (i) = TBD-00..TBD-01
-         (experiments use  0x15228c00-0x15228c01),
+    Type (i) = TBD-00..TBD-01 (experiments use 0xbaba00..0xbaba01),
     Destination Connection ID Sequence Number (i),
     Largest Acknowledged (i),
     ACK Delay (i),
@@ -1061,7 +1059,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
   PATH_ABANDON Frame {
-    Type (i) = TBD-02 (experiments use 0x15228c05),
+    Type (i) = TBD-02 (experiments use 0xbaba05),
     Destination Connection ID Sequence Number (i),
     Error Code (i),
     Reason Phrase Length (i),
@@ -1106,7 +1104,7 @@ PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
 
 ~~~
   PATH_STATUS Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c06),
+    Type (i) = TBD-03 (experiments use 0xbaba06),
     Destination Connection ID Sequence Number (i),
     Path Status sequence number (i),
     Path Status (i),
@@ -1162,7 +1160,7 @@ This section lists the defined multipath QUIC transport error codes
 that can be used in a CONNECTION_CLOSE frame with a type of 0x1c.
 These errors apply to the entire connection.
 
-MP_PROTOCOL_VIOLATION (experiments use 0x1001d76d3ded42f3): An endpoint detected
+MP_PROTOCOL_VIOLATION (experiments use 0xba01): An endpoint detected
 an error with protocol compliance that was not covered by
 more specific error codes.
 
@@ -1179,7 +1177,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d05) | enable_multipath  | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d04) | enable_multipath  | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -1189,9 +1187,9 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.
 
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | ACK_MP              | {{ack-mp-frame}}
-TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
-TBD-03 (experiments use 0x15228c06)                  | PATH_STATUS         | {{path-status-frame}}
+TBD-00 - TBD-01 (experiments use 0xbaba00-0xbaba01)| ACK_MP              | {{ack-mp-frame}}
+TBD-02 (experiments use 0xbaba05)                  | PATH_ABANDON        | {{path-abandon-frame}}
+TBD-03 (experiments use 0xbaba06)                  | PATH_STATUS         | {{path-status-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
@@ -1200,7 +1198,7 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
+TBD (experiments use 0xba01)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
 {: #tab-error-code title="Error Code for Multipath QUIC"}
 
 
@@ -1219,4 +1217,4 @@ one of the original proposals are:
 
 # Acknowledgments
 
-Thanks to Marten Seemann and Kazuho Oku for their thorough reviews and valuable contributions!
+TBD
