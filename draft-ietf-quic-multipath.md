@@ -325,7 +325,9 @@ new client address. In situations where multiple paths are activated, the
 client may be recipient of several tokens, each tied to a different address.
 When considering using a token for subsequent connections, the client ought to
 carefully select the token to use, due to the inherent ambiguity associated
-with determining the exact path to which a token is bound.
+with determining the exact address to which a token is bound. To alleviate such a
+token ambiguity issue, a server may issue a token that is capable of validating
+any of the previously validated addresses.
 
 ## Path State Management
 
