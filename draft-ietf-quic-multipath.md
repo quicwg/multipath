@@ -246,10 +246,6 @@ New paths can only be used after handshake completion.
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
-Inline with the definition in {{QUIC-TRANSPORT}} disable_active_migration
-also disables multipath support, except "after a client has acted on a
-preferred_address transport parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
-
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
 limits the number of concurrent paths. However, endpoints might prefer to retain
@@ -265,12 +261,19 @@ TRANSPORT_PARAMETER error.
 # Path Setup and Removal {#setup}
 
 After completing the handshake, endpoints have agreed to enable
-multipath feature and can start using multiple paths. This document
+multipath feature. They can also start using multiple paths, unless both
+server preferred addresses and a disable_active_migration transport parameter
+were provided by the server, in which case a client is forbidden to establish
+new paths until "after a client has acted on a preferred_address transport
+parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
+
+This document
 does not specify how an endpoint that is reachable via several addresses
 announces these addresses to the other endpoint. In particular, if the
 server uses the preferred_address transport parameter, clients
-SHOULD NOT assume that the initial server address and the addresses
-contained in this parameter can be simultaneously used for multipath.
+cannot assume that the initial server address and the addresses
+contained in this parameter can be simultaneously used for multipath
+({{Section 9.6.2 of QUIC-TRANSPORT}}).
 Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
