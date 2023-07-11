@@ -153,6 +153,9 @@ particular, the multipath extension supports the following scenarios.
     several ones.
   * The client uses multiple IP addresses and the server listens on
     several ones.
+  * The client uses only one IP address and the server listens on only
+    one. However, the client can use one or more ports and/or the
+    server can listen on one or more ports. 
 
 This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
