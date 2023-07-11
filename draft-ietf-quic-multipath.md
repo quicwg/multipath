@@ -325,7 +325,7 @@ to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission.
 
-As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected send a new
+As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. In situations where multiple paths are activated, the
 client may be recipient of several tokens, each tied to a different address.
