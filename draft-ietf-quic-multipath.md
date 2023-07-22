@@ -1018,7 +1018,7 @@ MUST silently ignore the frame.
 
 ## ACK_MP Frame {#ack-mp-frame}
 
-The ACK_MP frame (types TBD-00 and TBD-01; experiments use 0xbaba00..0xbaba01)
+The ACK_MP frame (types TBD-00 and TBD-01)
 is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
 used to acknowledge packets that were sent on different paths using
 multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
