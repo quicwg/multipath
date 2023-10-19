@@ -335,7 +335,8 @@ should be sent on that path if another path is available.
 Endpoints use Destination Connection ID Sequence Number field
 in these frames to identify which path state is going to be
 changed. Notice that both frames can be sent via a different path
-and therefore might arrive in different orders. [TODO: solve this issue!]
+and therefore might arrive in different orders.
+The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space to detect and ignore outdated information.
 
 ## Path Close
 
