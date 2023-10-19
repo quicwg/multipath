@@ -1165,6 +1165,7 @@ the sequence
 
 Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
+or PATH_STANDBY
 for the same Destination Connection ID Sequence Number with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.
