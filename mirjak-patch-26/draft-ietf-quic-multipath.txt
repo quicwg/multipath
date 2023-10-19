@@ -332,7 +332,7 @@ Table of Contents
    *  PATH_STANDBY and PATH_AVAILABLE frames to express a preference in
       path usage (see Section 8.3 and {path-available-frame}}
 
-   All the new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
+   All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
 4.1.  Path Initiation
 
