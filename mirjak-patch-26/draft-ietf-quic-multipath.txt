@@ -5,7 +5,7 @@
 QUIC Working Group                                           Y. Liu, Ed.
 Internet-Draft                                                     Y. Ma
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 6 January 2024                               Q. De Coninck, Ed.
+Expires: 21 April 2024                                Q. De Coninck, Ed.
                                                                UCLouvain
                                                           O. Bonaventure
                                                   UCLouvain and Tessares
@@ -13,7 +13,7 @@ Expires: 6 January 2024                               Q. De Coninck, Ed.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             5 July 2023
+                                                         19 October 2023
 
 
                       Multipath Extension for QUIC
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 January 2024.
+   This Internet-Draft will expire on 21 April 2024.
 
 Copyright Notice
 
@@ -371,8 +371,8 @@ Table of Contents
    An endpoint uses PATH_STANDBY and PATH_AVAILABLE frames to inform
    that the peer should send packets in the preference expressed by
    these frames.  Note that the endpoint might not follow the peer’s
-   advertisements, but thes frames is still a clear signal of suggestion
-   for the preference of path usage by the peer.
+   advertisements, but these frames are still a clear signal of
+   suggestion for the preference of path usage by the peer.
 
    PATH_AVAILABLE indiactes that a path as "available", i.e., allow the
    peer to use its own logic to split traffic among available paths.
