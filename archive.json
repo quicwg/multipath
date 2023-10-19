@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-09-21T00:38:38.723857+00:00",
+  "timestamp": "2023-10-19T00:39:14.561191+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7071,9 +7071,17 @@
       "labels": [],
       "body": "Is an endpoint allowed to send PATH_STATUS frames for DCID=X before it observes X being used?\r\n\r\nI think it would be natural especially for servers to bundle a NEW_CONNECTION_ID frame of DCID=X and a PATH_STATUS frame of DCID=X. That's the easiest way of declaring that all paths can be used for sending data.\r\n\r\nHowever, the draft is vague if such behavior is allowed, or if it is forbidden to send PATH_STATUS frames before receiving a packet that uses that DCID value.\r\n\r\nHence opening the issue.",
       "createdAt": "2023-09-19T06:57:31Z",
-      "updatedAt": "2023-09-19T07:15:06Z",
+      "updatedAt": "2023-10-17T17:29:01Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we briefly discussed this at the last meeting and yes, I think we should allow this and yes, I think we should be more explicit in the text.",
+          "createdAt": "2023-10-17T17:29:01Z",
+          "updatedAt": "2023-10-17T17:29:01Z"
+        }
+      ]
     }
   ],
   "pulls": [
