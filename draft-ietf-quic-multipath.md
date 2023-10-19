@@ -290,7 +290,7 @@ This proposal adds two multipath control frames for path management:
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame} and {path-available-frame}}
 
-All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
+All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
 
