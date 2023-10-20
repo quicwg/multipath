@@ -1390,9 +1390,21 @@ several ones.<a href="#section-1-10.2.1" class="pilcrow">¶</a></p>
         <li class="normal" id="section-1-10.3">
           <p id="section-1-10.3.1">The client uses multiple IP addresses and the server listens on
 several ones.<a href="#section-1-10.3.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-10.3.2.1">
+              <p id="section-1-10.3.2.1.1">The client uses only one IP address and the server
+listens on only one.<a href="#section-1-10.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
 </li>
       </ul>
-<p id="section-1-11">This proposal does not cover address discovery and management. Addresses
+<p id="section-1-11">Note that in the last scenario, it still remains possible to have
+multiple paths over the connection, given that a path is not only
+defined by the IP addresses being used, but also the port numbers.
+In particular, the client can use one or several ports per IP
+address and the server can listen on one or several ports per IP
+address.<a href="#section-1-11" class="pilcrow">¶</a></p>
+<p id="section-1-12">This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
 to be handled by the application that is using the QUIC multipath
 extension. This is sufficient to address the first aforementioned
@@ -1402,7 +1414,7 @@ Further, this proposal only specifies a simple basic packet
 scheduling algorithm, in order to provide some basic implementation
 guidance. However, more advanced algorithms as well as potential
 extensions to enhance signaling of the current path state are expected
-as future work.<a href="#section-1-11" class="pilcrow">¶</a></p>
+as future work.<a href="#section-1-12" class="pilcrow">¶</a></p>
 <div id="definition">
 <section id="section-1.1">
         <h3 id="name-conventions-and-definitions">
@@ -1566,7 +1578,7 @@ receiving non-probing packets on a new path indicates an attempt
 to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.1-5">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected send a new
+<p id="section-4.1-5">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. In situations where multiple paths are activated, the
 client may be recipient of several tokens, each tied to a different address.
