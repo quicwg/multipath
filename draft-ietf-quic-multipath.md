@@ -288,7 +288,7 @@ This proposal adds two multipath control frames for path management:
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}})
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
-in path usage (see {{path-standby-frame} and {path-available-frame}}
+in path usage (see {{path-standby-frame}} and {{path-available-frame}}
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -340,9 +340,9 @@ Note that the endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of suggestion
 for the preference of path usage by the peer.
 
-PATH_AVAILABLE indiactes that a path as "available", i.e., allow
+PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
-PATH_STANDBY marks a path as "standby", i.e., suggest that no traffic
+PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
 should be sent on that path if another path is available.
 
 Endpoints use Destination Connection ID Sequence Number field
@@ -1141,21 +1141,21 @@ by the sequence number.
 
 ## PATH_AVAILABLE frame {#path-available-frame}
 
-PATH_AVAILABLE Frames are used by endpoints to inform the peer
+PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the path associated to
 the Destination Connection IDs in the frame is available for sending.
 PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
   PATH_AVAILABLE Frame {
-    Type (i) = TBD-03 (experiments use 0xbaba07),
+    Type (i) = TBD-03 (experiments use 0x15228c08),
     Destination Connection ID Sequence Number (i),
     Path Status sequence number (i),
   }
 ~~~
 {: #fig-path-available-format title="PATH_AVAILABLE Frame Format"}
 
-PATH_AVAILABLE Frames contain the following fields:
+PATH_AVAILABLE frames contain the following fields:
 
 Destination Connection ID Sequence Number:
 : The sequence number of the Destination Connection ID used by the
@@ -1174,7 +1174,7 @@ the sequence
 
 Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
-or PATH_STANDBY
+or PATH_STANDBY frame
 for the same Destination Connection ID Sequence Number with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.
