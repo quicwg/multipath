@@ -323,16 +323,16 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
-If validation succeed, the client can continue to use the path.
+If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status assiciated to the path initation attempt.
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. When the  multipath extension
 is negoatiated, the receiption of "non-probing"
-packet on a new path needs to be consider as an path initiation
+packet on a new path needs to be considered as an path initiation
 attempt that does not impact the path status of any existing
-path. Therefore, any frame can be send on a new path at any time
-as long as the congestion control limits are respected.
+path. Therefore, any frame can be sent on a new path at any time
+as long as the anti-amplification limits ({{Section 21.1.1.1 of RFC9000}}) and the congestion control limits are respected.
 
 Further, in contrast with the specification in
 {{Section 9 of QUIC-TRANSPORT}}, the server MUST NOT assume that
@@ -340,7 +340,7 @@ receiving non-probing packets on a new path with a new Connection ID
 indicates an attempt
 to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
-for transmission. Only the reception of "non-probing" frames on a new
+for transmission. Reception of QUIC packets on a new
 path containing a Connection ID that is already in use on another path
 should be considered as path migration as further discussed in {{mirgation}}.
 
