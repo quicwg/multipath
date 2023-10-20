@@ -339,6 +339,10 @@ send packets in the preference expressed by these frames.
 Note that the endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of suggestion
 for the preference of path usage by the peer.
+Each peer indicates its preference of path usage independently of the other peer.
+It means that peers may have different usage preferences for the same path.
+Depending on the sender's decisions, this may lead to usage of paths that have been
+indicated as "standby" by the peer or non-usage of some locally available paths.
 
 PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
