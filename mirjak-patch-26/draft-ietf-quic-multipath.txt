@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                            马云飞 (Y. Ma)
 Intended status: Standards Track                            Alibaba Inc.
-Expires: 21 April 2024                                Q. De Coninck, Ed.
+Expires: 22 April 2024                                Q. De Coninck, Ed.
                                                                UCLouvain
                                                           O. Bonaventure
                                                   UCLouvain and Tessares
@@ -13,7 +13,7 @@ Expires: 21 April 2024                                Q. De Coninck, Ed.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         19 October 2023
+                                                         20 October 2023
 
 
                       Multipath Extension for QUIC
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 April 2024.
+   This Internet-Draft will expire on 22 April 2024.
 
 Copyright Notice
 
@@ -330,7 +330,7 @@ Table of Contents
       Section 8.2)
 
    *  PATH_STANDBY and PATH_AVAILABLE frames to express a preference in
-      path usage (see Section 8.3 and {path-available-frame}}
+      path usage (see Section 8.3 and Section 8.4
 
    All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
@@ -383,10 +383,11 @@ Table of Contents
    advertisements, but these frames are still a clear signal of
    suggestion for the preference of path usage by the peer.
 
-   PATH_AVAILABLE indiactes that a path as "available", i.e., allow the
-   peer to use its own logic to split traffic among available paths.
-   PATH_STANDBY marks a path as "standby", i.e., suggest that no traffic
-   should be sent on that path if another path is available.
+   PATH_AVAILABLE indicates that a path is "available", i.e., it
+   suggests to the peer to use its own logic to split traffic among
+   available paths.  PATH_STANDBY marks a path as "standby", i.e., it
+   suggests that no traffic should be sent on that path if another path
+   is available.
 
    Endpoints use Destination Connection ID Sequence Number field in
    these frames to identify which path state is going to be changed.
@@ -1194,20 +1195,20 @@ Table of Contents
 
 8.4.  PATH_AVAILABLE frame
 
-   PATH_AVAILABLE Frames are used by endpoints to inform the peer that
+   PATH_AVAILABLE frames are used by endpoints to inform the peer that
    the path associated to the Destination Connection IDs in the frame is
    available for sending.  PATH_AVAILABLE frames are formatted as shown
    in Figure 8.
 
      PATH_AVAILABLE Frame {
-       Type (i) = TBD-03 (experiments use 0xbaba07),
+       Type (i) = TBD-03 (experiments use 0x15228c08),
        Destination Connection ID Sequence Number (i),
        Path Status sequence number (i),
      }
 
                    Figure 8: PATH_AVAILABLE Frame Format
 
-   PATH_AVAILABLE Frames contain the following fields:
+   PATH_AVAILABLE frames contain the following fields:
 
    Destination Connection ID Sequence Number:  The sequence number of
       the Destination Connection ID used by the receiver of this frame
@@ -1224,9 +1225,9 @@ Table of Contents
 
    Frames may be received out of order.  A peer MUST ignore an incoming
    PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE
-   frame or PATH_STANDBY for the same Destination Connection ID Sequence
-   Number with a Path Status sequence number equal to or higher than the
-   Path Status sequence number of the incoming frame.
+   frame or PATH_STANDBY frame for the same Destination Connection ID
+   Sequence Number with a Path Status sequence number equal to or higher
+   than the Path Status sequence number of the incoming frame.
 
    PATH_AVAILABLE frames are ack-eliciting.  If a packet containing a
    PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the
