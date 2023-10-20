@@ -296,10 +296,10 @@ This proposal adds two multipath control frames for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}})
-- PATH_STATUS frame to express a preference in path usage
-(see {{path-status-frame}}
+- PATH_STANDBY and PATH_AVAILABLE frames to express a preference
+in path usage (see {{path-standby-frame}} and {{path-available-frame}}
 
-All the new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
+All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
 
@@ -343,23 +343,29 @@ any of the previously validated addresses.
 
 ## Path State Management
 
-An endpoint uses PATH_STATUS frames to inform that the peer should
+An endpoint uses PATH_STANDBY and PATH_AVAILABLE frames to inform that the peer should
 send packets in the preference expressed by these frames.
-Notice that the endpoint might not follow the peer’s advertisements,
-but the PATH_STATUS frame is still a clear signal of suggestion
+Note that the endpoint might not follow the peer’s advertisements,
+but these frames are still a clear signal of suggestion
 for the preference of path usage by the peer.
+Each peer indicates its preference of path usage independently of the other peer.
+It means that peers may have different usage preferences for the same path.
+Depending on the sender's decisions, this may lead to usage of paths that have been
+indicated as "standby" by the peer or non-usage of some locally available paths.
 
-PATH_STATUS frame describes 2 kinds of path states:
-
-- Mark a path as "available", i.e., allow the peer to use its own logic
-  to split traffic among available paths.
-- Mark a path as "standby", i.e., suggest that no traffic should be sent
-  on that path if another path is available.
+PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
+the peer to use its own logic to split traffic among available paths.
+PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
+should be sent on that path if another path is available.
+If no frame indicating a path usage preference was received for a certain path,
+the preference of the peer is unknown and the sender needs to decide based on it
+own local logic if the path should be used.
 
 Endpoints use Destination Connection ID Sequence Number field
-in PATH_STATUS frame to identify which path state is going to be
-changed. Notice that PATH_STATUS frame
-can be sent via a different path.
+in these frames to identify which path state is going to be
+changed. Notice that both frames can be sent via a different path
+and therefore might arrive in different orders.
+The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space to detect and ignore outdated information.
 
 If all available path are marked as "standby", no guidance is provided about
 which path should be used preferably.
@@ -461,7 +467,7 @@ a valid Connection ID to use, it can still acknowledge packets received on the p
 by sending ACK_MP frames on another path, if available. But also note that,
 as there is no valid CID associated with the path, the other end cannot send
 multipath control frames that contain the sequence number of a Connection ID, such
-as PATH_ABANDON or PATH_STATUS.
+as PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE.
 
 If the peer cannot send on a path and no data is received on the path, the idle time-out will close
 the path. If, before the idle timer expires, a new Connection ID gets issued
@@ -1103,24 +1109,23 @@ Reason Phrase:
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-## PATH_STATUS frame {#path-status-frame}
+## PATH_STANDBY frame {#path-standby-frame}
 
-PATH_STATUS Frame are used by endpoints to inform the peer of the current
-status of one path, and the peer should send packets according to
-the preference expressed in these frames.
-PATH_STATUS frames are formatted as shown in {{fig-path-status-format}}.
+PATH_STANDBY Frames are used by endpoints to inform the peer
+about its preference to not use the path associated to
+the Destination Connection IDs in the frame for sending.
+PATH_STANDBY frames are formatted as shown in {{fig-path-standby-format}}.
 
 ~~~
-  PATH_STATUS Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c06),
+  PATH_STANDBY Frame {
+    Type (i) = TBD-03 (experiments use 0x15228c07)
     Destination Connection ID Sequence Number (i),
     Path Status sequence number (i),
-    Path Status (i),
   }
 ~~~
-{: #fig-path-status-format title="PATH_STATUS Frame Format"}
+{: #fig-path-standby-format title="PATH_STANDBY Frame Format"}
 
-PATH_STATUS Frames contain the following fields:
+PATH_STANDBY Frames contain the following fields:
 
 Destination Connection ID Sequence Number:
 : The sequence number of the Destination Connection ID used by the
@@ -1129,33 +1134,69 @@ Destination Connection ID Sequence Number:
 
 Path Status sequence number:
 : A variable-length integer specifying
-  the sequence number assigned for this PATH_STATUS frame. The sequence
+  the sequence number assigned for this PATH_STANDBY frame. The sequence number space is shared with the PATH_AVAILABLE frame and
+the sequence
   number MUST be monotonically increasing generated by the sender of
-  the PATH_STATUS frame in the same connection. The receiver of
-  the PATH_STATUS frame needs to use and compare the sequence numbers
+  the PATH_STANDBY frame in the same connection. The receiver of
+  the PATH_STANDBY frame needs to use and compare the sequence numbers
   separately for each Destination Connection ID Sequence
   Number.
 
-Available values of Path Status field are:
-
-- 1: Standby
-- 2: Available
-
-Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
-use this path or not. If an endpoint receives a PATH_STATUS frame
-containing 1-Standby status, it SHOULD stop sending non-probing packets
-on the corresponding path, until it receives a new PATH_STATUS frame
-containing 2-Available status with a higher sequence number referring to
-the same path.
-
 Frames may be received out of order. A peer MUST ignore an incoming
-PATH_STATUS frame if it previously received another PATH_STATUS frame
+PATH_STANDBY frame if it previously received another PATH_STANDBY frame
+or PATH_AVAILABLE
 for the same Destination Connection ID Sequence Number with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.
 
-PATH_STATUS frames are ack-eliciting. If a packet containing a
-PATH_STATUS frame is considered lost, the peer SHOULD resend the frame
+PATH_STANDBY frames are ack-eliciting. If a packet containing a
+PATH_STANDBY frame is considered lost, the peer SHOULD resend the frame
+only if it contains the last status sent for that path -- as indicated
+by the sequence number.
+
+
+## PATH_AVAILABLE frame {#path-available-frame}
+
+PATH_AVAILABLE frames are used by endpoints to inform the peer
+that the path associated to
+the Destination Connection IDs in the frame is available for sending.
+PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
+
+~~~
+  PATH_AVAILABLE Frame {
+    Type (i) = TBD-03 (experiments use 0x15228c08),
+    Destination Connection ID Sequence Number (i),
+    Path Status sequence number (i),
+  }
+~~~
+{: #fig-path-available-format title="PATH_AVAILABLE Frame Format"}
+
+PATH_AVAILABLE frames contain the following fields:
+
+Destination Connection ID Sequence Number:
+: The sequence number of the Destination Connection ID used by the
+  receiver of this frame to send packets over the path the status update
+  corresponds to.
+
+Path Status sequence number:
+: A variable-length integer specifying
+  the sequence number assigned for this PATH_AVAILABLE frame. The sequence number space is shared with the PATH_STANDBY frame and
+the sequence
+  number MUST be monotonically increasing generated by the sender of
+  the PATH_AVAILABLE frame in the same connection. The receiver of
+  the PATH_AVAILABLE frame needs to use and compare the sequence numbers
+  separately for each Destination Connection ID Sequence
+  Number.
+
+Frames may be received out of order. A peer MUST ignore an incoming
+PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
+or PATH_STANDBY frame
+for the same Destination Connection ID Sequence Number with a
+Path Status sequence number equal to or higher than the Path Status
+sequence number of the incoming frame.
+
+PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
+PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
@@ -1197,7 +1238,8 @@ Value                                              | Frame Name          | Speci
 ---------------------------------------------------|---------------------|-----------------
 TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | ACK_MP              | {{ack-mp-frame}}
 TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
-TBD-03 (experiments use 0x15228c06)                  | PATH_STATUS         | {{path-status-frame}}
+TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{path-standby-frame}}
+TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
