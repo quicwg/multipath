@@ -25,8 +25,8 @@ author:
    fullname:
      :: "马云飞"
      ascii: "Yunfei Ma"
-   org: Alibaba Inc.
-   email: yunfei.ma@alibaba-inc.com
+   org: Uber Technologies Inc.
+   email: yunfei.ma@uber.com
 -
    ins: Q. De Coninck
    name: Quentin De Coninck
