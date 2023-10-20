@@ -1206,7 +1206,7 @@ PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
-A PATH_AVAILABLE may be bundled with a NEW_CONNECTION_ID frame or
+A PATH_AVAILABLE MAY be bundled with a NEW_CONNECTION_ID frame or
 PATH_RESPONSE frame in order to indicated the prefered path usage
 before or during path initiation.
 
