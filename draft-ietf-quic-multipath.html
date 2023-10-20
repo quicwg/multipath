@@ -15,24 +15,24 @@
        This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection. 
     " name="description">
-<meta content="xml2rfc 3.17.4" name="generator">
+<meta content="xml2rfc 3.18.2" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-quic-multipath-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.17.4
-    Python 3.11.4
+  xml2rfc 3.18.2
+    Python 3.11.6
     ConfigArgParse 1.5.3
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 3.9.1
+    platformdirs 3.11.0
     pycountry 22.3.5
     PyYAML 6.0
     requests 2.31.0
     setuptools 67.7.2
     six 1.16.0
-    wcwidth 0.2.6
+    wcwidth 0.2.8
 -->
 <link href="draft-ietf-quic-multipath.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -655,7 +655,7 @@ sub, sup {
 }
 #toc nav li {
   line-height: 1.3em;
-  margin: 0.75em 0;
+  margin: 2px 0;
   padding-left: 1.2em;
   text-indent: -1.2em;
 }
@@ -748,7 +748,7 @@ hr.addr {
     z-index: 2;
     top: 0;
     right: 0;
-    padding: 0;
+    padding: 1px 0 0 0;
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
@@ -872,16 +872,13 @@ hr.addr {
     border-top: none;
     padding-top: 0;
   }
-  figure, pre {
+  figure, pre, .vcard {
     page-break-inside: avoid;
-  }
-  figure {
-    overflow: scroll;
   }
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
   }
-  h2+*, h3+*, h4+*, h5+*, h6+* {
+  :is(h2, h3, h4, h5, h6)+*, dd {
     page-break-before: avoid;
   }
   pre {
@@ -894,6 +891,9 @@ hr.addr {
   }
   td {
     border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
   }
 }
 
@@ -995,28 +995,6 @@ address div.right {
   text-align: right;
 }
 
-/* Give the table caption label the same styling as the figcaption */
-
-@media print {
-  .toplink {
-    display: none;
-  }
-
-  /* avoid overwriting the top border line with the ToC header */
-  #toc {
-    padding-top: 1px;
-  }
-
-  /* Avoid page breaks inside dl and author address entries */
-  dd {
-    page-break-before: avoid;
-  }
-  .vcard {
-    page-break-inside: avoid;
-  }
-
-}
-
 /* Dark mode. */
 @media (prefers-color-scheme: dark) {
 :root {
@@ -1053,11 +1031,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">July 2023</td>
+<td class="right">October 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 23 January 2024</td>
+<td class="center">Expires 22 April 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1048,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-07-22" class="published">22 July 2023</time>
+<time datetime="2023-10-20" class="published">20 October 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-01-23">23 January 2024</time></dd>
+<dd class="expires"><time datetime="2024-04-22">22 April 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1087,7 +1065,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <div class="author">
       <div class="author-name">
 <span class="non-ascii">马云飞</span> (<span class="ascii">Y. Ma</span>)</div>
-<div class="org">Alibaba Inc.</div>
+<div class="org">Uber Technologies Inc.</div>
 </div>
 <div class="author">
       <div class="author-name">Q. De Coninck, <span class="editor">Ed.</span>
@@ -1146,7 +1124,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 January 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1331,29 +1309,36 @@ to enable the simultaneous usage of multiple paths for a single
 connection.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This proposal is based on several basic design points:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-3.1">Re-use as much as possible mechanisms of QUIC version 1. In
+<li class="normal" id="section-1-3.1">
+          <p id="section-1-3.1.1">Re-use as much as possible mechanisms of QUIC version 1. In
 particular, this proposal uses path validation as specified for QUIC
 version 1 and aims to re-use as much as possible of QUIC's connection
-migration.<a href="#section-1-3.1" class="pilcrow">¶</a>
+migration.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-3.2">Use the same packet header formats as QUIC version 1 to minimize
+        <li class="normal" id="section-1-3.2">
+          <p id="section-1-3.2.1">Use the same packet header formats as QUIC version 1 to minimize
 the difference between multipath and non-multipath traffic being
-exposed on wire.<a href="#section-1-3.2" class="pilcrow">¶</a>
+exposed on wire.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-3.3">Congestion Control must be per-path (following <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
-which usually also requires per-path RTT measurements<a href="#section-1-3.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-3.3">
+          <p id="section-1-3.3.1">Congestion Control must be per-path (following <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
+which usually also requires per-path RTT measurements<a href="#section-1-3.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-3.4">PMTU discovery should be performed per-path<a href="#section-1-3.4" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-3.4">
+          <p id="section-1-3.4.1">PMTU discovery should be performed per-path<a href="#section-1-3.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-3.5">The use of this multipath extension requires the use of non-zero
-Connection IDs in both directions.<a href="#section-1-3.5" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-3.5">
+          <p id="section-1-3.5.1">The use of this multipath extension requires the use of non-zero
+Connection IDs in both directions.<a href="#section-1-3.5.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-3.6">A path is determined by the 4-tuple of source and destination IP
+        <li class="normal" id="section-1-3.6">
+          <p id="section-1-3.6.1">A path is determined by the 4-tuple of source and destination IP
 address as well as source and destination port. Therefore, there can be
-at most one active paths/connection ID per 4-tuple.<a href="#section-1-3.6" class="pilcrow">¶</a>
+at most one active paths/connection ID per 4-tuple.<a href="#section-1-3.6.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-3.7">If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration event.<a href="#section-1-3.7" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-3.7">
+          <p id="section-1-3.7.1">If the 4-tuple changes without the use of a new connection ID (e.g.
+due to a NAT rebinding), this is considered as a migration event.<a href="#section-1-3.7.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-4">The path management specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
@@ -1362,13 +1347,16 @@ a new preferred path, and it allows the peer to release resources
 associated with the old path. Multipath requires several changes to
 that mechanism:<a href="#section-1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-5.1">Allow simultaneous transmission of non-probing frames on multiple
-paths.<a href="#section-1-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1-5.1">
+          <p id="section-1-5.1.1">Allow simultaneous transmission of non-probing frames on multiple
+paths.<a href="#section-1-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-5.2">Continue using an existing path even if non-probing frames have
-been received on another path.<a href="#section-1-5.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-5.2">
+          <p id="section-1-5.2.1">Continue using an existing path even if non-probing frames have
+been received on another path.<a href="#section-1-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-5.3">Manage the removal of paths that have been abandoned.<a href="#section-1-5.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-5.3">
+          <p id="section-1-5.3.1">Manage the removal of paths that have been abandoned.<a href="#section-1-5.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-6">As such, this extension specifies a departure from the specification of
@@ -1391,14 +1379,17 @@ sent to that node over different paths.<a href="#section-1-8" class="pilcrow">¶
 <p id="section-1-9">Each endhost may use several IP addresses to serve the connection. In
 particular, the multipath extension supports the following scenarios.<a href="#section-1-9" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-10.1">The client uses multiple IP addresses and the server listens on only
-one.<a href="#section-1-10.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1-10.1">
+          <p id="section-1-10.1.1">The client uses multiple IP addresses and the server listens on only
+one.<a href="#section-1-10.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-10.2">The client uses only one IP address and the server listens on
-several ones.<a href="#section-1-10.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-10.2">
+          <p id="section-1-10.2.1">The client uses only one IP address and the server listens on
+several ones.<a href="#section-1-10.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-10.3">The client uses multiple IP addresses and the server listens on
-several ones.<a href="#section-1-10.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-10.3">
+          <p id="section-1-10.3.1">The client uses multiple IP addresses and the server listens on
+several ones.<a href="#section-1-10.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-11">This proposal does not cover address discovery and management. Addresses
@@ -1477,10 +1468,11 @@ the use of the multipath extension during the connection handshake,
 as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. The new transport parameter is
 defined as follows:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-2.1">enable_multipath (current version uses 0x0f739bbc1b666d05): the
+<li class="normal" id="section-3-2.1">
+          <p id="section-3-2.1.1">enable_multipath (current version uses 0x0f739bbc1b666d05): the
 enable_multipath transport parameter is included if the endpoint supports
 the multipath extension as defined in this document. This parameter has
-a zero-length value.<a href="#section-3-2.1" class="pilcrow">¶</a>
+a zero-length value.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-3">If any of the endpoints does not advertise the enable_multipath transport
@@ -1535,11 +1527,13 @@ Still, the receiver may observe the same Connection ID used on different
 as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">This proposal adds two multipath control frames for path management:<a href="#section-4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4-5.1">PATH_ABANDON frame for the receiver side to abandon the path
-(see <a href="#path-abandon-frame" class="auto internal xref">Section 8.2</a>)<a href="#section-4-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4-5.1">
+          <p id="section-4-5.1.1">PATH_ABANDON frame for the receiver side to abandon the path
+(see <a href="#path-abandon-frame" class="auto internal xref">Section 8.2</a>)<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-5.2">PATH_STATUS frame to express a preference in path usage
-(see <a href="#path-status-frame" class="auto internal xref">Section 8.3</a><a href="#section-4-5.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-5.2">
+          <p id="section-4-5.2.1">PATH_STATUS frame to express a preference in path usage
+(see <a href="#path-status-frame" class="auto internal xref">Section 8.3</a><a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-4-6">All the new frames are sent in 1-RTT packets <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4-6" class="pilcrow">¶</a></p>
@@ -1595,11 +1589,13 @@ but the PATH_STATUS frame is still a clear signal of suggestion
 for the preference of path usage by the peer.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">PATH_STATUS frame describes 2 kinds of path states:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-3.1">Mark a path as "available", i.e., allow the peer to use its own logic
-to split traffic among available paths.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.2-3.1">
+            <p id="section-4.2-3.1.1">Mark a path as "available", i.e., allow the peer to use its own logic
+to split traffic among available paths.<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.2-3.2">Mark a path as "standby", i.e., suggest that no traffic should be sent
-on that path if another path is available.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-3.2">
+            <p id="section-4.2-3.2.1">Mark a path as "standby", i.e., suggest that no traffic should be sent
+on that path if another path is available.<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.2-4">Endpoints use Destination Connection ID Sequence Number field
@@ -1808,19 +1804,22 @@ after a spurious estimate of path abandonment by the client.<a href="#section-4.
 </div>
 <p id="section-4.4-3">In non-final states, hosts have to track the following information.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.4-4.1">Associated 4-tuple: The tuple (source IP, source port, destination IP,
-destination port) used by the endhost to send packets over the path.<a href="#section-4.4-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.4-4.1">
+            <p id="section-4.4-4.1.1">Associated 4-tuple: The tuple (source IP, source port, destination IP,
+destination port) used by the endhost to send packets over the path.<a href="#section-4.4-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.4-4.2">Associated Destination Connection ID: The Connection ID used to send
-packets over the path.<a href="#section-4.4-4.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-4.2">
+            <p id="section-4.4-4.2.1">Associated Destination Connection ID: The Connection ID used to send
+packets over the path.<a href="#section-4.4-4.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.4-5">In Active state, hosts MUST also track the following information:<a href="#section-4.4-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.4-6.1">Associated Source Connection ID: The Connection ID used to receive
+<li class="normal" id="section-4.4-6.1">
+            <p id="section-4.4-6.1.1">Associated Source Connection ID: The Connection ID used to receive
 packets over the path. The endpoint relies on its sequence number to
 send path control information and specifically acknowledge packets belonging to that Connection ID-specific
-packet number space.<a href="#section-4.4-6.1" class="pilcrow">¶</a>
+packet number space.<a href="#section-4.4-6.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.4-7">A path in the "Validating" state performs path validation as described
@@ -2122,20 +2121,23 @@ Implementation will have to manage these evolving relations.<a href="#section-7.
 path can be associated to either the "path state", or to the
 state of either the sender or receiver number spaces. For example:<a href="#section-7.1-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.1-7.1">RTT measurements and congestion state are logically associated
+<li class="normal" id="section-7.1-7.1">
+            <p id="section-7.1-7.1.1">RTT measurements and congestion state are logically associated
 with the 4-tuple. They will remain unchanged if data starts
-being received or sent through the same 4-tuple using new CIDs.<a href="#section-7.1-7.1" class="pilcrow">¶</a>
+being received or sent through the same 4-tuple using new CIDs.<a href="#section-7.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.1-7.2">Implementations of loss recovery typically maintain lists of
+          <li class="normal" id="section-7.1-7.2">
+            <p id="section-7.1-7.2.1">Implementations of loss recovery typically maintain lists of
 packets sent and not yet acknowledged. Such information, along
 with the value of the next PN to use for sending, is
 logically associated with the "Sender Number Space", and
-with the peer-provided CID used for sending on the path.<a href="#section-7.1-7.2" class="pilcrow">¶</a>
+with the peer-provided CID used for sending on the path.<a href="#section-7.1-7.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.1-7.3">Sending of acknowledgement requires keeping track of the PN of
+          <li class="normal" id="section-7.1-7.3">
+            <p id="section-7.1-7.3.1">Sending of acknowledgement requires keeping track of the PN of
 received packets and of acknowledgements previously sent. Such
 information is logically associated with the "Receiver Number Space",
-and with the CID used by the peer for sending on the path.<a href="#section-7.1-7.3" class="pilcrow">¶</a>
+and with the CID used by the peer for sending on the path.<a href="#section-7.1-7.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-7.1-8">When the link between paths and CID changes, the information tied
@@ -2517,9 +2519,11 @@ Number.<a href="#section-8.3-4.4.1" class="pilcrow">¶</a></p>
 </dl>
 <p id="section-8.3-5">Available values of Path Status field are:<a href="#section-8.3-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.3-6.1">1: Standby<a href="#section-8.3-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-8.3-6.1">
+            <p id="section-8.3-6.1.1">1: Standby<a href="#section-8.3-6.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.3-6.2">2: Available<a href="#section-8.3-6.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-8.3-6.2">
+            <p id="section-8.3-6.2.1">2: Available<a href="#section-8.3-6.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-8.3-7">Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
@@ -2679,9 +2683,11 @@ the "QUIC Protocol" heading.<a href="#section-10-6" class="pilcrow">¶</a></p>
 three proposals. Further contributors that were also involved
 one of the original proposals are:<a href="#section-12-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12-2.1">Qing An<a href="#section-12-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-12-2.1">
+          <p id="section-12-2.1.1">Qing An<a href="#section-12-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-12-2.2">Zhenyu Li<a href="#section-12-2.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-12-2.2">
+          <p id="section-12-2.2.1">Zhenyu Li<a href="#section-12-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -2698,6 +2704,7 @@ one of the original proposals are:<a href="#section-12-1" class="pilcrow">¶</a>
       <h2 id="name-references">
 <a href="#section-14" class="section-number selfRef">14. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
 <section id="section-14.1">
         <h3 id="name-normative-references">
 <a href="#section-14.1" class="section-number selfRef">14.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
@@ -2729,6 +2736,8 @@ one of the original proposals are:<a href="#section-12-1" class="pilcrow">¶</a>
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
+<div id="sec-informative-references">
 <section id="section-14.2">
         <h3 id="name-informative-references">
 <a href="#section-14.2" class="section-number selfRef">14.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
@@ -2748,6 +2757,7 @@ one of the original proposals are:<a href="#section-12-1" class="pilcrow">¶</a>
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
 </section>
 <div id="authors-addresses">
 <section id="appendix-A">
@@ -2772,16 +2782,16 @@ one of the original proposals are:<a href="#section-12-1" class="pilcrow">¶</a>
 <address class="vcard">
         <div class="ascii">
 <div dir="auto" class="left"><span class="fn nameRole">Yunfei Ma</span></div>
-<div dir="auto" class="left"><span class="org">Alibaba Inc.</span></div>
+<div dir="auto" class="left"><span class="org">Uber Technologies Inc.</span></div>
 <div class="email">
 <span>Email:</span>
-<a href="mailto:yunfei.ma@alibaba-inc.com" class="email">yunfei.ma@alibaba-inc.com</a>
+<a href="mailto:yunfei.ma@uber.com" class="email">yunfei.ma@uber.com</a>
 </div>
 </div>
 <div class="alternative-contact">Additional contact information:</div>
 <div class="non-ascii">
 <div dir="auto" class="left"><span class="fn nameRole">马云飞</span></div>
-<div dir="auto" class="left"><span class="org">Alibaba Inc.</span></div>
+<div dir="auto" class="left"><span class="org">Uber Technologies Inc.</span></div>
 </div>
 </address>
 <address class="vcard">

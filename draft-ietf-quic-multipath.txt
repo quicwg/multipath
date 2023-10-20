@@ -3,9 +3,10 @@
 
 
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
-Internet-Draft                                            马云飞 (Y. Ma)
-Intended status: Standards Track                            Alibaba Inc.
-Expires: 23 January 2024                              Q. De Coninck, Ed.
+Internet-Draft                                              Alibaba Inc.
+Intended status: Standards Track                          马云飞 (Y. Ma)
+Expires: 22 April 2024                            Uber Technologies Inc.
+                                                      Q. De Coninck, Ed.
                                                                UCLouvain
                                                           O. Bonaventure
                                                   UCLouvain and Tessares
@@ -13,7 +14,7 @@ Expires: 23 January 2024                              Q. De Coninck, Ed.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            22 July 2023
+                                                         20 October 2023
 
 
                       Multipath Extension for QUIC
@@ -51,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 January 2024.
+   This Internet-Draft will expire on 22 April 2024.
 
 Copyright Notice
 
@@ -1353,13 +1354,13 @@ Authors' Addresses
 
 
    Yunfei Ma
-   Alibaba Inc.
-   Email: yunfei.ma@alibaba-inc.com
+   Uber Technologies Inc.
+   Email: yunfei.ma@uber.com
 
    Additional contact information:
 
       马云飞
-      Alibaba Inc.
+      Uber Technologies Inc.
 
 
    Quentin De Coninck (editor)
