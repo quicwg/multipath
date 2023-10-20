@@ -344,6 +344,9 @@ PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
 PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
 should be sent on that path if another path is available.
+If no frame indicating a path usage preference was received for a certain path,
+the preference of the peer is unknown and the sender needs to decide based on it
+own local logic if the path should be used.
 
 Endpoints use Destination Connection ID Sequence Number field
 in these frames to identify which path state is going to be
