@@ -153,8 +153,8 @@ particular, the multipath extension supports the following scenarios.
     several ones.
   * The client uses multiple IP addresses and the server listens on
     several ones.
-    * The client uses only one IP address and the server
-      listens on only one.
+  * The client uses only one IP address and the server
+    listens on only one.
 
 Note that in the last scenario, it still remains possible to have
 multiple paths over the connection, given that a path is not only
