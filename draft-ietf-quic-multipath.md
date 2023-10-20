@@ -153,6 +153,15 @@ particular, the multipath extension supports the following scenarios.
     several ones.
   * The client uses multiple IP addresses and the server listens on
     several ones.
+    * The client uses only one IP address and the server
+      listens on only one.
+
+Note that in the last scenario, it still remains possible to have
+multiple paths over the connection, given that a path is not only
+defined by the IP addresses being used, but also the port numbers.
+In particular, the client can use one or several ports per IP
+address and the server can listen on one or several ports per IP
+address.
 
 This proposal does not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
@@ -322,7 +331,7 @@ to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission.
 
-As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected send a new
+As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. In situations where multiple paths are activated, the
 client may be recipient of several tokens, each tied to a different address.
