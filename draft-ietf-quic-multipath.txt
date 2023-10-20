@@ -275,7 +275,7 @@ Table of Contents
    as specified in [QUIC-TRANSPORT].  The new transport parameter is
    defined as follows:
 
-   *  enable_multipath (current version uses 0x0f739bbc1b666d05): the
+   *  enable_multipath (current version uses 0x0f739bbc1b666d06): the
       enable_multipath transport parameter is included if the endpoint
       supports the multipath extension as defined in this document.
       This parameter has a zero-length value.
@@ -1279,7 +1279,7 @@ Table of Contents
       | Value                    | Parameter Name.  | Specification |
       +==========================+==================+===============+
       | TBD (current version     | enable_multipath | Section 3     |
-      | uses 0x0f739bbc1b666d05) |                  |               |
+      | uses 0x0f739bbc1b666d06) |                  |               |
       +--------------------------+------------------+---------------+
 
            Table 2: Addition to QUIC Transport Parameters Entries
