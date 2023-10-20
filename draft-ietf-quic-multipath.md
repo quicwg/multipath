@@ -332,7 +332,8 @@ is negoatiated, the receiption of "non-probing"
 packet on a new path needs to be considered as an path initiation
 attempt that does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
-as long as the anti-amplification limits ({{Section 21.1.1.1 of RFC9000}}) and the congestion control limits are respected.
+as long as the anti-amplification limits 
+({{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control limits are respected.
 
 Further, in contrast with the specification in
 {{Section 9 of QUIC-TRANSPORT}}, the server MUST NOT assume that
