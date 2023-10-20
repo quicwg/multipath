@@ -336,7 +336,7 @@ as long as the congestion control limits are respected.
 
 Further, in contrast with the specification in
 {{Section 9 of QUIC-TRANSPORT}}, the server MUST NOT assume that
-receiving non-probing packets on a new path with a new Connection ID 
+receiving non-probing packets on a new path with a new Connection ID
 indicates an attempt
 to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
