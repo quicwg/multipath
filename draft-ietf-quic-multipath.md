@@ -323,13 +323,27 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
-If validation succeed, the client can send non-probing, 1-RTT packets
-on the new paths.  In contrast with the specification in
+If validation succeed, the client can continue to use the path.
+If validation fails, the client MUST NOT use the path and can
+remove any status assiciated to the path initation attempt.
+{{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
+"probing" and "non-probing" frames. When the  multipath extension
+is negoatiated, the receiption of "non-probing"
+packet on a new path needs to be consider as an path initiation
+attempt that does not impact the path status of any existing
+path. Therefore, any frame can be send on a new path at any time
+as long as the congestion control limits are respected.
+
+Further, in contrast with the specification in
 {{Section 9 of QUIC-TRANSPORT}}, the server MUST NOT assume that
-receiving non-probing packets on a new path indicates an attempt
+receiving non-probing packets on a new path with a new Connection ID 
+indicates an attempt
 to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
-for transmission.
+for transmission. Only the reception of "non-probing" frames on a new
+path containing a Connection ID that is already in use on another path
+should be considered as path migration as further discussed in {{mirgation}}.
+
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
@@ -562,9 +576,7 @@ send path control information and specifically acknowledge packets belonging to 
 packet number space.
 
 A path in the "Validating" state performs path validation as described
-in {{Section 8.2 of QUIC-TRANSPORT}}. An endhost should not send
-non-probing frames on a path in "Validating" state, as it has no
-guarantee that packets will actually reach the peer.
+in {{Section 8.2 of QUIC-TRANSPORT}}.
 
 The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
@@ -978,7 +990,7 @@ two or more active paths during the connection lifetime. Different applications 
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
-## Connection ID Changes and NAT Rebindings
+## Connection ID Changes and NAT Rebindings {#mirgation}
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the Connection ID it uses for to another available one
@@ -989,7 +1001,7 @@ the endpoint can keep the same congestion control and RTT measurement state.
 While endpoints assign a Connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
-performs path validation (see {{Section 9 of QUIC-TRANSPORT}}).
+perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
 If path validation process succeeds, the endpoints set
 the path's congestion controller and round-trip time
 estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
