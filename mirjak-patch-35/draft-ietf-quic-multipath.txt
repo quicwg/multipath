@@ -693,8 +693,9 @@ Table of Contents
 
    ACK_MP frames (defined in Section 8.1) can be returned on any path.
    If the ACK_MP is prefered to be sent on the same path as the
-   acknowledged packet, it can be beneficial to bundle an MP_ACK frame
-   with the PATH_RESPONSE frame during path validation.
+   acknowledged packet (see Section 7.3 for further guidance), it can be
+   beneficial to bundle an MP_ACK frame with the PATH_RESPONSE frame
+   during path validation.
 
 5.2.  Packet Protection
 
