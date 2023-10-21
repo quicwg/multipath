@@ -636,7 +636,7 @@ sequence number 0 after the handshake concluded.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
 If the ACK_MP is prefered to be sent on the same path as the acknowledged
-packet, it can be beneficial to bundle an MP_ACK frame
+packet (see {{compute-rtt}} for further guidance), it can be beneficial to bundle an MP_ACK frame
 with the PATH_RESPONSE frame during path validation.
 
 ## Packet Protection {#multipath-aead}
