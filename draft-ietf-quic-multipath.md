@@ -325,10 +325,10 @@ unless it has previously validated that address.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
-remove any status assiciated to the path initation attempt.
+remove any status associated to the path initation attempt.
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
-"probing" and "non-probing" frames. When the  multipath extension
-is negoatiated, the receiption of "non-probing"
+"probing" and "non-probing" frames. When the multipath extension
+is negotiated, the reception of "non-probing"
 packet on a new path needs to be considered as an path initiation
 attempt that does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
@@ -343,7 +343,7 @@ to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission. Reception of QUIC packets on a new
 path containing a Connection ID that is already in use on another path
-should be considered as path migration as further discussed in {{mirgation}}.
+should be considered as a path migration as further discussed in {{migration}}.
 
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
@@ -991,7 +991,7 @@ two or more active paths during the connection lifetime. Different applications 
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
-## Connection ID Changes and NAT Rebindings {#mirgation}
+## Connection ID Changes and NAT Rebindings {#migration}
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the Connection ID it uses for to another available one
