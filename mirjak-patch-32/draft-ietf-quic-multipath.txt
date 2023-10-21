@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 22 April 2024                            Uber Technologies Inc.
+Expires: 23 April 2024                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                                                UCLouvain
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 22 April 2024                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         20 October 2023
+                                                         21 October 2023
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 April 2024.
+   This Internet-Draft will expire on 23 April 2024.
 
 Copyright Notice
 
@@ -367,10 +367,10 @@ Table of Contents
 
    If validation succeeds, the client can continue to use the path.  If
    validation fails, the client MUST NOT use the path and can remove any
-   status assiciated to the path initation attempt.  Section 9.1 of
+   status associated to the path initation attempt.  Section 9.1 of
    [QUIC-TRANSPORT] introduces the concept of "probing" and "non-
-   probing" frames.  When the multipath extension is negoatiated, the
-   receiption of "non-probing" packet on a new path needs to be
+   probing" frames.  When the multipath extension is negotiated, the
+   reception of "non-probing" packet on a new path needs to be
    considered as an path initiation attempt that does not impact the
    path status of any existing path.  Therefore, any frame can be sent
    on a new path at any time as long as the anti-amplification limits
@@ -384,7 +384,7 @@ Table of Contents
    new paths over which non-probing packets have been received as
    available for transmission.  Reception of QUIC packets on a new path
    containing a Connection ID that is already in use on another path
-   should be considered as path migration as further discussed in
+   should be considered as a path migration as further discussed in
    Section 7.8.
 
    As specified in Section 9.3 of [QUIC-TRANSPORT], the server is
