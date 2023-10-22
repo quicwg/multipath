@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 23 April 2024                            Uber Technologies Inc.
+Expires: 24 April 2024                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                                                UCLouvain
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 23 April 2024                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         21 October 2023
+                                                         22 October 2023
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2024.
+   This Internet-Draft will expire on 24 April 2024.
 
 Copyright Notice
 
@@ -694,7 +694,7 @@ Table of Contents
    ACK_MP frames (defined in Section 8.1) can be returned on any path.
    If the ACK_MP is prefered to be sent on the same path as the
    acknowledged packet (see Section 7.3 for further guidance), it can be
-   beneficial to bundle an MP_ACK frame with the PATH_RESPONSE frame
+   beneficial to bundle an ACK_MP frame with the PATH_RESPONSE frame
    during path validation.
 
 5.2.  Packet Protection
