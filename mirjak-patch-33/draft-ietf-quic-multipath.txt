@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 23 April 2024                            Uber Technologies Inc.
+Expires: 24 April 2024                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                                                UCLouvain
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 23 April 2024                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         21 October 2023
+                                                         22 October 2023
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2024.
+   This Internet-Draft will expire on 24 April 2024.
 
 Copyright Notice
 
@@ -1190,8 +1190,8 @@ Table of Contents
    Destination Connection ID Sequence Number:  The sequence number of
       the Destination Connection ID used by the receiver of this frame
       to send packets over the path the status update corresponds to.
-      All Destination Connection ID that have been issued MAY be
-      specified even if it is not yet in use over a path.
+      All Destination Connection IDs that have been issued MAY be
+      specified, even if they are not yet in use over a path.
 
    Path Status sequence number:  A variable-length integer specifying
       the sequence number assigned for this PATH_STANDBY frame.  The
@@ -1214,7 +1214,7 @@ Table of Contents
    indicated by the sequence number.
 
    A PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame or
-   PATH_RESPONSE frame in order to indicate the preferred path usage
+   a PATH_RESPONSE frame in order to indicate the preferred path usage
    before or during path initiation.
 
 8.4.  PATH_AVAILABLE frame
@@ -1237,8 +1237,8 @@ Table of Contents
    Destination Connection ID Sequence Number:  The sequence number of
       the Destination Connection ID used by the receiver of this frame
       to send packets over the path the status update corresponds to.
-      All Destination Connection ID that have been issued MAY be
-      specified even if it is not yet in use over a path.
+      All Destination Connection IDs that have been issued MAY be
+      specified, even if they are not yet in use over a path.
 
    Path Status sequence number:  A variable-length integer specifying
       the sequence number assigned for this PATH_AVAILABLE frame.  The
@@ -1261,8 +1261,8 @@ Table of Contents
    indicated by the sequence number.
 
    A PATH_AVAILABLE frame MAY be bundled with a NEW_CONNECTION_ID frame
-   or PATH_RESPONSE frame in order to indicate the preferred path usage
-   before or during path initiation.
+   or a PATH_RESPONSE frame in order to indicate the preferred path
+   usage before or during path initiation.
 
 9.  Error Codes
 
