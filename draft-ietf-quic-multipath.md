@@ -1130,7 +1130,8 @@ PATH_STANDBY Frames contain the following fields:
 Destination Connection ID Sequence Number:
 : The sequence number of the Destination Connection ID used by the
   receiver of this frame to send packets over the path the status update
-  corresponds to.
+  corresponds to. All Destination Connection IDs that have been issued
+  MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
 : A variable-length integer specifying
@@ -1154,6 +1155,10 @@ PATH_STANDBY frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
+A PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame or
+a PATH_RESPONSE frame in order to indicate the preferred path usage
+before or during path initiation.
+
 
 ## PATH_AVAILABLE frame {#path-available-frame}
 
@@ -1176,7 +1181,8 @@ PATH_AVAILABLE frames contain the following fields:
 Destination Connection ID Sequence Number:
 : The sequence number of the Destination Connection ID used by the
   receiver of this frame to send packets over the path the status update
-  corresponds to.
+  corresponds to. All Destination Connection IDs that have been issued
+  MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
 : A variable-length integer specifying
@@ -1199,6 +1205,10 @@ PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
 PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
+
+A PATH_AVAILABLE frame MAY be bundled with a NEW_CONNECTION_ID frame or
+a PATH_RESPONSE frame in order to indicate the preferred path usage
+before or during path initiation.
 
 
 # Error Codes {#error-codes}
