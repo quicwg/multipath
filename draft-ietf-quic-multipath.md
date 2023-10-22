@@ -329,7 +329,7 @@ remove any status associated to the path initation attempt.
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. When the multipath extension
 is negotiated, the reception of "non-probing"
-packet on a new path needs to be considered as an path initiation
+packet on a new path needs to be considered as a path initiation
 attempt that does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
