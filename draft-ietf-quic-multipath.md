@@ -635,7 +635,7 @@ data packets, including 0-RTT packets, using the initial Connection ID with
 sequence number 0 after the handshake concluded.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
-If the ACK_MP is prefered to be sent on the same path as the acknowledged
+If the ACK_MP is preferred to be sent on the same path as the acknowledged
 packet (see {{compute-rtt}} for further guidance), it can be beneficial
 to bundle an ACK_MP frame with the PATH_RESPONSE frame during
 path validation.
