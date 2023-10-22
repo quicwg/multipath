@@ -7,7 +7,7 @@ Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
 Expires: 24 April 2024                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
-                                                               UCLouvain
+                                              University of Mons (UMONS)
                                                           O. Bonaventure
                                                   UCLouvain and Tessares
                                                               C. Huitema
@@ -1438,8 +1438,8 @@ Authors' Addresses
 
 
    Quentin De Coninck (editor)
-   UCLouvain
-   Email: quentin.deconinck@uclouvain.be
+   University of Mons (UMONS)
+   Email: quentin.deconinck@umons.ac.be
 
 
    Olivier Bonaventure
