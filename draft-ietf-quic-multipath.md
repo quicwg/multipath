@@ -31,8 +31,8 @@ author:
    ins: Q. De Coninck
    name: Quentin De Coninck
    role: editor
-   org: UCLouvain
-   email: quentin.deconinck@uclouvain.be
+   org: University of Mons (UMONS)
+   email: quentin.deconinck@umons.ac.be
 -
    ins: O. Bonaventure
    name: Olivier Bonaventure
