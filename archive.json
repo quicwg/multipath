@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-22T00:42:16.940804+00:00",
+  "timestamp": "2023-10-24T00:39:19.093413+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -1323,7 +1323,7 @@
       "id": "I_kwDOGNtpaM49sg7X",
       "title": "Sending non-probe packets before path validation complete",
       "url": "https://github.com/quicwg/multipath/issues/50",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1335,8 +1335,8 @@
       ],
       "body": "As we have 0-RTT transmission in QUIC-TRANSPORT, and path validation brings at lease one round-trip-time delay for data to be sent on the new path, can we add some mechanism to provide anti-amplification limitation and support this scenario?",
       "createdAt": "2021-10-25T12:31:26Z",
-      "updatedAt": "2023-10-20T09:17:30Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-22T10:56:53Z",
+      "closedAt": "2023-10-22T10:56:53Z",
       "comments": [
         {
           "author": "mirjak",
@@ -5107,7 +5107,7 @@
       "id": "I_kwDOGNtpaM5gqSbn",
       "title": "Discuss what to do if path_status is detected as lost or needs to be resend otherwise",
       "url": "https://github.com/quicwg/multipath/issues/200",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -5117,8 +5117,8 @@
       ],
       "body": "We might also discuss somewhere that you probably need to send an update if the peer changes the CID on that path. But maybe that a bit more discussion we need to have here. Maybe in this case it's better if the path_status frame could hold information for multiple CID or even provide somehow an assignment to a certain path status for future CID, so if then endpoint want to change it's CID on a path it can use a CID that is already assigned to the same property...?",
       "createdAt": "2023-03-13T15:11:10Z",
-      "updatedAt": "2023-10-21T14:16:58Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-22T09:47:15Z",
+      "closedAt": "2023-10-22T09:47:15Z",
       "comments": [
         {
           "author": "LPardue",
@@ -5330,7 +5330,7 @@
       "id": "I_kwDOGNtpaM5iQyJU",
       "title": "consider allowing sending on a new path optimistically",
       "url": "https://github.com/quicwg/multipath/issues/206",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "marten-seemann",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -5340,8 +5340,8 @@
       ],
       "body": "The draft currently forbids sending non-probing frames before path validation has completed:\r\n> If validation succeed, the client can send non-probing, 1-RTT packets on the new paths.\r\n\r\nWhile this is a sane thing to do in many cases, there might be good reasons to optimistically send non-probing frames right away. This is forbidden in RFC 9000 because sending non-probing frames abandons the original path, but this problem doesn't exist when doing multipath.\r\n\r\nOf course, if the path doesn't work, this means that those packets will be lost and data might need to be retransmitted, but that's a risk the client might be willing to take under certain circumstances.",
       "createdAt": "2023-03-31T02:25:51Z",
-      "updatedAt": "2023-10-21T14:20:53Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-22T10:56:54Z",
+      "closedAt": "2023-10-22T10:56:54Z",
       "comments": [
         {
           "author": "huitema",
@@ -5978,7 +5978,7 @@
       "id": "I_kwDOGNtpaM5ntiKc",
       "title": "Path Status is ill defined",
       "url": "https://github.com/quicwg/multipath/issues/218",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -5991,8 +5991,8 @@
       ],
       "body": "The definition of the path status frame is somewhat ambiguous. When trying to implement that, I have many questions:\r\n\r\n1) If paths have a status, what is the default status of a path just after validation, and before receiving any Status frame?\r\n\r\n2) Who send this? From the draft, I think \"either endpoint\". But then, what does that mean if one endpoint says \"available\" and the other says \"standby\"?\r\n\r\n3) If a path is standby state and the endpoint receives validating frames on that path, does the status change?\r\n\r\n4) If a path is in standby state and no other path is in available state, does the standby path automatically become available?\r\n\r\n5) Do we really need to maintain a sequence counter for status frames per path and per direction?",
       "createdAt": "2023-06-03T23:34:14Z",
-      "updatedAt": "2023-10-21T12:36:40Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-22T00:55:18Z",
+      "closedAt": "2023-10-22T00:55:17Z",
       "comments": [
         {
           "author": "qdeconinck",
@@ -6028,6 +6028,13 @@
           "body": "@huitema I think we can close this issue with the merge of PR #242 ? ",
           "createdAt": "2023-10-21T12:36:27Z",
           "updatedAt": "2023-10-21T12:36:27Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, we can close this issue.",
+          "createdAt": "2023-10-22T00:55:17Z",
+          "updatedAt": "2023-10-22T00:55:17Z"
         }
       ]
     },
@@ -6235,7 +6242,7 @@
       "id": "I_kwDOGNtpaM5pbz03",
       "title": "sending ACK_MP for packets arriving on a path yet to be validated",
       "url": "https://github.com/quicwg/multipath/issues/226",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kazuho",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -6245,8 +6252,8 @@
       ],
       "body": "How is an endpoint supposed to send ACKs in response to packets arriving on paths that have not been validated yet?\r\n\r\nWhen receiving a packet on a new path, the receiver cannot send an ACK_MP frame on the new path. This is because ACK_MP frame is not defined as a probing frame.\r\n\r\nThe receiver has to either:\r\n* a) send ACK_MP on a different path that has been validated already, or\r\n* b) withhold sending ACK_MP frames until the receiver completes validation the new path\r\n\r\nEither approach has its own downsides. Option A is going to have negative impact on RTT estimates (see #190), option B will be a diversion from QUIC v1 and we need to write it down if such behavior is permissible. The other option (C) could be to state that ACK_MP frames are probing frames.\r\n\r\nDo we have a preference on the strategy?",
       "createdAt": "2023-06-22T04:16:38Z",
-      "updatedAt": "2023-07-05T00:01:24Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-22T11:03:52Z",
+      "closedAt": "2023-10-22T11:03:52Z",
       "comments": [
         {
           "author": "huitema",
@@ -6765,7 +6772,7 @@
       ],
       "body": "Currently, MP_PROTOCOL_VIOLATION is used is for a too high CID seq num in the frame as well as the handshake error case if multipath is negotiated but no CID is present.\r\n\r\nHowever, we could also decided to define more specific error codes for one or both cases. ",
       "createdAt": "2023-07-05T16:19:15Z",
-      "updatedAt": "2023-10-21T12:35:01Z",
+      "updatedAt": "2023-10-22T00:42:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -6816,6 +6823,13 @@
           "body": "@LPardue @huitema not sure what we need to do here. Any more input?",
           "createdAt": "2023-10-21T12:35:01Z",
           "updatedAt": "2023-10-21T12:35:01Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I don't think we need to change the spec now.",
+          "createdAt": "2023-10-22T00:42:52Z",
+          "updatedAt": "2023-10-22T00:42:52Z"
         }
       ]
     },
@@ -6864,7 +6878,7 @@
       ],
       "body": "I think this issue repeats some of discussions we had earlier regarding using path_challenge as an explicit signal during a path creation. The inclusion of a client initiated path_challenge frame helps differentiate a path creation from a simultaneous NAT rebinding and CID rotation.\r\n\r\nMy question is do we want to state such a role of path_challenge more explicitly in this draft? I find people may still be confused about that, and such a sentence could clarify things a lot. Currently, in our implementation, yes, we use PATH_CHALLENGE as an explicit signal when creating a new path. The logic on the server is to first process a path_challenge_frame and if the server does not find a path associated with the in-coming packet's dcid, then try to create a new path and validate the client's address.",
       "createdAt": "2023-07-08T08:25:51Z",
-      "updatedAt": "2023-10-21T12:22:38Z",
+      "updatedAt": "2023-10-23T13:12:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -6887,6 +6901,13 @@
           "body": "> I don't think we should change the meaning of \"path challenge\" -- it has other use than path initialization. But I also think that we have an issue about the default state of paths. It would be nice to add a recommendation to bundle a \"path status\" with the \"path challenge\" when the client is probing a new path, so the peer knows whether the intended status is \"standby\" or \"available\".\r\n\r\n@huitema this part is addresses now with PR #277\r\n\r\n@yfmascgy is there anything else we want to do here or can we close this issue?",
           "createdAt": "2023-10-21T12:22:30Z",
           "updatedAt": "2023-10-21T12:22:30Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "As proposed in #180, path setup should be really explicit and not just some overloaded semantics of the `PATH_CHALLENGE` frame. A `PATH_SETUP` frame can't be misunderstood and would include all necessary information, including the initial path status.",
+          "createdAt": "2023-10-23T13:12:39Z",
+          "updatedAt": "2023-10-23T13:12:39Z"
         }
       ]
     },
@@ -6958,7 +6979,7 @@
       ],
       "body": "So the different cipher algorithms have different life time in how many invocations or total amount of encryption blocks that can be safely processed. For example AES GCM TLS states in RFC 8446:\r\n\r\nFor AES-GCM, up to 2^24.5 full-size records (about 24 million) may be\r\n   encrypted on a given connection while keeping a safety margin of\r\n   approximately 2^-57 for Authenticated Encryption (AE) security.  For\r\n   ChaCha20/Poly1305, the record sequence number would wrap before the\r\n   safety limit is reached.\r\n\r\nWhen using multipath this limit is across all paths as they use the same key, only ensure unique NONCE input to avoid any two-time pads. Thus, I think the document needs to note that the implementation will have to track their key-usage based on the cipher across all the paths. ",
       "createdAt": "2023-07-25T17:10:39Z",
-      "updatedAt": "2023-10-21T12:24:28Z",
+      "updatedAt": "2023-10-23T14:00:07Z",
       "closedAt": null,
       "comments": [
         {
@@ -6967,6 +6988,27 @@
           "body": "@gloinul Why do you think we need to state anything in addition to what the base QUIC spec is doing?",
           "createdAt": "2023-10-21T12:24:05Z",
           "updatedAt": "2023-10-21T12:24:05Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Because your key-limit tracking implementation may not have been implemented to support the usage of multiple Nonces and could therefore easily fail. Therefore an informational statement in the security consideration would be good to help ensure that implementors verify that their implementation count invocations independent of nonce for a key.  ",
+          "createdAt": "2023-10-23T08:55:30Z",
+          "updatedAt": "2023-10-23T08:55:30Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@gloinul Makes sense. I think our advice should be based on the numbers written in [RFC 9001 B.1.1.](https://datatracker.ietf.org/doc/html/rfc9001#name-confidentiality-limit) but otherwise I concur.",
+          "createdAt": "2023-10-23T13:56:21Z",
+          "updatedAt": "2023-10-23T13:56:21Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Sure, pointing to that the limits in RFC 9001 B.1.1 applies to all the paths is likely all that is needed. And it is not really a conflict, just clarification that with \"connection\" we mean the sum of all transmitted on all paths. ",
+          "createdAt": "2023-10-23T14:00:07Z",
+          "updatedAt": "2023-10-23T14:00:07Z"
         }
       ]
     },
@@ -7138,7 +7180,7 @@
       "id": "I_kwDOGNtpaM5xY0mf",
       "title": "When to send PATH_STATUS",
       "url": "https://github.com/quicwg/multipath/issues/272",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kazuho",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -7149,8 +7191,8 @@
       ],
       "body": "Is an endpoint allowed to send PATH_STATUS frames for DCID=X before it observes X being used?\r\n\r\nI think it would be natural especially for servers to bundle a NEW_CONNECTION_ID frame of DCID=X and a PATH_STATUS frame of DCID=X. That's the easiest way of declaring that all paths can be used for sending data.\r\n\r\nHowever, the draft is vague if such behavior is allowed, or if it is forbidden to send PATH_STATUS frames before receiving a packet that uses that DCID value.\r\n\r\nHence opening the issue.",
       "createdAt": "2023-09-19T06:57:31Z",
-      "updatedAt": "2023-10-20T13:26:31Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-22T09:47:15Z",
+      "closedAt": "2023-10-22T09:47:14Z",
       "comments": [
         {
           "author": "mirjak",
@@ -7175,7 +7217,7 @@
       ],
       "body": "The current draft (05) allows endpoints to change the CIDs of paths at any time. However, as each CID has its own PNS, this makes implementing MPQUIC more complicated and leads to sub-optimal performance in some cases.\r\n\r\nIn the following examples (Figure-1 & Figure-2), when NAT-rebinding happens on path-1, we have to create new PNSs that are associated with new CIDs,  associate the new PNSs with path-1, and simultaneously maintain both the old and new PNSs for some time (the old PNSs should not be released immediately for performance consideration as there could be unacked/inflight pkts). \r\n\r\nEven worse, if the client rotates the CID of path-1 after an idle period and NAT rebinding happens simultaneously, path-1 will experience a long timeout and be closed (Figure-3). If the client wants to resume the transmission on path-1, it has to reopen it.\r\n\r\nThe above issues are solved if we disable CID rotation on opened paths (Figure-4, Figure-5, and Figure-6): 1. No need to do the complicated management of multiple PNSs for each path; 2. CID rotation and NAT rebinding will never happen at the same time. \r\n\r\nThis actually simplifies the implementation of MPQUIC in practice. But, I am not sure if it will introduce other problems. \r\n\r\n**Figure-1**\r\n![Figure-1](https://github.com/quicwg/multipath/assets/10102895/f68395c8-cfa5-48cb-b63a-b8df55ce84df)\r\n\r\n**Figure-2**\r\n![Figure-2](https://github.com/quicwg/multipath/assets/10102895/c69e5e6a-ded3-469f-bbc3-b9eb950f282f)\r\n\r\n**Figure-3**\r\n![Figure-3](https://github.com/quicwg/multipath/assets/10102895/42feaff1-8e58-4ac8-812c-b6a41496a8bc)\r\n\r\n**Figure-4**\r\n![Figure-4](https://github.com/quicwg/multipath/assets/10102895/30774837-23d8-4197-90f3-e2fa5700f140)\r\n\r\n**Figure-5**\r\n![Figure-5](https://github.com/quicwg/multipath/assets/10102895/b1e03a7f-01a8-4802-aa0e-e24e3e218431)\r\n\r\n**Figure-6**\r\n![Figure-6](https://github.com/quicwg/multipath/assets/10102895/3183e272-b62b-4031-b71f-c78e3248db90)\r\n\r\n",
       "createdAt": "2023-10-19T06:40:23Z",
-      "updatedAt": "2023-10-21T12:31:31Z",
+      "updatedAt": "2023-10-23T13:04:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -7233,6 +7275,37 @@
           "body": "Can we close this issue or is there anything we can do editorially to better explain how to \"transfer\" the old state to the new path? ",
           "createdAt": "2023-10-21T12:31:23Z",
           "updatedAt": "2023-10-21T12:31:23Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "I think that #214 is a good solution to this problem. The current specification is unclear, complex and (as described in the initial message above) implies:\r\n1. multiple packet number spaces over the same path with complicated, suboptimal special-case loss detection\r\n2. difficulty to detect/understand simultaneous NAT rebinding and CID update, which is likely after an idle period\r\n\r\nThe specification should be updated with a simple and clear path model (one single stable logical path per physical path) and explicit signalling (not even more semantic overloading of the `PATH_CHALLENGE` frame!) to enable clean, reliable and efficient implementations.",
+          "createdAt": "2023-10-23T13:04:38Z",
+          "updatedAt": "2023-10-23T13:04:38Z"
+        }
+      ]
+    },
+    {
+      "number": 280,
+      "id": "I_kwDOGNtpaM50kdOp",
+      "title": "Should path status sequence be global, or per frame?",
+      "url": "https://github.com/quicwg/multipath/issues/280",
+      "state": "CLOSED",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I think we can use the definition that we have, but here is a corner case:\r\n\r\n1) Peer sends PATH_STANDBY, path 1, sequence number 1\r\n2) The packet containing that is delayed\r\n3) Peer sends PATH_AVAILABLE, path 2, sequence number 2\r\n4) The packet carrying PATH_AVAILABLE, path 2, sequence number 2 is received.\r\n5) The delayed packet carrying PATH_STANDBY, path 1, sequence number 1 is finally received.\r\n\r\nWith the current spec, the peer is supposed to ignore the PATH_STANDBY frame, because it has received another status frame with a higher sequence number.\r\n\r\nThe global status number is fine, but I would prefer to test it by path, rather than globally.",
+      "createdAt": "2023-10-22T00:51:15Z",
+      "updatedAt": "2023-10-22T00:54:01Z",
+      "closedAt": "2023-10-22T00:54:01Z",
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Oops. This is fixed already, text is fine.",
+          "createdAt": "2023-10-22T00:54:01Z",
+          "updatedAt": "2023-10-22T00:54:01Z"
         }
       ]
     }
@@ -25409,24 +25482,26 @@
       "id": "PR_kwDOGNtpaM5dXCnO",
       "title": "All non-probing frames on new paths",
       "url": "https://github.com/quicwg/multipath/pull/276",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #50 and #226",
       "createdAt": "2023-10-20T09:12:46Z",
-      "updatedAt": "2023-10-22T00:36:00Z",
+      "updatedAt": "2023-10-22T10:56:58Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "59d957fd238553e225bb42253a1e837e1a9aa98d",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-32",
-      "headRefOid": "906896357cd4e40aca3f66f2c21752e1569951f7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "5b2f914bb4022d74e25d6351bed0e86696e6d100",
+      "closedAt": "2023-10-22T10:56:52Z",
+      "mergedAt": "2023-10-22T10:56:52Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "38ec4b4461e1bc3d498560d5b5579b87145c6dd1"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -25708,6 +25783,65 @@
           "createdAt": "2023-10-22T00:36:00Z",
           "updatedAt": "2023-10-22T00:36:00Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5k0IhC",
+          "commit": {
+            "abbreviatedOid": "9068963"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-22T07:51:39Z",
+          "updatedAt": "2023-10-22T07:51:39Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "I don't think there is an issue. Path status relies to a DCID that the other end is using. So if you receive packets on a new path and you want to signal path status for that path, you should send a path status frame together with your path challenge. ",
+              "createdAt": "2023-10-22T07:51:39Z",
+              "updatedAt": "2023-10-22T07:51:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5kzXlO",
+          "commit": {
+            "abbreviatedOid": "9068963"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-21T05:24:17Z",
+          "updatedAt": "2023-10-22T08:05:38Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\npacket on a new path needs to be considered as a path initiation\r\n```",
+              "createdAt": "2023-10-21T05:24:17Z",
+              "updatedAt": "2023-10-22T08:05:38Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "My understanding is that \"status\" usually refers to the current operational condition of a path that include \"Active\", \"Idle\", etc. So \"states\" will be more proper here.",
+              "createdAt": "2023-10-21T07:03:13Z",
+              "updatedAt": "2023-10-22T08:05:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5k0Okw",
+          "commit": {
+            "abbreviatedOid": "5b2f914"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-22T10:55:46Z",
+          "updatedAt": "2023-10-22T10:55:46Z",
+          "comments": []
         }
       ]
     },
@@ -25716,24 +25850,26 @@
       "id": "PR_kwDOGNtpaM5dXR-k",
       "title": "PATH_STANDBY/AVAILABLE can be sent for all issued DCIDs",
       "url": "https://github.com/quicwg/multipath/pull/277",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #272",
       "createdAt": "2023-10-20T09:56:33Z",
-      "updatedAt": "2023-10-22T00:23:50Z",
+      "updatedAt": "2023-10-22T09:47:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "5d1c29fdb79ecf01f6e32c4e08bd335794986547",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-33",
-      "headRefOid": "daa8ca0ab62b3302a2ce47875bf7fd1a2c60a17b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "728187f2f5f5ef5b74be853e2c0ca1b67d9c057b",
+      "closedAt": "2023-10-22T09:47:14Z",
+      "mergedAt": "2023-10-22T09:47:14Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "1157389027669ba036e1ba199c0812540dea3385"
+      },
       "comments": [],
       "reviews": [
         {
@@ -25877,6 +26013,89 @@
           "createdAt": "2023-10-22T00:23:50Z",
           "updatedAt": "2023-10-22T00:23:50Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5k0Imm",
+          "commit": {
+            "abbreviatedOid": "daa8ca0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-22T07:54:23Z",
+          "updatedAt": "2023-10-22T07:54:23Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Do we need to also mention PATH_CHALLENGE?",
+              "createdAt": "2023-10-22T07:54:23Z",
+              "updatedAt": "2023-10-22T07:54:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5kz-3v",
+          "commit": {
+            "abbreviatedOid": "daa8ca0"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Some minor changes",
+          "createdAt": "2023-10-21T23:38:54Z",
+          "updatedAt": "2023-10-22T08:02:57Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\n  corresponds to. All Destination Connection IDs that have been issued\r\n```",
+              "createdAt": "2023-10-21T23:38:54Z",
+              "updatedAt": "2023-10-22T08:02:57Z"
+            },
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\n  MAY be specified, even if they are not yet in use over a path.\r\n```",
+              "createdAt": "2023-10-21T23:39:10Z",
+              "updatedAt": "2023-10-22T08:02:57Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\r\na PATH_RESPONSE frame in order to indicate the preferred path usage\r\n```",
+              "createdAt": "2023-10-21T23:40:36Z",
+              "updatedAt": "2023-10-22T08:02:57Z"
+            },
+            {
+              "originalPosition": 26,
+              "body": "```suggestion\r\n  corresponds to. All Destination Connection IDs that have been issued\r\n```",
+              "createdAt": "2023-10-21T23:43:17Z",
+              "updatedAt": "2023-10-22T08:02:57Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\n  MAY be specified, even if they are not yet in use over a path.\r\n```",
+              "createdAt": "2023-10-21T23:43:40Z",
+              "updatedAt": "2023-10-22T08:02:57Z"
+            },
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\na PATH_RESPONSE frame in order to indicate the preferred path usage\r\n```",
+              "createdAt": "2023-10-21T23:43:55Z",
+              "updatedAt": "2023-10-22T08:02:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5k0I7j",
+          "commit": {
+            "abbreviatedOid": "daa8ca0"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Looks good to me. Some minor changes. ",
+          "createdAt": "2023-10-22T08:04:17Z",
+          "updatedAt": "2023-10-22T08:04:17Z",
+          "comments": []
         }
       ]
     },
@@ -25913,24 +26132,26 @@
       "id": "PR_kwDOGNtpaM5dcbBl",
       "title": "recommend bundle ACK_MP with PATH_RESPONSE",
       "url": "https://github.com/quicwg/multipath/pull/279",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #226 ",
       "createdAt": "2023-10-21T12:09:16Z",
-      "updatedAt": "2023-10-22T00:38:25Z",
+      "updatedAt": "2023-10-22T11:03:54Z",
       "baseRepository": "quicwg/multipath",
-      "baseRefName": "mirjak-patch-32",
-      "baseRefOid": "8efe008e52334a5a6e350c62ad9ab6c3163c7f21",
+      "baseRefName": "main",
+      "baseRefOid": "38ec4b4461e1bc3d498560d5b5579b87145c6dd1",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-35",
-      "headRefOid": "a048c92d0b1b8765bf83d11e1fc5f53ded2c10eb",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "d91b158d9049b12927f878e2531a4bc7a9e8451f",
+      "closedAt": "2023-10-22T11:03:51Z",
+      "mergedAt": "2023-10-22T11:03:51Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "94d12769e12da75ee69d8dda9cd47ad66f793d90"
+      },
       "comments": [],
       "reviews": [
         {
@@ -26005,6 +26226,59 @@
           "createdAt": "2023-10-22T00:38:25Z",
           "updatedAt": "2023-10-22T00:38:25Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5k0G6p",
+          "commit": {
+            "abbreviatedOid": "a048c92"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-22T06:58:29Z",
+          "updatedAt": "2023-10-22T06:58:29Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5kz-rO",
+          "commit": {
+            "abbreviatedOid": "a048c92"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-21T23:24:52Z",
+          "updatedAt": "2023-10-22T08:01:15Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nto bundle an ACK_MP frame with the PATH_RESPONSE frame during\r\n```",
+              "createdAt": "2023-10-21T23:24:52Z",
+              "updatedAt": "2023-10-22T08:01:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5k0Oy_",
+          "commit": {
+            "abbreviatedOid": "74b12de"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Minor typo",
+          "createdAt": "2023-10-22T11:02:17Z",
+          "updatedAt": "2023-10-22T11:02:46Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\nIf the ACK_MP is preferred to be sent on the same path as the acknowledged\r\n```",
+              "createdAt": "2023-10-22T11:02:17Z",
+              "updatedAt": "2023-10-22T11:02:46Z"
+            }
+          ]
         }
       ]
     }
