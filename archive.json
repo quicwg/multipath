@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-29T00:41:54.565853+00:00",
+  "timestamp": "2023-10-31T00:39:44.816542+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7375,6 +7375,38 @@
       "body": "The -06 draft allows a peer to send a `PATH_STANDBY` frame for a particular connection ID (CID) before it is used:\r\n\r\n```\r\nA PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame\r\n[...] in order to indicate the preferred path usage\r\nbefore [...] path initiation.\r\n```\r\n\r\nFrom the definition of `PATH_STANDBY`:\r\n\r\n```\r\nDestination Connection ID Sequence Number:  The sequence number of\r\n   the Destination Connection ID used by the receiver of this frame\r\n   to send packets over the path the status update corresponds to.\r\n```\r\n\r\nWhen the path is set up, each endpoint freely choses a destination CID between the CIDs that the peer has issued. This means that resulting preferred path usage depends on which CID the peer happens to chose.\r\n\r\nI think that the current path identification model is very confusing, and this observation is another indication in that direction.",
       "createdAt": "2023-10-27T11:58:33Z",
       "updatedAt": "2023-10-27T11:58:33Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 284,
+      "id": "I_kwDOGNtpaM51TRPM",
+      "title": "Please ignore.",
+      "url": "https://github.com/quicwg/multipath/issues/284",
+      "state": "CLOSED",
+      "author": "tzaeschke",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-30T10:14:03Z",
+      "updatedAt": "2023-10-30T10:15:22Z",
+      "closedAt": "2023-10-30T10:14:11Z",
+      "comments": []
+    },
+    {
+      "number": 285,
+      "id": "I_kwDOGNtpaM51UGBM",
+      "title": "Terminology clarification of \"path\"",
+      "url": "https://github.com/quicwg/multipath/issues/285",
+      "state": "OPEN",
+      "author": "tzaeschke",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 1 states:\r\n> * A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore, there can be at most one active paths/connection ID per 4-tuple.\r\n\r\nAs I understand it, this would preclude the possibility of having different or evolving paths (i.e. routes) for a single 4-tuple.\r\nFor example, paths may additionally be determined by\r\n- Flow labels in IPv6, for example when using ECMP, which allows multiple paths between 4-tuples, see [RFC 6437](https://www.rfc-editor.org/rfc/rfc6437)\r\n- Multipath routing approaches such as SCION which also allows multiple paths per 4-tuple, see https://datatracker.ietf.org/doc/draft-dekater-panrg-scion-overview/\r\n\r\nWould it make sense to soften this requirement by allowing multiple paths (i.e. routes) for identical 4-tuples?\r\nOr, if \"path\" is synonymous with \"4-tuple\", could it make sense to add a clarification of terminology to that effect? I.e. clarifying that *\"there can be at most one active paths/connection ID per 4-tuple\"* is not saying anything about the actual (and possibly diverging or evolving) paths that packets on this \"path\" actually take?\r\n\r\nSuch a change should not affect the packet format or any part of the protocol. It would be merely a clarification on the meaning of \"path\".\r\n\r\n(Disclaimer: I work on the SCION protocol).",
+      "createdAt": "2023-10-30T12:10:55Z",
+      "updatedAt": "2023-10-30T12:10:55Z",
       "closedAt": null,
       "comments": []
     }
