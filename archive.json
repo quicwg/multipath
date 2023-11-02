@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-31T00:39:44.816542+00:00",
+  "timestamp": "2023-11-02T00:39:25.956834+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7406,9 +7406,24 @@
       "labels": [],
       "body": "Section 1 states:\r\n> * A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore, there can be at most one active paths/connection ID per 4-tuple.\r\n\r\nAs I understand it, this would preclude the possibility of having different or evolving paths (i.e. routes) for a single 4-tuple.\r\nFor example, paths may additionally be determined by\r\n- Flow labels in IPv6, for example when using ECMP, which allows multiple paths between 4-tuples, see [RFC 6437](https://www.rfc-editor.org/rfc/rfc6437)\r\n- Multipath routing approaches such as SCION which also allows multiple paths per 4-tuple, see https://datatracker.ietf.org/doc/draft-dekater-panrg-scion-overview/\r\n\r\nWould it make sense to soften this requirement by allowing multiple paths (i.e. routes) for identical 4-tuples?\r\nOr, if \"path\" is synonymous with \"4-tuple\", could it make sense to add a clarification of terminology to that effect? I.e. clarifying that *\"there can be at most one active paths/connection ID per 4-tuple\"* is not saying anything about the actual (and possibly diverging or evolving) paths that packets on this \"path\" actually take?\r\n\r\nSuch a change should not affect the packet format or any part of the protocol. It would be merely a clarification on the meaning of \"path\".\r\n\r\n(Disclaimer: I work on the SCION protocol).",
       "createdAt": "2023-10-30T12:10:55Z",
-      "updatedAt": "2023-10-30T12:10:55Z",
+      "updatedAt": "2023-10-31T16:53:31Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am not sure that we should address the complexities of using IPv6 flow labels or maybe diffserv marks to establish multiple paths. Yes, in theory we could use such marks to qualify a path, but we would also need to worry about handling of these fields in multiple networks, detecting behavior such as \"blanching\" or resetting the IPv6 flow ID, or simply not using the flow ID for routing at all. We would also have to worry about potential misuse, such as splitting a 4 tuple into a large number of paths and then running independent congestion control for each path, which could have a dramatic effect on other users of the 4-tuple.\r\n\r\nAll this sounds a lot like active research. One plausible solution would be for the SCION project to define a QUIC extension to handle path as 6 tuples of addresses, ports and IPv6 flow-id. Parties could negotiate that extension using a dedicated transport parameter. The extension definition would provide solutions for the problems mentioned above...",
+          "createdAt": "2023-10-31T05:52:20Z",
+          "updatedAt": "2023-10-31T05:52:20Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "_speaking as an individual_\r\n\r\nThe definition of path is the same as when we adopted the draft to the WG. So asking for a change in definition is effectively a request to expand the scope of the document. That risks delaying the standardization of multipath for the deployments that are happy with the current scope.\r\n\r\nI agree with Christian that extensions can expand the scope on their own terms, and spend their own time and effort to figure out what works and what doesn't. ",
+          "createdAt": "2023-10-31T16:53:31Z",
+          "updatedAt": "2023-10-31T16:53:31Z"
+        }
+      ]
     }
   ],
   "pulls": [
