@@ -355,7 +355,8 @@ When considering using a token for subsequent connections, the client ought to
 carefully select the token to use, due to the inherent ambiguity associated
 with determining the exact address to which a token is bound. To alleviate such a
 token ambiguity issue, a server may issue a token that is capable of validating
-any of the previously validated addresses.
+any of the previously validated addresses. Further guidance on token usage can be
+found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
 ## Path State Management
 
