@@ -32,7 +32,7 @@ enable the simultaneous usage of multiple paths for a single connection.
     requests 2.31.0
     setuptools 67.7.2
     six 1.16.0
-    wcwidth 0.2.8
+    wcwidth 0.2.9
 -->
 <link href="draft-ietf-quic-multipath.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1031,11 +1031,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">October 2023</td>
+<td class="right">November 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 24 April 2024</td>
+<td class="center">Expires 6 May 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1048,12 +1048,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-10-22" class="published">22 October 2023</time>
+<time datetime="2023-11-03" class="published">3 November 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-04-24">24 April 2024</time></dd>
+<dd class="expires"><time datetime="2024-05-06">6 May 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1070,7 +1070,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <div class="author">
       <div class="author-name">Q. De Coninck, <span class="editor">Ed.</span>
 </div>
-<div class="org">UCLouvain</div>
+<div class="org">University of Mons (UMONS)</div>
 </div>
 <div class="author">
       <div class="author-name">O. Bonaventure</div>
@@ -1124,7 +1124,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 May 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1262,7 +1262,10 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-path_abandon-frame" class="internal xref">PATH_ABANDON Frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
-                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-path_status-frame" class="internal xref">PATH_STATUS frame</a></p>
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-path_standby-frame" class="internal xref">PATH_STANDBY frame</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-path_available-frame" class="internal xref">PATH_AVAILABLE frame</a></p>
 </li>
             </ul>
 </li>
@@ -1390,12 +1393,10 @@ several ones.<a href="#section-1-10.2.1" class="pilcrow">¶</a></p>
         <li class="normal" id="section-1-10.3">
           <p id="section-1-10.3.1">The client uses multiple IP addresses and the server listens on
 several ones.<a href="#section-1-10.3.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-10.3.2.1">
-              <p id="section-1-10.3.2.1.1">The client uses only one IP address and the server
-listens on only one.<a href="#section-1-10.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-          </ul>
+        <li class="normal" id="section-1-10.4">
+          <p id="section-1-10.4.1">The client uses only one IP address and the server
+listens on only one.<a href="#section-1-10.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-11">Note that in the last scenario, it still remains possible to have
@@ -1481,7 +1482,7 @@ as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPOR
 defined as follows:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1">enable_multipath (current version uses 0x0f739bbc1b666d05): the
+          <p id="section-3-2.1.1">enable_multipath (current version uses 0x0f739bbc1b666d06): the
 enable_multipath transport parameter is included if the endpoint supports
 the multipath extension as defined in this document. This parameter has
 a zero-length value.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
@@ -1544,11 +1545,11 @@ as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" c
 (see <a href="#path-abandon-frame" class="auto internal xref">Section 8.2</a>)<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-5.2">
-          <p id="section-4-5.2.1">PATH_STATUS frame to express a preference in path usage
-(see <a href="#path-status-frame" class="auto internal xref">Section 8.3</a><a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
+          <p id="section-4-5.2.1">PATH_STANDBY and PATH_AVAILABLE frames to express a preference
+in path usage (see <a href="#path-standby-frame" class="auto internal xref">Section 8.3</a> and <a href="#path-available-frame" class="auto internal xref">Section 8.4</a><a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-4-6">All the new frames are sent in 1-RTT packets <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4-6" class="pilcrow">¶</a></p>
+<p id="section-4-6">All new frames are sent in 1-RTT packets <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4-6" class="pilcrow">¶</a></p>
 <div id="path-initiation">
 <section id="section-4.1">
         <h3 id="name-path-initiation">
@@ -1567,21 +1568,23 @@ a new path, it has to retire one of the established paths.<a href="#section-4.1-
 <p id="section-4.1-3">When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. After receiving packets from the
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, unless it has previously validated
+that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
 unless it has previously validated that address.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
 <p id="section-4.1-4">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
-remove any status assiciated to the path initation attempt.
+remove any status associated to the path initation attempt.
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.1" class="relref">Section 9.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> introduces the concept of
-"probing" and "non-probing" frames. When the  multipath extension
-is negoatiated, the receiption of "non-probing"
-packet on a new path needs to be considered as an path initiation
+"probing" and "non-probing" frames. When the multipath extension
+is negotiated, the reception of "non-probing"
+packet on a new path needs to be considered as a path initiation
 attempt that does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
-(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control limits are respected.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control
+limits for this path are respected.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
 <p id="section-4.1-5">Further, in contrast with the specification in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server MUST NOT assume that
 receiving non-probing packets on a new path with a new Connection ID
@@ -1590,7 +1593,7 @@ to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
 for transmission. Reception of QUIC packets on a new
 path containing a Connection ID that is already in use on another path
-should be considered as path migration as further discussed in <a href="#mirgation" class="auto internal xref">Section 7.8</a>.<a href="#section-4.1-5" class="pilcrow">¶</a></p>
+should be considered as a path migration as further discussed in <a href="#migration" class="auto internal xref">Section 7.8</a>.<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 <p id="section-4.1-6">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. In situations where multiple paths are activated, the
@@ -1607,28 +1610,29 @@ any of the previously validated addresses.<a href="#section-4.1-6" class="pilcro
         <h3 id="name-path-state-management">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-path-state-management" class="section-name selfRef">Path State Management</a>
         </h3>
-<p id="section-4.2-1">An endpoint uses PATH_STATUS frames to inform that the peer should
+<p id="section-4.2-1">An endpoint uses PATH_STANDBY and PATH_AVAILABLE frames to inform that the peer should
 send packets in the preference expressed by these frames.
-Notice that the endpoint might not follow the peer’s advertisements,
-but the PATH_STATUS frame is still a clear signal of suggestion
-for the preference of path usage by the peer.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">PATH_STATUS frame describes 2 kinds of path states:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.2-3.1">
-            <p id="section-4.2-3.1.1">Mark a path as "available", i.e., allow the peer to use its own logic
-to split traffic among available paths.<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.2-3.2">
-            <p id="section-4.2-3.2.1">Mark a path as "standby", i.e., suggest that no traffic should be sent
-on that path if another path is available.<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-4.2-4">Endpoints use Destination Connection ID Sequence Number field
-in PATH_STATUS frame to identify which path state is going to be
-changed. Notice that PATH_STATUS frame
-can be sent via a different path.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.2-5">If all available path are marked as "standby", no guidance is provided about
-which path should be used preferably.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+Note that the endpoint might not follow the peer’s advertisements,
+but these frames are still a clear signal of suggestion
+for the preference of path usage by the peer.
+Each peer indicates its preference of path usage independently of the other peer.
+It means that peers may have different usage preferences for the same path.
+Depending on the sender's decisions, this may lead to usage of paths that have been
+indicated as "standby" by the peer or non-usage of some locally available paths.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
+the peer to use its own logic to split traffic among available paths.
+PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
+should be sent on that path if another path is available.
+If no frame indicating a path usage preference was received for a certain path,
+the preference of the peer is unknown and the sender needs to decide based on it
+own local logic if the path should be used.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">Endpoints use Destination Connection ID Sequence Number field
+in these frames to identify which path state is going to be
+changed. Notice that both frames can be sent via a different path
+and therefore might arrive in different orders.
+The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space to detect and ignore outdated information.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">If all available path are marked as "standby", no guidance is provided about
+which path should be used preferably.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="path-close">
@@ -1732,7 +1736,7 @@ a valid Connection ID to use, it can still acknowledge packets received on the p
 by sending ACK_MP frames on another path, if available. But also note that,
 as there is no valid CID associated with the path, the other end cannot send
 multipath control frames that contain the sequence number of a Connection ID, such
-as PATH_ABANDON or PATH_STATUS.<a href="#section-4.3.3-3" class="pilcrow">¶</a></p>
+as PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE.<a href="#section-4.3.3-3" class="pilcrow">¶</a></p>
 <p id="section-4.3.3-4">If the peer cannot send on a path and no data is received on the path, the idle time-out will close
 the path. If, before the idle timer expires, a new Connection ID gets issued
 by its peer, the endpoint can re-activate the path by
@@ -2342,7 +2346,7 @@ Once the implementation has decided which paths to keep alive, it can do so by s
 on each of these paths before the idle timeout expires.<a href="#section-7.7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="mirgation">
+<div id="migration">
 <section id="section-7.8">
         <h3 id="name-connection-id-changes-and-n">
 <a href="#section-7.8" class="section-number selfRef">7.8. </a><a href="#name-connection-id-changes-and-n" class="section-name selfRef">Connection ID Changes and NAT Rebindings</a>
@@ -2498,76 +2502,128 @@ that created the text.<a href="#section-8.2-5.8.1" class="pilcrow">¶</a></p>
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.<a href="#section-8.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="path-status-frame">
+<div id="path-standby-frame">
 <section id="section-8.3">
-        <h3 id="name-path_status-frame">
-<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-path_status-frame" class="section-name selfRef">PATH_STATUS frame</a>
+        <h3 id="name-path_standby-frame">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-path_standby-frame" class="section-name selfRef">PATH_STANDBY frame</a>
         </h3>
-<p id="section-8.3-1">PATH_STATUS Frame are used by endpoints to inform the peer of the current
-status of one path, and the peer should send packets according to
-the preference expressed in these frames.
-PATH_STATUS frames are formatted as shown in <a href="#fig-path-status-format" class="auto internal xref">Figure 7</a>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
-<span id="name-path_status-frame-format"></span><div id="fig-path-status-format">
+<p id="section-8.3-1">PATH_STANDBY Frames are used by endpoints to inform the peer
+about its preference to not use the path associated to
+the Destination Connection IDs in the frame for sending.
+PATH_STANDBY frames are formatted as shown in <a href="#fig-path-standby-format" class="auto internal xref">Figure 7</a>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<span id="name-path_standby-frame-format"></span><div id="fig-path-standby-format">
 <figure id="figure-7">
           <div class="alignLeft art-text artwork" id="section-8.3-2.1">
 <pre>
-  PATH_STATUS Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c06),
+  PATH_STANDBY Frame {
+    Type (i) = TBD-03 (experiments use 0x15228c07)
     Destination Connection ID Sequence Number (i),
     Path Status sequence number (i),
-    Path Status (i),
   }
 </pre>
 </div>
 <figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
-<a href="#name-path_status-frame-format" class="selfRef">PATH_STATUS Frame Format</a>
+<a href="#name-path_standby-frame-format" class="selfRef">PATH_STANDBY Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-8.3-3">PATH_STATUS Frames contain the following fields:<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-3">PATH_STANDBY Frames contain the following fields:<a href="#section-8.3-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-8.3-4">
           <dt id="section-8.3-4.1">Destination Connection ID Sequence Number:</dt>
           <dd style="margin-left: 1.5em" id="section-8.3-4.2">
             <p id="section-8.3-4.2.1">The sequence number of the Destination Connection ID used by the
 receiver of this frame to send packets over the path the status update
-corresponds to.<a href="#section-8.3-4.2.1" class="pilcrow">¶</a></p>
+corresponds to. All Destination Connection IDs that have been issued
+MAY be specified, even if they are not yet in use over a path.<a href="#section-8.3-4.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-8.3-4.3">Path Status sequence number:</dt>
           <dd style="margin-left: 1.5em" id="section-8.3-4.4">
             <p id="section-8.3-4.4.1">A variable-length integer specifying
-the sequence number assigned for this PATH_STATUS frame. The sequence
+the sequence number assigned for this PATH_STANDBY frame. The sequence number space is shared with the PATH_AVAILABLE frame and
+the sequence
 number MUST be monotonically increasing generated by the sender of
-the PATH_STATUS frame in the same connection. The receiver of
-the PATH_STATUS frame needs to use and compare the sequence numbers
+the PATH_STANDBY frame in the same connection. The receiver of
+the PATH_STANDBY frame needs to use and compare the sequence numbers
 separately for each Destination Connection ID Sequence
 Number.<a href="#section-8.3-4.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-8.3-5">Available values of Path Status field are:<a href="#section-8.3-5" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-8.3-6.1">
-            <p id="section-8.3-6.1.1">1: Standby<a href="#section-8.3-6.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-8.3-6.2">
-            <p id="section-8.3-6.2.1">2: Available<a href="#section-8.3-6.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-8.3-7">Endpoints use PATH_STATUS frame to inform the peer whether it prefer to
-use this path or not. If an endpoint receives a PATH_STATUS frame
-containing 1-Standby status, it SHOULD stop sending non-probing packets
-on the corresponding path, until it receives a new PATH_STATUS frame
-containing 2-Available status with a higher sequence number referring to
-the same path.<a href="#section-8.3-7" class="pilcrow">¶</a></p>
-<p id="section-8.3-8">Frames may be received out of order. A peer MUST ignore an incoming
-PATH_STATUS frame if it previously received another PATH_STATUS frame
+<p id="section-8.3-5">Frames may be received out of order. A peer MUST ignore an incoming
+PATH_STANDBY frame if it previously received another PATH_STANDBY frame
+or PATH_AVAILABLE
 for the same Destination Connection ID Sequence Number with a
 Path Status sequence number equal to or higher than the Path Status
-sequence number of the incoming frame.<a href="#section-8.3-8" class="pilcrow">¶</a></p>
-<p id="section-8.3-9">PATH_STATUS frames are ack-eliciting. If a packet containing a
-PATH_STATUS frame is considered lost, the peer SHOULD resend the frame
+sequence number of the incoming frame.<a href="#section-8.3-5" class="pilcrow">¶</a></p>
+<p id="section-8.3-6">PATH_STANDBY frames are ack-eliciting. If a packet containing a
+PATH_STANDBY frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
-by the sequence number.<a href="#section-8.3-9" class="pilcrow">¶</a></p>
+by the sequence number.<a href="#section-8.3-6" class="pilcrow">¶</a></p>
+<p id="section-8.3-7">A PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame or
+a PATH_RESPONSE frame in order to indicate the preferred path usage
+before or during path initiation.<a href="#section-8.3-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="path-available-frame">
+<section id="section-8.4">
+        <h3 id="name-path_available-frame">
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-path_available-frame" class="section-name selfRef">PATH_AVAILABLE frame</a>
+        </h3>
+<p id="section-8.4-1">PATH_AVAILABLE frames are used by endpoints to inform the peer
+that the path associated to
+the Destination Connection IDs in the frame is available for sending.
+PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 8</a>.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+<span id="name-path_available-frame-format"></span><div id="fig-path-available-format">
+<figure id="figure-8">
+          <div class="alignLeft art-text artwork" id="section-8.4-2.1">
+<pre>
+  PATH_AVAILABLE Frame {
+    Type (i) = TBD-03 (experiments use 0x15228c08),
+    Destination Connection ID Sequence Number (i),
+    Path Status sequence number (i),
+  }
+</pre>
+</div>
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<a href="#name-path_available-frame-format" class="selfRef">PATH_AVAILABLE Frame Format</a>
+          </figcaption></figure>
+</div>
+<p id="section-8.4-3">PATH_AVAILABLE frames contain the following fields:<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-8.4-4">
+          <dt id="section-8.4-4.1">Destination Connection ID Sequence Number:</dt>
+          <dd style="margin-left: 1.5em" id="section-8.4-4.2">
+            <p id="section-8.4-4.2.1">The sequence number of the Destination Connection ID used by the
+receiver of this frame to send packets over the path the status update
+corresponds to. All Destination Connection IDs that have been issued
+MAY be specified, even if they are not yet in use over a path.<a href="#section-8.4-4.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-8.4-4.3">Path Status sequence number:</dt>
+          <dd style="margin-left: 1.5em" id="section-8.4-4.4">
+            <p id="section-8.4-4.4.1">A variable-length integer specifying
+the sequence number assigned for this PATH_AVAILABLE frame. The sequence number space is shared with the PATH_STANDBY frame and
+the sequence
+number MUST be monotonically increasing generated by the sender of
+the PATH_AVAILABLE frame in the same connection. The receiver of
+the PATH_AVAILABLE frame needs to use and compare the sequence numbers
+separately for each Destination Connection ID Sequence
+Number.<a href="#section-8.4-4.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-8.4-5">Frames may be received out of order. A peer MUST ignore an incoming
+PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
+or PATH_STANDBY frame
+for the same Destination Connection ID Sequence Number with a
+Path Status sequence number equal to or higher than the Path Status
+sequence number of the incoming frame.<a href="#section-8.4-5" class="pilcrow">¶</a></p>
+<p id="section-8.4-6">PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
+PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
+only if it contains the last status sent for that path -- as indicated
+by the sequence number.<a href="#section-8.4-6" class="pilcrow">¶</a></p>
+<p id="section-8.4-7">A PATH_AVAILABLE frame MAY be bundled with a NEW_CONNECTION_ID frame or
+a PATH_RESPONSE frame in order to indicate the preferred path usage
+before or during path initiation.<a href="#section-8.4-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2613,7 +2669,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a hr
         </thead>
         <tbody>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">TBD (current version uses 0x0f739bbc1b666d05)</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD (current version uses 0x0f739bbc1b666d06)</td>
             <td class="text-left" rowspan="1" colspan="1">enable_multipath</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#nego" class="auto internal xref">Section 3</a>
@@ -2653,10 +2709,17 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">TBD-03 (experiments use 0x15228c06)</td>
-            <td class="text-left" rowspan="1" colspan="1">PATH_STATUS</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD-03 (experiments use 0x15228c07)</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_STANDBY</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#path-status-frame" class="auto internal xref">Section 8.3</a>
+              <a href="#path-standby-frame" class="auto internal xref">Section 8.3</a>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">TBD-04 (experiments use 0x15228c08)</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_AVAILABLE</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <a href="#path-available-frame" class="auto internal xref">Section 8.4</a>
 </td>
           </tr>
         </tbody>
@@ -2823,10 +2886,10 @@ one of the original proposals are:<a href="#section-12-1" class="pilcrow">¶</a>
 </address>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Quentin De Coninck (<span class="role">editor</span>)</span></div>
-<div dir="auto" class="left"><span class="org">UCLouvain</span></div>
+<div dir="auto" class="left"><span class="org">University of Mons (UMONS)</span></div>
 <div class="email">
 <span>Email:</span>
-<a href="mailto:quentin.deconinck@uclouvain.be" class="email">quentin.deconinck@uclouvain.be</a>
+<a href="mailto:quentin.deconinck@umons.ac.be" class="email">quentin.deconinck@umons.ac.be</a>
 </div>
 </address>
 <address class="vcard">

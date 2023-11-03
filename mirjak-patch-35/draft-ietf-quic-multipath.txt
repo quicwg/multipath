@@ -5,16 +5,16 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 24 April 2024                            Uber Technologies Inc.
+Expires: 6 May 2024                               Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
-                                                               UCLouvain
+                                              University of Mons (UMONS)
                                                           O. Bonaventure
                                                   UCLouvain and Tessares
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         22 October 2023
+                                                         3 November 2023
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 April 2024.
+   This Internet-Draft will expire on 6 May 2024.
 
 Copyright Notice
 
@@ -102,7 +102,8 @@ Table of Contents
    8.  New Frames
      8.1.  ACK_MP Frame
      8.2.  PATH_ABANDON Frame
-     8.3.  PATH_STATUS frame
+     8.3.  PATH_STANDBY frame
+     8.4.  PATH_AVAILABLE frame
    9.  Error Codes
    10. IANA Considerations
    11. Security Considerations
@@ -191,8 +192,8 @@ Table of Contents
    *  The client uses multiple IP addresses and the server listens on
       several ones.
 
-      -  The client uses only one IP address and the server listens on
-         only one.
+   *  The client uses only one IP address and the server listens on only
+      one.
 
    Note that in the last scenario, it still remains possible to have
    multiple paths over the connection, given that a path is not only
@@ -274,7 +275,7 @@ Table of Contents
    as specified in [QUIC-TRANSPORT].  The new transport parameter is
    defined as follows:
 
-   *  enable_multipath (current version uses 0x0f739bbc1b666d05): the
+   *  enable_multipath (current version uses 0x0f739bbc1b666d06): the
       enable_multipath transport parameter is included if the endpoint
       supports the multipath extension as defined in this document.
       This parameter has a zero-length value.
@@ -338,10 +339,10 @@ Table of Contents
    *  PATH_ABANDON frame for the receiver side to abandon the path (see
       Section 8.2)
 
-   *  PATH_STATUS frame to express a preference in path usage (see
-      Section 8.3
+   *  PATH_STANDBY and PATH_AVAILABLE frames to express a preference in
+      path usage (see Section 8.3 and Section 8.4
 
-   All the new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
+   All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
 4.1.  Path Initiation
 
@@ -360,22 +361,23 @@ Table of Contents
    When the multipath option is negotiated, clients that want to use an
    additional path MUST first initiate the Address Validation procedure
    with PATH_CHALLENGE and PATH_RESPONSE frames described in Section 8.2
-   of [QUIC-TRANSPORT].  After receiving packets from the client on a
-   new path, if the server decides to use the new path, the server MUST
-   perform path validation (Section 8.2 of [QUIC-TRANSPORT]) unless it
-   has previously validated that address.
+   of [QUIC-TRANSPORT], unless it has previously validated that address.
+   After receiving packets from the client on a new path, if the server
+   decides to use the new path, the server MUST perform path validation
+   (Section 8.2 of [QUIC-TRANSPORT]) unless it has previously validated
+   that address.
 
    If validation succeeds, the client can continue to use the path.  If
    validation fails, the client MUST NOT use the path and can remove any
-   status assiciated to the path initation attempt.  Section 9.1 of
+   status associated to the path initation attempt.  Section 9.1 of
    [QUIC-TRANSPORT] introduces the concept of "probing" and "non-
-   probing" frames.  When the multipath extension is negoatiated, the
-   receiption of "non-probing" packet on a new path needs to be
-   considered as an path initiation attempt that does not impact the
-   path status of any existing path.  Therefore, any frame can be sent
-   on a new path at any time as long as the anti-amplification limits
+   probing" frames.  When the multipath extension is negotiated, the
+   reception of "non-probing" packet on a new path needs to be
+   considered as a path initiation attempt that does not impact the path
+   status of any existing path.  Therefore, any frame can be sent on a
+   new path at any time as long as the anti-amplification limits
    (Section 21.1.1.1 of [QUIC-TRANSPORT]) and the congestion control
-   limits are respected.
+   limits for this path are respected.
 
    Further, in contrast with the specification in Section 9 of
    [QUIC-TRANSPORT], the server MUST NOT assume that receiving non-
@@ -384,7 +386,7 @@ Table of Contents
    new paths over which non-probing packets have been received as
    available for transmission.  Reception of QUIC packets on a new path
    containing a Connection ID that is already in use on another path
-   should be considered as path migration as further discussed in
+   should be considered as a path migration as further discussed in
    Section 7.8.
 
    As specified in Section 9.3 of [QUIC-TRANSPORT], the server is
@@ -401,24 +403,32 @@ Table of Contents
 
 4.2.  Path State Management
 
-   An endpoint uses PATH_STATUS frames to inform that the peer should
-   send packets in the preference expressed by these frames.  Notice
-   that the endpoint might not follow the peer’s advertisements, but the
-   PATH_STATUS frame is still a clear signal of suggestion for the
-   preference of path usage by the peer.
+   An endpoint uses PATH_STANDBY and PATH_AVAILABLE frames to inform
+   that the peer should send packets in the preference expressed by
+   these frames.  Note that the endpoint might not follow the peer’s
+   advertisements, but these frames are still a clear signal of
+   suggestion for the preference of path usage by the peer.  Each peer
+   indicates its preference of path usage independently of the other
+   peer.  It means that peers may have different usage preferences for
+   the same path.  Depending on the sender's decisions, this may lead to
+   usage of paths that have been indicated as "standby" by the peer or
+   non-usage of some locally available paths.
 
-   PATH_STATUS frame describes 2 kinds of path states:
-
-   *  Mark a path as "available", i.e., allow the peer to use its own
-      logic to split traffic among available paths.
-
-   *  Mark a path as "standby", i.e., suggest that no traffic should be
-      sent on that path if another path is available.
+   PATH_AVAILABLE indicates that a path is "available", i.e., it
+   suggests to the peer to use its own logic to split traffic among
+   available paths.  PATH_STANDBY marks a path as "standby", i.e., it
+   suggests that no traffic should be sent on that path if another path
+   is available.  If no frame indicating a path usage preference was
+   received for a certain path, the preference of the peer is unknown
+   and the sender needs to decide based on it own local logic if the
+   path should be used.
 
    Endpoints use Destination Connection ID Sequence Number field in
-   PATH_STATUS frame to identify which path state is going to be
-   changed.  Notice that PATH_STATUS frame can be sent via a different
-   path.
+   these frames to identify which path state is going to be changed.
+   Notice that both frames can be sent via a different path and
+   therefore might arrive in different orders.  The PATH_AVAILABLE and
+   PATH_STANDBY frames share a common sequence number space to detect
+   and ignore outdated information.
 
    If all available path are marked as "standby", no guidance is
    provided about which path should be used preferably.
@@ -525,7 +535,7 @@ Table of Contents
    path, if available.  But also note that, as there is no valid CID
    associated with the path, the other end cannot send multipath control
    frames that contain the sequence number of a Connection ID, such as
-   PATH_ABANDON or PATH_STATUS.
+   PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE.
 
    If the peer cannot send on a path and no data is received on the
    path, the idle time-out will close the path.  If, before the idle
@@ -1178,59 +1188,99 @@ Table of Contents
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-8.3.  PATH_STATUS frame
+8.3.  PATH_STANDBY frame
 
-   PATH_STATUS Frame are used by endpoints to inform the peer of the
-   current status of one path, and the peer should send packets
-   according to the preference expressed in these frames.  PATH_STATUS
-   frames are formatted as shown in Figure 7.
+   PATH_STANDBY Frames are used by endpoints to inform the peer about
+   its preference to not use the path associated to the Destination
+   Connection IDs in the frame for sending.  PATH_STANDBY frames are
+   formatted as shown in Figure 7.
 
-     PATH_STATUS Frame {
-       Type (i) = TBD-03 (experiments use 0x15228c06),
+     PATH_STANDBY Frame {
+       Type (i) = TBD-03 (experiments use 0x15228c07)
        Destination Connection ID Sequence Number (i),
        Path Status sequence number (i),
-       Path Status (i),
      }
 
-                     Figure 7: PATH_STATUS Frame Format
+                    Figure 7: PATH_STANDBY Frame Format
 
-   PATH_STATUS Frames contain the following fields:
+   PATH_STANDBY Frames contain the following fields:
 
    Destination Connection ID Sequence Number:  The sequence number of
       the Destination Connection ID used by the receiver of this frame
       to send packets over the path the status update corresponds to.
+      All Destination Connection IDs that have been issued MAY be
+      specified, even if they are not yet in use over a path.
 
    Path Status sequence number:  A variable-length integer specifying
-      the sequence number assigned for this PATH_STATUS frame.  The
-      sequence number MUST be monotonically increasing generated by the
-      sender of the PATH_STATUS frame in the same connection.  The
-      receiver of the PATH_STATUS frame needs to use and compare the
+      the sequence number assigned for this PATH_STANDBY frame.  The
+      sequence number space is shared with the PATH_AVAILABLE frame and
+      the sequence number MUST be monotonically increasing generated by
+      the sender of the PATH_STANDBY frame in the same connection.  The
+      receiver of the PATH_STANDBY frame needs to use and compare the
       sequence numbers separately for each Destination Connection ID
       Sequence Number.
 
-   Available values of Path Status field are:
-
-   *  1: Standby
-
-   *  2: Available
-
-   Endpoints use PATH_STATUS frame to inform the peer whether it prefer
-   to use this path or not.  If an endpoint receives a PATH_STATUS frame
-   containing 1-Standby status, it SHOULD stop sending non-probing
-   packets on the corresponding path, until it receives a new
-   PATH_STATUS frame containing 2-Available status with a higher
-   sequence number referring to the same path.
-
    Frames may be received out of order.  A peer MUST ignore an incoming
-   PATH_STATUS frame if it previously received another PATH_STATUS frame
-   for the same Destination Connection ID Sequence Number with a Path
-   Status sequence number equal to or higher than the Path Status
-   sequence number of the incoming frame.
+   PATH_STANDBY frame if it previously received another PATH_STANDBY
+   frame or PATH_AVAILABLE for the same Destination Connection ID
+   Sequence Number with a Path Status sequence number equal to or higher
+   than the Path Status sequence number of the incoming frame.
 
-   PATH_STATUS frames are ack-eliciting.  If a packet containing a
-   PATH_STATUS frame is considered lost, the peer SHOULD resend the
+   PATH_STANDBY frames are ack-eliciting.  If a packet containing a
+   PATH_STANDBY frame is considered lost, the peer SHOULD resend the
    frame only if it contains the last status sent for that path -- as
    indicated by the sequence number.
+
+   A PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame or
+   a PATH_RESPONSE frame in order to indicate the preferred path usage
+   before or during path initiation.
+
+8.4.  PATH_AVAILABLE frame
+
+   PATH_AVAILABLE frames are used by endpoints to inform the peer that
+   the path associated to the Destination Connection IDs in the frame is
+   available for sending.  PATH_AVAILABLE frames are formatted as shown
+   in Figure 8.
+
+     PATH_AVAILABLE Frame {
+       Type (i) = TBD-03 (experiments use 0x15228c08),
+       Destination Connection ID Sequence Number (i),
+       Path Status sequence number (i),
+     }
+
+                   Figure 8: PATH_AVAILABLE Frame Format
+
+   PATH_AVAILABLE frames contain the following fields:
+
+   Destination Connection ID Sequence Number:  The sequence number of
+      the Destination Connection ID used by the receiver of this frame
+      to send packets over the path the status update corresponds to.
+      All Destination Connection IDs that have been issued MAY be
+      specified, even if they are not yet in use over a path.
+
+   Path Status sequence number:  A variable-length integer specifying
+      the sequence number assigned for this PATH_AVAILABLE frame.  The
+      sequence number space is shared with the PATH_STANDBY frame and
+      the sequence number MUST be monotonically increasing generated by
+      the sender of the PATH_AVAILABLE frame in the same connection.
+      The receiver of the PATH_AVAILABLE frame needs to use and compare
+      the sequence numbers separately for each Destination Connection ID
+      Sequence Number.
+
+   Frames may be received out of order.  A peer MUST ignore an incoming
+   PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE
+   frame or PATH_STANDBY frame for the same Destination Connection ID
+   Sequence Number with a Path Status sequence number equal to or higher
+   than the Path Status sequence number of the incoming frame.
+
+   PATH_AVAILABLE frames are ack-eliciting.  If a packet containing a
+   PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the
+   frame only if it contains the last status sent for that path -- as
+   indicated by the sequence number.
+
+   A PATH_AVAILABLE frame MAY be bundled with a NEW_CONNECTION_ID frame
+   or a PATH_RESPONSE frame in order to indicate the preferred path
+   usage before or during path initiation.
 
 9.  Error Codes
 
@@ -1259,7 +1309,7 @@ Table of Contents
       | Value                    | Parameter Name.  | Specification |
       +==========================+==================+===============+
       | TBD (current version     | enable_multipath | Section 3     |
-      | uses 0x0f739bbc1b666d05) |                  |               |
+      | uses 0x0f739bbc1b666d06) |                  |               |
       +--------------------------+------------------+---------------+
 
            Table 2: Addition to QUIC Transport Parameters Entries
@@ -1267,18 +1317,21 @@ Table of Contents
    The following frame types defined in Table 3 should be added to the
    "QUIC Frame Types" registry under the "QUIC Protocol" heading.
 
-      +==============================+==============+===============+
-      | Value                        | Frame Name   | Specification |
-      +==============================+==============+===============+
-      | TBD-00 - TBD-01 (experiments | ACK_MP       | Section 8.1   |
-      | use 0x15228c00-0x15228c01)   |              |               |
-      +------------------------------+--------------+---------------+
-      | TBD-02 (experiments use      | PATH_ABANDON | Section 8.2   |
-      | 0x15228c05)                  |              |               |
-      +------------------------------+--------------+---------------+
-      | TBD-03 (experiments use      | PATH_STATUS  | Section 8.3   |
-      | 0x15228c06)                  |              |               |
-      +------------------------------+--------------+---------------+
+     +==============================+================+===============+
+     | Value                        | Frame Name     | Specification |
+     +==============================+================+===============+
+     | TBD-00 - TBD-01 (experiments | ACK_MP         | Section 8.1   |
+     | use 0x15228c00-0x15228c01)   |                |               |
+     +------------------------------+----------------+---------------+
+     | TBD-02 (experiments use      | PATH_ABANDON   | Section 8.2   |
+     | 0x15228c05)                  |                |               |
+     +------------------------------+----------------+---------------+
+     | TBD-03 (experiments use      | PATH_STANDBY   | Section 8.3   |
+     | 0x15228c07)                  |                |               |
+     +------------------------------+----------------+---------------+
+     | TBD-04 (experiments use      | PATH_AVAILABLE | Section 8.4   |
+     | 0x15228c08)                  |                |               |
+     +------------------------------+----------------+---------------+
 
                Table 3: Addition to QUIC Frame Types Entries
 
@@ -1390,8 +1443,8 @@ Authors' Addresses
 
 
    Quentin De Coninck (editor)
-   UCLouvain
-   Email: quentin.deconinck@uclouvain.be
+   University of Mons (UMONS)
+   Email: quentin.deconinck@umons.ac.be
 
 
    Olivier Bonaventure
