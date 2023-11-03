@@ -318,7 +318,8 @@ a new path, it has to retire one of the established paths.
 When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
-{{Section 8.2 of QUIC-TRANSPORT}}. After receiving packets from the
+{{Section 8.2 of QUIC-TRANSPORT}}, unless it has previously validated
+that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
@@ -345,7 +346,6 @@ over which non-probing packets have been received as available
 for transmission. Reception of QUIC packets on a new
 path containing a Connection ID that is already in use on another path
 should be considered as a path migration as further discussed in {{migration}}.
-
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
