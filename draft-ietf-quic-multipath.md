@@ -441,6 +441,8 @@ any packet on this path anymore.
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
+Respectively, if there is still an active path, it is RECOMMENDED to
+send an PATH_ABANDON frame after an idle time on another path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
