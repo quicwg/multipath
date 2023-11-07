@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-05T00:42:55.849142+00:00",
+  "timestamp": "2023-11-07T00:40:21.205770+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -1405,7 +1405,6 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "For -01",
         "has PR"
       ],
       "body": "The current draft says that \"Servers SHOULD stop sending traffic on paths through where no non-probing packet was received in the last 3 path RTTs\". However, it is possible that only a few data was generated in the past few RTTs due to app-limit conditions, and as a result, only one path was used. So I think, in section 3.2.3, we should suggest the use of some keep-alive mechanisms such as sending ping frames on a particular path if one is interested in keeping that path alive. Let me know what you think?",
@@ -1415,7 +1414,7 @@
       "comments": [
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I fully agree this is an issue to be solved (#68).\r\n\r\nHowever, I think that before trying to find measures at the client side to take into account that server behavior, the text should provide a motivation for such restriction, especially that in typical scenarios the data is flying from the servers and that MP_ACK may be over any path \r\n\r\n```\r\n   ACK_MP frame Section 10.2 can be returned via either a different\r\n   path, or the same path identified by the Path Identifier, based on\r\n   different strategies of sending ACK_MP frames. \r\n```\r\n(BTW, s/ACK_MP frame Section 10.2/ACK_MP frame (Section 10.2)\r\n\r\nI'm afraid the use of keepalives may not work in scenarios where the external addresses are not local to the client (and thus has no control on the paths that will be used), e.g.,\r\n\r\n~~~~~\r\n                +----+\r\n                 | @1   \\\r\n  C---------R          ======S\r\n                 | @2    /\r\n                +-----+\r\n~~~~~\r\n\r\n* C/S negotiate multipathing by default.\r\n* R distributes the load based on a local policy.   \r\n* S/C uses PATH_CHALLENGE and PATH_RESPONSE to validate the paths.\r\n* C does not control the path that will be used by R when forwarding packets. \r\n\r\n\r\n\r\n",
           "createdAt": "2021-10-27T07:42:54Z",
           "updatedAt": "2021-10-27T07:47:30Z"
@@ -1429,7 +1428,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "R is multi-homed with PA (Provider Assigned) mode . In such mode, R uses the appropriate source IP address when forwarding packets over a given network attachment. \r\n\r\nWith RFC9000, and depending on the distribution logic used by R (per packet, per flow, round robin, maximize bw usage, RTT-based optimization, ...), there will be a path oscillation for this connection as the server will keep proceeding with path migrations each time it sees a new address (@1, @2, @1, and so on). \r\n\r\nNow, if both the client and server negotiates multipath, we don't have anymore this oscillation and the connection will use more resources. However, prematurely closing the connection nullifies the benefits of using multipath.\r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2021-10-28T05:32:14Z",
           "updatedAt": "2021-10-28T05:32:14Z"
@@ -1443,7 +1442,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> This is not a supported scenario. QUIC is an end to end protocol. Intermediate routers cannot really tell whether the endpoints are supporting multipath, and should not depend on that.\r\n\r\nSure, the connection is end-to-end. The intermediate routers **do not * interfere with the connection. However, an endpoint can still discover the availability of multiple paths (there are plenty mechanisms out there to discover the external IP addresses).\r\n\r\nEven without a discovery mechanism, many service offerings already allow controlling how flows are bound to external links (including bonding). Think about SDWAN, for example. These policies are configured on the CE router. \r\n\r\nIf this scenario is not supported in this version of the protocol, there should be an applicability section where the target deployments are called out. Some text may be considered to discuss concretely when the client can negotiate multipath activation based on that applicability. \r\n\r\nBack to the initial issue, I think that more motivation is needed to justify withdrawing a path too prematurely. \r\n\r\n\r\n",
           "createdAt": "2021-10-28T06:51:26Z",
           "updatedAt": "2021-10-28T06:51:26Z"
@@ -1457,7 +1456,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "It is deployed in (MP)TCP, but requires another proxy to glue the two connections and hide them to the sever. \r\n\r\nIn QUIC, we can have a much more cleaner design as the router does not have to interfere with the connection  + we avoid the second proxy. \r\n\r\nThat's said, I'm not pushing to have this included. We just need to be clear about the applicability scope.  \r\n",
           "createdAt": "2021-10-28T12:50:10Z",
           "updatedAt": "2021-10-28T12:50:10Z"
@@ -1478,7 +1477,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> By default, the applicability scope is the same as QUIC version 1.\r\n\r\nMaybe, but I think having an architecture figure to illustrate the basic multipath case that is covered would be helpful. \r\n\r\nBTW, there is nothing in the current design that prevents multipath QUIC to be established over the scenario we discussed. I admit this is a side effect, not a desired goal. \r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2021-10-28T13:18:47Z",
           "updatedAt": "2021-10-28T13:18:47Z"
@@ -1513,7 +1512,7 @@
       "url": "https://github.com/quicwg/multipath/issues/53",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
@@ -1532,7 +1531,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks, Mirja.\r\n\r\nThat's what I expected, but I do still think more elaboration is needed for this text to be useful. \r\n\r\nI would suggest to make this modification and leave the discussion of pros/cons to be adequately documented in Section 7:\r\n\r\nOLD:\r\n   This proposal supports the negotiation of either the use of one\r\n   packet number space for all paths or the use of separate packet\r\n   number spaces per path.  While separate packet number spaces allow\r\n   for more efficient ACK encoding, especially when paths have highly\r\n   different latencies, this approach requires the use of a connection\r\n   ID.  Therefore use of a single number space can be beneficial in\r\n   highly constrained networks that do not benefit from exposing the\r\n   connection ID in the header.  While both approaches are supported by\r\n   the specification in this version of the document, the intention for\r\n   the final publication of a multipath extension for QUIC is to choose\r\n   one option in order to avoid incompatibility.  More evaluation and\r\n   implementation experience is needed to select one approach before\r\n   final publication.  Some discussion about pros and cons can be found\r\n   here: https://github.com/mirjak/draft-lmbdhk-quic-\r\n   multipath/blob/master/presentations/PacketNumberSpace_s.pdf\r\n\r\nNEW:\r\n   This proposal supports the negotiation of either the use of one\r\n   packet number space for all paths or the use of separate packet\r\n   number spaces per path.  While both approaches are supported by\r\n   the specification in this version of the document, the intention for\r\n   the final publication of a multipath extension for QUIC is to choose\r\n   one option in order to avoid incompatibility.  More evaluation and\r\n   implementation experience is needed to select one approach before\r\n   final publication.  Some discussion about pros and cons can be found\r\n   here: https://github.com/mirjak/draft-lmbdhk-quic-\r\n   multipath/blob/master/presentations/PacketNumberSpace_s.pdf",
           "createdAt": "2021-10-26T11:12:02Z",
           "updatedAt": "2021-10-26T11:12:02Z"
@@ -1553,7 +1552,7 @@
       "url": "https://github.com/quicwg/multipath/issues/56",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "> When the multipath option is negotiated, clients that want to use an additional path MUST first initiate the Address Validation procedure with PATH_CHALLENGE and PATH_RESPONSE frames described in Section 8 of {{QUIC-TRANSPORT}}.\r\n\r\nThere are two cases: \r\n* the client uses a distinct source IP address and/or port number: in such case, Address validation does not make sense. \r\n* the client uses a distinct destination IP address and/or port number: I guess this is what is covered in the excerpt. If that's the case, this assumes that the client has discovered a distinct destination IP address/port number (either by some means or that the server has used these address/port).\r\n\r\nI think some elaboration is needed. ",
@@ -1591,7 +1590,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> \r\n> \r\n> This is deliberately left out of the document. What we have now is a simple reference to RFC 9000 -- paths are established in exactly the same way, adding more details would just create confusion. The consensus is that we may very well want to have extensions there, more ways to find addresses, etc., and that those should be detailed in a companion RFC.\r\n\r\nThanks for the clarification. The case I'm concerned about is not the second case in my initial comment, but the first one. A client may have the knowlegde of the local addresses. I don't see how path validation from the client side applies for this case.  ",
           "createdAt": "2021-10-27T05:36:46Z",
           "updatedAt": "2021-10-27T05:36:46Z"
@@ -1725,7 +1724,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I would be consistent in how the I-D identifies MP additions vs. RFC9000. \r\n\r\nGiven that the document uses MP_CONNECTION_ERROR and MP_PROTOCOL_VIOLATION, I have a preference for MP_ACK.",
           "createdAt": "2021-10-28T05:36:56Z",
           "updatedAt": "2021-10-28T05:36:56Z"
@@ -1739,7 +1738,7 @@
       "url": "https://github.com/quicwg/multipath/issues/63",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
@@ -1765,7 +1764,7 @@
       "url": "https://github.com/quicwg/multipath/issues/64",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "RFC9000 is cited massively in the draft. It would be helpful to indicate to the reader where to look by indicating the section. \r\n\r\nSome change examples are provided below: \r\n```\r\n\r\nOLD:\r\n`We assume that the reader is familiar with the terminology used in {{QUIC-TRANSPORT}}.`\r\n\r\nNEW:\r\n`We assume that the reader is familiar with the terminology used in {{QUIC-TRANSPORT}} (Section 1.2, in particular).`\r\n```\r\n\r\n```\r\nOLD:\r\n`RTT measurements and PMTU discovery should be per-path (following {{QUIC-TRANSPORT}})`\r\n\r\nNEW:\r\n`RTT measurements and PMTU discovery should `be` per-path (Section 14 of {{QUIC-TRANSPORT}})`\r\n```\r\n\r\nand so on.",
@@ -1782,7 +1781,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks, Christian. That's the intent. ",
           "createdAt": "2021-10-28T05:37:46Z",
           "updatedAt": "2021-10-28T05:37:46Z"
@@ -1796,7 +1795,7 @@
       "url": "https://github.com/quicwg/multipath/issues/65",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
@@ -1814,7 +1813,7 @@
       "url": "https://github.com/quicwg/multipath/issues/66",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "* Lack of the reference to Section 7.4/Section 7.4.2 of 9000 where the general handling of (new) transport parameters is discussed. \r\n\r\n* When the new transport parameter is not present, this does not necessarily mean multipath is not supported as it can be supported, but disabled (for this connection as a function of local policy). I would update this text\r\n\r\n```\r\nOLD: \r\nIf the peer does not carry the enable_multipath transport parameter, which means the peer does not\r\nsupport multipath\r\n```\r\n",
@@ -1852,7 +1851,7 @@
       "url": "https://github.com/quicwg/multipath/issues/68",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I wonder whether this behavior would nullify the activation of multipath in some cases (e.g., backup purposes or when MP_ACKs are not sent over the same path).  \r\n\r\n```\r\n Servers\r\n   SHOULD stop sending traffic on paths through where no non-probing\r\n   packet was received in the last 3 path RTTs, but MAY ignore that rule\r\n   if it would disqualify all available paths.\r\n```\r\n\r\nThe implication on the client should be discussed, especially that the I-D says: \r\n\r\n```\r\n   ACK_MP frame Section 10.2 can be returned via either a different\r\n   path, or the same path identified by the Path Identifier, based on\r\n   different strategies of sending ACK_MP frames.\r\n```\r\n(BTW, s/ACK_MP frame Section 10.2/ACK_MP frame (Section 10.2) ",
@@ -1869,7 +1868,7 @@
         },
         {
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks @qdeconinck. Will move my comments there. ",
           "createdAt": "2021-10-27T07:22:52Z",
           "updatedAt": "2021-10-27T07:22:52Z"
@@ -5962,7 +5961,7 @@
       "url": "https://github.com/quicwg/multipath/issues/216",
       "state": "CLOSED",
       "author": "marten-seemann",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "editorial"
@@ -7269,7 +7268,7 @@
       ],
       "body": "Briefly, the argument is as follows\uff1a\r\n- The ACP_MP frame is not essential for multipath transport.\r\n- Adding ACK_MP raises several design and implementation issues that need to be more thoroughly investigated.\r\n\r\nPerhaps a better approach would be to follow the KISS principle\uff1a\r\n- Use the ACK frame to acknowledge the received packets, which should be sent on the same path\uff08Similar to the MPTCP).\r\n- However, we do not prevent future extensions from defining ACK_MP, and using it requires negotiation.\r\n",
       "createdAt": "2023-09-05T11:41:46Z",
-      "updatedAt": "2023-11-03T16:33:06Z",
+      "updatedAt": "2023-11-06T08:13:06Z",
       "closedAt": null,
       "comments": [
         {
@@ -7313,6 +7312,20 @@
           "body": ">In issue https://github.com/quicwg/multipath/issues/181 it was already decided that it is better to be explicit and use ACK_MP. This also enables sending ACK over different paths which is seem as a feature, e.g. always using the lowest latency path.\r\n\r\nThe existing design choice for ACK_MP is rooted in the per-path-per-pns model. Under this model, it seems there's no better design than what we currently have.\r\n\r\n\r\n>  I don't see any new issue or concern raised here.\r\n\r\nThe present solution introduces unnecessary issues, such as ACK ambiguity, RTT estimation, large deviation from QUIC. Even worse, some algorithms that rely on ACK from the same path might not perform well. \r\n\r\nIf we properly design the conceptual model, we can find a simpler and more feasible design that avoids these extra problems.  \r\n",
           "createdAt": "2023-11-03T16:33:06Z",
           "updatedAt": "2023-11-03T16:33:06Z"
+        },
+        {
+          "author": "iyangsj",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "**CASE A**:\r\n\r\n![CASE-A](https://github.com/quicwg/multipath/assets/780807/e555b809-4588-4d41-a9db-814a8fc3a21f)\r\n\r\n- The `Sender` uses the BBR algorithm for both path A and path B.\r\n- The `Receiver` replies ACK frames  **only** on path A.\r\n\r\n\r\n> The simplest implementation is to compute smoothedRTT and RTTvar per [Section 5.3](https://rfc-editor.org/rfc/rfc9002#section-5.3) of [[QUIC-RECOVERY](https://www.rfc-editor.org/rfc/rfc9002)] regardless of the path through which MP_ACKs are received. This algorithm will provide good results, except if the set of paths changes and the ACK_MP sender revisits its sending preferences.\r\n\r\n\r\n- If the `BBR B` computes smoothedRTT regardless of the path through which MP_ACKs are received, it will underestimate the RTT and send data at a lower rate.\r\n\r\n\r\n",
+          "createdAt": "2023-11-06T07:30:03Z",
+          "updatedAt": "2023-11-06T07:55:28Z"
+        },
+        {
+          "author": "iyangsj",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "**CASE B:**\r\n\r\n![CASE B](https://github.com/quicwg/multipath/assets/780807/dad0b805-e44f-4848-8046-fd9c54836736)\r\n\r\n- The Sender uses the COPA algorithm for both path A and path B.\r\n- The Receiver replies ACK frames **only** on path A.\r\n\r\n> The simplest implementation is to compute smoothedRTT and RTTvar per [Section 5.3](https://rfc-editor.org/rfc/rfc9002#section-5.3) of [[QUIC-RECOVERY](https://www.rfc-editor.org/rfc/rfc9002)] regardless of the path through which MP_ACKs are received. This algorithm will provide good results, except if the set of paths changes and the ACK_MP sender revisits its sending preferences.\r\n\r\n- When path A is congested, `BBR B` may inaccurately estimate the queueing delay for path B and improperly decrease the sending rate.\r\n\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2023-11-06T07:44:49Z",
+          "updatedAt": "2023-11-06T08:13:06Z"
         }
       ]
     },
@@ -7504,7 +7517,7 @@
       ],
       "body": "According to 4.1 of the new draft, a \"non-probing\" packet's reception on a new path should be treated as a path initiation attempt. \r\n\r\n> If validation succeeds, the client can continue to use the path. If validation fails, the client MUST NOT use the path and can remove any status associated to the path initation attempt. [Section 9.1](https://rfc-editor.org/rfc/rfc9000#section-9.1) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)] introduces the concept of \"probing\" and \"non-probing\" frames. When the multipath extension is negotiated, the reception of \"non-probing\" packet on a new path needs to be considered as a path initiation attempt that does not impact the path status of any existing path. Therefore, any frame can be sent on a new path at any time as long as the anti-amplification limits ([Section 21.1.1.1](https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]) and the congestion control limits for this path are respected.\r\n\r\nWhat does it actually mean? \r\n\r\nPreviously, servers only create new paths if they receive packets with PATH_CHALLENGE on a new 4-tuple. Does this mean that servers should now create new paths as long as they receive \"non-probing\" packets on new 4-tuples?\r\n\r\n",
       "createdAt": "2023-10-27T07:36:47Z",
-      "updatedAt": "2023-11-03T15:19:09Z",
+      "updatedAt": "2023-11-05T04:57:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -7513,6 +7526,13 @@
           "body": "When a server receives a non-probing frame it needs to imitate path validation, similar as it has to validate the path if a probing frame is received. Does this clarify your question?",
           "createdAt": "2023-11-03T15:18:48Z",
           "updatedAt": "2023-11-03T15:18:48Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is related to #261 and #188. If I understand the situation correctly, the consensus is that utilizing PATH_CHALLENGE as a definitive indicator is usually a valid approach. However, we must also address cases where a packet arrives with both a new connection identifier (CID) and a new 4-tuple, but is devoid of a PATH_CHALLENGE. Disregarding such a packet is inappropriate; instead, we should regard it as initiating a new path. In circumstances where both NAT re-binding and CID rotation occur simultaneously, the server is advised to perform path validation for both the original and new paths. This dual validation process may also provide a solution for the issue described in figure 3 of #273 .",
+          "createdAt": "2023-11-05T04:57:31Z",
+          "updatedAt": "2023-11-05T04:57:31Z"
         }
       ]
     },
@@ -7531,7 +7551,7 @@
       ],
       "body": "The -06 draft allows a peer to send a `PATH_STANDBY` frame for a particular connection ID (CID) before it is used:\r\n\r\n```\r\nA PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame\r\n[...] in order to indicate the preferred path usage\r\nbefore [...] path initiation.\r\n```\r\n\r\nFrom the definition of `PATH_STANDBY`:\r\n\r\n```\r\nDestination Connection ID Sequence Number:  The sequence number of\r\n   the Destination Connection ID used by the receiver of this frame\r\n   to send packets over the path the status update corresponds to.\r\n```\r\n\r\nWhen the path is set up, each endpoint freely choses a destination CID between the CIDs that the peer has issued. This means that resulting preferred path usage depends on which CID the peer happens to chose.\r\n\r\nI think that the current path identification model is very confusing, and this observation is another indication in that direction.",
       "createdAt": "2023-10-27T11:58:33Z",
-      "updatedAt": "2023-11-05T00:27:22Z",
+      "updatedAt": "2023-11-06T12:20:37Z",
       "closedAt": null,
       "comments": [
         {
@@ -7582,6 +7602,27 @@
           "body": "I think we have to state explicitly what we mean by standby. We broadly agree, but I am concerned that some other developers with treat receiving packets on standby path is a protocol violation. That could cause interop issues.\r\n\r\nOn the other hand, we also don't want the peers to ignore standby requests completely. That would cause operational issues.",
           "createdAt": "2023-11-05T00:27:22Z",
           "updatedAt": "2023-11-05T00:27:22Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@huitema \r\n> I think we have to state explicitly what we mean by standby. We broadly agree, but I am concerned that some other developers with treat receiving packets on standby path is a protocol violation. That could cause interop issues.\r\n\r\n+1. I might argue that both \"available\" and \"standby\" are confusing as terms.\r\n\r\nThat is because the peer is allowed to send packets on paths that are in \"standby.\" In fact, they would be forced to, if all of the available paths are declared as \"standby.\"\r\n\r\nThis boolean state is merely indications of preference, it would make sense to rename them to better reflect that.\r\n\r\nMaybe something like \"preferred\" / \"backup\" might eliminate the confusion.",
+          "createdAt": "2023-11-05T04:37:23Z",
+          "updatedAt": "2023-11-05T04:37:23Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@kazuho +1. I agree, I think we need a better terminology.",
+          "createdAt": "2023-11-05T05:02:16Z",
+          "updatedAt": "2023-11-05T05:02:16Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Actually in my opinion \"prefered\" is a choice made by the sender's scheduler algorithm, \r\nbut I agree with that \"backup\" is a more proper name instead of \"standby\".",
+          "createdAt": "2023-11-06T12:20:37Z",
+          "updatedAt": "2023-11-06T12:20:37Z"
         }
       ]
     },
@@ -7646,11 +7687,12 @@
         "Yanmei-Liu"
       ],
       "labels": [
+        "editorial",
         "no-action-needed"
       ],
       "body": "When implementing -06 draft, we need to find out what to do when the signal from the peer(representing by the PATH_AVAILABLE/STANDBY frames) does not match the local API preference. There are several possibilities(mentioned by @Huitema):\r\n\r\n1. Local always win. Simple, but it allows the server to bypass the client preferences.\r\n2. Remote always win.\r\n3. Client always win.\r\n4. Server always win.\r\n5. Most restrictive wins: if local says available and remote say standby, keep it as standby.\r\n\r\nAlthough the strategy is depending on the implementation, making the strategy clear about how to use PATH_AVAILABLE/STANDBY Frames is quite important in the draft. \r\n\r\nSo we track the issue here and hope to hear more voice from different people.",
       "createdAt": "2023-11-02T04:13:40Z",
-      "updatedAt": "2023-11-03T15:24:05Z",
+      "updatedAt": "2023-11-06T12:29:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -7659,6 +7701,20 @@
           "body": "We tried to clarify in the draft that these frames are only a recommendation and there is no requirement to follow this recommendation (there is also no way to enforce that, except closing/not opening the path). Therefore the final sending decision is left to the implementation. I don't think this is something we even could or should standardise as it will depend on the application and other local knowledge.",
           "createdAt": "2023-11-02T10:35:05Z",
           "updatedAt": "2023-11-02T10:35:05Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "I agree with @mirjak that the current design is correct.\r\n\r\nAs stated in https://github.com/quicwg/multipath/issues/283#issuecomment-1793634282, I think what we have is a terminology issue and that is confusing us.",
+          "createdAt": "2023-11-05T04:40:35Z",
+          "updatedAt": "2023-11-05T04:40:35Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Although these Frames are preference(recommendation) not requirements, I still think we need more editorial guidance on this issue. When people write implementations, they would like to get deterministic results instead of vague response.",
+          "createdAt": "2023-11-06T12:29:35Z",
+          "updatedAt": "2023-11-06T12:29:35Z"
         }
       ]
     },
@@ -7674,9 +7730,17 @@
       "labels": [],
       "body": "So Section 5.3 in -06 says: \r\n\r\n`When this specification is used, endpoints SHOULD wait for at least three times the largest PTO among all the paths before initiating a new key update after receiving an acknowledgement that confirms receipt of the previous key update. This interval is different from that of QUIC version 1 which used three times the PTO of the only one active path.`\r\n\r\nAfter having done some testing with key update in our implementations with different length paths some conclusions have been drawn.\r\n\r\nFirst is that it difficult for an endpoint to know when an old key can safely be dropped. With multiple path being possible to send on, and not necessarily used as well as to send ACKs on. Thus the fact that one get key phase back as a responder indicate that beyond on-path reordering things should be settled. But for multipath one can conclude for paths being used that key-phase changes have happened. But for path currently not receiving any packet one don't know if they are just being significantly delayed or may never have been sent. Also the path RTT samples one have might not be relevant for the current path delay. Thus, beyond observing that one get some key-phase change back, and starting a really long timer it is not obvious that you can generate an algorithm that enables one to know that no outstanding old keys are there. \r\n\r\nThe fact that this time needs to be longer than worst case RTT changes on each path do result that using 3*PTO is likely to short to re-enable key-update. At least unless one want to require trial decryption of the packets. This as keeping the old key while using the current key, so when one see a key-phase different one can try if it is the old key, if that fails and the next key works, then one drop the old key, and from that point assume this key-phase will be the new key. And thus initiating a key_update. \r\n\r\n",
       "createdAt": "2023-11-04T17:22:50Z",
-      "updatedAt": "2023-11-04T17:22:50Z",
+      "updatedAt": "2023-11-05T04:32:49Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "I think I agree that the problem exists, though I am not sure how much it would matter in practice.\r\n\r\nSeparately, I might point out that this is an existing issue of RFC 9001.\r\n\r\nIn both QUIC v1 and multipath, endpoints can have idle paths, which might have very different actual RTT than the previous estimate. Also, when the endpoint initiates a Key Update while the peer is trying to open a new path, RTT of the new path cannot be taken into consideration.\r\n\r\nWhen recommending the Key Update interval, QUIC v1 only took the RTT estimate of its one and active path into consideration. We adopted that model to Multipath and said that all paths that exist have to be taken into consideration.\r\n\r\nI think that is an improvement from QUIC v1 in sense that idle paths are taken into consideration at least (even though their RTT estimates are old).\r\n\r\nThe question is if we want to do more.\r\n\r\nHonestly, I do not care much considering how infrequent key updates are. My anticipation is that this problem would be a minor source of loss events unrelated to congestion, if any.\r\n\r\nConsidering that, it might be sufficient to just note that such a problem exists. We can address the issue in the future version of QUIC.\r\n\r\nThe other idea would be to state that the minimum recommended interval is `3*max(maxPTO, initialPTO)`; by changing as such, we can take paths that are being created into consideration. But that is not a perfect solution.",
+          "createdAt": "2023-11-05T04:32:49Z",
+          "updatedAt": "2023-11-05T04:32:49Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -8829,9 +8893,7 @@
       "author": "yfmascgy",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [
-        "For -01"
-      ],
+      "labels": [],
       "body": "I added 2 illustration figures describing path close when null-length CIDs are used. This changes are based on the discussion of issue #1 . But I think it may need additional revision.  ",
       "createdAt": "2021-10-21T05:50:25Z",
       "updatedAt": "2022-01-20T08:28:56Z",
@@ -10385,7 +10447,7 @@
       "url": "https://github.com/quicwg/multipath/pull/52",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -10450,7 +10512,7 @@
       "url": "https://github.com/quicwg/multipath/pull/54",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Add an entry for \"path\" and some minor tweaks.",
@@ -10490,7 +10552,7 @@
       "url": "https://github.com/quicwg/multipath/pull/55",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -10530,7 +10592,7 @@
       "url": "https://github.com/quicwg/multipath/pull/57",
       "state": "CLOSED",
       "author": "boucadair",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -10677,7 +10739,7 @@
             "abbreviatedOid": "19a58c6"
           },
           "author": "boucadair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "Looks good to me. Thanks.",
           "createdAt": "2021-10-28T05:40:10Z",
@@ -22843,7 +22905,7 @@
             "abbreviatedOid": "4843853"
           },
           "author": "marten-seemann",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-06-28T03:31:56Z",
@@ -22911,7 +22973,7 @@
             "abbreviatedOid": "fdd1540"
           },
           "author": "marten-seemann",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "I\u2019m having trouble parsing the original sentence. The new text lgtm.",
           "createdAt": "2023-06-28T03:33:34Z",
@@ -23174,7 +23236,7 @@
             "abbreviatedOid": "b1cff91"
           },
           "author": "marten-seemann",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-06-28T03:22:10Z",
@@ -23242,7 +23304,7 @@
             "abbreviatedOid": "5e4db14"
           },
           "author": "marten-seemann",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2023-06-29T09:23:23Z",
@@ -26663,7 +26725,7 @@
       "labels": [],
       "body": "fixes #210",
       "createdAt": "2023-11-03T14:35:51Z",
-      "updatedAt": "2023-11-03T15:34:35Z",
+      "updatedAt": "2023-11-06T12:53:02Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "94d12769e12da75ee69d8dda9cd47ad66f793d90",
@@ -26688,6 +26750,26 @@
           "createdAt": "2023-11-03T15:34:35Z",
           "updatedAt": "2023-11-03T15:34:35Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5mOjvk",
+          "commit": {
+            "abbreviatedOid": "213b047"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "With minor nit.",
+          "createdAt": "2023-11-06T12:52:45Z",
+          "updatedAt": "2023-11-06T12:53:02Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nsend a PATH_ABANDON frame after an idle time on another path.\r\n```",
+              "createdAt": "2023-11-06T12:52:45Z",
+              "updatedAt": "2023-11-06T12:53:02Z"
+            }
+          ]
         }
       ]
     },
@@ -26703,7 +26785,7 @@
       "labels": [],
       "body": "closes #235",
       "createdAt": "2023-11-03T14:51:13Z",
-      "updatedAt": "2023-11-03T14:51:13Z",
+      "updatedAt": "2023-11-06T12:53:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "94d12769e12da75ee69d8dda9cd47ad66f793d90",
@@ -26715,7 +26797,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM5mOkaK",
+          "commit": {
+            "abbreviatedOid": "bd825ff"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T12:53:59Z",
+          "updatedAt": "2023-11-06T12:53:59Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 289,
@@ -26729,7 +26825,7 @@
       "labels": [],
       "body": "closes #262",
       "createdAt": "2023-11-03T15:02:35Z",
-      "updatedAt": "2023-11-03T17:43:48Z",
+      "updatedAt": "2023-11-06T12:51:51Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "94d12769e12da75ee69d8dda9cd47ad66f793d90",
@@ -26753,6 +26849,32 @@
           "body": "Sounds likes good guidance.",
           "createdAt": "2023-11-03T17:43:48Z",
           "updatedAt": "2023-11-03T17:43:48Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5mKxP0",
+          "commit": {
+            "abbreviatedOid": "26708cb"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T00:04:29Z",
+          "updatedAt": "2023-11-06T00:04:29Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5mOi5E",
+          "commit": {
+            "abbreviatedOid": "26708cb"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-06T12:51:51Z",
+          "updatedAt": "2023-11-06T12:51:51Z",
           "comments": []
         }
       ]
