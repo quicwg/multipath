@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-07T00:40:21.205770+00:00",
+  "timestamp": "2023-11-09T00:39:58.061630+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -5698,7 +5698,7 @@
       ],
       "body": "The current version of the draft introduces a very tight coupling between paths and connection IDs. This feels unnatural, since QUIC was designed such that CIDs can be rotated (potentially very) frequently, even in the absence of any path migration / probing.\r\n\r\nThe tight coupling in this draft leads to a whole range of problems:\r\n1. It complicates path state management. The CID used to establish a path might be retired, and a different CID may be used on that path. I'm struggling to figure out which sequence number to send in PATH_STATUS frames in this case. There's the risk that PATH_* frames can't be associated with a (still existing!) path because the CID was retired.\r\n2. When initiating a new path, there's a requirement to check that 1. the endpoint itself has a CID available for that path and 2. the peer also has a CID available. Note that this inherently racy: The peer might just have started using that CID on a different path.\r\n3. Loss recovery: As the packet number is reset to 0 when switching to a new CID. On the wire, this means that packets received on the same path now need to be acknowledged in separate ACK_MP frames. Implementations would now put a lot of effort into running loss recovery across the multiple packet number spaces belonging to the same path.\r\n\r\nI believe the design would become significantly easier if CIDs were scoped to the path to begin with:\r\n* This would mean adding a Path ID varint to the existing NEW_CONNECTION_ID frame (or alternatively, deprecating NEW_CONNECTION_ID in favor of a new MP_NEW_CONNECTION_ID frame). Same for the RETIRE_CONNECTION_ID frame. Sequence numbers for CIDs would now be incremented per path (i.e. any path would start with CID number 0).\r\n* The `active_connection_id_limit` transport parameter could be reinterpreted to mean the maximum number of active connection IDs _per path_. It could be accompanied by a `active_path_limit` transport parameter to allow the client to limit the number of paths.\r\n\r\nI believe this would resolve the problems described above. In addition, this has a few nice properties:\r\n1. The server would explicitly limit how many paths it is willing to accept. Credit for additional paths could be granted over the lifetime of the connection by sending NEW_CONNECTION_ID with new path IDs.\r\n2. The utility of the \"Retire Prior To\" field of the RETIRE_CONNECTION_ID frame would be restored: \"Retire Prior To\" would only apply to CIDs issued on that particular path.\r\n3. A neat implementation strategy on the client side would be to bundle a NEW_CONNECTION_ID frame for the new path in the packet containing the PATH_CHALLENGE frame. Maybe we could even introduce a protocol requirement that a client MUST NOT issue connection IDs for unused paths?\r\n4. It would simplify CID management when paths are retired: Just remove all CIDs associated with a path when (or shortly after) it's retired.\r\n\r\nIt has not escaped my attention that this proposal suggests another strategy for key management, which - among others - would simplify the key update problem. I'll follow up in a separate issue.",
       "createdAt": "2023-04-02T14:16:53Z",
-      "updatedAt": "2023-11-03T14:53:16Z",
+      "updatedAt": "2023-11-08T08:21:14Z",
       "closedAt": null,
       "comments": [
         {
@@ -5889,6 +5889,76 @@
           "body": "To add my 2 cents (ran out of time at IETF), while I do understand the potential benefit in separating the concepts of paths from connection IDs, I think that it adds unnecessary complexity. Also, one of the most interesting advantages of having path IDs would be a key per path and in theory that could be done today with the existing mechanism as it was pointed out. The goal of having active_connection_id_limit per path is not convincing and seems like the wrong approach. ",
           "createdAt": "2023-07-25T17:18:00Z",
           "updatedAt": "2023-07-25T17:18:00Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The challenge with introducing a separate Path ID is that it requires a fundamentally stable path definition to begin with. Given the inherently unstable nature of the current 4-tuple path definition, it remains unclear how suddenly we can now achieve a stable path identification. The latest draft, which moves away from the concept of a path ID, seems to align better with reality by accepting the unstable nature of path definitions. When there\u2019s a change in the 4-tuple, we simply rotate the Connection IDs (CIDs) and shift the packet number space. As outlined in RFC 9002, loss recovery can be done on a per-packet-number-space basis. It\u2019s also important to recognize that events like NAT rebindings and CID rotations are infrequent events in real-world scenarios. Even in vehicular communications that use multi-path, frequent NAT rebindings are not typically observed. From a performance perspective, I would argue our primary concerns should be with scheduling and redundancy rather than the infrequent changes in path characteristics.",
+          "createdAt": "2023-11-07T09:45:17Z",
+          "updatedAt": "2023-11-07T09:45:17Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "We definitely need a stable path definition! In the end, a path is a physical entity where packets flow. Paths have different properties, and the endpoints must be able to understand and reason about which physical path they are using.\r\n\r\nThe path properties include latency and packet loss, but also things like demands for energy or momentary power and economic cost. In a system setting, like a cellular network, also the competing devices' possibility to move load to other paths can be relevant.",
+          "createdAt": "2023-11-07T10:13:58Z",
+          "updatedAt": "2023-11-07T10:13:58Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I came into an idea about how to fix the issue people have discussed a lot here in this issue.\r\n\r\nActually there\u2019re 3 part the CID/Path_ID design affects:\r\n\r\n1. The encryption / decryption nonce\r\n2. How endpoints address a path in PATH_AVAILABLE / STANDBY / ABANDON frames\r\n3. The packet number space which are per CID, and loss detection algorithms\r\n\r\nIn these parts:\r\n\r\n1. Encryption and decryption is actually not a problem, we gain profit here, it\u2019s quite easy to get the seq of CIDs and change the nonce;\r\n2. CID seq number and Path ID has the same cost to identify a path\r\n3. The packet number space, we actually want it not to be changed when CID rotation happens.\r\n\r\nAnd I totally understand there is cost when we introduce a Path ID definition.\r\nSo how about we just keep the CID seq for Path identifier, but we also allow that endpoints use the same packet number space when CID rotation happens? I think it will keep the advantage we get from 1 and 2, but remove the cost of 3 in implementation.\r\nI think the \u201cpacket number space per CID\u201d mechanism was draw from the information when we talk about each packet number space share the same nonce for encryption / decryption, but we can still have more than one nonce for the same packet number space. \r\n\r\nMy key point is: \u201cPacket number space per Path\u201d, is better than \u201cper CID\u201d.\r\nAnd the mechanism is quite the same in RFC9000. It\u2019s easy to understand and deploy.",
+          "createdAt": "2023-11-07T21:30:01Z",
+          "updatedAt": "2023-11-07T21:30:01Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "I very much agree with what is suggested above.\r\n\r\nThe single packet number space per path is in practice a path identity. It is then very easy to attach a path _identifier_ to that path. This path identifier will be unique and stable during the full lifetime of the path. It is looked up and used for signalling. A previous version of the multipath draft used the sequence number of the CID that was used to set up the path as path identifier, and that still looks like a good idea to me.\r\n\r\nFor nonce generation, the CID sequence number can be used if that is seen as simpler than the path identifier (for our Rask implementation it doesn't matter).\r\n\r\nMy key point is: One packet number space per path, as suggested above, is fundamental. Luckily, it very easily leads to a stable path identifier that can be used for signalling without the race conditions and misunderstandings that a changing signalling identifier implies.",
+          "createdAt": "2023-11-07T23:41:15Z",
+          "updatedAt": "2023-11-07T23:41:15Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@Yanmei-Liu \r\n> So how about we just keep the CID seq for Path identifier, but we also allow that endpoints use the same packet number space when CID rotation happens?\r\n\r\nCould you elaborate how we would do that?\r\n\r\nIn current form of QUIC v1 and Multipath, CIDs are issued by an endpoint and the receiver chooses which CID to use.\r\n\r\nTherefore, when the receiver switches to a new CID but continue using the same packet number space, the receiver has to send a signal indicating to which packet number space the new CID is associated.\r\n\r\nMy vague recollection is that this additional signalling was considered bad and that led to what we have now.",
+          "createdAt": "2023-11-08T04:28:50Z",
+          "updatedAt": "2023-11-08T04:31:11Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The crypto requirement is that all packets have a unique nonce. That is met by incorporating the CID sequence number in the nonce, and ensuring that the sequence number be unique for all packets with the same CID.\r\n\r\nYou might want to use the same sequence number space for all CID in the same \"logical space\". You might even implement that as a single sequence number space for the entire set of path. That will work just fine, as long as you do not send more that 2^32 packets. But you have a problem if you have sent packet number 0x5FFFFFFFF on one path, and then rotate the CID and send packet 0x60000000 with the new CID. The sequence number will be set in the packet to at most 4 digits -- 0x00000000. This has to be expanded to the \"correct\" 64 bit value. Since this is a new CID, the receiver has no choice but to expand it to 64 bits of zeroes. And decryption will fail.",
+          "createdAt": "2023-11-08T04:48:51Z",
+          "updatedAt": "2023-11-08T04:48:51Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If you want a path identifier independent of the CID and a number space \"per path\", then the packets can only be decrypted if the receiver knows the mapping from CID to number space identifier. That implies either changing the packet format to include an explicit number space identifier in the header, or having a protocol to negotiate that mapping before using the CID.\r\n\r\nWe don't really want to add change the packet format. Adding a path identifier would increase overhead, and break format compatibility with RFC 9000. The path identifier would have to be encrypted, to prevent external observers to tie two successive identifiers to the same underlying connection. So, significant overhead, significant complexity.\r\n\r\nWe could conceive a protocol in which parties negotiate in advance that CID number N is used for number space number P, but that too would be significant additional complexity.\r\n\r\n",
+          "createdAt": "2023-11-08T04:59:52Z",
+          "updatedAt": "2023-11-08T04:59:52Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> We definitely need a stable path definition! In the end, a path is a physical entity where packets flow. Paths have different properties, and the endpoints must be able to understand and reason about which physical path they are using.\r\n> \r\n> The path properties include latency and packet loss, but also things like demands for energy or momentary power and economic cost. In a system setting, like a cellular network, also the competing devices' possibility to move load to other paths can be relevant.\r\n\r\nConsidering a more rigorous mathematical framework, crafting a stable path ID is quite complex. A formal definition necessitates four components: (1) path attributes, denoted by **A**, (2) an identifier within a specific domain  **D**, and (3) a mapping function **F** that assigns **A** to **ID**, such that ID = F(**A**). (4) a mapping function **G** that maps an **ID** to all the stateful information of a path.\r\n\r\nWith the \"loose path ID\" model, the current draft adheres to RFC9000's method of defining a path via a 4-tuple. In this schema, the formal definition is straightforward: (1) the attribute **A** is the 4-tuple, (2) the **ID** corresponds to a value within the CID sequence number domain, (3) a mapping between the 4-tuple and the **ID**, and (4) a mapping between the **ID** and all the stateful information of a path are established.\r\n\r\nHowever, in cases requiring a stable path ID, we must reconsider what constitutes the attributes **A**. The 4-tuple alone is inadequate, necessitating additional context that encapsulates the notion of path continuity. Rigorously define the concept of continuity it is not straightforward. Furthermore, incorporating continuity into the definition of a path extends beyond the original scope set by RFC9000.",
+          "createdAt": "2023-11-08T06:21:42Z",
+          "updatedAt": "2023-11-08T06:21:42Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "Hmm, maybe we are talking past each other here, @yfmascgy. Your mapping analysis above, where the CID sequence number maps to \"the stateful information of a path\", looks good. The only thing that I suggest is that a stable unique identifier is added to this \"stateful information of a path\". This identifier would _not_ be the \"**ID**\" but just added per-path metadata.\r\n\r\nWhen the path is referenced to in signalling, this path identifier is fetched from \"the stateful information of a path\" and used in the signalling frames.",
+          "createdAt": "2023-11-08T08:02:03Z",
+          "updatedAt": "2023-11-08T08:02:03Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "> If you want a path identifier independent of the CID and a number space \"per path\", then the packets can only be decrypted if the receiver knows the mapping from CID to number space identifier. That implies either changing the packet format to include an explicit number space identifier in the header, or having a protocol to negotiate that mapping before using the CID.\r\n> \r\n> We don't really want to add change the packet format. Adding a path identifier would increase overhead, and break format compatibility with RFC 9000. The path identifier would have to be encrypted, to prevent external observers to tie two successive identifiers to the same underlying connection. So, significant overhead, significant complexity.\r\n> \r\n> We could conceive a protocol in which parties negotiate in advance that CID number N is used for number space number P, but that too would be significant additional complexity.\r\n\r\nAssigning CIDs to paths before they are used is a simple and nice way for the peer to understand the (physical) path identity at a CID update. It also happens to be pretty much exactly how regular unipath QUIC handles CID updates, the endpoints have agreed on the semantics of the CIDs before they are used. RFC 9000 allows for multiple concurrent connections to use the same IP address and port and then the pre-agreed connection IDs are used to map the packet to a connection. \r\n\r\nThis very issues where we are discussing is actually a suggestion from @marten-seemann for just such a design which I think is an excellent idea.",
+          "createdAt": "2023-11-08T08:21:14Z",
+          "updatedAt": "2023-11-08T08:21:14Z"
         }
       ]
     },
@@ -7268,7 +7338,7 @@
       ],
       "body": "Briefly, the argument is as follows\uff1a\r\n- The ACP_MP frame is not essential for multipath transport.\r\n- Adding ACK_MP raises several design and implementation issues that need to be more thoroughly investigated.\r\n\r\nPerhaps a better approach would be to follow the KISS principle\uff1a\r\n- Use the ACK frame to acknowledge the received packets, which should be sent on the same path\uff08Similar to the MPTCP).\r\n- However, we do not prevent future extensions from defining ACK_MP, and using it requires negotiation.\r\n",
       "createdAt": "2023-09-05T11:41:46Z",
-      "updatedAt": "2023-11-06T08:13:06Z",
+      "updatedAt": "2023-11-07T03:17:55Z",
       "closedAt": null,
       "comments": [
         {
@@ -7323,9 +7393,9 @@
         {
           "author": "iyangsj",
           "authorAssociation": "CONTRIBUTOR",
-          "body": "**CASE B:**\r\n\r\n![CASE B](https://github.com/quicwg/multipath/assets/780807/dad0b805-e44f-4848-8046-fd9c54836736)\r\n\r\n- The Sender uses the COPA algorithm for both path A and path B.\r\n- The Receiver replies ACK frames **only** on path A.\r\n\r\n> The simplest implementation is to compute smoothedRTT and RTTvar per [Section 5.3](https://rfc-editor.org/rfc/rfc9002#section-5.3) of [[QUIC-RECOVERY](https://www.rfc-editor.org/rfc/rfc9002)] regardless of the path through which MP_ACKs are received. This algorithm will provide good results, except if the set of paths changes and the ACK_MP sender revisits its sending preferences.\r\n\r\n- When path A is congested, `BBR B` may inaccurately estimate the queueing delay for path B and improperly decrease the sending rate.\r\n\r\n\r\n\r\n\r\n\r\n",
+          "body": "**CASE B:**\r\n\r\n![CASE B](https://github.com/quicwg/multipath/assets/780807/dad0b805-e44f-4848-8046-fd9c54836736)\r\n\r\n- The Sender uses the COPA algorithm for both path A and path B.\r\n- The Receiver replies ACK frames **only** on path A.\r\n\r\n> The simplest implementation is to compute smoothedRTT and RTTvar per [Section 5.3](https://rfc-editor.org/rfc/rfc9002#section-5.3) of [[QUIC-RECOVERY](https://www.rfc-editor.org/rfc/rfc9002)] regardless of the path through which MP_ACKs are received. This algorithm will provide good results, except if the set of paths changes and the ACK_MP sender revisits its sending preferences.\r\n\r\n- When path A is congested, `COPA B` may inaccurately estimate the queueing delay for path B and improperly decrease the sending rate.\r\n\r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2023-11-06T07:44:49Z",
-          "updatedAt": "2023-11-06T08:13:06Z"
+          "updatedAt": "2023-11-07T03:17:55Z"
         }
       ]
     },
@@ -7506,7 +7576,7 @@
       "id": "I_kwDOGNtpaM51Hqzy",
       "title": "Does the new draft (06) allow servers to create new paths by receiving pkts without PATH_CHALLENGE?",
       "url": "https://github.com/quicwg/multipath/issues/282",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yangfurong",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -7517,8 +7587,8 @@
       ],
       "body": "According to 4.1 of the new draft, a \"non-probing\" packet's reception on a new path should be treated as a path initiation attempt. \r\n\r\n> If validation succeeds, the client can continue to use the path. If validation fails, the client MUST NOT use the path and can remove any status associated to the path initation attempt. [Section 9.1](https://rfc-editor.org/rfc/rfc9000#section-9.1) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)] introduces the concept of \"probing\" and \"non-probing\" frames. When the multipath extension is negotiated, the reception of \"non-probing\" packet on a new path needs to be considered as a path initiation attempt that does not impact the path status of any existing path. Therefore, any frame can be sent on a new path at any time as long as the anti-amplification limits ([Section 21.1.1.1](https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]) and the congestion control limits for this path are respected.\r\n\r\nWhat does it actually mean? \r\n\r\nPreviously, servers only create new paths if they receive packets with PATH_CHALLENGE on a new 4-tuple. Does this mean that servers should now create new paths as long as they receive \"non-probing\" packets on new 4-tuples?\r\n\r\n",
       "createdAt": "2023-10-27T07:36:47Z",
-      "updatedAt": "2023-11-05T04:57:31Z",
-      "closedAt": null,
+      "updatedAt": "2023-11-07T12:14:08Z",
+      "closedAt": "2023-11-07T12:14:08Z",
       "comments": [
         {
           "author": "mirjak",
@@ -7533,6 +7603,13 @@
           "body": "This issue is related to #261 and #188. If I understand the situation correctly, the consensus is that utilizing PATH_CHALLENGE as a definitive indicator is usually a valid approach. However, we must also address cases where a packet arrives with both a new connection identifier (CID) and a new 4-tuple, but is devoid of a PATH_CHALLENGE. Disregarding such a packet is inappropriate; instead, we should regard it as initiating a new path. In circumstances where both NAT re-binding and CID rotation occur simultaneously, the server is advised to perform path validation for both the original and new paths. This dual validation process may also provide a solution for the issue described in figure 3 of #273 .",
           "createdAt": "2023-11-05T04:57:31Z",
           "updatedAt": "2023-11-05T04:57:31Z"
+        },
+        {
+          "author": "yangfurong",
+          "authorAssociation": "NONE",
+          "body": "OK. I get it. ",
+          "createdAt": "2023-11-07T07:13:58Z",
+          "updatedAt": "2023-11-07T07:13:58Z"
         }
       ]
     },
