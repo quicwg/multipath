@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-09T00:39:58.061630+00:00",
+  "timestamp": "2023-11-12T00:43:06.699954+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -5698,7 +5698,7 @@
       ],
       "body": "The current version of the draft introduces a very tight coupling between paths and connection IDs. This feels unnatural, since QUIC was designed such that CIDs can be rotated (potentially very) frequently, even in the absence of any path migration / probing.\r\n\r\nThe tight coupling in this draft leads to a whole range of problems:\r\n1. It complicates path state management. The CID used to establish a path might be retired, and a different CID may be used on that path. I'm struggling to figure out which sequence number to send in PATH_STATUS frames in this case. There's the risk that PATH_* frames can't be associated with a (still existing!) path because the CID was retired.\r\n2. When initiating a new path, there's a requirement to check that 1. the endpoint itself has a CID available for that path and 2. the peer also has a CID available. Note that this inherently racy: The peer might just have started using that CID on a different path.\r\n3. Loss recovery: As the packet number is reset to 0 when switching to a new CID. On the wire, this means that packets received on the same path now need to be acknowledged in separate ACK_MP frames. Implementations would now put a lot of effort into running loss recovery across the multiple packet number spaces belonging to the same path.\r\n\r\nI believe the design would become significantly easier if CIDs were scoped to the path to begin with:\r\n* This would mean adding a Path ID varint to the existing NEW_CONNECTION_ID frame (or alternatively, deprecating NEW_CONNECTION_ID in favor of a new MP_NEW_CONNECTION_ID frame). Same for the RETIRE_CONNECTION_ID frame. Sequence numbers for CIDs would now be incremented per path (i.e. any path would start with CID number 0).\r\n* The `active_connection_id_limit` transport parameter could be reinterpreted to mean the maximum number of active connection IDs _per path_. It could be accompanied by a `active_path_limit` transport parameter to allow the client to limit the number of paths.\r\n\r\nI believe this would resolve the problems described above. In addition, this has a few nice properties:\r\n1. The server would explicitly limit how many paths it is willing to accept. Credit for additional paths could be granted over the lifetime of the connection by sending NEW_CONNECTION_ID with new path IDs.\r\n2. The utility of the \"Retire Prior To\" field of the RETIRE_CONNECTION_ID frame would be restored: \"Retire Prior To\" would only apply to CIDs issued on that particular path.\r\n3. A neat implementation strategy on the client side would be to bundle a NEW_CONNECTION_ID frame for the new path in the packet containing the PATH_CHALLENGE frame. Maybe we could even introduce a protocol requirement that a client MUST NOT issue connection IDs for unused paths?\r\n4. It would simplify CID management when paths are retired: Just remove all CIDs associated with a path when (or shortly after) it's retired.\r\n\r\nIt has not escaped my attention that this proposal suggests another strategy for key management, which - among others - would simplify the key update problem. I'll follow up in a separate issue.",
       "createdAt": "2023-04-02T14:16:53Z",
-      "updatedAt": "2023-11-08T08:21:14Z",
+      "updatedAt": "2023-11-11T22:56:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -5959,6 +5959,90 @@
           "body": "> If you want a path identifier independent of the CID and a number space \"per path\", then the packets can only be decrypted if the receiver knows the mapping from CID to number space identifier. That implies either changing the packet format to include an explicit number space identifier in the header, or having a protocol to negotiate that mapping before using the CID.\r\n> \r\n> We don't really want to add change the packet format. Adding a path identifier would increase overhead, and break format compatibility with RFC 9000. The path identifier would have to be encrypted, to prevent external observers to tie two successive identifiers to the same underlying connection. So, significant overhead, significant complexity.\r\n> \r\n> We could conceive a protocol in which parties negotiate in advance that CID number N is used for number space number P, but that too would be significant additional complexity.\r\n\r\nAssigning CIDs to paths before they are used is a simple and nice way for the peer to understand the (physical) path identity at a CID update. It also happens to be pretty much exactly how regular unipath QUIC handles CID updates, the endpoints have agreed on the semantics of the CIDs before they are used. RFC 9000 allows for multiple concurrent connections to use the same IP address and port and then the pre-agreed connection IDs are used to map the packet to a connection. \r\n\r\nThis very issues where we are discussing is actually a suggestion from @marten-seemann for just such a design which I think is an excellent idea.",
           "createdAt": "2023-11-08T08:21:14Z",
           "updatedAt": "2023-11-08T08:21:14Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "To add another monkey wrench into the discussion ... Changing the packet number space semantics of RFC 9000 may make it difficult to use MPQUIC in combination with a QUIC-aware UDP proxy.\r\n\r\nIf the proxy is operating in forwarding mode, an uplink QUIC short header packet received over a (virtual) CID on the network segment between the proxy and a client is mapped to a destination CID on the network segment between the proxy and a server. Nothing else in the QUIC packet is changed and parts of the QUIC packet header - including the packet number - are protected by a header protection key known only to the client and server.\r\n\r\nIf MPQUIC is used between the proxy and client, and uni-path QUIC (RFC 9000) is used between the proxy and server, then a change in the path between proxy and client cannot affect the packet numbering. In other words, I think MPQUIC would need to preserve the packet numbering spaces defined by RFC 9000 and not introduce a new set of packet number spaces that would prevent interop with RFC 9000 compliant servers - i.e. both number space per CID and number space per path seem like non-starters to me.",
+          "createdAt": "2023-11-09T22:42:52Z",
+          "updatedAt": "2023-11-09T22:42:52Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "Let me give another example, one where MPQUIC might be used in a DETNET deployment. A client maintains multiple paths towards a packet elimination function (PEF) that has MPQUIC functionality and eliminates duplicate copies of received packets. The client may replicate a QUIC packet and send a different copy of the packet over each of the different paths. If the same packet numbering space is used across all paths, it is trivial for the PEF to identify and discard duplicate packets (and to perform reordering if necessary). In fact, I don't think anything other than basic RFC 9000/9002 functionality is required to do this.\r\n\r\nAgain, I caution against changing the packet number space semantics of RFC 9000 by introducing either number space per CID or number space per path.",
+          "createdAt": "2023-11-09T23:07:34Z",
+          "updatedAt": "2023-11-09T23:07:34Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@BillGageIETF In QUIC packets, the packet number field is encrypted. UDP proxies and NAT cannot decrypt it, and cannot do any kind of treatment based on packet numbers. I would not worry about that. Not only that, but the use of nonce in encryption guarantees that all packets are different. The PEF can only \"eliminate duplicate copies\" if there are actual duplicates, maybe caused by a malfunction by an on path agent. I would not worry about that either. And then, since the packet numbers are encrypted, the middleboxes have no basis to perform any reordering. So, no worry about that either.\r\n\r\nQUIC is specifically design to limit interference by middle-boxes, including PEF, because middleboxes like PEF cause ossification and prevent innovation. Because of the protections built in QUIC, we can freely innovate and develop multipath functions.",
+          "createdAt": "2023-11-09T23:39:55Z",
+          "updatedAt": "2023-11-09T23:39:55Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "> In QUIC packets, the packet number field is encrypted. UDP proxies and NAT cannot decrypt it, and cannot do any kind of treatment based on packet numbers. I would not worry about that. Not only that, but the use of nonce in encryption guarantees that all packets are different. The PEF can only \"eliminate duplicate copies\" if there are actual duplicates, maybe caused by a malfunction by an on path agent. I would not worry about that either. And then, since the packet numbers are encrypted, the middleboxes have no basis to perform any reordering. So, no worry about that either.\r\n> \r\n> QUIC is specifically design to limit interference by middle-boxes, including PEF, because middleboxes like PEF cause ossification and prevent innovation. Because of the protections built in QUIC, we can freely innovate and develop multipath functions.\r\n\r\nI was describing a DETNET scenario where the PEF is a QUIC endpoint, not an intermediate node or middlebox. Packet replication over diverse paths is a common technique for applications requiring high(er) reliability and low(er) latency. In this case, replication of the QUIC packet occurs after encryption so they are, in fact, exact copies. The different copies would be encapsulated in different IP/UDP datagrams associated with different sockets, corresponding to the different paths established (using MPQUIC) between the client and the PEF.\r\n\r\nA single packet number space would greatly simplify implementation.",
+          "createdAt": "2023-11-10T01:08:58Z",
+          "updatedAt": "2023-11-10T01:08:58Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@BillGageIETF in any case, what you are discussing here is not related to the issue #214 discussed above, which is about path identification. You should open a specific issue with your suggestion.",
+          "createdAt": "2023-11-10T03:30:43Z",
+          "updatedAt": "2023-11-10T03:30:43Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Hmm, maybe we are talking past each other here, @yfmascgy. Your mapping analysis above, where the CID sequence number maps to \"the stateful information of a path\", looks good. The only thing that I suggest is that a stable unique identifier is added to this \"stateful information of a path\". This identifier would _not_ be the \"**ID**\" but just added per-path metadata.\r\n> \r\n> When the path is referenced to in signalling, this path identifier is fetched from \"the stateful information of a path\" and used in the signalling frames.\r\n\r\nThe question here is how do you formally define \"stableness\"? What is the path attributes **A**? Given two path attributes **A1** and **A2**, how do you decide if they are the same path or not?",
+          "createdAt": "2023-11-10T04:29:40Z",
+          "updatedAt": "2023-11-10T04:29:40Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We must also remember one fundamental reason for using multipath: it's for seamless failover. The current draft is a minimally scoped extension, allowing for initial single-path communication akin to how QUICv1 operates. Should your path begin to falter, you can swiftly establish a new one with any available spare Connection ID (CID). Yet, if you assign CIDs to specific paths, this creates an extra dependency, necessitating extra information exchange on the initial path before a new one can be launched. If the original path is deteriorating, causing such information exchange to fail, this can impede the failover process. Experience has taught us that in a production environment, it's wiser to minimize dependencies to avoid complications and failures.",
+          "createdAt": "2023-11-10T04:48:21Z",
+          "updatedAt": "2023-11-10T05:39:35Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "During the meeting in Prague, the WG decided to study what it would take to change the draft in line with the \"path-id\" suggestion. I tried to write a draft describing a \"path-id extension\" that would allow use of a unique path id. I think I did a fair spec based on the ideas floating around, but hey, I could be wrong. The draft is:\r\n\r\n* URL:      https://www.ietf.org/archive/id/draft-huitema-quic-mpath-explicit-00.txt\r\n* Status:   https://datatracker.ietf.org/doc/draft-huitema-quic-mpath-explicit/\r\n* HTMLized: https://datatracker.ietf.org/doc/html/draft-huitema-quic-mpath-explicit\r\n\r\nMy next step is to implement that in picoquic, to assess the implementation issues, perf, etc., and do a comparison with what we have.",
+          "createdAt": "2023-11-10T05:04:54Z",
+          "updatedAt": "2023-11-10T05:15:15Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "> in any case, what you are discussing here is not related to the issue #214 discussed above, which is about path identification. You should open a specific issue with your suggestion.\r\n\r\n@huitema: I'm not sure it's so easy to separate the issues.\r\n\r\nArchitecturally, there are two models for multi-path operations: model (A) is a collection of uni-path QUIC constructs while model (B) is a uni-path QUIC construct operating over a collection of paths.\r\n\r\nModel (A) is like MPTCP and appears to be the model of the current MPQUIC design. Model (B) is like a TCP connection operating over a layer 2 link aggregation group. In (B), a TCP segment can be transmitted in an IP datagram over any of the links in the LAG.\r\n\r\nIf we apply (B) principles to MPQUIC, then path management is distinct from connection management. Conceptually the MPQUIC stack is an RFC 9000 entity sitting on top of a path management entity with a shim entity between them to direct a QUIC packet over one of the available paths.\r\n\r\nIn (B), a QUIC packet can be sent over any of the available (and unrestricted) paths. Since connection identifiers are independent of path, a QUIC packet received over any path is processed in the same way as a packet received over the single path construct of RFC 9000 - i.e. there is a single application data packet number space and an ACK received over any path is unambiguous (no need for MP-ACK).\r\n\r\nThese are basically the principles used for connection migration in RFC 9000. The difference is that MPQUIC provides multiple paths that can be simultaneously active and path usage is explicitly managed. Clearly congestion control must be path-specific but connection management and packet loss recovery are not path-specific.\r\n\r\nIn this model, it is hard to imagine a solution that does not include an explicit path identifier that is independent of connection identifiers.",
+          "createdAt": "2023-11-10T14:32:06Z",
+          "updatedAt": "2023-11-10T14:32:06Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@BillGageIETF  we already had the debate between single number space per connection versus number space per path. There are good arguments for each design, they were considered and debated at length -- see issue #96 for the debate; also see previous versions of the draft. If you  want to reopen that debate, you need to do it in a separate issue because the arguments are unrelated to what we are discussing here.",
+          "createdAt": "2023-11-10T15:36:25Z",
+          "updatedAt": "2023-11-10T15:36:25Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "The discussion in this thread is whether there is value in separating path IDs from connection IDs. I am supporting Marteen's suggestion to introduce an explicit path identifier.\r\n\r\nI guess I am also suggesting benefits of this separation. With explicit path identifiers, you can manage paths without referencing connection identifiers. You can also manage paths separately from connections. With the latter, there is no need to split the application data packet number space.",
+          "createdAt": "2023-11-10T17:56:48Z",
+          "updatedAt": "2023-11-10T17:56:48Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "This document is in response to discussions of issue 214 in the QUIC \nmultipath GitHub: https://github.com/quicwg/multipath/issues/214\n\nThe current MPQUIC draft (-06) binds a connection identifier to a path \nby using the sequence number of a connection identifier as an implicit \npath identifier. To simplify implementation, the current MPQUIC draft \nintroduces the concept of multiple application data packet number spaces \nwith a different number space for each connection (path). This is in \ncontrast to RFC9000 where there is a single application data packet \nnumber space.\n\nIssue 214 proposed separating path IDs from connection IDs. This \ndocument uses that separation of identifiers to propose a different path \nmodel for Multipath QUIC using explicit path identifiers, enabling a \nmultipath management framework that retains the principles and \noperations of RFC9000.\n\nThe multipath operations described in this document do not change the \nbasic operations described in RFC9000. In particular, none of the \nfollowing procedures described in RFC9000 are affected by the use of \nmultiple paths:\n\n+ connection management (e.g. the use of NEW_CONNECTION_ID frames and \nsubsequent rotation of connection identifiers);\n\n+ key management (e.g. use of key phase bit) and derivation of AEAD \nparameters;\n\n+ packet loss detection and loss recovery (e.g. using type 0x02 ACK \nframes without ECN counts).\n\nHowever, changes to RFC9002 procedures are required to deal with \npath-dependent characteristics such as path MTU size, RTT and congestion.\n\nCheers ...\n\n/bill\n\n\nOn 2023-11-11 5:49 p.m., ***@***.*** wrote:\n > A new version of Internet-Draft draft-gage-quicmp-pathmodel-00.txt \nhas been\n > successfully submitted by Bill Gage and posted to the\n > IETF repository.\n >\n > Name:     draft-gage-quicmp-pathmodel\n > Revision: 00\n > Title:    An Alternate Path Model for Multipath QUIC\n > Date:     2023-11-11\n > Group:    Individual Submission\n > Pages:    14\n > URL: \nhttps://www.ietf.org/archive/id/draft-gage-quicmp-pathmodel-00.txt\n > Status:   https://datatracker.ietf.org/doc/draft-gage-quicmp-pathmodel/\n > HTML: \nhttps://www.ietf.org/archive/id/draft-gage-quicmp-pathmodel-00.html\n > HTMLized: \nhttps://datatracker.ietf.org/doc/html/draft-gage-quicmp-pathmodel\n >\n >\n > Abstract:\n >\n >     The path model used in the current MPQUIC draft binds a connection\n >     identifier to a path.  In fact, the sequence number of a connection\n >     identifier is used as an implicit path identifier.  This has a number\n >     of consequences that may cause MPQUIC to diverge from the principles\n >     of RFC9000.  One of these consequences, for example, is to associate\n >     each connection with a different application data packet number space\n >     rather than maintaining a single application data packet number space\n >     across all connections as defined in RFC9000.\n >\n >     This document proposes a different path model for Multipath QUIC\n >     using explicit path identifiers, enabling a multipath management\n >     framework that retains the principles and operations of RFC9000.\n >\n >\n >\n > The IETF Secretariat\n >\n >\n",
+          "createdAt": "2023-11-11T22:56:09Z",
+          "updatedAt": "2023-11-11T22:56:09Z"
         }
       ]
     },
