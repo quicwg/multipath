@@ -361,10 +361,11 @@ Table of Contents
    When the multipath option is negotiated, clients that want to use an
    additional path MUST first initiate the Address Validation procedure
    with PATH_CHALLENGE and PATH_RESPONSE frames described in Section 8.2
-   of [QUIC-TRANSPORT].  After receiving packets from the client on a
-   new path, if the server decides to use the new path, the server MUST
-   perform path validation (Section 8.2 of [QUIC-TRANSPORT]) unless it
-   has previously validated that address.
+   of [QUIC-TRANSPORT], unless it has previously validated that address.
+   After receiving packets from the client on a new path, if the server
+   decides to use the new path, the server MUST perform path validation
+   (Section 8.2 of [QUIC-TRANSPORT]) unless it has previously validated
+   that address.
 
    If validation succeeds, the client can continue to use the path.  If
    validation fails, the client MUST NOT use the path and can remove any
