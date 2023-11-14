@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-12T00:43:06.699954+00:00",
+  "timestamp": "2023-11-14T00:40:16.317976+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7808,7 +7808,7 @@
       "id": "I_kwDOGNtpaM51UGBM",
       "title": "Terminology clarification of \"path\"",
       "url": "https://github.com/quicwg/multipath/issues/285",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tzaeschke",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -7817,8 +7817,8 @@
       ],
       "body": "Section 1 states:\r\n> * A path is determined by the 4-tuple of source and destination IP address as well as source and destination port. Therefore, there can be at most one active paths/connection ID per 4-tuple.\r\n\r\nAs I understand it, this would preclude the possibility of having different or evolving paths (i.e. routes) for a single 4-tuple.\r\nFor example, paths may additionally be determined by\r\n- Flow labels in IPv6, for example when using ECMP, which allows multiple paths between 4-tuples, see [RFC 6437](https://www.rfc-editor.org/rfc/rfc6437)\r\n- Multipath routing approaches such as SCION which also allows multiple paths per 4-tuple, see https://datatracker.ietf.org/doc/draft-dekater-panrg-scion-overview/\r\n\r\nWould it make sense to soften this requirement by allowing multiple paths (i.e. routes) for identical 4-tuples?\r\nOr, if \"path\" is synonymous with \"4-tuple\", could it make sense to add a clarification of terminology to that effect? I.e. clarifying that *\"there can be at most one active paths/connection ID per 4-tuple\"* is not saying anything about the actual (and possibly diverging or evolving) paths that packets on this \"path\" actually take?\r\n\r\nSuch a change should not affect the packet format or any part of the protocol. It would be merely a clarification on the meaning of \"path\".\r\n\r\n(Disclaimer: I work on the SCION protocol).",
       "createdAt": "2023-10-30T12:10:55Z",
-      "updatedAt": "2023-11-03T15:23:13Z",
-      "closedAt": null,
+      "updatedAt": "2023-11-13T14:22:12Z",
+      "closedAt": "2023-11-13T14:22:12Z",
       "comments": [
         {
           "author": "huitema",
@@ -7833,6 +7833,13 @@
           "body": "_speaking as an individual_\r\n\r\nThe definition of path is the same as when we adopted the draft to the WG. So asking for a change in definition is effectively a request to expand the scope of the document. That risks delaying the standardization of multipath for the deployments that are happy with the current scope.\r\n\r\nI agree with Christian that extensions can expand the scope on their own terms, and spend their own time and effort to figure out what works and what doesn't. ",
           "createdAt": "2023-10-31T16:53:31Z",
           "updatedAt": "2023-10-31T16:53:31Z"
+        },
+        {
+          "author": "tzaeschke",
+          "authorAssociation": "NONE",
+          "body": "Dear @huitema & @LPardue, thank you for your feedback.\r\nThis RFC is obviously more progressed than I had realized.\r\nIt seems we'll have to find another way, maybe by way of an extension (as you suggested).",
+          "createdAt": "2023-11-13T14:22:12Z",
+          "updatedAt": "2023-11-13T14:22:12Z"
         }
       ]
     },
@@ -7900,6 +7907,51 @@
           "body": "I think I agree that the problem exists, though I am not sure how much it would matter in practice.\r\n\r\nSeparately, I might point out that this is an existing issue of RFC 9001.\r\n\r\nIn both QUIC v1 and multipath, endpoints can have idle paths, which might have very different actual RTT than the previous estimate. Also, when the endpoint initiates a Key Update while the peer is trying to open a new path, RTT of the new path cannot be taken into consideration.\r\n\r\nWhen recommending the Key Update interval, QUIC v1 only took the RTT estimate of its one and active path into consideration. We adopted that model to Multipath and said that all paths that exist have to be taken into consideration.\r\n\r\nI think that is an improvement from QUIC v1 in sense that idle paths are taken into consideration at least (even though their RTT estimates are old).\r\n\r\nThe question is if we want to do more.\r\n\r\nHonestly, I do not care much considering how infrequent key updates are. My anticipation is that this problem would be a minor source of loss events unrelated to congestion, if any.\r\n\r\nConsidering that, it might be sufficient to just note that such a problem exists. We can address the issue in the future version of QUIC.\r\n\r\nThe other idea would be to state that the minimum recommended interval is `3*max(maxPTO, initialPTO)`; by changing as such, we can take paths that are being created into consideration. But that is not a perfect solution.",
           "createdAt": "2023-11-05T04:32:49Z",
           "updatedAt": "2023-11-05T04:32:49Z"
+        }
+      ]
+    },
+    {
+      "number": 291,
+      "id": "I_kwDOGNtpaM52kdgA",
+      "title": "Do we actually have an established consensus on path definition?",
+      "url": "https://github.com/quicwg/multipath/issues/291",
+      "state": "OPEN",
+      "author": "yfmascgy",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The debate over whether to use a stable path ID #214  may have deeper logical underpinnings than initially perceived and hinge on whether there\u2019s an agreed-upon definition of a path. \r\n\r\nThe current draft considers defining a path as a 4-tuple between two endpoints. This definition currently shapes the draft design, where different 4-tuples are assigned unique IDs and linked to distinct packet number spaces, maintaining logical consistency as this definition alone does not incorporate the concept of path \"**continuity**\".\r\n\r\nThose with differing views (i.e., stable path ID) essentially contest this definition of a path, perhaps even unknowingly. To adopt a stable path ID, we must redefine what constitutes a path, incorporating the idea of \u201c**continuity**.\u201d \r\n\r\nBut defining continuity is challenging. It suggests creating a transition graph where paths sharing an ID can trace back to a common origin, illustrated by transitions like`A1 -----> A2 ------> A3\r\n`, where `A` is some observable attributes of a path.\r\n\r\nAn _imperfect_ example of such transition graph is based on the combination of CID and 4-tuple:\r\n`(CID0, tuple0) ----> (CID0, tuple1) -----> (CID1, tuple1)\r\n`. However, the first complexity arises when both CID and tuple change simultaneously, as in`(CID0, tuple0) ----????-----> (CID1, tuple1)\r\n`. Here, it\u2019s unclear if these represent the same or different paths, making it impossible to construct a definitive transition graph. The second issue is that forcefully linking two such nodes with a path ID could lead to anomalies. For instance when we tie CID to path ID #214, you might start on an LTE path (PathID1) and have a standby path on Wi-Fi (PathID2) in a restaurant. Moving to a shopping mall and connecting to its Wi-Fi, you initially use a CID associated with PathID2. Yet, even after a CID rotation post path validation, you remain linked to PathID2 because you would rotate to another CID assigned for that PathID, despite the Wi-Fi path, its ISP, and the MTU potentially being different. There is another proposal of sticking to the loose path ID model but allowing the use of the same packet number space, again the logic hinges on whether we have a well-defined **continuity** to build a definitive transition so that we can link two paths to the same packet number space with no ambiguity.\r\n\r\nGiven the years of back-and-forth on this issue, it seems helpful to first reach a consensus on the path definition. The design should logically follow from this agreed definition, similar to how different assumptions about parallel lines underpin Euclidean and non-Euclidean geometries. Without a clear definition, when we say \"This is the same path because it has the same identifier\", we are potentially entering a circular reasoning zone and we should avoid logical fallacy like that.\r\n\r\nI could be wrong, but I think if we want to have a test of time design, we need to address the path definition unequivocally. Therefore, I would suggest to call for a consensus on a formal path definition. Two questions: (1) Do we like to incorporate \"**continuity**\" in the definition or stick to the current 4-tuple definition? (2) How to come up with a formal definition to incorporate the idea of **continuity** in path definition?",
+      "createdAt": "2023-11-12T07:08:44Z",
+      "updatedAt": "2023-11-13T20:41:35Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Some clarity would be good. \r\n\r\nThe mechanism that I do understand is the numbering space. It is a tool that we use to number packets sent over one of the possible 4 tuples between two endpoints. This is important for several reasons:\r\n\r\n* numbering space is tied to loss recovery. Loss recovery becomes less effective in presence of out of order delivery. Loss recovery works well if all packets numbered from the same space arrive in order. Sender try to ensure that by sending packets from a given number space on the same four tuple. This is imperfect, because of NAT, but it is also the best that senders can do.\r\n* numbering space is tied to encryption, which require a unique nonce. This works well if we combine the packet number and the identifier of the numbering space in the nonce.\r\n* when receiving a packet, the receiver must use the same nonce as the sender. The receiver needs to identify the number space and the packet number from the packet header. The receiver cannot solely rely on the four tuple, because of NAT. The only element that the receiver can use is the connection ID.\r\n\r\nSo far, this means selecting a number space and one or several packet IDs to send on a given four tuple. Two designs can work: 1-1 mapping between connection ID and number space, or 1-N mapping, in which several connection ID point to the same number space.\r\n\r\nUp to this point, we do not require any tie between the two directions of communications. The tying happens because if the client starts sending using a 4 tuple, the server may decide to send using the symmetric 4 tuple. The server discovers a possible \"sending path\" by receiving packets from the client. Thus, a bit of complexity:\r\n\r\n* the client may want to control how the server uses this path. This is the role of the Path Available, Path Standby and Path Abandon frames. \r\n* the mapping between number space and 4-tuple will occasionally change, because of NAT. If the server derived a 4 tuple from packets received from the client, it needs to change that 4 tuple if it detects a NAT rebinding. There will necessarily be a period of uncertainty during which client and server don't have quite the same notion of 4-tuples.\r\n* the endpoints must be able to change the connection ID associated with a four tuple for privacy reasons, and also because connection IDs may have a limited lifetime.\r\n* the endpoints need to somehow agree to free the resource linked to a number space when it is not in use.\r\n\r\nThe \"1-1 mapping between CID and number space ID\" solves these requirements, but does induce a discontinuity in packet number when a connection ID is rotated. \r\n\r\nThe \"1-N mapping between number space and CID\" can also solve these issues. It does make CID rotation easy to handle, including when CID rotation is combined with NAT rebinding. The mapping does require some additional code for handling the 1-N mapping, such as for example a new \"new CID\" frame that links a CID to a path identifier. \r\n\r\nThe 1-N mapping also requires extra care when abandoning a path and freeing the resource, because just retiring a CID does not retire the number space. For example, does abandoning a number space automatically induce retiring the CID tied to that number space? How to handle arrival of packets for a CID that is not retired yet, but is tied to a retired number space?\r\n\r\nBack to @yfmascgy question: I think we get much clarity if we focus on number spaces instead of focusing on the actual definition of a path. I also think that we should be very explcit with our handling of Path directions. For the MP ACK, this is simple: the number space identifier is that used by the sender of the packets being acknowledged. For the Path Abandon, this is less clear. Is the statement \"I will not send anything more using that number space\" (i.e., local sender space ID), or \"Please don't send anything anymore with that number space\" (i.e., remote sender space ID)?\r\n",
+          "createdAt": "2023-11-12T08:23:49Z",
+          "updatedAt": "2023-11-12T08:23:49Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "@yfmascgy : I think you make a very good point. With the existence of middleboxes between QUIC endpoints, the thing that defines a \"path\" may be different from the perspective of the different endpoints - e.g. the source IP address and UDP port that is inserted into an IP datagram by a sender may not be that same as the source IP address and UDP port seen in the the IP datagram by the receiver. And, as RFC9000 took pains to describe, the source IP address and UDP port seen in the the IP datagram by the receiver may change over time without the knowledge of the sender, resulting in (passive) connection migration.\r\n\r\nWithout the use of a path identifier that is independent of the 4-tuple, it is hard to see how the endpoints can have any meaningful dialogue regarding \"paths\". Some would argue that this independent path identifier should be a connection identifier, others would argue that it should be an explicit path identifier selected by an endpoint.\r\n\r\nIt might be worthwhile to look at the events that might result in the declaration of a new path. I don't think a receiver can unilaterally declare a new path based only on the detection of a passive connection migration (i.e. a change in the source IP address and/or UDP port seen in the a IP datagram).\r\n\r\nA sender may determine that it is using a new path based on:\r\n\r\na) a change in the source IP address used by the sender, and/or\r\n\r\nb) a change in the network access point used by the sender.\r\n\r\nNote that (b) often results in (a) but there are some access networks where the same source IP address can be used across different access points.\r\n\r\nThere are some deployments where (a) and/or (b) are hidden from the peer endpoint by the intervening network. Therefore, the declaration of a new path can only be made by a sender.\r\n\r\n@huitema : As you might guess, I am not in favour of solutions that require multiple packet number spaces ;-)",
+          "createdAt": "2023-11-13T18:08:58Z",
+          "updatedAt": "2023-11-13T18:08:58Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Regarding the meaning of a \"path\", I agree that this is something conceptually difficult to concretise without ambiguity.\r\n\r\nOver a \"path\", you actually have two (unidirectional) flows: one on which the endpoint sends packets, and one on which it receives them. While the endpoint has some control on its sending flow (at least, at the beginning), it does not on receiving packets (for instance, passive migration or changes of the 4-tuple due to the network).\r\n\r\nRegarding the notion of \"explicit Path ID\", I think it is useful as the receiving endpoint could figure out what its peer is doing, i.e., it can map 1-1 a sending flow of its peer to one of its receiving flows, even if 4-tuple or CID change. This enables \"flow continuity\" from the endpoint point of view.\r\n\r\n@BillGageIETF, regarding the multiple packet number spaces, this is something we actually studied and presented results at the [IETF 115](https://github.com/quicwg/wg-materials/blob/main/ietf115/multipath.pdf). You can see the [Alibaba's technical report](https://github.com/quicwg/multipath/blob/main/reports/Alibaba_SPNS_implementation.pdf) or [SIGCOMM CCR publication](https://dl.acm.org/doi/abs/10.1145/3561954.3561956). In particular, using a single packet number space for the whole connection can cause issues when handling with different paths having very different characteristics.",
+          "createdAt": "2023-11-13T18:53:54Z",
+          "updatedAt": "2023-11-13T18:53:54Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "@qdeconinck : I don't want to repeat the discussion of issue #214 here. I will just note that since those earlier single-versus-multiple space discussions, the multiple space solution (in draft -06) has resulted in divergence from RFC9000 in some pretty fundamental ways. I will also note (as I did in #214) that those earlier discussions were not aware of the incompatibility that has come to light between draft -06 and the masque QUIC-aware UDP proxy draft. \r\n\r\nHandling diverse path characteristics within a single packet number space is a solvable problem even if it makes the implementation more complex.",
+          "createdAt": "2023-11-13T20:41:35Z",
+          "updatedAt": "2023-11-13T20:41:35Z"
         }
       ]
     }
