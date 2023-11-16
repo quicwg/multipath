@@ -1241,6 +1241,53 @@ a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
 
+## MP_NEW_CONNECTION_ID frames {#mp-new-conn-id-frame}
+
+An endpoint sends a MP_NEW_CONNECTION_ID frame (type=0x15228c09) instead of the NEW_CONNECTION_ID frame to provide its peer with alternative connection IDs that can be used to break linkability when migrating connections; see {{Section 19.15 of QUIC-TRANSPORT}}.
+
+MP_NEW_CONNECTION_ID frames are formatted as shown in {{fig-mp-connection-id-frame-format}}.
+
+~~~
+MP_NEW_CONNECTION_ID Frame {
+  Type (i) = 0x15228c09,
+  Sequence Number (i),
+  Retire Prior To (i),
+  Length (8),
+  Connection ID (8..160),
+  Stateless Reset Token (128),
+  Path Identifier (i),
+}
+~~~
+{: #fig-mp-connection-id-frame-format title="MP_NEW_CONNECTION_ID Frame Format"}
+
+MP_NEW_CONNECTION_ID frames contain the following fields:
+
+Path Identifier:
+: A path identifier which is pre allocated when the Connection ID is generated, which
+means the current Connection ID can only be used on the corresponding path.
+
+
+
+## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
+
+An endpoint sends a MP_RETIRE_CONNECTION_ID frame (type=0x15228c0a) instead of RETIRE_CONNECTION_ID frame to indicate that it will no longer use a connection ID that was issued by its peer. This includes the connection ID provided during the handshake. Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer to send additional connection IDs for future use. New connection IDs can be delivered to a peer using the MP_NEW_CONNECTION_ID frame ({{mp-new-conn-id-frame}}).
+
+Retiring a connection ID invalidates the stateless reset token associated with that connection ID.
+
+MP_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-connection-id-frame-format}}.
+
+~~~
+RETIRE_CONNECTION_ID Frame {
+  Type (i) = 0x15228c0a,
+  Sequence Number (i),
+  Path Identifier (i),
+}
+~~~
+{: #fig-mp-retire-connection-id-frame-format title="MP_RETIRE_CONNECTION_ID Frame Format"}
+
+
+
+
 # Error Codes {#error-codes}
 Multipath QUIC transport error codes are 62-bit unsigned integers
 following {{QUIC-TRANSPORT}}.
