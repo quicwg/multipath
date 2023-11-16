@@ -236,6 +236,15 @@ defined as follows:
   enable_multipath transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This parameter has
   a zero-length value.
+- max_concurrent_paths (current version uses 0x0f739bbc1b666df1): This is 
+  an integer value specifying the maximum number of paths an endpoint is 
+  willing to build. The value of the max_concurrent_paths parameter MUST 
+  be at least 2. An endpoint that receives a value less than 2 MUST close 
+  the connection with an error of type TRANSPORT_PARAMETER_ERROR. If this 
+  transport parameter is absent, a default of 4 is assumed. After the handshake 
+  negotiation finished, endpoints MUST use the minimum of local and remote
+  value of max_concurrent_paths as the maximum number of paths in the current
+  connection.
 
 If any of the endpoints does not advertise the enable_multipath transport
 parameter, then the endpoints MUST NOT use any frame or
