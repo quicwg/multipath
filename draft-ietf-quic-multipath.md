@@ -130,8 +130,7 @@ requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}.
 
 This extension uses multiple packet number spaces.
-When multipath is negotiated,
-each destination connection ID is linked to a separate packet number space.
+When multipath is negotiated, each path is linked to a separate packet number space.
 Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}}.
@@ -186,14 +185,15 @@ capitals, as shown here.
 We assume that the reader is familiar with the terminology used in
 {{QUIC-TRANSPORT}}. When this document uses the term "path", it refers
 to the notion of "network path" used in {{QUIC-TRANSPORT}}.
-In addition, we define the following terms:
+In addition, we define the following term:
 
 - Path Identifier (Path ID): An identifier that is used to identify 
   a path in a QUIC connection at an endpoint. Path Identifier is used 
   in multipath control frames (etc. PATH_ABANDON frame) to identify a path. 
-  Connection IDs are issued per path. When endpoints address a path in multipath control frames, 
-  it refers to the Path Identifier field of the destination Connection ID 
-  used for sending packets on that particular path. 
+  Connection IDs are issued per path. When endpoints address a path in 
+  multipath control frames, it refers to the Path Identifier field of 
+  the destination Connection ID used for sending packets on that 
+  particular path. 
 
 
 # High-level overview {#overview}
@@ -207,7 +207,7 @@ A multipath QUIC connection starts with a QUIC handshake as a regular QUIC conne
 See further {{nego}}.
 The peers use the enable_multipath transport parameter during the handshake to
 negotiate the utilization of the multipath capabilities.
-The active_connection_id_limit transport parameter limits the maximum number of active paths
+The max_concurrent_paths transport parameter limits the maximum number of active paths
 that can be used during a connection. A multipath QUIC connection is thus an established QUIC
 connection where the enable_multipath transport parameter
 has been successfully negotiated.
@@ -218,7 +218,9 @@ In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
-(see {{Section 8 of QUIC-TRANSPORT}}). The Path Identifier of the 
+(see {{Section 8 of QUIC-TRANSPORT}}). Endpoints need to pre-allocate 
+new Connection IDs with associating Path Identifiers before initiating new paths.
+The Path Identifier of the 
 Destination Connection ID is used to associate a packet to a packet number space 
 that is used on a valid path. Further, the
 Path Identifier of Destination Connection ID is used as numerical identifier
@@ -254,7 +256,7 @@ defined as follows:
   transport parameter is absent, a default of 4 is assumed. After the handshake 
   negotiation finished, endpoints MUST use the minimum of local and remote
   value of max_concurrent_paths as the maximum number of paths in the current
-  connection.
+  connection. 
 
 If any of the endpoints does not advertise the enable_multipath transport
 parameter, then the endpoints MUST NOT use any frame or
@@ -276,17 +278,18 @@ defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
-limits the number of concurrent paths. However, endpoints might prefer to retain
+limits the number of concurrent paths. Note that max_concurrent_paths SHOULD not 
+be larger than active_connection_id_limit. However, endpoints might prefer to retain
 spare Connection IDs so that they can respond to unintentional migration events
-({{Section 9.5 of QUIC-TRANSPORT}}).
+({{Section 9.5 of QUIC-TRANSPORT}}). 
 
 The transport parameter "max_concurrent_paths" only becomes effective when the
 enable_multipath parameter is negotiated successfully. Endpoints SHOULD use
 MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID frames to provide new Connection IDs 
 for the peer after the enable_multipath parameter is negotiated. 
 
-Path Identifier MUST NOT be larger or equal to the max_concurrent_paths 
-transport parameter which is negotiated by endpoints.
+Path Identifier allocated by endpoints MUST NOT be larger or equal to 
+the max_concurrent_paths transport parameter which is negotiated by endpoints.
 
 Cipher suites with nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such cipher suite is selected and the use of the
