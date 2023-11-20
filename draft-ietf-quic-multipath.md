@@ -521,8 +521,33 @@ peer during the address validation procedure. According to
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
 
-### Consuming and Retiring Connection IDs {#consume-retire-cid}
+### Allocating, Consuming and Retiring Connection IDs {#consume-retire-cid}
 
+Each endpoints pre-allocate a Path Identifier for each new Connection ID. 
+The Path Identifier 0 indicates the initial path of the connection. 
+Endpoints SHOULD issue at least one unused Connection ID for each path.
+
+An endpoint maintains a set of connection IDs received from its peer for each path, 
+any of which it can use when sending packets, as the same in {{QUIC-TRANSPORT}}. 
+The difference of multi-path extension is that Connection IDs are pre-allocated
+for each paths. Each Connection ID is belonging to one path specified by
+the Path Identifier field of MP_NEW_CONNECTION_ID frame in {{mp-new-conn-id-frame}}.
+The Connection IDs used during handshake are belonging to the initial path
+with Path Identifier 0.
+
+When the endpoint wishes to remove a connection ID from use, it sends 
+a MP_RETIRE_CONNECTION_ID frame {{mp-retire-conn-id-frame}} to its peer. 
+Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID 
+will not be used again and requests that the peer replace it with a new connection ID 
+using a MP_NEW_CONNECTION_ID frame.
+
+Note that Connection Sequeunce number and Retire Prior To field are both used for 
+the corresponding path specified by a Path Identifier. 
+
+Upon receipt of an increased Retire Prior To field, the peer MUST stop 
+using the corresponding connection IDs of the specified path and retire them 
+with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection ID 
+to the set of active connection IDs belonging to the specified path.
 
 
 ### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
