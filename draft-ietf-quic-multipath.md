@@ -208,7 +208,9 @@ See further {{nego}}.
 The peers use the enable_multipath transport parameter during the handshake to
 negotiate the utilization of the multipath capabilities.
 The max_concurrent_paths transport parameter limits the maximum number of active paths
-that can be used during a connection. A multipath QUIC connection is thus an established QUIC
+that can be used during a connection. The active_connection_id_limit 
+transport parameter limits the maximum number of active Connection IDs
+per path. A multipath QUIC connection is thus an established QUIC
 connection where the enable_multipath transport parameter
 has been successfully negotiated.
 
@@ -277,14 +279,13 @@ This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
 The transport parameter "active_connection_id_limit"
-{{QUIC-TRANSPORT}} limits the number of usable Connection IDs, and also
-limits the number of concurrent paths. Note that max_concurrent_paths SHOULD not 
-be larger than active_connection_id_limit. However, endpoints might prefer to retain
-spare Connection IDs so that they can respond to unintentional migration events
-({{Section 9.5 of QUIC-TRANSPORT}}). 
+{{QUIC-TRANSPORT}} limits the number of usable Connection IDs per path when the
+enable_multipath parameter is negotiated successfully. 
+Endpoints might prefer to retain spare Connection IDs so that they can 
+respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}). 
 
-The transport parameter "max_concurrent_paths" only becomes effective when the
-enable_multipath parameter is negotiated successfully. Endpoints SHOULD use
+The transport parameter "max_concurrent_paths" only becomes effective after the
+enable_multipath parameter is negotiated. Endpoints SHOULD use
 MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID frames to provide new Connection IDs 
 for the peer after the enable_multipath parameter is negotiated. 
 
