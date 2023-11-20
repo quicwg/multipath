@@ -186,6 +186,17 @@ capitals, as shown here.
 We assume that the reader is familiar with the terminology used in
 {{QUIC-TRANSPORT}}. When this document uses the term "path", it refers
 to the notion of "network path" used in {{QUIC-TRANSPORT}}.
+In addition, we define the following terms:
+
+- Path Identifier (Path ID): An identifier that is used to identify 
+  a path in a QUIC connection at an endpoint. Path Identifier is used 
+  in multipath control frames (etc. PATH_ABANDON frame) to identify a path. 
+  Endpoint pre-allocates a Path Identifier field when it provide a new Connection ID
+  for its peer. When endpoints address a path in multipath control frames, 
+  it refers to the Path Identifier field of the destination Connection ID 
+  used for sending packets on that particular path. Note that the Path Identifier 
+  for initial path is always 0. 
+
 
 # High-level overview {#overview}
 
@@ -236,7 +247,8 @@ defined as follows:
   enable_multipath transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This parameter has
   a zero-length value.
-- max_concurrent_paths (current version uses 0x0f739bbc1b666df1): This is 
+
+- max_concurrent_paths (current version uses 0xced74c7a): This is 
   an integer value specifying the maximum number of paths an endpoint is 
   willing to build. The value of the max_concurrent_paths parameter MUST 
   be at least 2. An endpoint that receives a value less than 2 MUST close 
@@ -270,10 +282,19 @@ limits the number of concurrent paths. However, endpoints might prefer to retain
 spare Connection IDs so that they can respond to unintentional migration events
 ({{Section 9.5 of QUIC-TRANSPORT}}).
 
+The transport parameter "max_concurrent_paths" only becomes effective when the
+enable_multipath parameter is negotiated successfully. Endpoints SHOULD use
+MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID frames to provide new Connection IDs 
+for the peer after the enable_multipath parameter is negotiated. 
+
+Path Identifier MUST NOT be larger or equal to the max_concurrent_paths 
+transport parameter which is negotiated by endpoints.
+
 Cipher suites with nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
 TRANSPORT_PARAMETER error.
+
 
 
 # Path Setup and Removal {#setup}
@@ -295,6 +316,9 @@ contained in this parameter can be simultaneously used for multipath
 Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
+
+To open a new path, endpoint needs to provide its peer with alternative connection IDs
+which are pre-allocated with Path Identifiers. 
 
 To open a new path, an endpoint SHALL use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different
@@ -733,9 +757,9 @@ using multiple packet number spaces.
    Client                                                  Server
 
    (Exchanges start on default path)
-   1-RTT[]: NEW_CONNECTION_ID[C1, Seq=1] -->
-                       <-- 1-RTT[]: NEW_CONNECTION_ID[S1, Seq=1]
-                       <-- 1-RTT[]: NEW_CONNECTION_ID[S2, Seq=2]
+   1-RTT[]: NEW_CONNECTION_ID[C1, Seq=1, PathID=1] -->
+             <-- 1-RTT[]: NEW_CONNECTION_ID[S1, Seq=1, PathID=1]
+             <-- 1-RTT[]: NEW_CONNECTION_ID[S2, Seq=2, PathID=2]
    ...
    (starts new path)
    1-RTT[0]: DCID=S2, PATH_CHALLENGE[X] -->
@@ -752,8 +776,8 @@ using multiple packet number spaces.
 In {{fig-example-new-path}}, the endpoints first exchange
 new available Connection IDs with the NEW_CONNECTION_ID frame.
 In this example, the client provides one Connection ID (C1 with
-sequence number 1), and server provides two Connection IDs
-(S1 with sequence number 1, and S2 with sequence number 2).
+Path Identifier 1), and server provides two Connection IDs
+(S1 with Path Identifier 1, and S2 with Path Identifier 2).
 
 Before the client opens a new path by sending a packet on that path
 with a PATH_CHALLENGE frame, it has to check whether there is
@@ -775,18 +799,17 @@ or the quality of RTT or loss rate is becoming worse) and wants to close
 the initial path.
 
 {{fig-example-path-close1}} illustrates an example of path closing. For the first path, the
-server's 1-RTT packets use DCID C1, which has a sequence number of 1; the
-client's 1-RTT packets use DCID S2, which has a sequence number of 2. For the
-second path, the server's 1-RTT packets use DCID C2, which has a sequence
-number of 2; the client's 1-RTT packets use DCID S3, which has a sequence number
+server's 1-RTT packets use DCID C1, which has a path identifier of 1; the
+client's 1-RTT packets use DCID S2, which has a path identifier of 2. For the
+second path, the server's 1-RTT packets use DCID C2, which has a path identifier of 2; 
+the client's 1-RTT packets use DCID S3, which has a path identifier
 of 3. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the sequence
 number of the DCID its peer uses for sending packets over that path,
-hence using the DCID sequence number 1 (which relates to C1). Optionally, the
-server confirms the path closure
-by sending an PATH_ABANDON frame by indicating the sequence number of the DCID
-the client uses to send over that path, which corresponds to the sequence number
-2 (of S2). Both the client and
+hence using the DCID with path identifier 1 (which relates to C1). Optionally, the
+server confirms the path closure by sending an PATH_ABANDON frame 
+by indicating the path identifier the client uses to send over that path, 
+which corresponds to the path identifier 2 (of S2). Both the client and
 the server can close the path after receiving the RETIRE_CONNECTION_ID frame
 for that path.
 
@@ -794,9 +817,9 @@ for that path.
 Client                                                      Server
 
 (client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[dcid_seq_num=1]->
+1-RTT[X]: DCID=S2 PATH_ABANDON[PathID=1]->
                            (server tells client to abandon a path)
-               <-1-RTT[Y]: DCID=C1 PATH_ABANDON[dcid_seq_num=2],
+               <-1-RTT[Y]: DCID=C1 PATH_ABANDON[PathID=2],
                                                ACK_MP[PID=2, PN=X]
 (client retires the corresponding CID)
 1-RTT[U]: DCID=S3 RETIRE_CONNECTION_ID[2], ACK_MP[PID=1, PN=Y] ->
@@ -1252,10 +1275,10 @@ MP_NEW_CONNECTION_ID Frame {
   Type (i) = 0x15228c09,
   Sequence Number (i),
   Retire Prior To (i),
+  Path Identifier (i),
   Length (8),
   Connection ID (8..160),
   Stateless Reset Token (128),
-  Path Identifier (i),
 }
 ~~~
 {: #fig-mp-connection-id-frame-format title="MP_NEW_CONNECTION_ID Frame Format"}
@@ -1285,7 +1308,9 @@ RETIRE_CONNECTION_ID Frame {
 ~~~
 {: #fig-mp-retire-connection-id-frame-format title="MP_RETIRE_CONNECTION_ID Frame Format"}
 
-
+Path Identifier:
+: A path identifier which is pre allocated when the Connection ID is generated, which
+means the current Connection ID can only be used on the corresponding path.
 
 
 # Error Codes {#error-codes}
