@@ -1300,9 +1300,9 @@ MP_NEW_CONNECTION_ID frames are formatted as shown in {{fig-mp-connection-id-fra
 ~~~
 MP_NEW_CONNECTION_ID Frame {
   Type (i) = 0x15228c09,
+  Path Identifier (i),
   Sequence Number (i),
   Retire Prior To (i),
-  Path Identifier (i),
   Length (8),
   Connection ID (8..160),
   Stateless Reset Token (128),
@@ -1334,8 +1334,8 @@ MP_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-connect
 ~~~
 RETIRE_CONNECTION_ID Frame {
   Type (i) = 0x15228c0a,
-  Sequence Number (i),
   Path Identifier (i),
+  Sequence Number (i),
 }
 ~~~
 {: #fig-mp-retire-connection-id-frame-format title="MP_RETIRE_CONNECTION_ID Frame Format"}
