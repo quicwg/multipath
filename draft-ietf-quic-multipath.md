@@ -218,12 +218,12 @@ In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
-(see {{Section 8 of QUIC-TRANSPORT}}). The Destination Connection ID is used
-to associate a packet to a packet number space that is used on a valid path. Further, the
-sequence number of Destination Connection ID is used as numerical identifier
+(see {{Section 8 of QUIC-TRANSPORT}}). The Path Identifier of the 
+Destination Connection ID is used to associate a packet to a packet number space 
+that is used on a valid path. Further, the
+Path Identifier of Destination Connection ID is used as numerical identifier
 in control frames. E.g. an endpoint sends a PATH_ABANDON frame to request its peer to
-abandon the path on which the sender uses the Destination Connection ID
-with the sequence number contained in the PATH_ABANDON frame.
+abandon the path on which the sender uses the Path Identifier contained in the PATH_ABANDON frame.
 
 In addition to these core features, an application using Multipath QUIC will typically
 need additional algorithms to handle the number of active paths and how they are used to
@@ -435,11 +435,12 @@ If no frame indicating a path usage preference was received for a certain path,
 the preference of the peer is unknown and the sender needs to decide based on it
 own local logic if the path should be used.
 
-Endpoints use Destination Connection ID Sequence Number field
+Endpoints use Path Identifier pre-allocated for the Destination Connection ID
 in these frames to identify which path state is going to be
 changed. Notice that both frames can be sent via a different path
 and therefore might arrive in different orders.
-The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space to detect and ignore outdated information.
+The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space 
+to detect and ignore outdated information.
 
 If all available path are marked as "standby", no guidance is provided about
 which path should be used preferably.
@@ -540,9 +541,9 @@ provide sufficient new CIDs.
 
 Note that even if a peer cannot send on a path anymore because it does not have
 a valid Connection ID to use, it can still acknowledge packets received on the path,
-by sending ACK_MP frames on another path, if available. But also note that,
-as there is no valid CID associated with the path, the other end cannot send
-multipath control frames that contain the sequence number of a Connection ID, such
+by sending ACK_MP frames on another path, if available. Also note that,
+as there is no valid CID associated with the path, the other end can still send
+multipath control frames that contain the Path Identifier on available paths, such
 as PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE.
 
 If the peer cannot send on a path and no data is received on the path, the idle time-out will close
@@ -633,15 +634,18 @@ In non-final states, hosts have to track the following information.
 - Associated 4-tuple: The tuple (source IP, source port, destination IP,
 destination port) used by the endhost to send packets over the path.
 
+- Associated Path Identifier: The Path Identifier used to address the path.
+The endpoint relies on its sequence number to send path control information 
+and specifically acknowledge packets belonging to that path-specific
+packet number space.
+
 - Associated Destination Connection ID: The Connection ID used to send
 packets over the path.
 
 In Active state, hosts MUST also track the following information:
 
 - Associated Source Connection ID: The Connection ID used to receive
-packets over the path. The endpoint relies on its sequence number to
-send path control information and specifically acknowledge packets belonging to that Connection ID-specific
-packet number space.
+packets over the path. 
 
 A path in the "Validating" state performs path validation as described
 in {{Section 8.2 of QUIC-TRANSPORT}}.
@@ -685,21 +689,21 @@ peer in this new CID's packet number space is initially set to "None".
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frame additionally
-contains the receiver's Destination Connection ID Sequence Number field
-to distinguish the Connection ID-specific packet number space.
+contains the receiver's Path Identifier field pre-allocated in Destination Connection ID
+to distinguish the path-specific packet number space.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using
 ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
 in {{QUIC-TRANSPORT}}, do not carry the Destination Connection ID
-Sequence Number field to identify the packet number space.
+Path Identifier field to identify the packet number space.
 If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets sent with
-the Connection ID having sequence number 0.
+the Connection ID having path identifier 0.
 
 As soon as the negotiation of multipath support is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
 data packets, including 0-RTT packets, using the initial Connection ID with
-sequence number 0 after the handshake concluded.
+path identifier 0 after the handshake concluded.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
 If the ACK_MP is preferred to be sent on the same path as the acknowledged
@@ -1099,13 +1103,12 @@ All the new frames MUST only be sent in 1-RTT packet.
 If an endpoint receives a multipath-specific frame in a different packet type,
 it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
-All multipath-specific frames relate to a Destination Connection
-ID sequence number. If an endpoint receives a Destination Connection ID
-sequence number greater than any previously sent to the peer, it MUST
-treat this as a connection error of type MP_PROTOCOL_VIOLATION. If an
-endpoint receives a multipath-specific frame
-with a Destination Connection ID sequence number that it cannot process
-anymore (e.g., because the Connection ID might have been retired), it
+All multipath-specific frames relate to a Path Identifier of Destination Connection
+ID. If an endpoint receives a Path Identifier greater than any previously 
+sent to the peer, it MUST treat this as a connection error of type MP_PROTOCOL_VIOLATION. 
+If an endpoint receives a multipath-specific frame
+with a Path Identifier that it cannot process
+anymore (e.g., because the path might have been abandoned), it
 MUST silently ignore the frame.
 
 ## ACK_MP Frame {#ack-mp-frame}
@@ -1123,7 +1126,7 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
   ACK_MP Frame {
     Type (i) = TBD-00..TBD-01
          (experiments use  0x15228c00-0x15228c01),
-    Destination Connection ID Sequence Number (i),
+    Path Identifier (i),
     Largest Acknowledged (i),
     ACK Delay (i),
     ACK Range Count (i),
@@ -1137,10 +1140,10 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
 field is added.
 
-Destination Connection ID Sequence Number:
-: The sequence number of the Connection ID identifying the packet number
-  space of the 0-RTT and 1-RTT packets which are acknowledged by the ACK_MP
-  frame.
+Path Identifier:
+: The path identifier pre-allocated of the Destination Connection ID. This 
+  field identifies the packet number space of the 0-RTT and 1-RTT packets 
+  which are acknowledged by the ACK_MP frame.
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
@@ -1151,7 +1154,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 ~~~
   PATH_ABANDON Frame {
     Type (i) = TBD-02 (experiments use 0x15228c05),
-    Destination Connection ID Sequence Number (i),
+    Path Identifier (i),
     Error Code (i),
     Reason Phrase Length (i),
     Reason Phrase (..),
@@ -1161,8 +1164,8 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 PATH_ABANDON frames contain the following fields:
 
-Destination Connection ID Sequence Number:
-: The sequence number of the Destination Connection ID used by the
+Path Identifier:
+: The Path Identifier of the Destination Connection ID used by the
   receiver of the frame to send packets over the path to abandon.
 
 Error Code:
@@ -1196,7 +1199,7 @@ PATH_STANDBY frames are formatted as shown in {{fig-path-standby-format}}.
 ~~~
   PATH_STANDBY Frame {
     Type (i) = TBD-03 (experiments use 0x15228c07)
-    Destination Connection ID Sequence Number (i),
+    Path Identifier (i),
     Path Status sequence number (i),
   }
 ~~~
@@ -1204,26 +1207,25 @@ PATH_STANDBY frames are formatted as shown in {{fig-path-standby-format}}.
 
 PATH_STANDBY Frames contain the following fields:
 
-Destination Connection ID Sequence Number:
-: The sequence number of the Destination Connection ID used by the
+Path Identifier:
+: The Path Identifier of the Destination Connection ID used by the
   receiver of this frame to send packets over the path the status update
   corresponds to. All Destination Connection IDs that have been issued
   MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
-: A variable-length integer specifying
-  the sequence number assigned for this PATH_STANDBY frame. The sequence number space is shared with the PATH_AVAILABLE frame and
-the sequence
+: A variable-length integer specifying the sequence number assigned for 
+  this PATH_STANDBY frame. The sequence number space is shared with the 
+  PATH_AVAILABLE frame and the sequence
   number MUST be monotonically increasing generated by the sender of
   the PATH_STANDBY frame in the same connection. The receiver of
   the PATH_STANDBY frame needs to use and compare the sequence numbers
-  separately for each Destination Connection ID Sequence
-  Number.
+  separately for each Path Identifier.
 
 Frames may be received out of order. A peer MUST ignore an incoming
 PATH_STANDBY frame if it previously received another PATH_STANDBY frame
 or PATH_AVAILABLE
-for the same Destination Connection ID Sequence Number with a
+for the same Path Identifier with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.
 
@@ -1232,7 +1234,7 @@ PATH_STANDBY frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
-A PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame or
+A PATH_STANDBY frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
@@ -1255,21 +1257,20 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 PATH_AVAILABLE frames contain the following fields:
 
-Destination Connection ID Sequence Number:
-: The sequence number of the Destination Connection ID used by the
+Path Identifier:
+: The Path Identifier of the Destination Connection ID used by the
   receiver of this frame to send packets over the path the status update
   corresponds to. All Destination Connection IDs that have been issued
   MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
 : A variable-length integer specifying
-  the sequence number assigned for this PATH_AVAILABLE frame. The sequence number space is shared with the PATH_STANDBY frame and
-the sequence
+  the sequence number assigned for this PATH_AVAILABLE frame. 
+  The sequence number space is shared with the PATH_STANDBY frame and the sequence
   number MUST be monotonically increasing generated by the sender of
   the PATH_AVAILABLE frame in the same connection. The receiver of
   the PATH_AVAILABLE frame needs to use and compare the sequence numbers
-  separately for each Destination Connection ID Sequence
-  Number.
+  separately for each Path Identifier.
 
 Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
@@ -1283,7 +1284,7 @@ PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
-A PATH_AVAILABLE frame MAY be bundled with a NEW_CONNECTION_ID frame or
+A PATH_AVAILABLE frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
