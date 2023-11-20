@@ -241,7 +241,7 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- enable_multipath (current version uses 0x0f739bbc1b666d06): the
+- enable_multipath (current version uses 0x0f739bbc1b666d07): the
   enable_multipath transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This parameter has
   a zero-length value.
@@ -1371,7 +1371,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d06) | enable_multipath  | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d07) | enable_multipath  | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
