@@ -708,8 +708,8 @@ packet number is not a unique identifier anymore. This requires changes to
 the ACK frame as well as packet protection as described in the following subsections.
 
 When multipath is negotiated,
-each Destination Connection ID is linked to a separate packet number space.
-Each CID-specific packet number space starts at packet number 0. When following
+each Path Identifier is linked to a separate packet number space.
+Each PathID-specific packet number space starts at packet number 0. When following
 the packet number encoding algorithm described in {{Section A.2 of QUIC-TRANSPORT}},
 the largest packet number (largest_acked) that has been acknowledged by the
 peer in this new CID's packet number space is initially set to "None".
@@ -862,8 +862,8 @@ client's 1-RTT packets use DCID S2, which has a path identifier of 2. For the
 second path, the server's 1-RTT packets use DCID C2, which has a path identifier of 2; 
 the client's 1-RTT packets use DCID S3, which has a path identifier
 of 3. Note that the paths use different packet number spaces. In this case, the
-client is going to close the first path. It identifies the path by the sequence
-number of the DCID its peer uses for sending packets over that path,
+client is going to close the first path. It identifies the path by the Path Identifier 
+of the DCID its peer uses for sending packets over that path,
 hence using the DCID with path identifier 1 (which relates to C1). Optionally, the
 server confirms the path closure by sending an PATH_ABANDON frame 
 by indicating the path identifier the client uses to send over that path, 
@@ -891,7 +891,7 @@ Client                                                      Server
 ## Number Spaces
 
 As stated in {{introduction}}, when multipath is negotiated, each
-Destination Connection ID is linked to a separate packet number space.
+Path Identifier is linked to a separate packet number space.
 This a big difference between implementations of QUIC as specified in
 {{QUIC-TRANSPORT}}, which only have to manage three number spaces for Initial,
 Handshake and Application packets.
@@ -901,13 +901,8 @@ model the relations between paths and number spaces, as shown
 in {{fig-number-spaces}}.
 
 ~~~
-   +-------------------------+
-   | CID received from peer: |
-   | Previous Sender Number  |
-   | Space                   |-- - - - - - +
-   +-------------------------+
-   +-------------------------+             |
-   | CID received from peer: |
+   +-------------------------+             
+   | CID received from peer: |-- - - - - - +
    | Sender Number Space     |             |
    +-------------------------+             v
                       ^             +----------------+
@@ -918,13 +913,8 @@ in {{fig-number-spaces}}.
                 v                   +----------------+
    +-------------------------+             ^
    | CID provided to peer:   |             |
-   | Receiver Number Space   |
-   +-------------------------+             |
-   +-------------------------+
-   | CID previously used by  |-- - - - - - +
-   | Peer: old Receiver      |
-   | Number Space            |
-   +-------------------------+
+   | Receiver Number Space   |-- - - - - - +
+   +-------------------------+  
 ~~~
 {: #fig-number-spaces title="Send and Receive number spaces"}
 
@@ -935,11 +925,12 @@ from the list of CID provided by the peer. Packets received
 on the path carry a Destination CID selected by the peer from
 the list provided to that peer.
 
-The relation between CIDs and paths is not fixed. A node may
+The relation between CIDs and paths is not fixed, but the relation
+between packet number spaces and paths is fixed. A node may
 decide to rotate the Destination CID it uses, a NAT may decide
 to change the 4-tuple over which packets from that path will be
-received.
-Implementation will have to manage these evolving relations.
+received. The packet number space does not change when CID
+rotation happens.
 
 Data associated with the transmission and reception on a given
 path can be associated to either the "path state", or to the
@@ -952,23 +943,14 @@ state of either the sender or receiver number spaces. For example:
 * Implementations of loss recovery typically maintain lists of
   packets sent and not yet acknowledged. Such information, along
   with the value of the next PN to use for sending, is
-  logically associated with the "Sender Number Space", and
-  with the peer-provided CID used for sending on the path.
+  logically associated with the "Sender Number Space", which remain
+  unchanged when CID rotation happens
 
 * Sending of acknowledgement requires keeping track of the PN of
   received packets and of acknowledgements previously sent. Such
   information is logically associated with the "Receiver Number Space",
-  and with the CID used by the peer for sending on the path.
+  which remain unchanged when CID rotation happens.
 
-When the link between paths and CID changes, the information tied
-to the now unused CID remains useful for some time. For example,
-the list of packet numbers to acknowledge maintained in the old
-receiver number space could still be used to send ACK_MP frames
-for that number space. Similarly, the list of packets sent but
-not yet acknowledged with an old sender number space can be used
-when processing incoming ACK_MP frames for that number space. Such
-data should not be discarded immediately after a CID change, but
-only later, for example when the CID is retired.
 
 ## Congestion Control {#congestion-control}
 
@@ -1290,8 +1272,7 @@ PATH_AVAILABLE frames contain the following fields:
 Path Identifier:
 : The Path Identifier of the Destination Connection ID used by the
   receiver of this frame to send packets over the path the status update
-  corresponds to. All Destination Connection IDs that have been issued
-  MAY be specified, even if they are not yet in use over a path.
+  corresponds to. 
 
 Path Status sequence number:
 : A variable-length integer specifying
@@ -1304,8 +1285,7 @@ Path Status sequence number:
 
 Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
-or PATH_STANDBY frame
-for the same Destination Connection ID Sequence Number with a
+or PATH_STANDBY frame for the same Path Identifier with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.
 
@@ -1371,7 +1351,8 @@ A 128-bit value that will be used for a stateless reset when the associated
 connection ID is used.
 
 The Sequence Number field and Retire Prior To field is allocated 
-for each path independently.
+for each path independently. The Retire Prior To field indicates which connection IDs 
+should be retired on the corresponding path of Path Identifier.
 
 The Retire Prior To field applies to connection IDs established during 
 connection setup if the Path Identifier is 0 indicating the initial path; see {{consume-retire-cid}}. 
@@ -1459,6 +1440,8 @@ TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | ACK_MP              | 
 TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
 TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{path-standby-frame}}
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
+TBD-05 (experiments use 0x15228c09)                     | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
+TBD-06 (experiments use 0x15228c0a)                     | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
