@@ -520,6 +520,11 @@ peer during the address validation procedure. According to
 {{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
+
+### Consuming and Retiring Connection IDs {#consume-retire-cid}
+
+
+
 ### Effect of RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
 Receiving a RETIRE_CONNECTION_ID frame causes an endpoint to discard
@@ -1317,6 +1322,46 @@ Path Identifier:
 : A path identifier which is pre allocated when the Connection ID is generated, which
 means the current Connection ID can only be used on the corresponding path.
 
+Sequence Number:
+The sequence number assigned to the connection ID by the sender on the path 
+specified by Path Identifier, encoded as a variable-length integer. 
+Note that the sequence number is allocated dependently on each path, 
+which means different Connection IDs on different paths may have the same 
+sequence number value.
+
+Retire Prior To:
+: A variable-length integer indicating which connection IDs should be retired 
+on the path specified by Path Identifier; see {{consume-retire-cid}}.
+
+Length:
+An 8-bit unsigned integer containing the length of the connection ID. Values 
+less than 1 and greater than 20 are invalid and MUST be treated as a connection 
+error of type FRAME_ENCODING_ERROR.
+
+Connection ID:
+A connection ID of the specified length.
+
+Stateless Reset Token:
+A 128-bit value that will be used for a stateless reset when the associated 
+connection ID is used.
+
+The Sequence Number field and Retire Prior To field is allocated 
+for each path independently.
+
+The Retire Prior To field applies to connection IDs established during 
+connection setup if the Path Identifier is 0 indicating the initial path; see {{consume-retire-cid}}. 
+The value in the Retire Prior To field MUST be less than or equal to the value 
+in the Sequence Number field. Receiving a value in the Retire Prior To field 
+that is greater than that in the Sequence Number field MUST be treated as 
+a connection error of type FRAME_ENCODING_ERROR.
+
+Length, Connection ID, Stateless Reset Token fields have exactly the same
+definition in NEW_CONNECTION_ID frame {{Section 19.15 of QUIC-TRANSPORT}}.
+
+Note that Connection IDs issued in NEW_CONNECTION_ID frames MUST be treated as
+their Path Identifier is 0. Also the retire prior to field of NEW_CONNECTION_ID frames
+just effect the Connection IDs of initial path with path ID 0. This machanism 
+is compatible with {{QUIC-Transport}}.
 
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
@@ -1333,7 +1378,7 @@ Retiring a connection ID invalidates the stateless reset token associated with t
 MP_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-connection-id-frame-format}}.
 
 ~~~
-RETIRE_CONNECTION_ID Frame {
+MP_RETIRE_CONNECTION_ID Frame {
   Type (i) = 0x15228c0a,
   Path Identifier (i),
   Sequence Number (i),
@@ -1344,6 +1389,10 @@ RETIRE_CONNECTION_ID Frame {
 Path Identifier:
 : A path identifier which is pre allocated when the Connection ID is generated, which
 means the current Connection ID can only be used on the corresponding path.
+
+Sequence Number:
+The sequence number assigned to the connection ID by the sender on the path 
+specified by Path Identifier, encoded as a variable-length integer. 
 
 
 # Error Codes {#error-codes}
