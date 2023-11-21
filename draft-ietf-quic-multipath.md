@@ -222,7 +222,7 @@ A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
 (see {{Section 8 of QUIC-TRANSPORT}}). Endpoints need to pre-allocate 
 new Connection IDs with associating Path Identifiers before initiating new paths.
-The Path Identifier of the 
+The Path Identifier communicated when advertising a
 Destination Connection ID is used to associate a packet to a packet number space 
 that is used on a valid path. Further, the
 Path Identifier of Destination Connection ID is used as numerical identifier
