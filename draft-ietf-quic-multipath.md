@@ -214,14 +214,15 @@ per path. A multipath QUIC connection is thus an established QUIC
 connection where the enable_multipath transport parameter
 has been successfully negotiated.
 
+Endpoints need to pre-allocate new Connection IDs with associating Path Identifiers 
+before initiating new paths.
 To add a new path to an existing multipath QUIC connection, a client starts a path validation on
 the chosen path, as further described in {{setup}}.
 In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
-(see {{Section 8 of QUIC-TRANSPORT}}). Endpoints need to pre-allocate 
-new Connection IDs with associating Path Identifiers before initiating new paths.
+(see {{Section 8 of QUIC-TRANSPORT}}). 
 The Path Identifier communicated when advertising a
 Destination Connection ID is used to associate a packet to a packet number space 
 that is used on a valid path. Further, the
