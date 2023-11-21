@@ -816,9 +816,9 @@ using multiple packet number spaces.
    Client                                                  Server
 
    (Exchanges start on default path)
-   1-RTT[]: NEW_CONNECTION_ID[C1, Seq=1, PathID=1] -->
-             <-- 1-RTT[]: NEW_CONNECTION_ID[S1, Seq=1, PathID=1]
-             <-- 1-RTT[]: NEW_CONNECTION_ID[S2, Seq=2, PathID=2]
+   1-RTT[]: MP_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
+             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
+             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
    ...
    (starts new path)
    1-RTT[0]: DCID=S2, PATH_CHALLENGE[X] -->
