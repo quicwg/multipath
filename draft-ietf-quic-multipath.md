@@ -931,7 +931,7 @@ between packet number spaces and paths is fixed. A node may
 decide to rotate the Destination CID it uses, a NAT may decide
 to change the 4-tuple over which packets from that path will be
 received. The packet number space does not change when CID
-rotation happens.
+rotation happens within a given Path ID.
 
 Data associated with the transmission and reception on a given
 path can be associated to either the "path state", or to the
