@@ -320,7 +320,7 @@ construct the packet protection nonce defined in {#multipath-aead}.
 The Path Identifier associated with the Destination Connection ID 
 is used to identify the path in ACK_MP frames {#ack-mp-frame}.
 
-Note that the Path Identifier for initial path is always 0. Connection IDs
+Note that the Path Identifier for the initial path is 0. Connection IDs
 which are issued by origin NEW_CONNECTION_ID frames {{Section 19.15. of QUIC-TRANSPORT}}
 MUST be treated as their Path Identifier is 0.
 
