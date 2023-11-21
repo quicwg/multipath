@@ -190,7 +190,7 @@ In addition, we define the following term:
 - Path Identifier (Path ID): An identifier that is used to identify 
   a path in a QUIC connection at an endpoint. Path Identifier is used 
   in multipath control frames (etc. PATH_ABANDON frame) to identify a path. 
-  Connection IDs are issued per path. When endpoints address a path in 
+  Connection IDs are issued per path ID. When endpoints address a path in 
   multipath control frames, it refers to the Path Identifier field of 
   the destination Connection ID used for sending packets on that 
   particular path. 
