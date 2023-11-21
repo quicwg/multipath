@@ -130,7 +130,7 @@ requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}.
 
 This extension uses multiple packet number spaces.
-When multipath is negotiated, each path is linked to a separate packet number space.
+When multipath is negotiated, each path ID is linked to a separate packet number space.
 Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}}.
