@@ -720,7 +720,7 @@ peer in this new CID's packet number space is initially set to "None".
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
 Compared to the QUIC version 1 ACK frame, the ACK_MP frame additionally
-contains the receiver's Path Identifier field pre-allocated in Destination Connection ID
+contains the receiver's Path Identifier associated with the Destination Connection ID
 to distinguish the path-specific packet number space.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using
