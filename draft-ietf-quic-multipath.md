@@ -1378,7 +1378,8 @@ An endpoint sends a MP_RETIRE_CONNECTION_ID frame (type=0x15228c0a) instead of
 RETIRE_CONNECTION_ID frame to indicate that it will no longer use a connection ID 
 that was issued by its peer. This includes the connection ID provided during the handshake. 
 Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer 
-to send additional connection IDs for future use. New connection IDs can be 
+to send additional connection IDs for future use, unless the path specified 
+by Path Identifier has been abandoned. New connection IDs can be 
 delivered to a peer using the MP_NEW_CONNECTION_ID frame ({{mp-new-conn-id-frame}}).
 
 Retiring a connection ID invalidates the stateless reset token associated with that connection ID.
