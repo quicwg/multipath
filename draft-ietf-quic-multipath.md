@@ -254,8 +254,7 @@ defined as follows:
   a variable-length integer value specifying the maximum number of active concurrent paths an endpoint is 
   willing to build. The value of the max_concurrent_paths parameter MUST 
   be at least 2. An endpoint that receives a value less than 2 MUST close 
-  the connection with an error of type TRANSPORT_PARAMETER_ERROR. If this 
-  transport parameter is absent, a default of 4 is assumed. After the handshake 
+  the connection with an error of type TRANSPORT_PARAMETER_ERROR. After the handshake 
   negotiation finished, endpoints MUST use the minimum of local and remote
   value of max_concurrent_paths as the maximum number of paths in the current
   connection. 
@@ -1441,8 +1440,8 @@ TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | ACK_MP              | 
 TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
 TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{path-standby-frame}}
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
-TBD-05 (experiments use 0x15228c09)                     | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
-TBD-06 (experiments use 0x15228c0a)                     | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
+TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
+TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
