@@ -439,7 +439,7 @@ If no frame indicating a path usage preference was received for a certain path,
 the preference of the peer is unknown and the sender needs to decide based on it
 own local logic if the path should be used.
 
-Endpoints use Path Identifier pre-allocated for the Destination Connection ID
+Endpoints use Path Identifier
 in these frames to identify which path state is going to be
 changed. Notice that both frames can be sent via a different path
 and therefore might arrive in different orders.
