@@ -257,7 +257,7 @@ defined as follows:
   be at least 2. An endpoint that receives a value less than 2 MUST close 
   the connection with an error of type TRANSPORT_PARAMETER_ERROR. After the handshake 
   negotiation finished, endpoints MUST use the minimum of local and remote
-  value of max_concurrent_paths as the maximum number of paths in the current
+  value of max_concurrent_paths as the maximum number of concurrent paths in the current
   connection. 
 
 If any of the endpoints does not advertise the enable_multipath transport
@@ -289,8 +289,8 @@ enable_multipath parameter is negotiated. Endpoints SHOULD use
 MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID frames to provide new Connection IDs 
 for the peer after the enable_multipath parameter is negotiated. 
 
-Path Identifier allocated by endpoints MUST NOT be larger or equal to 
-the max_concurrent_paths transport parameter which is negotiated by endpoints.
+Endpoints MUST NOT allocate more active Path Identifiers than 
+the max_concurrent_paths transport parameter negotiated by endpoints.
 
 Cipher suites with nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such cipher suite is selected and the use of the
