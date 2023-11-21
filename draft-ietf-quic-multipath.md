@@ -945,7 +945,7 @@ state of either the sender or receiver number spaces. For example:
   packets sent and not yet acknowledged. Such information, along
   with the value of the next PN to use for sending, is
   logically associated with the "Sender Number Space", which remain
-  unchanged when CID rotation happens
+  unchanged when CID rotation happens.
 
 * Sending of acknowledgement requires keeping track of the PN of
   received packets and of acknowledgements previously sent. Such
