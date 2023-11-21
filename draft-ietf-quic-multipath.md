@@ -322,7 +322,8 @@ is used to identify the path in ACK_MP frames {#ack-mp-frame}.
 
 Note that the Path Identifier for the initial path is 0. Connection IDs
 which are issued by origin NEW_CONNECTION_ID frames {{Section 19.15. of QUIC-TRANSPORT}}
-MUST be treated as their Path Identifier is 0.
+MUST be treated as their Path Identifier is 0. Also, the Path Identifier for 
+the connection ID specified in the "preferred address" transport parameter is 1.
 
 
 # Path Setup and Removal {#setup}
