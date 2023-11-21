@@ -530,7 +530,7 @@ is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
 Each endpoints pre-allocate a Path Identifier for each new Connection ID. 
 The Path Identifier 0 indicates the initial path of the connection. 
-Endpoints SHOULD issue at least one unused Connection ID for each path.
+Endpoints SHOULD issue at least one unused Connection ID with unused Path Identifier.
 
 An endpoint maintains a set of connection IDs received from its peer for each path, 
 any of which it can use when sending packets, as the same in {{QUIC-TRANSPORT}}. 
