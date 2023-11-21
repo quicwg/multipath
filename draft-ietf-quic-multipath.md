@@ -893,6 +893,16 @@ Client                                                      Server
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
+After a path is abandoned, the Path Identifier associated with the path
+is considered retired and MUST NOT be reused in new paths for security 
+consideration {{multipath-aead}}. 
+
+Endpoint SHOULD send MAX_PATHS frames {{max-paths-frame}} to raise 
+the limit of Path Identifiers when endpoint finds there are not enough unused
+Path Identifiers (e.g. more than half of the available Path Identifiers
+are used).
+
+
 # Implementation Considerations
 
 ## Number Spaces
@@ -1490,6 +1500,7 @@ TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{p
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
+TBD-06 (experiments use 0x15228c0b)                  | MAX_PATHS              | {{max-paths-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
