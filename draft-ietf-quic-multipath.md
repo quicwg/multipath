@@ -207,7 +207,7 @@ A multipath QUIC connection starts with a QUIC handshake as a regular QUIC conne
 See further {{nego}}.
 The peers use the enable_multipath transport parameter during the handshake to
 negotiate the utilization of the multipath capabilities.
-The max_concurrent_paths transport parameter limits the maximum number of active paths
+The initial_max_paths transport parameter limits the initial maximum number of active paths
 that can be used during a connection. The active_connection_id_limit 
 transport parameter limits the maximum number of active Connection IDs
 per path. A multipath QUIC connection is thus an established QUIC
@@ -251,14 +251,13 @@ defined as follows:
   the multipath extension as defined in this document. This parameter has
   a zero-length value.
 
-- max_concurrent_paths (current version uses 0xced74c7a): This is 
+- initial_max_paths (current version uses 0xced74c7a): This is 
   a variable-length integer value specifying the maximum number of active concurrent paths an endpoint is 
-  willing to build. The value of the max_concurrent_paths parameter MUST 
+  willing to build. The value of the initial_max_paths parameter MUST 
   be at least 2. An endpoint that receives a value less than 2 MUST close 
-  the connection with an error of type TRANSPORT_PARAMETER_ERROR. After the handshake 
-  negotiation finished, endpoints MUST use the minimum of local and remote
-  value of max_concurrent_paths as the maximum number of concurrent paths in the current
-  connection. 
+  the connection with an error of type TRANSPORT_PARAMETER_ERROR. Setting 
+  this parameter is equivalent to sending a MP_MAX_PATHS ({{mp-max-paths-frame}}) 
+  of the corresponding type with the same value
 
 If any of the endpoints does not advertise the enable_multipath transport
 parameter, then the endpoints MUST NOT use any frame or
@@ -284,13 +283,14 @@ enable_multipath parameter is negotiated successfully.
 Endpoints might prefer to retain spare Connection IDs so that they can 
 respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}). 
 
-The transport parameter "max_concurrent_paths" only becomes effective after the
+The transport parameter "initial_max_paths" only becomes effective after the
 enable_multipath parameter is negotiated. Endpoints SHOULD use
 MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID frames to provide new Connection IDs 
 for the peer after the enable_multipath parameter is negotiated. 
 
-Endpoints MUST NOT allocate more active Path Identifiers than 
-the max_concurrent_paths transport parameter negotiated by endpoints.
+Endpoints MUST NOT issue Connection IDs with Path Identifiers larger than 
+the path limitation declared by the initial_max_paths transport parameter 
+and MP_MAX_PATHS frames.
 
 Cipher suites with nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such cipher suite is selected and the use of the
@@ -371,7 +371,7 @@ to issue usable connections IDs to reach it. As such to open
 a new path by initiating path validation, both sides need at least
 one unused Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}).
 
-If the transport parameter "max_concurrent_paths" is negotiated as N, 
+If the transport parameter "initial_max_paths" is negotiated as N, 
 and the client is already actively using N paths, the limit is reached. 
 If the client wants to start a new path, it has to retire one of 
 the established paths.
@@ -552,6 +552,12 @@ Upon receipt of an increased Retire Prior To field, the peer MUST stop
 using the corresponding connection IDs of the specified path and retire them 
 with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection ID 
 to the set of active connection IDs belonging to the specified path.
+
+Endpoints MUST NOT issue new Connection IDs which has Path Identifiers larger than 
+the max path identifier field in MP_MAX_PATHS frames {{mp-max-paths-frame}}. 
+When endpoint finds it has not enough available unused Path Identifiers,
+it SHOULD send a MP_MAX_PATHS frame to inform the peer that it could use larger active
+Path Identifiers.
 
 
 ### Effect of MP_RETIRE_CONNECTION_ID Frame {#retire-cid-close}
@@ -1402,6 +1408,45 @@ means the current Connection ID can only be used on the corresponding path.
 Sequence Number:
 The sequence number assigned to the connection ID by the sender on the path 
 specified by Path Identifier, encoded as a variable-length integer. 
+
+
+## MP_MAX_PATHS frames {#mp-max-paths-frame}
+
+A MP_MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths 
+it is permitted to open. 
+
+MP_MAX_PATHS frames are formatted as shown in {{fig-mp-max-paths-frame-format}}.
+
+~~~
+MP_MAX_PATHS Frame {
+  Type (i) = 0x15228c0b,
+  Maximum Path Identifier (i),
+}
+~~~
+{: #fig-mp-max-paths-frame-format title="MP_MAX_PATHS Frame Format"}
+
+MP_MAX_PATHS frames contain the following field:
+
+Maximum Path Identifier:
+: A count of the cumulative number of path that can be opened 
+over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not 
+possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits 
+opening of a path with Path Identifier larger than this limit MUST be treated 
+as a connection error of type FRAME_ENCODING_ERROR.
+
+Loss or reordering can cause an endpoint to receive a MP_MAX_PATHS frame with 
+a lower path limit than was previously received. MP_MAX_PATHS frames that 
+do not increase the path limit MUST be ignored.
+
+An endpoint MUST NOT open more paths than permitted by the current path limit 
+set by its peer. For instance, a server that receives a path limit of 3 
+is permitted to open paths 0, 1, 2, but not path 3. An endpoint MUST terminate 
+a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens 
+more paths than was permitted. 
+
+Note that these frames do not describe the number of paths that can be opened 
+concurrently. The limit includes paths that have been abandoned as well as those 
+that are open.
 
 
 # Error Codes {#error-codes}
