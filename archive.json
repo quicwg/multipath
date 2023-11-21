@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-19T00:44:39.648002+00:00",
+  "timestamp": "2023-11-21T00:42:18.577658+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -27095,6 +27095,509 @@
           "createdAt": "2023-11-06T12:51:51Z",
           "updatedAt": "2023-11-06T12:51:51Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 292,
+      "id": "PR_kwDOGNtpaM5f3aEh",
+      "title": "[+] Explicit path identifier first shot",
+      "url": "https://github.com/quicwg/multipath/pull/292",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
+      "createdAt": "2023-11-20T04:48:03Z",
+      "updatedAt": "2023-11-20T18:48:56Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/path_id",
+      "headRefOid": "58ab583376dcaaaa0b50e69f6c9f0255dbae40e5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> The biggest open question I have is what happens to the path identifier when peers have reached max_concurrent_paths. In your proposal, it sounds like path identifiers are reused. This might have weird corner cases when packets are delayed. The other way to implement this is to have path identifiers increment. We need to have a consistent view of how many paths are currently in use between the two peers.\r\n\r\nThat's an important point that we need to make it clear. I think it's better to reuse than increment, as we can add some limitation for the corner cases(e.g. Path Identifier can only be reused after 3 max PTOs after the path is abandoned and all the CIDs belonging to this path is retired). It's more friendly for resource limitation of endpoints. \r\n\r\nIf we use increment, then we need to discuss when to increase the max Path Identifier in the new connection IDs without breaking the limitation for max concurrent paths.",
+          "createdAt": "2023-11-20T07:54:11Z",
+          "updatedAt": "2023-11-20T07:54:11Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM5npo6e",
+          "commit": {
+            "abbreviatedOid": "60a77c9"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Thank you @Yanmei-Liu! I added some suggestions.\r\n\r\nThe biggest open question I have is what happens to the path identifier when peers have reached max_concurrent_paths. In your proposal, it sounds like path identifiers are reused. This might have weird corner cases when packets are delayed.\r\nThe other way to implement this is to have path identifiers increment. We need to have a consistent view of how many paths are currently in use between the two peers.",
+          "createdAt": "2023-11-20T05:07:36Z",
+          "updatedAt": "2023-11-20T05:20:27Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "This should include a precise definition of what we mean by \"path\". Crucially, a \"path\" is **not** defined by the 5-tuple, since NAT rebindings change the 5-tuple without one of the peers knowing about it.\r\n\r\nInstead, a new path is opened when a peer **intentionally** starts sending packets from a new address.",
+              "createdAt": "2023-11-20T05:07:36Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            },
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\n  Connection IDs are issued per path. When endpoints address a path in multipath control frames, \r\n```",
+              "createdAt": "2023-11-20T05:08:35Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            },
+            {
+              "originalPosition": 23,
+              "body": "```suggestion\r\n  a variable-length integer value specifying the maximum number of paths an endpoint is \r\n```",
+              "createdAt": "2023-11-20T05:08:53Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "Why not make this the value of `enable_multipath`? You only need a single transport parameter then.",
+              "createdAt": "2023-11-20T05:10:02Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            },
+            {
+              "originalPosition": 62,
+              "body": "```suggestion\r\nTo open a new path, an endpoint needs to provide its peer with connection IDs\r\nfor a new path (as identified by the Path Identifier). \r\n```",
+              "createdAt": "2023-11-20T05:11:44Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            },
+            {
+              "originalPosition": 148,
+              "body": "As the path identifier determines the sequence number space, I'd prefer to put it at the front.\r\n```suggestion\r\n  Path Identifier (i),\r\n  Sequence Number (i),\r\n  Retire Prior To (i),\r\n```",
+              "createdAt": "2023-11-20T05:16:22Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            },
+            {
+              "originalPosition": 181,
+              "body": "Same here.",
+              "createdAt": "2023-11-20T05:16:30Z",
+              "updatedAt": "2023-11-20T05:20:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5npvvr",
+          "commit": {
+            "abbreviatedOid": "979bcd1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T05:45:33Z",
+          "updatedAt": "2023-11-20T05:45:34Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "Actually I think we should keep the Sequence Number of CID unique for the whole connection, although the CID is allocated for each path. Endpoints use the sequence number to find the corresponding CID.  \r\nWhen I went through the implementation, I found endpoints need to maintain all the unused CIDs under a connection CID set before it can create any new path. \r\n\r\nThat's a important point that we shouldn't change from RFC 9000, and that's why I prefer to keep the Path Identifier field after the Sequence Number.",
+              "createdAt": "2023-11-20T05:45:33Z",
+              "updatedAt": "2023-11-20T05:45:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5npwcB",
+          "commit": {
+            "abbreviatedOid": "979bcd1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T05:49:08Z",
+          "updatedAt": "2023-11-20T05:49:08Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Yes, we could use the same transport parameter.",
+              "createdAt": "2023-11-20T05:49:08Z",
+              "updatedAt": "2023-11-20T05:49:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5npwj0",
+          "commit": {
+            "abbreviatedOid": "60a77c9"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T05:49:46Z",
+          "updatedAt": "2023-11-20T05:49:46Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "Unfortunately this breaks Retire Prior To, as that field would apply to CIDs from different paths, despite declaring that it only works on single path. When we designed the Retire Prior To mechanism, it was important that you can _atomically_ retire all existing CIDs _and_ provide a new CID.\r\n\r\n> Endpoints use the sequence number to find the corresponding CID.\r\n\r\nWhere is this is necessary? You'd use (path ID, CID Sequence number) to find the corresponding CID.",
+              "createdAt": "2023-11-20T05:49:46Z",
+              "updatedAt": "2023-11-20T05:49:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5npxox",
+          "commit": {
+            "abbreviatedOid": "979bcd1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T05:55:17Z",
+          "updatedAt": "2023-11-20T05:55:18Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "That's quite reasonable.",
+              "createdAt": "2023-11-20T05:55:17Z",
+              "updatedAt": "2023-11-20T05:55:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5npzCW",
+          "commit": {
+            "abbreviatedOid": "993332c"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T06:02:16Z",
+          "updatedAt": "2023-11-20T06:02:16Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "I prefer change it later as people may still need to be compatible to their implementations. We can combine these 2 transport parameters after this PR is agreed to be merged by the working group.",
+              "createdAt": "2023-11-20T06:02:16Z",
+              "updatedAt": "2023-11-20T06:02:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5np2XJ",
+          "commit": {
+            "abbreviatedOid": "60a77c9"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T06:17:47Z",
+          "updatedAt": "2023-11-20T06:17:47Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Up to you. Since the mechanism described in this PR is significantly different from the current draft version, you could also bump the code point of `enable_multipath`.",
+              "createdAt": "2023-11-20T06:17:47Z",
+              "updatedAt": "2023-11-20T06:17:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5np-51",
+          "commit": {
+            "abbreviatedOid": "f926470"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T06:47:48Z",
+          "updatedAt": "2023-11-20T06:47:48Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Updated that.",
+              "createdAt": "2023-11-20T06:47:48Z",
+              "updatedAt": "2023-11-20T06:47:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nqOgM",
+          "commit": {
+            "abbreviatedOid": "63bba98"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T07:43:24Z",
+          "updatedAt": "2023-11-20T07:43:24Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "Updated and added more definition for the frame fields.",
+              "createdAt": "2023-11-20T07:43:24Z",
+              "updatedAt": "2023-11-20T07:43:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nrWDy",
+          "commit": {
+            "abbreviatedOid": "4cc7372"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T10:12:29Z",
+          "updatedAt": "2023-11-20T10:12:29Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "This section was meant to explain the meaning of active_connection_id_limit when this extension is used. we still need that. I think with this PR it would apply per path...?",
+              "createdAt": "2023-11-20T10:12:29Z",
+              "updatedAt": "2023-11-20T10:12:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nrW9t",
+          "commit": {
+            "abbreviatedOid": "4cc7372"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T10:14:11Z",
+          "updatedAt": "2023-11-20T10:14:11Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Yes, `active_connection_id_limit` would apply per path in my proposal (#214).",
+              "createdAt": "2023-11-20T10:14:11Z",
+              "updatedAt": "2023-11-20T10:14:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nslKN",
+          "commit": {
+            "abbreviatedOid": "4cc7372"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T12:52:41Z",
+          "updatedAt": "2023-11-20T12:52:41Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Solved that.",
+              "createdAt": "2023-11-20T12:52:41Z",
+              "updatedAt": "2023-11-20T12:52:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nuU57",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I am really happy to see such a proposal as a PR. Here and there comments and suggestions.\r\n\r\nI think such a proposal also opens the door for a more explicit and controlled path management. While we could have up to `max_active_paths` paths, an endpoint could only enable its peer to open them when needed (e.g., by proposing a new Path ID when it thinks it would benefit from a new path). We could also revisit the notion of \"path abandon\" and make this a strong signal (i.e., retire the Path ID) instead of a recommendation (i.e., please remove associated CIDs and stop using the path).",
+          "createdAt": "2023-11-20T16:12:00Z",
+          "updatedAt": "2023-11-20T17:03:10Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Just to disambiguate.\r\n```suggestion\r\nWhen multipath is negotiated, each path ID is linked to a separate packet number space.\r\n```",
+              "createdAt": "2023-11-20T16:12:00Z",
+              "updatedAt": "2023-11-20T17:03:10Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "Same, to avoid the confusion with \"network path\".\r\n```suggestion\r\n  Connection IDs are issued per path ID. When endpoints address a path in \r\n```",
+              "createdAt": "2023-11-20T16:13:05Z",
+              "updatedAt": "2023-11-20T17:03:10Z"
+            },
+            {
+              "originalPosition": 20,
+              "body": "I failed to parse the initial sentence, I think this formulation is clearer.\r\n```suggestion\r\n  multipath control frames, it refers to the Path Identifier related to\r\n```",
+              "createdAt": "2023-11-20T16:16:58Z",
+              "updatedAt": "2023-11-20T17:03:10Z"
+            },
+            {
+              "originalPosition": 50,
+              "body": "```suggestion\r\nThe Path Identifier communicated when advertising a\r\nDestination Connection ID is used to associate a packet to a packet number space \r\n```",
+              "createdAt": "2023-11-20T16:18:38Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "I agree with Marten that on the long run, we should not have two distinct transport parameters and `max_active_paths` should be used in place of `enable_multipath`. But I also agree with Yanmei that for experimentation purposes, having two transport parameters is fine for now.",
+              "createdAt": "2023-11-20T16:22:33Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 71,
+              "body": "We should probably state here the notion of \"active\" paths at a given point in time.\r\n```suggestion\r\n  a variable-length integer value specifying the maximum number of active concurrent paths an endpoint is \r\n```",
+              "createdAt": "2023-11-20T16:24:25Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 75,
+              "body": "If we have two transport parameters, we should not make any assumption about a non-advertised value.",
+              "createdAt": "2023-11-20T16:26:06Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 119,
+              "body": "```suggestion\r\nEndpoints use Path Identifier to address a path in the multipath control frames,\r\n```",
+              "createdAt": "2023-11-20T16:29:09Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "```suggestion\r\nPath Identifier associated with Destination Connection ID is used as numerical identifier\r\n```",
+              "createdAt": "2023-11-20T16:30:32Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 132,
+              "body": "```suggestion\r\nNote that the Path Identifier for the initial path is 0. Connection IDs\r\n```",
+              "createdAt": "2023-11-20T16:30:58Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 183,
+              "body": "I think mentioning the DCID here is not useful and confusing.\r\n```suggestion\r\nEndpoints use Path Identifier\r\n```",
+              "createdAt": "2023-11-20T16:35:13Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 241,
+              "body": "I do not think we need normative language here. Instead, proposing a CID with a new Path ID is actually a way for the endpoint to control how many paths its peer can use. The transport parameter is used to set a hard limit on the maximum number of concurrent paths, but an endpoint may want to reach this limit only under some conditions.",
+              "createdAt": "2023-11-20T16:46:11Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 350,
+              "body": "```suggestion\r\ncontains the receiver's Path Identifier associated with the Destination Connection ID\r\n```",
+              "createdAt": "2023-11-20T16:48:05Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 411,
+              "body": "Given the description of MP_NEW_CONNECTION_ID frame below, this would be clearer. Also need to update the text.\r\n\r\n```suggestion\r\n   1-RTT[]: MP_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->\r\n             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]\r\n             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]\r\n```",
+              "createdAt": "2023-11-20T16:51:36Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 466,
+              "body": "The lines below should also be updated\r\n```suggestion\r\n1-RTT[U]: DCID=S3 MP_RETIRE_CONNECTION_ID[PathId=2, Seq=0], ACK_MP[PID=1, PN=Y] ->\r\n```",
+              "createdAt": "2023-11-20T16:53:59Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 514,
+              "body": "It depends on what \"paths\" means in this context. Actually, if they are pre-allocated, the relation between CIDs and Path IDs is fixed, and so the relation between CID and packet number spaces.",
+              "createdAt": "2023-11-20T16:55:26Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 520,
+              "body": "Just to clarify.\r\n```suggestion\r\nrotation happens within a given Path ID.\r\n```",
+              "createdAt": "2023-11-20T16:56:02Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 531,
+              "body": "```suggestion\r\n  unchanged when CID rotation happens.\r\n```",
+              "createdAt": "2023-11-20T16:56:34Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            },
+            {
+              "originalPosition": 789,
+              "body": "Unless path has been abandoned?",
+              "createdAt": "2023-11-20T16:58:49Z",
+              "updatedAt": "2023-11-20T17:03:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nvOIV",
+          "commit": {
+            "abbreviatedOid": "60a77c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-20T18:21:50Z",
+          "updatedAt": "2023-11-20T18:21:51Z",
+          "comments": [
+            {
+              "originalPosition": 181,
+              "body": "I would not change the retire connection ID frame. I think keep a unique Sequence Number for each CID results in something simpler:\r\n\r\n* retire CID: the unique CID number is unambiguous.\r\n* retire CID prior: still works.\r\n\r\nThe main use case for \"retire prior\" is when CID depend of some key, and the key is renewed. That implies \"retire all CID allocated prior to a certain point\", and it should be independent of the path attribute of the CID.",
+              "createdAt": "2023-11-20T18:21:50Z",
+              "updatedAt": "2023-11-20T18:21:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nvP5u",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Thanks for doing this work. I think three key points need to be fixed:\r\n\r\n* the CID should be uniquely identified by their sequence number, not by the combination of path-id and sequence number.\r\n* we do not need MP_RETIRE_CID\r\n* we should never reuse path-ID, because they are part of the cryptographic nonce.",
+          "createdAt": "2023-11-20T18:25:45Z",
+          "updatedAt": "2023-11-20T18:48:56Z",
+          "comments": [
+            {
+              "originalPosition": 135,
+              "body": "We also need to specify the path identifier for the connection ID specified in the \"preferred address\" transport parameter. Logically, it should be #1.",
+              "createdAt": "2023-11-20T18:25:45Z",
+              "updatedAt": "2023-11-20T18:48:56Z"
+            },
+            {
+              "originalPosition": 256,
+              "body": "I think adding an MP_RETIRE_CONNECTION_ID is unnecessary, and complicates the design. It is simpler to keep connection sequence number unique globally, and leave the RETIRE CONNECTION ID unchanged.",
+              "createdAt": "2023-11-20T18:28:38Z",
+              "updatedAt": "2023-11-20T18:48:56Z"
+            },
+            {
+              "originalPosition": 264,
+              "body": "Retire Prior cannot be path specific. In practice, retire prior applies to all connection ID allocated before some event, such as rotation of the encryption key of connection ID used by the load balancer. In that scenario, repeating MP_RETIRE_CONNECTION_ID for every path would be very error prone.",
+              "createdAt": "2023-11-20T18:32:41Z",
+              "updatedAt": "2023-11-20T18:48:56Z"
+            },
+            {
+              "originalPosition": 379,
+              "body": "The path identifier is used to build the nonce. Reusing the same identifier would require either continuing the previously used sequence number space, otherwise the nonce would not be unique. But then that would require keeping these old number spaces in memory until the end of the connection, which seems like a waste of resource. Then there is the risk of confusion, what happens if old packets are delivered from a previous path using the path identifier.\r\n\r\nWe should make this very clear in the design. If the design goes for \"re-use\", then the node has to allocate an array of number spaces for the negotiated max number of spaces, and keep that for the duration of the connection. The effect of \"Abandon path\" becomes complicated -- if a CID for path N has never been used, should it be retired?\r\n\r\nIf the design goes for \"unique path ID\", the management of path and sequence numbers becomes simpler, but we need some logic to enforce the \"maximum number of active paths\". An advantage there is that endpoints can allocate more CID and more path than really needed, so the endpoint is always ready to start a new path after a previous one has been abandoned.",
+              "createdAt": "2023-11-20T18:44:20Z",
+              "updatedAt": "2023-11-20T18:48:56Z"
+            },
+            {
+              "originalPosition": 395,
+              "body": "See comments above. In my mind, using the path ID in the nonce pretty much mandates unique path ID. Something like a monotonously increasing number.",
+              "createdAt": "2023-11-20T18:46:00Z",
+              "updatedAt": "2023-11-20T18:48:56Z"
+            }
+          ]
         }
       ]
     }
