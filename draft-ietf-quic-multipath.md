@@ -307,7 +307,7 @@ with MP_NEW_CONNECTION_ID frames {{mp-new-conn-id-frame}}.
 Each Connection ID is associated with a Path Identifier, as documented in {{mp-new-conn-id-frame}}. 
 Multiple connection IDs can be associated with the same path identifier.
 
-Endpoints use Path Identifier to address a path in the multi-path control frames,
+Endpoints use Path Identifier to address a path in the multipath control frames,
 such as PATH_ABANDON, PATH_STANDBY, and PATH_AVAILABLE frames.
 
 Each endpoint associates a Receiver Packet Number space to each Path Identifier 
