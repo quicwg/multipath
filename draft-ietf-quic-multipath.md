@@ -369,7 +369,7 @@ use of a new Connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Following {{QUIC-TRANSPORT}}, each endpoint uses MP_NEW_CONNECTION_ID frames
 to issue usable connections IDs to reach it. As such to open
 a new path by initiating path validation, both sides need at least
-one unused Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}).
+one Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated with an unused Path ID. 
 
 If the transport parameter "initial_max_paths" is negotiated as N, 
 and the client is already actively using N paths, the limit is reached. 
