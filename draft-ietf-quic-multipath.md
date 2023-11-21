@@ -251,7 +251,7 @@ defined as follows:
   a zero-length value.
 
 - max_concurrent_paths (current version uses 0xced74c7a): This is 
-  a variable-length integer value specifying the maximum number of paths an endpoint is 
+  a variable-length integer value specifying the maximum number of active concurrent paths an endpoint is 
   willing to build. The value of the max_concurrent_paths parameter MUST 
   be at least 2. An endpoint that receives a value less than 2 MUST close 
   the connection with an error of type TRANSPORT_PARAMETER_ERROR. If this 
