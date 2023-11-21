@@ -926,8 +926,9 @@ from the list of CID provided by the peer. Packets received
 on the path carry a Destination CID selected by the peer from
 the list provided to that peer.
 
-The relation between CIDs and paths is not fixed, but the relation
-between packet number spaces and paths is fixed. A node may
+The relation between packet number spaces and paths is fixed. 
+CIDs are pre-allocated for each Path Identifier. Once CIDs are issued, 
+they are assigned to one specific Path Identifier. A node may
 decide to rotate the Destination CID it uses, a NAT may decide
 to change the 4-tuple over which packets from that path will be
 received. The packet number space does not change when CID
