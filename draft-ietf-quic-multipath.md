@@ -345,8 +345,8 @@ Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion in separate documents.
 
-To open a new path, an endpoint needs to provide its peer with connection IDs
-and associated Path Identifiers for a new path. 
+To let the peer open a new path, an endpoint needs to provide its peer with connection IDs
+and associated Path Identifiers for the new path. 
 
 To open a new path, an endpoint SHALL use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different
