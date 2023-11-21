@@ -225,7 +225,7 @@ new Connection IDs with associating Path Identifiers before initiating new paths
 The Path Identifier communicated when advertising a
 Destination Connection ID is used to associate a packet to a packet number space 
 that is used on a valid path. Further, the
-Path Identifier of Destination Connection ID is used as numerical identifier
+Path Identifier associated with Destination Connection ID is used as numerical identifier
 in control frames. E.g. an endpoint sends a PATH_ABANDON frame to request its peer to
 abandon the path on which the sender uses the Path Identifier contained in the PATH_ABANDON frame.
 
