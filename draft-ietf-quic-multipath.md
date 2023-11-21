@@ -256,7 +256,7 @@ defined as follows:
   willing to build. The value of the initial_max_paths parameter MUST 
   be at least 2. An endpoint that receives a value less than 2 MUST close 
   the connection with an error of type TRANSPORT_PARAMETER_ERROR. Setting 
-  this parameter is equivalent to sending a MP_MAX_PATHS ({{mp-max-paths-frame}}) 
+  this parameter is equivalent to sending a MAX_PATHS ({{max-paths-frame}}) 
   of the corresponding type with the same value
 
 If any of the endpoints does not advertise the enable_multipath transport
@@ -290,7 +290,7 @@ for the peer after the enable_multipath parameter is negotiated.
 
 Endpoints MUST NOT issue Connection IDs with Path Identifiers larger than 
 the path limitation declared by the initial_max_paths transport parameter 
-and MP_MAX_PATHS frames.
+and MAX_PATHS frames.
 
 Cipher suites with nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such cipher suite is selected and the use of the
@@ -554,7 +554,7 @@ with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection 
 to the set of active connection IDs belonging to the specified path.
 
 Endpoints MUST NOT issue new Connection IDs which has Path Identifiers larger than 
-the max path identifier field in MP_MAX_PATHS frames {{mp-max-paths-frame}}. 
+the max path identifier field in MP_MAX_PATHS frames {{max-paths-frame}}. 
 When endpoint finds it has not enough available unused Path Identifiers,
 it SHOULD send a MP_MAX_PATHS frame to inform the peer that it could use larger active
 Path Identifiers.
@@ -1410,22 +1410,22 @@ The sequence number assigned to the connection ID by the sender on the path
 specified by Path Identifier, encoded as a variable-length integer. 
 
 
-## MP_MAX_PATHS frames {#mp-max-paths-frame}
+## MAX_PATHS frames {#max-paths-frame}
 
-A MP_MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths 
+A MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths 
 it is permitted to open. 
 
-MP_MAX_PATHS frames are formatted as shown in {{fig-mp-max-paths-frame-format}}.
+MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
 ~~~
-MP_MAX_PATHS Frame {
+MAX_PATHS Frame {
   Type (i) = 0x15228c0b,
-  Maximum Path Identifier (i),
+  Maximum Paths (i),
 }
 ~~~
-{: #fig-mp-max-paths-frame-format title="MP_MAX_PATHS Frame Format"}
+{: #fig-max-paths-frame-format title="MAX_PATHS Frame Format"}
 
-MP_MAX_PATHS frames contain the following field:
+MAX_PATHS frames contain the following field:
 
 Maximum Path Identifier:
 : A count of the cumulative number of path that can be opened 
@@ -1434,8 +1434,8 @@ possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits
 opening of a path with Path Identifier larger than this limit MUST be treated 
 as a connection error of type FRAME_ENCODING_ERROR.
 
-Loss or reordering can cause an endpoint to receive a MP_MAX_PATHS frame with 
-a lower path limit than was previously received. MP_MAX_PATHS frames that 
+Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with 
+a lower path limit than was previously received. MAX_PATHS frames that 
 do not increase the path limit MUST be ignored.
 
 An endpoint MUST NOT open more paths than permitted by the current path limit 
