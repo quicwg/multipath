@@ -205,13 +205,13 @@ selects only one path to exchange such frames.
 
 A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
 See further {{nego}}.
-The peers use the enable_multipath transport parameter during the handshake to
+The peers use the initial_max_paths transport parameter during the handshake to
 negotiate the utilization of the multipath capabilities.
 The initial_max_paths transport parameter limits the initial maximum number of active paths
 that can be used during a connection. The active_connection_id_limit 
 transport parameter limits the maximum number of active Connection IDs
 per path. A multipath QUIC connection is thus an established QUIC
-connection where the enable_multipath transport parameter
+connection where the initial_max_paths transport parameter
 has been successfully negotiated.
 
 Endpoints need to pre-allocate new Connection IDs with associating Path Identifiers 
@@ -246,31 +246,29 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- enable_multipath (current version uses 0x0f739bbc1b666d07): the
-  enable_multipath transport parameter is included if the endpoint supports
-  the multipath extension as defined in this document. This parameter has
-  a zero-length value.
-
-- initial_max_paths (current version uses 0xced74c7a): This is 
-  a variable-length integer value specifying the maximum number of active concurrent paths an endpoint is 
-  willing to build. The value of the initial_max_paths parameter MUST 
-  be at least 2. An endpoint that receives a value less than 2 MUST close 
+- initial_max_paths (current version uses 0x0f739bbc1b666d07): the
+  initial_max_paths transport parameter is included if the endpoint supports
+  the multipath extension as defined in this document. This is 
+  a variable-length integer value specifying the maximum number of 
+  active concurrent paths an endpoint is willing to build. 
+  The value of the initial_max_paths parameter MUST be at least 2. 
+  An endpoint that receives a value less than 2 MUST close 
   the connection with an error of type TRANSPORT_PARAMETER_ERROR. Setting 
   this parameter is equivalent to sending a MAX_PATHS ({{max-paths-frame}}) 
-  of the corresponding type with the same value
+  of the corresponding type with the same value.
 
-If any of the endpoints does not advertise the enable_multipath transport
+If any of the endpoints does not advertise the initial_max_paths transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
-When advertising the enable_multipath transport parameter, the endpoint
+When advertising the initial_max_paths transport parameter, the endpoint
 MUST use non-zero source and destination connection IDs.
-If an enable_multipath transport
+If an initial_max_paths transport
 parameter is received and the carrying packet contains a zero
 length connection ID, the receiver MUST treat this as a connection error of type
 MP_PROTOCOL_VIOLATION and close the connection.
 
-The enable_multipath parameter MUST NOT be remembered
+The initial_max_paths parameter MUST NOT be remembered
 ({{Section 7.4.1 of QUIC-TRANSPORT}}).
 New paths can only be used after handshake completion.
 
@@ -279,14 +277,12 @@ defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the number of usable Connection IDs per path when the
-enable_multipath parameter is negotiated successfully. 
+initial_max_paths parameter is negotiated successfully. 
 Endpoints might prefer to retain spare Connection IDs so that they can 
 respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}). 
 
-The transport parameter "initial_max_paths" only becomes effective after the
-enable_multipath parameter is negotiated. Endpoints SHOULD use
-MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID frames to provide new Connection IDs 
-for the peer after the enable_multipath parameter is negotiated. 
+Endpoints SHOULD use MP_NEW_CONNECTION_ID and MP_RETIRE_CONNECTION_ID 
+frames to provide new Connection IDs for the peer after the initial_max_paths parameter is negotiated. 
 
 Endpoints MUST NOT issue Connection IDs with Path Identifiers larger than 
 the path limitation declared by the initial_max_paths transport parameter 
@@ -1485,7 +1481,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d07) | enable_multipath  | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d07) | initial_max_paths | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
