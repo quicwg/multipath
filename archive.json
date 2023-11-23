@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-21T00:42:18.577658+00:00",
+  "timestamp": "2023-11-23T00:41:13.988843+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -4334,7 +4334,7 @@
       ],
       "body": "I think given the dynamic nature of the CID usage on paths that leads to some existing design issues(see #137, #158), it is worth having some stable path identification (to address, e.g., #169).\r\n\r\n# What does not change\r\n\r\nI think we now agree that a Multipath QUIC connection uses different Connection IDs on different paths, and each Connection ID has its own packet number space. Such a design enables end-hosts to easily receive packets and decrypt them without assuming anything about the network path (relying directly on the perceived 4-tuple makes the approach fragile). Note that we keep the ACK_MP as it (i.e., we acknowledge packet numbers that used a specific DCID).\r\n\r\n# Identifying network paths (until now)\r\n\r\nSo far, end hosts directly maps the (Destination) Connection ID sequence number as the path identifier of the network path. This path identifier is then used in the path-specific frames (PATH_ABANDON, PATH_STATUS,\u2026). Such an approach has the advantage that we do not have to define additional signalling to identify a network path, and it is relatively easy to track that. However, this means that if one endhost changes the DCID it uses over a given path, this means its identifier changes. Having such dynamic changing identifiers for a stable path causes design issues when using an identifier no more valid in the path-specific frames.\r\n\r\n# Proposal: explicit path identification advertisement during path validation\r\n\r\nThe path validation process establish the identification of a path through the advertisement of the \u201cEntry Point ID\u201d (EPID) used by the packet sender. Each path is identified by a tuple (local EPID, peer EPID). This identification is then used in the path-specific frames to identify the concerned path. Note that each endhost uses EPID 0 on the initial path.\r\n\r\nThis implies that we need an augmented version of the PATH_CHALLENGE/PATH_RESPONSE frames (let\u2019s say PATH_CHALLENGE_MP/PATH_REPSONSE_MP) that include the EPID that the sender used to send the frame.\r\n\r\n## Example\r\n\r\nLet\u2019s consider this initial situation.\r\n\r\n```\r\n  DCID 0 EPID 0                   DCID 0 EPID 0\r\n   +------------------------------------+\r\n   |                                    |\r\nClient                               Server\r\n```\r\n\r\nIn this initial state, each endhost has one path:\r\n\r\nClient\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n\r\nFrom the server perspective, we have\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n\r\nNow the client wants to create a new path on a new local address, but still on the same server address (same IP and port at server side). When the server just processed the PATH_CHALLENGE_MP(data, EPID=1) sent by the client with DCID seq 1, we have this state:\r\n\r\nClient\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, ???) using DCID seq 1\r\n\r\nServer\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1\r\n\r\nNote that the server can figure out at packet reception on which local address it saw, and thus map the corresponding local EPID to the new seen path. The server can then replies with a PATH_RESPONSE_MP(data, EPID=0) (and also initiates a PATH_CHALLENGE_MP as well). Assume here it uses the DCID with seq 2. Once the PATH_RESPONSE_MP is received by the client, we have this state.\r\n\r\nClient\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using DCID seq 1 and SCID seq 2\r\n\r\nServer\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1 and DCID seq 2\r\n\r\nNow the client can refer to the lower path in PATH_STATUS/PATH_ABANDON frame using (1, 0), and the server could use (1, 0). Note that it makes also possible to extend these frames to the set of paths sharing a given EPID. This tuple is stable as long as end hosts do not change the EPID they use when performing further path validations.\r\n\r\n```\r\n  DCID 0 EPID 0                   DCID 0 EPID 0\r\n   +------------------------------------+\r\n   |                                    |\r\nClient                               Server\r\n   |                                    |\r\n   +------------------------------------+\r\n  DCID 1 EPID 1                   DCID 2 EPID 0\r\n```\r\n\r\nConsider now a specific edge case, that is also hard to handle with the current (CID identification) design: the client decides to change the DCID it uses (now seq 2) on its path (EPID 1, EPID 0), but the very first packet sent experiences a NAT rebinding, making the server see a new 4-tuple. The end hosts\u2019 states just after the server received that packet is\r\n\r\nClient:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using SCID seq 2 and DCID seq 2\r\n\r\nServer:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1 and DCID seq 2\r\n- (EPID 0, EPID ???) using SCID seq 2\r\n\r\nTo address this new unknown path, the server will initiate path validation over that new path using a new DCID (let\u2019s say with seq 3), so it sends a MP_PATH_CHALLENGE(EPID=0) on the lower path. Once the packet reaches and after its processing, we have\r\n\r\nClient:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using SCID seq 3 and DCID seq 2\r\n\r\nServer:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1 and DCID seq 2\r\n- (EPID 0, EPID ???) using SCID seq 2 and DCID seq 3\r\n\r\n\r\nFinally, the client replies with a MP_PATH_RESPONSE on its perceived EPID (hence EPID 1) and the response can reach the server, which can then figure out that the path is actually the same as the previous one (it experienced involuntary 4-tuple change, this is not a new path). The final state is hence\r\n\r\nClient:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using SCID seq 3 and DCID seq 2\r\n\r\nServer:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 2 and DCID seq 3\r\n\r\n\r\n## Additional remarks\r\n\r\nIntroducing such additional identifiers may require additional care to cope with EPID that change over a same address or to avoid a same EPID over multiple 4-tuples. I think we can require that new EPID values cannot decrease (monotonically increasing) and observing a same EPID coming from different addresses probably indicates that something is wrong there.\r\n\r\nWe can also extend the required state of a path to be \"Active\", i.e., we need to have both local and peer EPID of a path before considering it as active.\r\n\r\nHaving two endpoint-specific values instead of a single shared one (as suggested by #170) may be desirable to support the edge case mentioned above.",
       "createdAt": "2023-02-23T10:40:22Z",
-      "updatedAt": "2023-03-08T14:00:59Z",
+      "updatedAt": "2023-11-21T12:34:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -4371,6 +4371,13 @@
           "body": "Given the changes it would involve (and the relatively low gain of the result), I think sticking to the DCID sequence number to identify paths is fine. I can keep this issue open for reference purpose.",
           "createdAt": "2023-03-08T14:00:59Z",
           "updatedAt": "2023-03-08T14:00:59Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think PR #292 could also solve this issue : )",
+          "createdAt": "2023-11-21T12:34:41Z",
+          "updatedAt": "2023-11-21T12:34:41Z"
         }
       ]
     },
@@ -7922,7 +7929,7 @@
       "labels": [],
       "body": "The debate over whether to use a stable path ID #214  may have deeper logical underpinnings than initially perceived and hinge on whether there\u2019s an agreed-upon definition of a path. \r\n\r\nThe current draft considers defining a path as a 4-tuple between two endpoints. This definition currently shapes the draft design, where different 4-tuples are assigned unique IDs and linked to distinct packet number spaces, maintaining logical consistency as this definition alone does not incorporate the concept of path \"**continuity**\".\r\n\r\nThose with differing views (i.e., stable path ID) essentially contest this definition of a path, perhaps even unknowingly. To adopt a stable path ID, we must redefine what constitutes a path, incorporating the idea of \u201c**continuity**.\u201d \r\n\r\nBut defining continuity is challenging. It suggests creating a transition graph where paths sharing an ID can trace back to a common origin, illustrated by transitions like`A1 -----> A2 ------> A3\r\n`, where `A` is some observable attributes of a path.\r\n\r\nAn _imperfect_ example of such transition graph is based on the combination of CID and 4-tuple:\r\n`(CID0, tuple0) ----> (CID0, tuple1) -----> (CID1, tuple1)\r\n`. However, the first complexity arises when both CID and tuple change simultaneously, as in`(CID0, tuple0) ----????-----> (CID1, tuple1)\r\n`. Here, it\u2019s unclear if these represent the same or different paths, making it impossible to construct a definitive transition graph. The second issue is that forcefully linking two such nodes with a path ID could lead to anomalies. For instance when we tie CID to path ID #214, you might start on an LTE path (PathID1) and have a standby path on Wi-Fi (PathID2) in a restaurant. Moving to a shopping mall and connecting to its Wi-Fi, you initially use a CID associated with PathID2. Yet, even after a CID rotation post path validation, you remain linked to PathID2 because you would rotate to another CID assigned for that PathID, despite the Wi-Fi path, its ISP, and the MTU potentially being different. There is another proposal of sticking to the loose path ID model but allowing the use of the same packet number space, again the logic hinges on whether we have a well-defined **continuity** to build a definitive transition so that we can link two paths to the same packet number space with no ambiguity.\r\n\r\nGiven the years of back-and-forth on this issue, it seems helpful to first reach a consensus on the path definition. The design should logically follow from this agreed definition, similar to how different assumptions about parallel lines underpin Euclidean and non-Euclidean geometries. Without a clear definition, when we say \"This is the same path because it has the same identifier\", we are potentially entering a circular reasoning zone and we should avoid logical fallacy like that.\r\n\r\nI could be wrong, but I think if we want to have a test of time design, we need to address the path definition unequivocally. Therefore, I would suggest to call for a consensus on a formal path definition. Two questions: (1) Do we like to incorporate \"**continuity**\" in the definition or stick to the current 4-tuple definition? (2) How to come up with a formal definition to incorporate the idea of **continuity** in path definition?",
       "createdAt": "2023-11-12T07:08:44Z",
-      "updatedAt": "2023-11-13T20:41:35Z",
+      "updatedAt": "2023-11-21T06:50:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -7952,6 +7959,13 @@
           "body": "@qdeconinck : I don't want to repeat the discussion of issue #214 here. I will just note that since those earlier single-versus-multiple space discussions, the multiple space solution (in draft -06) has resulted in divergence from RFC9000 in some pretty fundamental ways. I will also note (as I did in #214) that those earlier discussions were not aware of the incompatibility that has come to light between draft -06 and the masque QUIC-aware UDP proxy draft. \r\n\r\nHandling diverse path characteristics within a single packet number space is a solvable problem even if it makes the implementation more complex.",
           "createdAt": "2023-11-13T20:41:35Z",
           "updatedAt": "2023-11-13T20:41:35Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@yfmascgy \r\n> The debate over whether to use a stable path ID https://github.com/quicwg/multipath/issues/214 may have deeper logical underpinnings than initially perceived and hinge on whether there\u2019s an agreed-upon definition of a path.\r\n> \r\n> The current draft considers defining a path as a 4-tuple between two endpoints. This definition currently shapes the draft design, where different 4-tuples are assigned unique IDs and linked to distinct packet number spaces, maintaining logical consistency as this definition alone does not incorporate the concept of path \"continuity\".\r\n> \r\n> Those with differing views (i.e., stable path ID) essentially contest this definition of a path, perhaps even unknowingly. To adopt a stable path ID, we must redefine what constitutes a path, incorporating the idea of \u201ccontinuity.\u201d\r\n\r\nI think we have consensus that path is something that is identified by the 4-tuple (or 5-, if we consider the address family).\r\n\r\nIn case of \"stable path ID,\" I think it is just the name that might be confusing; it is actually referring to a particular \"send slot\" belonging to a QUIC connection. If we are to adopt such a design, I think the way to proceed would be to rename \"stable path ID\" to something else, rather than going back to the definition of \"path.\"",
+          "createdAt": "2023-11-21T06:50:21Z",
+          "updatedAt": "2023-11-21T06:50:21Z"
         }
       ]
     }
@@ -27110,13 +27124,13 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2023-11-20T18:48:56Z",
+      "updatedAt": "2023-11-22T17:00:06Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/path_id",
-      "headRefOid": "58ab583376dcaaaa0b50e69f6c9f0255dbae40e5",
+      "headRefOid": "c852dec5e6d2142c1ffc9b553257449329bc0d10",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -27128,6 +27142,13 @@
           "body": "> The biggest open question I have is what happens to the path identifier when peers have reached max_concurrent_paths. In your proposal, it sounds like path identifiers are reused. This might have weird corner cases when packets are delayed. The other way to implement this is to have path identifiers increment. We need to have a consistent view of how many paths are currently in use between the two peers.\r\n\r\nThat's an important point that we need to make it clear. I think it's better to reuse than increment, as we can add some limitation for the corner cases(e.g. Path Identifier can only be reused after 3 max PTOs after the path is abandoned and all the CIDs belonging to this path is retired). It's more friendly for resource limitation of endpoints. \r\n\r\nIf we use increment, then we need to discuss when to increase the max Path Identifier in the new connection IDs without breaking the limitation for max concurrent paths.",
           "createdAt": "2023-11-20T07:54:11Z",
           "updatedAt": "2023-11-20T07:54:11Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Thanks for doing this work. I think three key points need to be fixed:\r\n> \r\n> * the CID should be uniquely identified by their sequence number, not by the combination of path-id and sequence number.\r\n> * we do not need MP_RETIRE_CID\r\n> * we should never reuse path-ID, because they are part of the cryptographic nonce.\r\n\r\n@huitema I think the first 2 points are for the same design mechanism: whether the CID sequence should be allocated for per path. So basically we have 2 main issues here:\r\n\r\n* whether the CID sequence and Retire Prior to should be allocated for per path, or the whole connection use the same sequence:  For this part, my opinion is \"per path\" is better than \"the whole connection\". Because if different paths use the same sequence for CIDs, endpoints would not be able to use \"Retire Prior To\" to retire CIDs with continuous sequence. It will eventually retire CIDs from other paths and may have unexpected effects.\r\n* \"reuse\" or \"increase and no-reuse\" for path-ID:  For this part, I prefer \"increase and no-reuse\" for security consideration as Path ID are part of the cryptographic nonce. Then we will need mechanism for the limitation of max active Path IDs. Marten's design for PATH_LIMIT { highest path ID} frame might be an available way to solve this problem.",
+          "createdAt": "2023-11-21T07:22:32Z",
+          "updatedAt": "2023-11-21T07:23:57Z"
         }
       ],
       "reviews": [
@@ -27596,6 +27617,644 @@
               "body": "See comments above. In my mind, using the path ID in the nonce pretty much mandates unique path ID. Something like a monotonously increasing number.",
               "createdAt": "2023-11-20T18:46:00Z",
               "updatedAt": "2023-11-20T18:48:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nxsw9",
+          "commit": {
+            "abbreviatedOid": "ec27dcb"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "Thank you for working on this.",
+          "createdAt": "2023-11-21T04:06:04Z",
+          "updatedAt": "2023-11-21T05:27:14Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "I'm not sure if \"pre-allocate\" is the correct phrase here, it is my understanding that the endpoint has to receive a connection ID belonging to a previously unused Path Identifier before starting path validation on a newly chosen path?\r\n\r\nSeparately, as the endpoints needs to use a new path ID for validating the path, I think it might make sense to move this sentence to the beginning of this paragraph.\r\n",
+              "createdAt": "2023-11-21T04:06:04Z",
+              "updatedAt": "2023-11-21T05:30:48Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "I think I agree with Marten. Now that we've bumped the codepoint of `enable_multipath`, there is nothing preventing us from changing the format of the payload of that codepoint. `enable_mulipath` can now carry the number of concurrent paths.",
+              "createdAt": "2023-11-21T04:08:10Z",
+              "updatedAt": "2023-11-21T05:27:14Z"
+            },
+            {
+              "originalPosition": 145,
+              "body": "```suggestion\r\nTo let the peer open a new path, an endpoint needs to provide its peer with connection IDs\r\nand associated Path Identifiers for the new path. \r\n```\r\nMaybe?",
+              "createdAt": "2023-11-21T04:12:40Z",
+              "updatedAt": "2023-11-21T05:27:14Z"
+            },
+            {
+              "originalPosition": 379,
+              "body": "I do not feel strongly, but I think current design is fine as is.\r\n\r\nIn the new design, a QUIC Multipath connection that support N concurrent paths is essentially equivalent to N QUIC v1 connections running in parallel. If we think that way, migrating a particular path of a multipath connection can be equivalent to QUIC v1 doing intentional path migration.\r\n\r\nI do not think we have a problem in the design of QUIC v1 doing path migration. Do we?\r\n\r\ncc: @marten-seemann as also brought up the point.",
+              "createdAt": "2023-11-21T05:27:03Z",
+              "updatedAt": "2023-11-21T05:27:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nx_v9",
+          "commit": {
+            "abbreviatedOid": "ec27dcb"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T05:46:09Z",
+          "updatedAt": "2023-11-21T05:46:14Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "I don't think we should reuse path identifiers. As @huitema correctly points out, reusing path identifiers means we can't start the packet number at 0 for reused paths, since that would be nonce reuse. The situation is even worse: As packet numbers are encoded in a maximum of 4 bytes, it wouldn't be possible to reuse a path ID once packet numbers have surpassed 2^32, unless you want to keep state for retired paths.\r\n\r\nHere's an idea (not fully fleshed out): We could define a `PATH_LIMIT { HighestPathID (i) }` frame. The receiver of this frame can then issue CIDs up to the highest Path ID, and the sender can use this path as soon as it received CIDs.",
+              "createdAt": "2023-11-21T05:46:10Z",
+              "updatedAt": "2023-11-21T05:46:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyGGJ",
+          "commit": {
+            "abbreviatedOid": "91275e4"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:13:42Z",
+          "updatedAt": "2023-11-21T06:13:43Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "I also prefer \"unique path ID\" here for AEAD security consideration. Not reusing resources and less corner case.",
+              "createdAt": "2023-11-21T06:13:42Z",
+              "updatedAt": "2023-11-21T06:13:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyIKU",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:22:26Z",
+          "updatedAt": "2023-11-21T06:22:26Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "@marten-seemann \r\n> As @huitema correctly points out, reusing path identifiers means we can't start the packet number at 0 for reused paths, since that would be nonce reuse. The situation is even worse: As packet numbers are encoded in a maximum of 4 bytes, it wouldn't be possible to reuse a path ID once packet numbers have surpassed 2^32, unless you want to keep state for retired paths.\r\n\r\nI'm afraid this analysis is incorrect (specifically the 2nd sentence).\r\n\r\nIn QUIC v1, we retain packet numbers and those information for one path. In Multipath QUIC, we can do the same for N concurrent paths.\r\n\r\nIt is as simple as that.\r\n\r\n@Yanmei-Liu \r\n> Not reusing resources and less corner case.\r\n\r\n\"Not reusing resources\" this is correct. But the downside of not reusing path identifiers is that and endpoint has to issue credit to the other side (like MAX_STREAMS or NEW_CONNECTION_ID of QUIC v1).\r\n\r\nIt is the trade off between the two.",
+              "createdAt": "2023-11-21T06:22:26Z",
+              "updatedAt": "2023-11-21T06:29:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyJf-",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:28:03Z",
+          "updatedAt": "2023-11-21T06:28:03Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "For the purpose of pushing this PR forward as an experiment, I'm happy with going with the \"no-reuse\" route, but I want to have the records straight, as we will be coming back to the discussion of if the \"explicit path identifiers\" concept really makes sense.",
+              "createdAt": "2023-11-21T06:28:03Z",
+              "updatedAt": "2023-11-21T06:28:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyMx6",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:40:56Z",
+          "updatedAt": "2023-11-21T06:40:57Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "> unless you want to keep state for retired paths\r\n\r\nI don't think my analysis is incorrect. You need to be able to reconstruct the packet number if you want to be able to decrypt the packet. So at the very least, you need to keep state to save the highest received packet number for every path ID.\r\n\r\nThat's not a lot of state, but there are other problems with reusing path IDs, namely that you're introducing much more reliance on timers than if you just keep incrementing. That's the reason why none of the other identifiers we use in the protocol ever wrap around (packet numbers, stream IDs, etc.).",
+              "createdAt": "2023-11-21T06:40:57Z",
+              "updatedAt": "2023-11-21T06:40:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyObJ",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:47:10Z",
+          "updatedAt": "2023-11-21T06:47:10Z",
+          "comments": [
+            {
+              "originalPosition": 514,
+              "body": "Solved it.",
+              "createdAt": "2023-11-21T06:47:10Z",
+              "updatedAt": "2023-11-21T06:47:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyOdQ",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:47:16Z",
+          "updatedAt": "2023-11-21T06:47:16Z",
+          "comments": [
+            {
+              "originalPosition": 789,
+              "body": "Solved it.",
+              "createdAt": "2023-11-21T06:47:16Z",
+              "updatedAt": "2023-11-21T06:47:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyPRP",
+          "commit": {
+            "abbreviatedOid": "476a3db"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:50:12Z",
+          "updatedAt": "2023-11-21T06:50:13Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "I moved this sentence to beginning of this paragraph, that's right.\r\nI think \"pre-allocate\" is correct here, both endpoints need to pre-allocate CIDs for new path and issue them for the peer.",
+              "createdAt": "2023-11-21T06:50:12Z",
+              "updatedAt": "2023-11-21T06:50:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyQLO",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T06:53:36Z",
+          "updatedAt": "2023-11-21T06:53:36Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "> I don't think my analysis is incorrect. You need to be able to reconstruct the packet number if you want to be able to decrypt the packet. So at the very least, you need to keep state to save the highest received packet number for every path ID.\r\n\r\nThe presumption of reusing path identifiers is, as @huitema points out, that the packet number space would be retained. Highest received packet number is a property of a packet number space, so it does not cause any _extra_ burden.",
+              "createdAt": "2023-11-21T06:53:36Z",
+              "updatedAt": "2023-11-21T06:53:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nygkp",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T07:44:14Z",
+          "updatedAt": "2023-11-21T07:44:14Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "How about we use an interval for PATH_LIMIT { lowest path ID, highest path ID} frame here? \r\nTo inform the peer about the available range for Path IDs, and it has a clear signal for retirement of Path IDs.",
+              "createdAt": "2023-11-21T07:44:14Z",
+              "updatedAt": "2023-11-21T07:44:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyguF",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T07:44:36Z",
+          "updatedAt": "2023-11-21T07:45:21Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "What happens if the one endpoint doesn't how many path is needed? In the case of a deteriorating wifi, the endpoint wants to switch to 5G, but finds itself with no Path ID to use? What is the pre-allocating strategy?",
+              "createdAt": "2023-11-21T07:44:36Z",
+              "updatedAt": "2023-11-21T07:45:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyjTg",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T07:49:52Z",
+          "updatedAt": "2023-11-21T07:49:52Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Endpoints just need to decide the max concurrent path and pre-allocate at lease one unused CID for each path Identifier. Endpoints don't need to decide which Path Identifier to use until client start a new path and choose one available CID with the unused Path Identifers.",
+              "createdAt": "2023-11-21T07:49:52Z",
+              "updatedAt": "2023-11-21T07:49:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nykks",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T07:52:51Z",
+          "updatedAt": "2023-11-21T07:52:51Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "@Yanmei-Liu I'm not sure if we can use a contiguous range for representing valid IDs.\r\n\r\nConsider the case of an endpoint sticking to using path ID 0, while retiring all paths between ID 2 to 9.\r\n\r\nI think it would make more sense to follow the design that we have for stream IDs / Connection IDs; i.e., have one frame that issues the new maximum, and another that informs the peer one path ID that is being disposed.",
+              "createdAt": "2023-11-21T07:52:51Z",
+              "updatedAt": "2023-11-21T07:52:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyt_Q",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T08:15:50Z",
+          "updatedAt": "2023-11-21T08:19:21Z",
+          "comments": [
+            {
+              "originalPosition": 167,
+              "body": "```suggestion\r\none Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated with an unused Path ID. \r\n```",
+              "createdAt": "2023-11-21T08:15:50Z",
+              "updatedAt": "2023-11-21T08:19:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nyv7R",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T08:20:12Z",
+          "updatedAt": "2023-11-21T08:20:12Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "I am thinking a situation where you want max of three paths. You have your first path established. Try to establish another two paths on the 2nd sim and 3rd sim but failed. Then you don't have a path ID to build a path on the 4th sim even though it is available to use and can give you in total 2 paths (< max_num_path)",
+              "createdAt": "2023-11-21T08:20:12Z",
+              "updatedAt": "2023-11-21T08:24:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5ny1ua",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T08:32:15Z",
+          "updatedAt": "2023-11-21T08:32:15Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Maybe using the scheme that we have for Connection IDs in QUIC v1 would drive the discussion.\r\n\r\nIf we do that, then\r\n* the user of path IDs will send a TP indicating the number of paths from which it can send packets concurrently,\r\n* the peer sends MAX_PATH_IDS frame signaling the maximum path ID the user can use (consider MAX_DATA or MAX_STREAMS as precedents),\r\n* the user uses the path ids, and when it is done, sends a RETIRE_PATH_ID carrying the path id to be retired. We cannot use PATH_ABANDON here because it serves a different purpose and sent in the opposite direction,\r\n* when receiving a RETIRE_PATH_ID frame, the peer may raise the limit advertised by MAX_PATH_IDS.",
+              "createdAt": "2023-11-21T08:32:15Z",
+              "updatedAt": "2023-11-21T08:32:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5ny7av",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T08:43:17Z",
+          "updatedAt": "2023-11-21T08:43:17Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "Please check the MP_MAX_PATHS frames part, it's Marten's idea and he reminds me of the mechanism is quite the same with MAX_STREAMS. I also update the mechanism of transport parameter for \"initial_max_paths\". It's true that we will not be able use contiguous range. I just use the maximum value.",
+              "createdAt": "2023-11-21T08:43:17Z",
+              "updatedAt": "2023-11-21T08:43:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5nzgKA",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T09:53:08Z",
+          "updatedAt": "2023-11-21T09:53:09Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "@kazuho 's idea is quite useful, I added these mechanism:\r\n\r\n* TP initial_max_paths for the initial max Path ID limitation.\r\n* MP_MAX_PATHS frames could solve this issue by raise the limit of Path Identifier.\r\n\r\nWe don't need a RETIRE_PATH_ID here because Path Abandon has already been a clear signal for Path ID retirement.",
+              "createdAt": "2023-11-21T09:53:09Z",
+              "updatedAt": "2023-11-21T09:53:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0Djn",
+          "commit": {
+            "abbreviatedOid": "6704fb2"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T10:58:10Z",
+          "updatedAt": "2023-11-21T10:58:11Z",
+          "comments": [
+            {
+              "originalPosition": 135,
+              "body": "Solved it.",
+              "createdAt": "2023-11-21T10:58:11Z",
+              "updatedAt": "2023-11-21T10:58:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0GA2",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T11:03:32Z",
+          "updatedAt": "2023-11-21T11:03:32Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Thanks. I\u2019m afraid PATH_ABANDON cannot be used, as it is sent in the different direction. We need a new frame.\r\n\r\nIIUC, PATH_ABANDON is a frame sent by the issuer of CIDs (who will also the issuer of path IDs in the new design). It is a frame that \u201crequests the peer\u201d to abandon the path.\r\n\r\nWhat we are looking for now is a frame that is sent by the receiver (i.e., the user) of the CIDs / path IDs, that carries the fact that the path has been abandoned.",
+              "createdAt": "2023-11-21T11:03:32Z",
+              "updatedAt": "2023-11-21T11:03:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0Jiu",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T11:11:48Z",
+          "updatedAt": "2023-11-21T11:11:49Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "I think it's fine for the issuer of Path IDs to take responsibility of retiring them.\r\nBesides, the receiver of the Path IDs could also use the Path Abandon to trigger the retirement of Path Identifier for both sides. ",
+              "createdAt": "2023-11-21T11:11:49Z",
+              "updatedAt": "2023-11-21T11:11:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0U1Q",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T11:37:18Z",
+          "updatedAt": "2023-11-21T11:37:18Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "> I think it's fine for the issuer of Path IDs to take responsibility of retiring them.\r\n\r\nConsider the case of an endpoint deciding to stop using a path on which it sends packets. That endpoint has to retire the CID (or the path identifier in the new design) that is issued by the peer.\r\n\r\nIn -05, we use RETIRE_CONNECTION_ID as a signal. But in the new design, we are splitting CIDs and path IDs. So we need a new frame.\r\n\r\n> Besides, the receiver of the Path IDs could also use the Path Abandon to trigger the retirement of Path Identifier for both sides.\r\n\r\nThe path ID space will be different for each endpoint, won't it be? This is because each endpoint has its own view of paths, similar to Connection IDs.\r\n\r\nIf we are to use PATH_ABANDON for requesting retirement of path ID that *the endpoint issued* and also for signalling that retirement of a path ID that *the peer issued*, we need to add a field indicating to which side of path ID space (i.e., the endpoint or the peer) that the frame is referring.\r\n\r\nBut as the role of the frame will be different (as said, one endpoint signals the *request* to retire path ID, whereas the other side signals the fact that the path ID has been retired; that is how PATH_ABANDON and RETIRE_CONNECTION_ID work today), it might be better to have a different frame.",
+              "createdAt": "2023-11-21T11:37:18Z",
+              "updatedAt": "2023-11-21T11:38:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0WEM",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T11:40:21Z",
+          "updatedAt": "2023-11-21T11:40:22Z",
+          "comments": [
+            {
+              "originalPosition": 241,
+              "body": "That's true, endpoints could use the CID allocation as one possible way to control concurrent paths. \r\nI changed the normative description: Endpoints SHOULD issue at least one CID with unused Path Identifier for new paths.",
+              "createdAt": "2023-11-21T11:40:21Z",
+              "updatedAt": "2023-11-21T11:40:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0dJJ",
+          "commit": {
+            "abbreviatedOid": "60a77c9"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T11:56:50Z",
+          "updatedAt": "2023-11-21T11:56:50Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "I also update the definition for these transport parameter, combined 2 TPs and replace the old \"enable_multipath\" with \"initial_max_paths\". \r\nCode point of -07 would be able for implementations to be compatible.",
+              "createdAt": "2023-11-21T11:56:50Z",
+              "updatedAt": "2023-11-21T11:56:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n0iEl",
+          "commit": {
+            "abbreviatedOid": "c852dec"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-21T12:08:36Z",
+          "updatedAt": "2023-11-21T12:08:36Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "Should we can keep using the Destination Connection ID sequence number for the nonce and use a common sequence number space for all CIDs (as I believe CIDs should probably to be unique as well)? That means the encryption changes when the CID changes but I don't think that is a big issue...?",
+              "createdAt": "2023-11-21T12:08:36Z",
+              "updatedAt": "2023-11-21T12:08:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n9i4Y",
+          "commit": {
+            "abbreviatedOid": "c852dec"
+          },
+          "author": "yangfurong",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-22T11:41:04Z",
+          "updatedAt": "2023-11-22T11:41:04Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "First, I think the semantics of \"Path ID\" need to be clarified. For a specific bidirectional path, do both endpoints use the same path ID, or independently choose which path ID to use?",
+              "createdAt": "2023-11-22T11:41:04Z",
+              "updatedAt": "2023-11-22T11:41:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n95EW",
+          "commit": {
+            "abbreviatedOid": "c852dec"
+          },
+          "author": "yangfurong",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-22T12:34:10Z",
+          "updatedAt": "2023-11-22T12:34:10Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "\r\n> The path ID space will be different for each endpoint, won't it be? This is because each endpoint has its own view of paths, similar to Connection IDs.\r\n\r\nWhy can't we use the same path ID space for both endpoints? I understand that it is necessary to have different spaces when the DCID sequence number is used for identifying paths. But, it is a result of using DCID sequence numbers as path identifiers which are not stable during the lifetime of paths. Since we are going to use explicit and stable path IDs, is it still necessary to have different ID spaces?",
+              "createdAt": "2023-11-22T12:34:10Z",
+              "updatedAt": "2023-11-22T12:34:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n-EHW",
+          "commit": {
+            "abbreviatedOid": "c852dec"
+          },
+          "author": "yangfurong",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-22T12:58:20Z",
+          "updatedAt": "2023-11-22T12:58:21Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "If the two endpoints use the same path ID for a specific path, the situation becomes simpler. \r\n1. When the client finds the establishment of path1 and path2 fails, it should send two PATH_ABANDON frames to the server;\r\n2. Once the server receives the PATH_ABANDON frames, it should reply with two PATH_ABANDON frames and issue new CIDs associated with path3 and path4;\r\n3. When the client receives PATH_ABANDON frames from its peer, it should also issue new CIDs associated with path3 and path4;\r\n4. Once the client notices that both endpoints have available CIDs for the next path to be created and the active path count is less than the limit, it can request to open a new path.",
+              "createdAt": "2023-11-22T12:58:21Z",
+              "updatedAt": "2023-11-22T12:58:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5n-GSw",
+          "commit": {
+            "abbreviatedOid": "c852dec"
+          },
+          "author": "yangfurong",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-22T13:03:11Z",
+          "updatedAt": "2023-11-22T13:03:12Z",
+          "comments": [
+            {
+              "originalPosition": 157,
+              "body": "Can we treat this as a CID rotation on the initial path? If so, the path ID should remain 0.",
+              "createdAt": "2023-11-22T13:03:11Z",
+              "updatedAt": "2023-11-22T13:03:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5oAZqO",
+          "commit": {
+            "abbreviatedOid": "c852dec"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-22T17:00:05Z",
+          "updatedAt": "2023-11-22T17:00:06Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "I would keep the same logic as we did until now, i.e., each endpoint independently choose the Path ID it should use over a path. However, this \"Path ID\" (Flow ID may be more appropriate) would remain stable over a given path, even if the CID change.\r\n\r\nI have two concerns about forcing such synchronisation of Path ID:\r\n- Clients may try to create paths with Path IDs that are never seen by the server. For instance, Path ID 0 works, and it wants to try two additional paths, respectively with Path ID 1 and Path ID 2. However, the network path tried with Path ID 1 does not work and the server only sees Path ID 2 packets. If the client finally retires its Path ID 1, should the server also drop all related resources about its Path ID 1?\r\n- This would create issues if, for some use cases (like P2P), we would like the server to create paths to the client. What would happen if for some reason, both the client and the server try to open at the same time a path over the same network, but with different Path IDs?",
+              "createdAt": "2023-11-22T17:00:05Z",
+              "updatedAt": "2023-11-22T17:00:48Z"
             }
           ]
         }
