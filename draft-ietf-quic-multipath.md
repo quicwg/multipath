@@ -321,6 +321,10 @@ which are issued by origin NEW_CONNECTION_ID frames {{Section 19.15. of QUIC-TRA
 MUST be treated as their Path Identifier is 0. Also, the Path Identifier for 
 the connection ID specified in the "preferred address" transport parameter is 1.
 
+Endpoints use PATH_ABANDON frame to inform the peer of the retirement of associated 
+Path Identifier. When there is not enough unused Path Identifiers, endpoints SHOULD
+send MAX_PATHS frame to inform the peer that new Path Identifiers are available.
+
 
 # Path Setup and Removal {#setup}
 
@@ -514,12 +518,21 @@ the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
+Note that PATH_ABANDON frame is also used as a signal for the retirement 
+of the associated Path Identifier. When endpoint received PATH_ABANDON frame,
+it SHOULD not use the associated Path Identifier in future packets, it can 
+only use the Path ID in ACK_MP frames for inflight packets or 
+in MP_RETIRE_CONNECTION_ID frames for CID retirement.
+
 ### Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
 peer during the address validation procedure. According to
 {{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
+
+If endpoint fails to validate a path and consume an available Path Identifier,
+it SHOULD send a PATH_ABANDON frame to retire the associated Path Identifier. 
 
 
 ### Allocating, Consuming and Retiring Connection IDs {#consume-retire-cid}
@@ -1174,7 +1187,7 @@ Path Identifier:
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
-The PATH_ABANDON frame informs the peer to abandon a path.
+The PATH_ABANDON frame informs the peer to abandon a path and retire the Path ID associated.
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
