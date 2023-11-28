@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-26T00:44:04.212783+00:00",
+  "timestamp": "2023-11-28T00:42:14.647263+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -27131,7 +27131,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2023-11-25T04:58:56Z",
+      "updatedAt": "2023-11-26T20:51:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -28482,6 +28482,66 @@
               "body": "When it comes to path ID definition, the logic problem in the statement \"Path Identifier (Path ID): An identifier that is used to identify a path....\" lies in its redundancy and circular definition. It essentially defines a term using the same concept embedded within the term itself, which doesn't provide any additional information or clarity.",
               "createdAt": "2023-11-25T04:58:43Z",
               "updatedAt": "2023-11-25T04:58:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5oReSZ",
+          "commit": {
+            "abbreviatedOid": "58ab583"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-26T20:22:48Z",
+          "updatedAt": "2023-11-26T20:22:48Z",
+          "comments": [
+            {
+              "originalPosition": 379,
+              "body": "I like@kazuho's suggestion of using the same logic for controlling path ID as for controlling stream ID, but there is a little complicating factor. Stream ID are allocated in clear contexts (uni/bidir, client/server), and then the same stream ID is used in both directions. In the current design, stream IDs are allocated as part of CID, and there is no guarantee that client and server pick the same ID for a new path. DO we want to also handle that?",
+              "createdAt": "2023-11-26T20:22:48Z",
+              "updatedAt": "2023-11-26T20:22:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5oRea0",
+          "commit": {
+            "abbreviatedOid": "af1429a"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-26T20:27:29Z",
+          "updatedAt": "2023-11-26T20:27:29Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "We need more discussion of that specific point. The current situation is ambiguous. For example, what does \"Abandon path 17\" means? I am pretty sure that some implementations are going to get confused between \"the ID chosen by the server\" and \"the ID chosen by the client\".",
+              "createdAt": "2023-11-26T20:27:29Z",
+              "updatedAt": "2023-11-26T20:27:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5oRfHB",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-11-26T20:51:36Z",
+          "updatedAt": "2023-11-26T20:51:37Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "I think we need to get a consensus on the management of path identifiers. I also think that we would get much better clarity if the client and server ended up using the same path ID values. Something like:\r\n\r\n1. The client proposes an initial number of paths, which limits how many path ID the server can \"pre allocate\" (to use @Yanmei-Liu terms)\r\n2. Both the server and the client pre-allocate connection identifiers, with path ID lower than the proposed limits.\r\n3. Client that starts a new path picks one of the server allocated CID, selecting the path ID.\r\n4. Server receiving a packet referencing a not yet use path ID must reply with client-allocated connection ID mentioning the same path ID.\r\n    - If the client has not yet allocated any such path ID, the server cannot send data on that new path.\r\n    - the client can always provide a new CID in messages containing a path challenge.\r\n    - the server can control how many paths will be open by simply limiting how many path ID it mentions.\r\n3. \"Abandon path(N)\" is handled pretty much like connection close, but just for the path. Any peer can send it, but the path is only closed if both do, or if RTO pass.\r\n    - if a path is abandoned, we should say what happens if the peer keeps using it. Drop the packets? Repeat the Abandon Path message?\r\n4. Path ID cannot be reused. If a path_id is abandoned, all CID allocated for that path should be retired.\r\n5. The client can use a MAX_PATH_ID frame to increase the number of supported paths.\r\n\r\n",
+              "createdAt": "2023-11-26T20:51:36Z",
+              "updatedAt": "2023-11-26T20:51:37Z"
             }
           ]
         }
