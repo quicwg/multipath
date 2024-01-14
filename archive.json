@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-11T00:42:37.956857+00:00",
+  "timestamp": "2024-01-14T00:46:23.965954+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -730,7 +730,7 @@
       ],
       "body": "While discussing single packet space vs multi packet space designs, @martinduke brought up the topic of hardware offloading. The effect of any design changes on packet encryption/decryption should take HW offloads into account. As I understand it, single packet space would not modify the packet encryption/decryption logic, but the multi packet space design would because of the difference nonce length. Additionally, since multi-path would be a negotiated feature/extension, that would mean all connections that don't negotiate the feature would have the \"old\" model/logic, where as the connections that do would have the new encryption/decryption logic. IMO, this could significantly complicated HW offloads.",
       "createdAt": "2021-10-18T16:38:38Z",
-      "updatedAt": "2023-11-24T12:00:38Z",
+      "updatedAt": "2024-01-12T05:17:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -760,6 +760,13 @@
           "body": "I think we need to find out whether hardware offloading is still working with multi-path extension before the WG last call.\r\nConsidering: https://lpc.events/event/17/contributions/1592/\r\n",
           "createdAt": "2023-11-24T12:00:37Z",
           "updatedAt": "2023-11-24T12:00:37Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We've had some discussion with Eric for supporting hardware offloading with multi-path extension. \r\nHere's the solution suggested by Eric: \r\n\r\n> (original e-mail content)\r\n> From:Eric Davis <eric.davis@broadcom.com>\r\n> Sent At:2024 Jan. 5 (Fri.) 20:36\r\n> To:LIU Yanmei <miaoji.lym@alibaba-inc.com>\r\n> Cc:Andy Gospodarek <andrew.gospodarek@broadcom.com>; mbuhl <mbuhl@moritzbuhl.de>; martenseemann <martenseemann@gmail.com>\r\n> Subject:Re: Offloading Encryption to QUIC Enabled NICs with Multi-path Extension\r\n> \r\n> Hi Yanmei,\r\n> \r\n> Thank you for presenting the high level details of the multipath draft. I've also read through the draft itself and I think it's in a good place to support the current QUIC offload design without requiring any hardware changes. This is good.\r\n> \r\n> First thing to address is the tweaks to the AEAD nonce generation required for multipath. As we know, the non-multipath nonce generation has the hardware XOR'ing the 12B IV with the 62b pkt_num (which is left padded with zeros to 12B). For multipath, the nonce must be tweaked even more to ensure a unique nonce is always used for any multipath packet using the same key. The solution in the current draft rolls in the destination connID sequence number. This makes sense. In order to not change the hardware and still support multipath, the QUIC kernel module and/or driver must XOR in the destination connID sequence number to the IV. The result is the IV that is offloaded for the flow to the hardware. The hardware continues to do the same nonce generation with this IV XOR'ed with the pkt_num. \r\n> \r\n> Example from the multipath draft RFC:\r\n> IV: 0x6b26114b9cba2b63a9e8dd4f\r\n> Connection ID Sequence Number: 0x3\r\n> Packet Number = 0xaead\r\n> Nonce = (IV XOR ((connid_seq_num << 64) | pkt_num))\r\n> ((0x3 << 64) | 0xaead) = 0x00000003000000000000aead\r\n>     0x6b26114b9cba2b63a9e8dd4f (IV)\r\n> XOR 0x00000003000000000000aead ((connid_seq_num << 64) | pkt_num)\r\n>     --------------------------\r\n>     0x6b2611489cba2b63a9e873e2\r\n> \r\n> Same method supporting existing offload mechanism:\r\n> IV: 0x6b26114b9cba2b63a9e8dd4f\r\n> Connection ID Sequence Number: 0x3\r\n> Packet Number = 0xaead\r\n> New IV passed in flow offload = (IV XOR (connid_seq_num << 64))\r\n>     0x6b26114b9cba2b63a9e8dd4f (IV)\r\n> XOR 0x000000030000000000000000 (connid_seq_num << 64)\r\n>     --------------------------\r\n>     0x6b2611489cba2b63a9e8dd4f\r\n> Nonce (hardware): (IV XOR pkt_num)\r\n>     0x6b2611489cba2b63a9e8dd4f (offloaded IV)\r\n> XOR 0x00000000000000000000aead (pkt_num)\r\n>     --------------------------\r\n>     0x6b2611489cba2b63a9e873e2\r\n> \r\n> Second thing is whether or not the destination connID sequence number is used in the nonce or a new path identifier. From a hardware perspective it doesn't matter. The nonce construction would be the same as I detailed above with the driver XOR'ing in the connid_seq_num or the path_id into the IV before offloading the flow. There is an implication though, as you mentioned, if the destination connID sequence number is used, the IV in the offloaded flow will change. To support this, the offloaded flow would have to be deleted from the hardware and then re-offloaded with the updated IV. Alternatively, if a unique path identifier is used, the flow would never need to be removed and re-offloaded again.\r\n> \r\n> My vote is to move the multipath design to support a unique path identifier as it's cleaner. But as you can see, it's not required from a hardware perspective. Another thing to note, the connID is part of the flow lookup on the Rx side. Simple hardware implementations would require the flow to be removed and re-offloaded with a connID change. As we've discussed with numerous customers, this is acceptable.\r\n> \r\n> Feel free to copy these ideas into this GitHub issue for further discussion: https://github.com/quicwg/multipath/issues/25\r\n> \r\n> If you haven't seen it, we also presented QUIC offload at the last OCP Summit. This presentation complements that one Andy gave at Linux Plumbers. https://www.youtube.com/watch?v=IAvQhJSm6O8\r\n> \r\n> It's important to keep the hardware offload design as simple as possible. I don't see any need to make changes to the current offload design in order to support multipath. Let us know if you need any help with specifics going into the next IETF wg meeting. :-)\r\n> \r\n> Thanks,\r\n> - e",
+          "createdAt": "2024-01-12T05:17:45Z",
+          "updatedAt": "2024-01-12T05:17:45Z"
         }
       ]
     },
