@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-18T00:42:28.831443+00:00",
+  "timestamp": "2024-02-20T00:39:05.253687+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -27138,7 +27138,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2023-12-08T09:20:49Z",
+      "updatedAt": "2024-02-19T03:28:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -28569,6 +28569,46 @@
               "body": "Typo/missed change: I think the `Destination Connection ID Sequence Number` in the frame spec above needs to be replaced with `Path Identifier`?",
               "createdAt": "2023-12-08T09:20:49Z",
               "updatedAt": "2023-12-08T09:20:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5wgINO",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-19T02:59:43Z",
+          "updatedAt": "2024-02-19T02:59:44Z",
+          "comments": [
+            {
+              "originalPosition": 531,
+              "body": "I think we should be a bit more prescriptive here. I would like MAX_PATHS to follow the same logic as MAX_STREAMS, and describe the number of paths that MAY be created by the peer. I would also like to exploit the asymmetry of clients and servers, in which only the clients create new paths. Something like:\r\n\r\n1. The server send MAX_PATHS to raise the maximum path number that it is willing to accept.\r\n2. The client sends MAX_PATHS to raise the maximum path number that it is willing to create.\r\n3. The server sends MP_NEW_CONNECTION_ID up to the min of client and server MAX_PATHS\r\n4. The client sends MP_NEW_CONNECTION_ID up to the min of client and server MAX_PATHS\r\n5. The client picks a server provided connection ID to create a new path, send a PATH CHALLENGE\r\n6. If the server receives the challenge, it picks a connection ID with the same path ID for sending the PATH RESPONSE\r\n\r\nWe have a set of error conditions:\r\n- Server sends MP_NEW_CONNECTION_ID with path ID larger than client limit -- protocol error\r\n- Client sends MP_NEW_CONNECTION_ID with path ID larger than server limit -- protocol error\r\n- Server receives a PATH CHALLENGE before receiving MP_NEW_CONNECTION_ID for the path -- not an error, but the PATH CHALLENGE is ignored, no response. Or, response is delayed until MP_NEW_CONNECTION_ID arrives.\r\n\r\nBut we also achieve path_id symmetry, I guess. Although there is probably some additional complexity with NAT Rebinding.",
+              "createdAt": "2024-02-19T02:59:43Z",
+              "updatedAt": "2024-02-19T02:59:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5wgNCc",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-19T03:28:37Z",
+          "updatedAt": "2024-02-19T03:28:37Z",
+          "comments": [
+            {
+              "originalPosition": 178,
+              "body": "We need to be a bit more precise there. RFC 9000 suggests that the server sends two path challenges, one to the old client address and one to the new one. We need to specify what connection ID it picks.\r\n\r\n- for the old address, I assume the server should keep using the same MP_CONNECTION_ID, mapping to the same path ID.\r\n- for the new address, the server SHOULD pick an MP_CONNECTION_ID that has not been used yet. We have to discuss whether that new MP_CONNECTION_ID should point to the same path or to a different path.\r\n\r\nI would argue for \"same path\", for two reasons:\r\n\r\n1. We don't want the server to initiate new paths. If it did, there could be a race condition with the client deciding to use that path ID for a different 4-tuple.\r\n2. We don't want NAT rebinding to consume the path identifier budget at the server, because it is trivial for attackers to intercept a client's message, change the source IP, and forward the message to the server. If new path-ids are used each time, we have a path-id exhaustion attack.",
+              "createdAt": "2024-02-19T03:28:37Z",
+              "updatedAt": "2024-02-19T03:28:37Z"
             }
           ]
         }
