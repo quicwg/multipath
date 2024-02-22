@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-20T00:39:05.253687+00:00",
+  "timestamp": "2024-02-22T00:39:18.485848+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -22521,7 +22521,7 @@
       ],
       "body": "This is the proposed text more the other PR to start working this. The proposed solution in further discussion was to also extend the path abandon path with a specific reason code of this case.",
       "createdAt": "2023-03-10T14:57:27Z",
-      "updatedAt": "2023-07-05T13:43:16Z",
+      "updatedAt": "2024-02-20T05:54:35Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cf75916dd74fe81c5f2db5f8f617d3479f2a556",
@@ -22546,6 +22546,13 @@
           "body": "Yes, this is not ready to merge and discuss should take place in the issue (#188). I just wanted to capture this text as a starting point before we lose it.",
           "createdAt": "2023-03-10T17:21:43Z",
           "updatedAt": "2023-03-10T17:21:43Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think we need clarity on PR #292 before we progress this draft. We have an issue there, because the \"Natted\" path and the \"before-NAT\" path use the same number space. With PR #292, that gives us a strong constraint. I think I explained a plausible solution in https://github.com/quicwg/multipath/pull/292#discussion_r1493966132, but with that solution if rebinding is accepted the new (natted) path will have the same path_id as before NAT rebinding.",
+          "createdAt": "2024-02-20T05:54:33Z",
+          "updatedAt": "2024-02-20T05:54:33Z"
         }
       ],
       "reviews": [
@@ -27138,7 +27145,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2024-02-19T03:28:37Z",
+      "updatedAt": "2024-02-20T14:19:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -28609,6 +28616,46 @@
               "body": "We need to be a bit more precise there. RFC 9000 suggests that the server sends two path challenges, one to the old client address and one to the new one. We need to specify what connection ID it picks.\r\n\r\n- for the old address, I assume the server should keep using the same MP_CONNECTION_ID, mapping to the same path ID.\r\n- for the new address, the server SHOULD pick an MP_CONNECTION_ID that has not been used yet. We have to discuss whether that new MP_CONNECTION_ID should point to the same path or to a different path.\r\n\r\nI would argue for \"same path\", for two reasons:\r\n\r\n1. We don't want the server to initiate new paths. If it did, there could be a race condition with the client deciding to use that path ID for a different 4-tuple.\r\n2. We don't want NAT rebinding to consume the path identifier budget at the server, because it is trivial for attackers to intercept a client's message, change the source IP, and forward the message to the server. If new path-ids are used each time, we have a path-id exhaustion attack.",
               "createdAt": "2024-02-19T03:28:37Z",
               "updatedAt": "2024-02-19T03:28:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5woT16",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-20T06:54:52Z",
+          "updatedAt": "2024-02-20T06:54:53Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "I think that if we go through the trouble of changing the current solution, we should go for having the same path ID in both directions. It will make management much simpler, and it is not very hard, see later comments.",
+              "createdAt": "2024-02-20T06:54:53Z",
+              "updatedAt": "2024-02-20T06:54:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5wr4it",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-20T14:19:33Z",
+          "updatedAt": "2024-02-20T14:19:33Z",
+          "comments": [
+            {
+              "originalPosition": 531,
+              "body": "I agree, and this is more or less exactly how it is implemented in the Rask stack.",
+              "createdAt": "2024-02-20T14:19:33Z",
+              "updatedAt": "2024-02-20T14:19:33Z"
             }
           ]
         }
