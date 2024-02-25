@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-22T00:39:18.485848+00:00",
+  "timestamp": "2024-02-25T00:42:39.934625+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -27145,7 +27145,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2024-02-20T14:19:33Z",
+      "updatedAt": "2024-02-24T08:24:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -27170,6 +27170,20 @@
           "body": "> Thanks for doing this work. I think three key points need to be fixed:\r\n> \r\n> * the CID should be uniquely identified by their sequence number, not by the combination of path-id and sequence number.\r\n> * we do not need MP_RETIRE_CID\r\n> * we should never reuse path-ID, because they are part of the cryptographic nonce.\r\n\r\n@huitema I think the first 2 points are for the same design mechanism: whether the CID sequence should be allocated for per path. So basically we have 2 main issues here:\r\n\r\n* whether the CID sequence and Retire Prior to should be allocated for per path, or the whole connection use the same sequence:  For this part, my opinion is \"per path\" is better than \"the whole connection\". Because if different paths use the same sequence for CIDs, endpoints would not be able to use \"Retire Prior To\" to retire CIDs with continuous sequence. It will eventually retire CIDs from other paths and may have unexpected effects.\r\n* \"reuse\" or \"increase and no-reuse\" for path-ID:  For this part, I prefer \"increase and no-reuse\" for security consideration as Path ID are part of the cryptographic nonce. Then we will need mechanism for the limitation of max active Path IDs. Marten's design for PATH_LIMIT { highest path ID} frame might be an available way to solve this problem.",
           "createdAt": "2023-11-21T07:22:32Z",
           "updatedAt": "2023-11-21T07:23:57Z"
+        },
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I'm not sure how symmetrical path IDs would work in a world where both client and server probe paths. While the current document doesn't specify a more p2p-friendly QUIC, it would be nice if our path ID design didn't unnecessarily complicate the use in the p2p context.",
+          "createdAt": "2024-02-23T00:15:03Z",
+          "updatedAt": "2024-02-23T00:15:03Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I'm not sure how symmetrical path IDs would work in a world where both client and server probe paths. While the current document doesn't specify a more p2p-friendly QUIC, it would be nice if our path ID design didn't unnecessarily complicate the use in the p2p context.\r\n\r\nFor the client-server case, starting connections from the server will not work well because of NAT and firewall. That does not mean that we don't want the server to only accept connections at one address. The solution is to have the server send a frame \"Call me at address IP:port\". See for example the [ADD_ADDRESS Frame in Quentin and Olivier's original draft](https://datatracker.ietf.org/doc/html/draft-deconinck-quic-multipath-07#page-24). I think that a mechanism like that would work well for P2P as well, since we need something like ICE to start the P2P paths.\r\n\r\nSymmetrical path ID make path management significantly simpler in the client-server case. I believe that symmetrical path ID would also simplify the design of an ICE-like mechanism in the P2P case.\r\n\r\n",
+          "createdAt": "2024-02-23T01:47:07Z",
+          "updatedAt": "2024-02-23T01:47:07Z"
         }
       ],
       "reviews": [
@@ -28656,6 +28670,112 @@
               "body": "I agree, and this is more or less exactly how it is implemented in the Rask stack.",
               "createdAt": "2024-02-20T14:19:33Z",
               "updatedAt": "2024-02-20T14:19:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5xAAMi",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I think we can have \"symmetrical\" Path IDs where a (bidirectional) path is identified by the underlying Path ID of the packets' CID. Some comments regarding MAX_PATHS and Path ID value splitting for possible future extension.",
+          "createdAt": "2024-02-22T13:14:47Z",
+          "updatedAt": "2024-02-22T13:19:49Z",
+          "comments": [
+            {
+              "originalPosition": 919,
+              "body": "So coming back to the discussion about the MAX_PATHS frame, I pretty like the idea that it should indicate the maximum Path ID value that could be used from the sender's perspective (to keep the path management asymmetry where e.g., a client may want to open many paths, but the server wants to keep resources up to x paths). I would probably rename the \"Maximum paths\" field of the MAX_PATHS frame to \"Maximum Path ID\", so if a MAX_PATHS {\"Maximum Path ID\": 3} is received, it should be possible to open paths 0, 1, 2 and 3. This is mainly to limit the path IDs where MP_NEW_CONNECTION_ID frames could be received. But if the endpoint does not send MP_NEW_CONNECTION_ID frame for a given Path ID, the path cannot be opened by its peer anyway (no associated CID). This has also the nice property that endpoints could negotiate multipath with the `initial_max_paths` TP, initially with only one path allowed (if `initial_max_paths` is 0, as the initial path ID is 0; absence of this TP means multipath is not supported).\r\n\r\nA last point: I think we should decide whether the multipath extension leaves the door open to server-initiated paths in a latter extension. If this is the case, we should split the Path ID space in even (client-initiated) and odd (server-initiated) values, as done in e.g. stream IDs. For simplicity, the current extension could only allow client-initiated paths (so only even Path IDs).",
+              "createdAt": "2024-02-22T13:14:47Z",
+              "updatedAt": "2024-02-22T13:19:49Z"
+            },
+            {
+              "originalPosition": 897,
+              "body": "I think this should be \"Maximum Path Id\"",
+              "createdAt": "2024-02-22T13:15:27Z",
+              "updatedAt": "2024-02-22T13:19:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5xAIlx",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-22T13:30:23Z",
+          "updatedAt": "2024-02-22T13:30:24Z",
+          "comments": [
+            {
+              "originalPosition": 897,
+              "body": "Note that `Maximum Paths` is symmetric to `Maximum Streams` in `MAX_STREAMS` frames, so keeping the field name might actually be clearer.",
+              "createdAt": "2024-02-22T13:30:23Z",
+              "updatedAt": "2024-02-22T13:30:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5xBdDS",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-22T15:48:07Z",
+          "updatedAt": "2024-02-22T15:48:07Z",
+          "comments": [
+            {
+              "originalPosition": 897,
+              "body": "Leave it to max paths -- as Michael says, this is the same pattern as MAX_STREAMS.",
+              "createdAt": "2024-02-22T15:48:07Z",
+              "updatedAt": "2024-02-22T15:48:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5xM8wo",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-24T05:38:06Z",
+          "updatedAt": "2024-02-24T05:38:06Z",
+          "comments": [
+            {
+              "originalPosition": 531,
+              "body": "There is another issue regarding probing for new paths. When a client wants to create a new path, it is supposed to use a \"new\" path_id, select CID that match the path ID, send a Path Challenge, and wait for the Path Response. The Path Response may well never arrive. That means that the Path ID is \"burned\" for the client, but also for the server. But the server does not know, will not know until the client sends a Path Abandon. We should be clear that the client should do that. We should also clarify how the Path Abandon causes all the CID allocated for the path ID to be retired.",
+              "createdAt": "2024-02-24T05:38:06Z",
+              "updatedAt": "2024-02-24T05:38:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5xNGhY",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-24T08:24:38Z",
+          "updatedAt": "2024-02-24T08:24:38Z",
+          "comments": [
+            {
+              "originalPosition": 264,
+              "body": "OK, strike that. We are going for collection of CID per path (or per path ID), and identification of CID by the tuple {path_id, sequence}. So we pretty much need MP_RETIRE_CONNECTION_ID .",
+              "createdAt": "2024-02-24T08:24:38Z",
+              "updatedAt": "2024-02-24T08:24:38Z"
             }
           ]
         }
