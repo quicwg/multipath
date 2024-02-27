@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-25T00:42:39.934625+00:00",
+  "timestamp": "2024-02-27T00:39:01.946694+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -27145,7 +27145,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2024-02-24T08:24:38Z",
+      "updatedAt": "2024-02-26T07:20:43Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -28776,6 +28776,26 @@
               "body": "OK, strike that. We are going for collection of CID per path (or per path ID), and identification of CID by the tuple {path_id, sequence}. So we pretty much need MP_RETIRE_CONNECTION_ID .",
               "createdAt": "2024-02-24T08:24:38Z",
               "updatedAt": "2024-02-24T08:24:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5xQTBg",
+          "commit": {
+            "abbreviatedOid": "60a77c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-02-26T07:20:43Z",
+          "updatedAt": "2024-02-26T07:20:43Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I am implementing this right now. The good thing about the \"unique path ID\" is that the header now carries a clear intention. If the destination CID correspond to path X, then the intention was clearly to send the packet on path X -- even in cases when the CID is not exactly the same that was used for that path previously. This closes the ambiguity of \"CID renewal and NAT Rebinding at the same time\".",
+              "createdAt": "2024-02-26T07:20:43Z",
+              "updatedAt": "2024-02-26T07:20:43Z"
             }
           ]
         }
