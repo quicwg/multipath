@@ -352,7 +352,8 @@ and associated Path Identifiers for the new path.
 To open a new path, an endpoint SHALL use different Connection IDs on different paths.
 Still, the receiver may observe the same Connection ID used on different
 4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
-as specified in {{Section 9.3 of QUIC-TRANSPORT}}.
+as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
+and using a new Connection ID for the same path ID.
 
 This proposal adds three multipath control frames for path management:
 
