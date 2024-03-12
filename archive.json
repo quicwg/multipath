@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-10T00:42:50.647107+00:00",
+  "timestamp": "2024-03-12T00:39:04.001871+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7980,6 +7980,30 @@
           "body": "@yfmascgy \r\n> The debate over whether to use a stable path ID https://github.com/quicwg/multipath/issues/214 may have deeper logical underpinnings than initially perceived and hinge on whether there\u2019s an agreed-upon definition of a path.\r\n> \r\n> The current draft considers defining a path as a 4-tuple between two endpoints. This definition currently shapes the draft design, where different 4-tuples are assigned unique IDs and linked to distinct packet number spaces, maintaining logical consistency as this definition alone does not incorporate the concept of path \"continuity\".\r\n> \r\n> Those with differing views (i.e., stable path ID) essentially contest this definition of a path, perhaps even unknowingly. To adopt a stable path ID, we must redefine what constitutes a path, incorporating the idea of \u201ccontinuity.\u201d\r\n\r\nI think we have consensus that path is something that is identified by the 4-tuple (or 5-, if we consider the address family).\r\n\r\nIn case of \"stable path ID,\" I think it is just the name that might be confusing; it is actually referring to a particular \"send slot\" belonging to a QUIC connection. If we are to adopt such a design, I think the way to proceed would be to rename \"stable path ID\" to something else, rather than going back to the definition of \"path.\"",
           "createdAt": "2023-11-21T06:50:21Z",
           "updatedAt": "2023-11-21T06:50:21Z"
+        }
+      ]
+    },
+    {
+      "number": 293,
+      "id": "I_kwDOGNtpaM6B8auw",
+      "title": "Switch to standby path more tricky than expected",
+      "url": "https://github.com/quicwg/multipath/issues/293",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I did a big batch of debugging the \"unique path-id\" code in picoquic, porting all the tests that were designed for the previous multipath version, and I found an interesting issue in the \"standup\" test. The test starts by setting a client to server connection with two paths, one available and on in standby. It runs for a while, then simulates cutting the \"available\" path off. Expectation is that the connection will continue with the \"standby\" path. The test was initially failing.\r\n\r\nThe simulated traffic is from server to client. The server quickly detects that the available path is down, and starts sending data packets on the \"standby\" path. But the client only sends ACK, and does not react quickly if ACK packets are not acknowledged. So the client keeps sending ACKs on the \"available path\". Of course, since the path is cut, they are dropped. The server does not see ACKs for the packets sent on the \"standby\" path, so it quickly concludes that this path is down. Pretty soon, the connection breaks.\r\n\r\nThere are two potential fixes. One would be to somehow force ACKs on the standby path, if packets are received on that path. The other, which I feel is more robust, is for the server to send mark the standby path as \"available\" if the available path is \"broken\". I did that, \"promote\" the standby path to available, and the \"standup\" test now succeeds.\r\n\r\nThis issue might deserve some discussion in the multipath draft.",
+      "createdAt": "2024-03-11T19:56:44Z",
+      "updatedAt": "2024-03-11T20:06:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "A lot of this is a tradeoff between simplicity and performance. For performance reasons, we want the traffic to start using the standby path if the available path is \"dubious\". In my implementation, that's on first PTO. Of course, the PTO may or may not be due to a link failure, but hopefully is is infrequent enough that using the standby path briefly in case of PTO does not break the \"spirit\" of putting a path in standby.\r\n\r\nSending an \"abandon path\" immediately would also force traffic onto the standby path, but is is more drastic. If the packet loss situation was temporary, it causes the system to stop using the \"available\" path forever. In contrast, promoting the standby path to \"available\" is easily reversible. if after a PTO or a couple RTO the \"available\" path is restored, the client can decide to put the standby path back in standby mode.",
+          "createdAt": "2024-03-11T20:06:08Z",
+          "updatedAt": "2024-03-11T20:06:08Z"
         }
       ]
     }
