@@ -319,7 +319,9 @@ is used to identify the path in ACK_MP frames {#ack-mp-frame}.
 Note that the Path Identifier for the initial path is 0. Connection IDs
 which are issued by origin NEW_CONNECTION_ID frames {{Section 19.15. of QUIC-TRANSPORT}}
 MUST be treated as their Path Identifier is 0. Also, the Path Identifier for 
-the connection ID specified in the "preferred address" transport parameter is 1.
+the connection ID specified in the "preferred address" transport parameter is 0.
+Use of the "preferred address" is considered as a migration event
+that does not change the path ID.
 
 Endpoints use PATH_ABANDON frame to inform the peer of the retirement of associated 
 Path Identifier. When there is not enough unused Path Identifiers, endpoints SHOULD
