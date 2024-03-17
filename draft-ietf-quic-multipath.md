@@ -316,11 +316,16 @@ to each Path Identifier received from the peer.
 
 Endpoints use the same Path ID for one specific path in both directions. 
 For a client-initiated path, the client decides which Path ID used for the new path, 
-and it picks one of the server allocated CID with the specified Path ID. 
+it picks one of the server allocated CID with the specified Path ID. 
+Then the client send a PATH_CHALLENGE with the chosen CID. If the server receives the PATH_CHALLENGE, 
+it picks a Connection ID with the same path ID for sending the PATH_RESPONSE.
+
 The client SHOULD choose a new Path ID which is not used in previous paths, 
 and both endpoints have already issued unused CIDs with the new Path ID.
-The client then initializes a new path with a packet containing PATH_CHALLENGE and
-the Destination Connection ID with the chosen Path ID.
+If the server receives a PATH_CHALLENGE before receiving MP_NEW_CONNECTION_ID 
+for the specify path, it MAY choose to ignore the PATH_CHALLENGE, or it can
+choose to send PATH_RESPONSE until it receives the MP_NEW_CONNECTION_ID containing
+the corresponding Path ID arrives.
 
 The Path Identifier associated with the Destination Connection ID is used to 
 construct the packet protection nonce defined in {#multipath-aead}.
@@ -483,6 +488,14 @@ does not necessarily advertise path abandon (see {{retire-cid-close}}).
 However, implicit signals such as idle time or packet losses might be
 the only way for an endhost to detect path closure (see
 {{idle-time-close}}).
+
+PATH_ABANDON frame causes all the CID allocated for the specified Path ID to be retired.
+
+There is a special case that endpoints SHOULD send PATH_ABANDON frame:  
+When a client create a new path, it chooses a new Path ID and sends a Path Challenge 
+with a chosen Connection ID of that path. If it doesn’t receive any PATH_RESPONSE,
+it SHOULD consider the Path ID as consumed, and also SHOULD send a PATH_ABANDON frame
+to inform the server that the Path ID can’t be used in the future.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
 apply on the whole connection. In particular, the reception of either a
