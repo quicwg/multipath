@@ -310,6 +310,14 @@ Each endpoint associates a Receiver Packet Number space to each Path Identifier
 that it provides to the peer. Each endpoint associates a Sender Packet Number space 
 to each Path Identifier received from the peer.
 
+Endpoints use the same Path ID for one specific path in both directions. 
+For a client-initiated path, the client decides which Path ID used for the new path, 
+and it picks one of the server allocated CID with the specified Path ID. 
+The client SHOULD choose a new Path ID which is not used in previous paths, 
+and both endpoints have already issued unused CIDs with the new Path ID.
+The client then initializes a new path with a packet containing PATH_CHALLENGE and
+the Destination Connection ID with the chosen Path ID.
+
 The Path Identifier associated with the Destination Connection ID is used to 
 construct the packet protection nonce defined in {#multipath-aead}.
 
