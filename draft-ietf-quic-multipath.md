@@ -307,7 +307,8 @@ Endpoints use Path Identifier to address a path in the multipath control frames,
 such as PATH_ABANDON, PATH_STANDBY, and PATH_AVAILABLE frames. 
 
 Path IDs are generated monotonically increasing, which means the retired Path IDs 
-SHOULD NOT be reused.
+MUST NOT be reused. Once a Path ID is retired by PATH_ABANDON, 
+it MUST NOT be reused on any other path.
 
 Each endpoint associates a Receiver Packet Number space to each Path Identifier 
 that it provides to the peer. Each endpoint associates a Sender Packet Number space 
