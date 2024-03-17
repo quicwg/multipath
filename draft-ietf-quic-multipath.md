@@ -328,8 +328,22 @@ Use of the "preferred address" is considered as a migration event
 that does not change the path ID.
 
 Endpoints use PATH_ABANDON frame to inform the peer of the retirement of associated 
-Path Identifier. When there is not enough unused Path Identifiers, endpoints SHOULD
-send MAX_PATHS frame to inform the peer that new Path Identifiers are available. 
+Path Identifier. 
+
+When there is not enough unused Path Identifiers, endpoints SHOULD
+send MAX_PATHS frame to inform the peer that new Path Identifiers are available.
+For example, the server send MAX_PATHS to raise the maximum path number that it is willing to accept,
+the client sends MAX_PATHS to raise the maximum path number that it is willing to create.
+
+Endpoints MUST NOT issue new Connection ID with Path ID larger than the mininum of MAX_PATHS
+announced by both endpoints. For example, the server sends MP_NEW_CONNECTION_ID frame containing 
+Path ID up to the mininum of MAX_PATHS issued by client and server. The client sends 
+MP_NEW_CONNECTION_ID frame containing Path ID up to the mininum of MAX_PATHS issued by each sides.
+
+If an endpoint receives a MP_NEW_CONNECTION_ID frame containing Path ID larger than 
+the mininum of MAX_PATHS announced by each sides, it MUST treat this as a connection error of type
+MP_PROTOCOL_VIOLATION and close the connection.
+
 
 
 # Path Setup and Removal {#setup}
