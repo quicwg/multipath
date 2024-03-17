@@ -490,10 +490,7 @@ the only way for an endhost to detect path closure (see
 
 PATH_ABANDON frame causes all the CID allocated for the specified Path ID to be retired.
 
-There is a special case that endpoints SHOULD send PATH_ABANDON frame:  
-When a client create a new path, it chooses a new Path ID and sends a Path Challenge 
-with a chosen Connection ID of that path. If it doesn’t receive any PATH_RESPONSE,
-it SHOULD consider the Path ID as consumed, and also SHOULD send a PATH_ABANDON frame
+When path validation of a new path fails, the client MUST consider the Path ID as consumed, and MUST abandon the path by sending a PATH_ABANDON frame.
 to inform the server that the Path ID can’t be used in the future.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
