@@ -320,8 +320,7 @@ it picks one of the server allocated CID with the specified Path ID.
 Then the client send a PATH_CHALLENGE with the chosen CID. If the server receives the PATH_CHALLENGE, 
 it picks a Connection ID with the same path ID for sending the PATH_RESPONSE.
 
-The client SHOULD choose a new Path ID which is not used in previous paths, 
-and both endpoints have already issued unused CIDs with the new Path ID.
+The client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.
 If the server receives a PATH_CHALLENGE before receiving MP_NEW_CONNECTION_ID 
 for the specify path, it MAY choose to ignore the PATH_CHALLENGE, or it can
 choose to send PATH_RESPONSE until it receives the MP_NEW_CONNECTION_ID containing
