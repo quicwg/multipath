@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-14T00:39:02.615707+00:00",
+  "timestamp": "2024-03-17T00:42:44.627145+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -8185,6 +8185,230 @@
       "updatedAt": "2024-03-12T14:45:23Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 301,
+      "id": "I_kwDOGNtpaM6ChdrZ",
+      "title": "Write Security Consideration section",
+      "url": "https://github.com/quicwg/multipath/issues/301",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The draft lacks content in the security consideration section. It is definitely time to start dealing with this. \r\n\r\nIssues for MP-QUIC include:\r\n\r\n- Max paths allowed to be open gives the size for what amount of traffic an attacker can cause towards an attack target by having the server send path_validate + path_challenge. \r\n- Having path resource control opens up for similar errors as have been found in QUIC. \r\n- etc. ",
+      "createdAt": "2024-03-16T06:16:36Z",
+      "updatedAt": "2024-03-16T06:16:36Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 302,
+      "id": "I_kwDOGNtpaM6Chehq",
+      "title": "Missing reference to sequence number for DCID",
+      "url": "https://github.com/quicwg/multipath/issues/302",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 2:\r\n\r\n\"Further, the sequence number of Destination Connection ID is used as numerical identifier in control frames.\" This is unclear in how the sequence number works. This likely should have a reference to Section 5.1.1 in RFC 9000.\r\n",
+      "createdAt": "2024-03-16T06:24:34Z",
+      "updatedAt": "2024-03-16T06:24:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 303,
+      "id": "I_kwDOGNtpaM6ChfTm",
+      "title": "Recommendation on token ambiguity issue is violating RFC 9000",
+      "url": "https://github.com/quicwg/multipath/issues/303",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4.1:\r\n\r\n\"To alleviate such a token ambiguity issue, a server may issue a token that is capable of validating any of the previously validated addresses.\" \r\n\r\nisn't this against this normative rule in Section 8.1.1 of RFC 9000: \r\n\r\n\"A token sent in a NEW_TOKEN frame or a Retry packet MUST be constructed in a way that allows the server to identify how it was provided to a client. These tokens are carried in the same field but require different handling from servers.\"?\r\n\r\n",
+      "createdAt": "2024-03-16T06:31:13Z",
+      "updatedAt": "2024-03-16T06:31:13Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 304,
+      "id": "I_kwDOGNtpaM6Chfef",
+      "title": "Unclear usage of direciton of Path in specifcation text",
+      "url": "https://github.com/quicwg/multipath/issues/304",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "During the reading I found places where me as reader got confused about which direction a message was sent. An example of this is the below. \r\n\r\nSection 4.3.1 and 4.3.3:\r\nDoesn't the use of Retire_connection_id is potentially in the reverse to how RFC9000 use it. Especially as the one receiving one a path can retire the connection ID, as well as the sender can indicate that it will not use it. However, to my understanding of how the frames are defined this can only be used in a particular direction. If A sends to B using DCID=X, which has sequence number Y. Then PATH_ABANDON with sequence Y can only be sent by B to A. And RETIRE_CONNECTION_ID can only be sent by A with seq=Y referencing DCID=X. \r\n\r\nTo my understanding of the text, this procedure is happening per direction independent and each path is going a unidirectional. However, one normally initiate the reverse direction path also. So I think it would be good if these section were a bit clearer with the various endpoints role in regards to who issued the CID etc so that it is less unclear in which direction this can be used. Because at first I thought you have reversed the usage of RETIRE_CONNECTION_ID. But that does not appear possible.\r\n\r\nSo I think the problem is that the document is not clear on when paths are used bi-directional, and when the path state in each direction can be different. Which also applies to closing it down aspects. \r\n",
+      "createdAt": "2024-03-16T06:33:31Z",
+      "updatedAt": "2024-03-16T06:34:38Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Another example where the spec is a bit confused on if a path is unidirectional or not. \r\n\r\nSection 4.4:\r\n\r\n\"The endhost can use all the paths in the \"Active\" state, provided that the congestion control and flow control currently allow sending of new data on a path. Note that if a path became idle due to a timeout, endpoints SHOULD send PATH_ABANDON frame before closing the path.\" \r\n",
+          "createdAt": "2024-03-16T06:34:37Z",
+          "updatedAt": "2024-03-16T06:34:37Z"
+        }
+      ]
+    },
+    {
+      "number": 305,
+      "id": "I_kwDOGNtpaM6ChfoG",
+      "title": "Split State diagram based on role as sender on a path or receiver. ",
+      "url": "https://github.com/quicwg/multipath/issues/305",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4.4:\r\n\r\nI think Figure 1 should be split in one state diagram per role of sender on a path and receiver on a path. ",
+      "createdAt": "2024-03-16T06:35:24Z",
+      "updatedAt": "2024-03-16T06:35:24Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 306,
+      "id": "I_kwDOGNtpaM6Chf0y",
+      "title": "In some situations the ACK frames will be for CID with sequence number 1",
+      "url": "https://github.com/quicwg/multipath/issues/306",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 5.1\r\n\"If the multipath extension has been successfully negotiated, ACK frames in 1-RTT packets acknowledge packets sent with the Connection ID having sequence number 0.\"\r\n\r\nI want to note the following in RFC 9000 from section 5.1.1:\r\n\"If the preferred_address transport parameter is sent, the sequence number of the supplied connection ID is 1.\"\r\n\r\nTo my understanding there is this case discussed in Section 4:\r\n\"They can also start using multiple paths, unless both server preferred addresses and a disable_active_migration transport parameter were provided by the server, in which case a client is forbidden to establish new paths until \"after a client has acted on a preferred_address transport parameter\" (Section 18.2. of [QUIC-TRANSPORT]).\"\r\n\r\nIsn't it necessary to use normal ACK frames while performing this migration. Thus, normal ACKS may also be used for sequence number 1? Or should one use MP_ACKS for this sequnce number space?\r\n\r\nSo text should be updated to include this exception or clarify usage of MP_ACK in this case. . ",
+      "createdAt": "2024-03-16T06:36:58Z",
+      "updatedAt": "2024-03-16T06:38:35Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 307,
+      "id": "I_kwDOGNtpaM6ChgFM",
+      "title": "Clarify requirement to avoid wrapping CID seqenunce number",
+      "url": "https://github.com/quicwg/multipath/issues/307",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Sectionm 5.2:\r\n\"Section 19 of [QUIC-TRANSPORT] encodes the Connection ID Sequence Number as a variable-length integer, allowing values up to 2^62-1; in this specification, a range of less than 2^32-1 values MUST be used before updating the packet protection key\"\r\n\r\nI think this is unlikely to cause a real issue, but is sloppy writing. At no point in time may a sequence number n and its next wrapped value ( n+2^32) be protected by the same packet protection key. This is unlikely to ever happen due to AEAD limits of at least current ciphers. But I think it would be good to be formally correct here.\r\n\r\nI will note that there is duplication of the imprecise requirement in the last paragraph of the seciton too: \"Due to the way the nonce is constructed, endpoints MUST NOT use more than 2^32 Connection IDs without a key update.\"\r\n",
+      "createdAt": "2024-03-16T06:40:23Z",
+      "updatedAt": "2024-03-16T06:40:23Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 308,
+      "id": "I_kwDOGNtpaM6ChgG_",
+      "title": "Expand LIA",
+      "url": "https://github.com/quicwg/multipath/issues/308",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 7.2:\r\n\"Multipath TCP uses the LIA congestion control scheme specified in [RFC6356] to solve this problem.\"\r\n\r\nPlease expand \"LIA\".",
+      "createdAt": "2024-03-16T06:40:46Z",
+      "updatedAt": "2024-03-16T06:40:46Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 309,
+      "id": "I_kwDOGNtpaM6ChgT9",
+      "title": "Clarify refragmenting of stream data when MTU is different and retransmission happens on other path. ",
+      "url": "https://github.com/quicwg/multipath/issues/309",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 7.6\r\nIs refragmentation of data in DATA frames allowed to cope with PMTUD. Maybe should be mentioned explicitly to ensure that this is not resulting in implementation issues. Sender responsibility?\r\n",
+      "createdAt": "2024-03-16T06:42:38Z",
+      "updatedAt": "2024-03-16T06:42:38Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 310,
+      "id": "I_kwDOGNtpaM6Chgaw",
+      "title": "Clarify which endpoints sequence number are referenced. ",
+      "url": "https://github.com/quicwg/multipath/issues/310",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 8.1: \r\n\"The sequence number of the Connection ID identifying the packet number space of the 0-RTT and 1-RTT packets which are acknowledged by the ACK_MP frame.\" \r\nAccording to the sender of this ACK. I think clarifying that the seuqence numbers are of the CIDs used belong to the receiver of the acked packets.\r\n",
+      "createdAt": "2024-03-16T06:44:01Z",
+      "updatedAt": "2024-03-16T06:44:01Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 311,
+      "id": "I_kwDOGNtpaM6Chghh",
+      "title": "Simplify reference to whose sequence number space.",
+      "url": "https://github.com/quicwg/multipath/issues/311",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 8.3:\r\n\"The sequence number of the Destination Connection ID used by the receiver of this frame to send packets over the path the status update corresponds to. All Destination Connection IDs that have been issued MAY be specified, even if they are not yet in use over a path.\"\r\n\r\nSo this is the PATH_STANDBY senders own CIDs sequence numbers. Consider simplifying.\r\n",
+      "createdAt": "2024-03-16T06:45:27Z",
+      "updatedAt": "2024-03-16T06:45:27Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 312,
+      "id": "I_kwDOGNtpaM6Chg2C",
+      "title": "PATH_STANDBY PATH_AVAILABLE Sequence number spaces",
+      "url": "https://github.com/quicwg/multipath/issues/312",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 8.3: \r\nA variable-length integer specifying the sequence number assigned for this PATH_STANDBY frame. The sequence number space is shared with the PATH_AVAILABLE frame and the sequence number MUST be monotonically increasing generated by the sender of the PATH_STANDBY frame in the same connection. The receiver of the PATH_STANDBY frame needs to use and compare the sequence numbers separately for each Destination Connection ID Sequence Number.\r\n\r\nSo are sequnce number spaces per CID? But shared across the PATH_STANDBY and PATH_AVAILABLE\r\n",
+      "createdAt": "2024-03-16T06:48:02Z",
+      "updatedAt": "2024-03-16T06:48:02Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 313,
+      "id": "I_kwDOGNtpaM6CjHdJ",
+      "title": "When to CID expire if using Unique Path ID?",
+      "url": "https://github.com/quicwg/multipath/issues/313",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In the Unique Path ID model, the creation of a CID is always linked to the creation of a potential path. CIDs are managed using two frames:\r\n\r\n* MP_NEW_CONNECTION_ID with parameters CID value, path ID, sequence, and retire prior.\r\n* MP_RETIRE_CID with parameters path ID and sequence.\r\n\r\nPath IDs are not supposed to live forever. If a path is abandoned, the path ID will not be reused, because of potential ambiguity: reusing path id and sequence numbers could break encryption; when packets arrive for an abandoned path ID and the path state has been delete, there is no way to distinguish new packets from copies of old packets. Yet, as long as there is a valid CID available, nothing prevents a node from using it and sending packets with that corresponding path_id.\r\n\r\nThe sender of the MP_NEW_CONNECTION_ID can only force retirement of old path IDs by sending an MP_NEW_CONNECTION_ID frame and setting the \"retire prior\" value, but doing so creates a new CID for the old path and does not actually \"retire all CID for the path\".\r\n\r\nIn the current specification, these \"old path CID\" can only be retired by the peer, who could send series of MP_RETIRE_CID frames. The local node knows that the path is abandoned, so it could refrain from providing new CID to replace them. But nothing forces the peer to do that.\r\n\r\nWe miss a way to say \"retire all CID for that path\". One way would be to state that as a side effect of \"PATH_ABANDON\": the peer should immediately retire all CIDs tied to that path. We should also specify that a node MUST retain knowledge of all valid CID until they have been retired -- otherwise we get issue like a peer sending packets with old CID values, resulting in a stateless reset. Instead, the node that receive a packet with an old CID for an abandoned path should probably just ignore it. \r\n\r\nMaybe there are simpler solutions, but the current behavior is under-specified.\r\n",
+      "createdAt": "2024-03-16T20:50:08Z",
+      "updatedAt": "2024-03-17T00:24:09Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "To my understanding is that how it is currently specified is that each endpoint need to close the path in the direction towards  itself by first sending the path_abandon then wait the 3*PTO, then send the retire CID for all the CIDs used by that path. And if the peer don't send a path_abandon back to you when you have sent one, this results in a path that is open in only one direction. That is probably not what we want the situation to be in. \r\n",
+          "createdAt": "2024-03-17T00:24:08Z",
+          "updatedAt": "2024-03-17T00:24:08Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -27348,7 +27572,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2024-03-13T18:18:11Z",
+      "updatedAt": "2024-03-16T07:13:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -29359,6 +29583,26 @@
               "body": "Just committed.",
               "createdAt": "2024-03-13T18:18:10Z",
               "updatedAt": "2024-03-13T18:18:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zsReb",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-16T07:13:39Z",
+          "updatedAt": "2024-03-16T07:13:39Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "I think one can clarify that a path is defined as unidirectional forwarding path from A to B. Where the path ID has a set of Destination CIDs that identify packets belonging to the ID. An endpoint will bind its local 5-tuple to the PATH ID when first sending or receiving on the ID. ",
+              "createdAt": "2024-03-16T07:13:39Z",
+              "updatedAt": "2024-03-16T07:13:39Z"
             }
           ]
         }
