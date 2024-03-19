@@ -296,7 +296,7 @@ TRANSPORT_PARAMETER error.
 
 # Path Identifier {#pathid}
 
-The explicit Path Identifier is an integer between 0 and 2^62 - 1. 
+The explicit Path Identifier is an integer between 0 and 2^32 - 1 (inclusive). 
 The Path Identifier is pre-allocated when endpoints provide new Connection IDs
 with MP_NEW_CONNECTION_ID frames {{mp-new-conn-id-frame}}.
 
