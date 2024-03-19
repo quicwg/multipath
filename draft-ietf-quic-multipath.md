@@ -1461,15 +1461,8 @@ Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a lower path limit than was previously received. MAX_PATHS frames that 
 do not increase the path limit MUST be ignored.
 
-An endpoint MUST NOT open more paths than permitted by the current path limit 
-set by its peer. For instance, a server that receives a path limit of 3 
-is permitted to open paths 0, 1, 2, but not path 3. An endpoint MUST terminate 
-a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens 
-more paths than was permitted. 
-
-Note that these frames do not describe the number of paths that can be opened 
-concurrently. The limit includes paths that have been abandoned as well as those 
-that are open.
+An endpoint MUST NOT initiate a path with a path ID higher than the Maximum Paths value.
+An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens more paths than was permitted. 
 
 
 # Error Codes {#error-codes}
