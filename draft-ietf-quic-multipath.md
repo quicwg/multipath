@@ -556,8 +556,7 @@ with Path Identifier 0.
 When the endpoint wishes to remove a connection ID from use, it sends 
 a MP_RETIRE_CONNECTION_ID frame {{mp-retire-conn-id-frame}} to its peer. 
 Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID 
-will not be used again and requests that the peer replace it with a new connection ID 
-using a MP_NEW_CONNECTION_ID frame.
+will not be used again. If the path is still active, the peer SHOULD replace it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
 
 Note that Connection Sequeunce number and Retire Prior To field are both used for 
 the corresponding path specified by a Path Identifier. 
