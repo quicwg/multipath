@@ -782,7 +782,7 @@ and with the least significant 32 bits of the path identifier pre-allocated
 for the Destination Connection ID.
 
 {{mp-new-conn-id-frame}} encodes the Path Identifier for Connection IDs 
-as a variable-length integer, allowing values up to 2^62-1; 
+as a variable-length integer, allowing values up to 2^32-1; 
 in this specification, a range of less than 2^32-1
 values MUST be used before updating the packet protection key.
 
