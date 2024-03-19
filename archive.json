@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-17T00:42:44.627145+00:00",
+  "timestamp": "2024-03-19T00:39:39.814525+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7997,10 +7997,12 @@
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "body": "I did a big batch of debugging the \"unique path-id\" code in picoquic, porting all the tests that were designed for the previous multipath version, and I found an interesting issue in the \"standup\" test. The test starts by setting a client to server connection with two paths, one available and on in standby. It runs for a while, then simulates cutting the \"available\" path off. Expectation is that the connection will continue with the \"standby\" path. The test was initially failing.\r\n\r\nThe simulated traffic is from server to client. The server quickly detects that the available path is down, and starts sending data packets on the \"standby\" path. But the client only sends ACK, and does not react quickly if ACK packets are not acknowledged. So the client keeps sending ACKs on the \"available path\". Of course, since the path is cut, they are dropped. The server does not see ACKs for the packets sent on the \"standby\" path, so it quickly concludes that this path is down. Pretty soon, the connection breaks.\r\n\r\nThere are two potential fixes. One would be to somehow force ACKs on the standby path, if packets are received on that path. The other, which I feel is more robust, is for the server to send mark the standby path as \"available\" if the available path is \"broken\". I did that, \"promote\" the standby path to available, and the \"standup\" test now succeeds.\r\n\r\nThis issue might deserve some discussion in the multipath draft.",
       "createdAt": "2024-03-11T19:56:44Z",
-      "updatedAt": "2024-03-13T15:35:47Z",
+      "updatedAt": "2024-03-18T06:42:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -8057,12 +8059,13 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
+        "has PR",
         "design",
         "explicit path ID"
       ],
       "body": "Based on discussion in PR #292:\r\n\r\n\r\n**[yangfurong](https://github.com/yangfurong) [on Nov 22, 2023] (https://github.com/quicwg/multipath/issues/new#r1401920170)**\r\n```\r\nFirst, I think the semantics of \"Path ID\" need to be clarified. For a specific bidirectional path, do both endpoints use the same path ID, or independently choose which path ID to use?\r\n```\r\n\r\n**@[qdeconinck](https://github.com/qdeconinck) qdeconinck [on Nov 22, 2023](https://github.com/quicwg/multipath/issues/new#r1402413785)**\r\n```\r\nI would keep the same logic as we did until now, i.e., each endpoint independently choose the Path ID it should use over a path. However, this \"Path ID\" (Flow ID may be more appropriate) would remain stable over a given path, even if the CID change.\r\n\r\nI have two concerns about forcing such synchronisation of Path ID:\r\n\r\n- Clients may try to create paths with Path IDs that are never seen by the server. For instance, Path ID 0 works, and it wants to try two additional paths, respectively with Path ID 1 and Path ID 2. However, the network path tried with Path ID 1 does not work and the server only sees Path ID 2 packets. If the client finally retires its Path ID 1, should the server also drop all related resources about its Path ID 1?\r\n- This would create issues if, for some use cases (like P2P), we would like the server to create paths to the client. What would happen if for some reason, both the client and the server try to open at the same time a path over the same network, but with different Path IDs?\r\n```\r\n\r\n**@[yangfurong](https://github.com/yangfurong) yangfurong [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1402866322)**\r\n```\r\nIndeed, if both endpoints are allowed to initiate paths, it is better to not sync path IDs.\r\n```\r\n\r\n **@[michael-eriksson](https://github.com/michael-eriksson) michael-eriksson [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1403326051)**\r\n```\r\nI would much prefer if paths had the same identifier in both directions, just like streams do. If also servers will be able to open paths, client-initiated path could use even path IDs and server-initiated path odd path IDs -- a direct reuse of the stream design.\r\n ```\r\n\r\n**@[yangfurong](https://github.com/yangfurong) yangfurong [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1403613813)**\r\n```\r\n> I would much prefer if paths had the same identifier in both directions, just like streams do. If also servers will be able to open paths, client-initiated path could use even path IDs and server-initiated path odd path IDs -- a direct reuse of the stream design.\r\n\r\nIt's actually another way to somehow ''split'' the path ID spaces of endpoints. It solves the second problem as @qdeconinck pointed out. The only thing is how we define the TPs which limit the number of concurrent paths. There might be some options here. For examples:\r\n\r\n- We use one TP to indicate the number of concurrent paths that the sender is willing to accept. For instance, if both endpoints send ''2'', there will be four concurrent paths at maximum (each endpoint can initiate two paths).\r\n- We use two TPs where one indicates the max number of paths to be accepted by the sender and another one represents the max number of paths the sender wishes to initiate. This design allows endpoints to negotiate the total number of concurrent paths while the former one just informs the local decision to a peer.\r\n```\r\n\r\n**@[huitema](https://github.com/huitema) huitema [on Nov 26, 2023](https://github.com/quicwg/multipath/issues/new#r1405475249)**\r\n```\r\nI think we need to get a consensus on the management of path identifiers. I also think that we would get much better clarity if the client and server ended up using the same path ID values. Something like:\r\n\r\n1. The client proposes an initial number of paths, which limits how many path ID the server can \"pre allocate\" (to use @Yanmei-Liu terms)\r\n2. Both the server and the client pre-allocate connection identifiers, with path ID lower than the proposed limits.\r\n3. Client that starts a new path picks one of the server allocated CID, selecting the path ID.\r\n4. Server receiving a packet referencing a not yet use path ID must reply with client-allocated connection ID mentioning the same path ID.\r\n  - If the client has not yet allocated any such path ID, the server cannot send data on that new path.\r\n  - the client can always provide a new CID in messages containing a path challenge.\r\n  - the server can control how many paths will be open by simply limiting how many path ID it mentions.\r\n5. \"Abandon path(N)\" is handled pretty much like connection close, but just for the path. Any peer can send it, but the path is only closed if both do, or if RTO pass.\r\n  - if a path is abandoned, we should say what happens if the peer keeps using it. Drop the packets? Repeat the Abandon Path message?\r\n6. Path ID cannot be reused. If a path_id is abandoned, all CID allocated for that path should be retired.\r\n7. The client can use a MAX_PATH_ID frame to increase the number of supported paths.\r\n```",
       "createdAt": "2024-03-12T13:05:07Z",
-      "updatedAt": "2024-03-12T13:10:43Z",
+      "updatedAt": "2024-03-17T10:23:31Z",
       "closedAt": null,
       "comments": []
     },
@@ -8081,16 +8084,31 @@
       ],
       "body": "This is from the discussion on PR #292:\r\n\r\n\r\n**[yfmascgy](https://github.com/yfmascgy) [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400142192)**\r\n```\r\nWhat happens if the one endpoint doesn't how many path is needed? In the case of a deteriorating wifi, the endpoint wants to switch to 5G, but finds itself with no Path ID to use? What is the pre-allocating strategy?\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400147984)\r\n```\r\nEndpoints just need to decide the max concurrent path and pre-allocate at lease one unused CID for each path Identifier. Endpoints don't need to decide which Path Identifier to use until client start a new path and choose one available CID with the unused Path Identifers.\r\n```\r\n\r\n**@[yfmascgy](https://github.com/yfmascgy) yfmascgy [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400179527)**\r\n```\r\nI am thinking a situation where you want max of three paths. You have your first path established. Try to establish another two paths on the 2nd sim and 3rd sim but failed. Then you don't have a path ID to build a path on the 4th sim even though it is available to use and can give you in total 2 paths (< max_num_path)\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400194859)**\r\n```\r\nMaybe using the scheme that we have for Connection IDs in QUIC v1 would drive the discussion.\r\n\r\nIf we do that, then\r\n\r\n- the user of path IDs will send a TP indicating the number of paths from which it can send packets concurrently,\r\n- the peer sends MAX_PATH_IDS frame signaling the maximum path ID the user can use (consider MAX_DATA or MAX_STREAMS as precedents),\r\n- the user uses the path ids, and when it is done, sends a RETIRE_PATH_ID carrying the path id to be retired. We cannot use PATH_ABANDON here because it serves a different purpose and sent in the opposite direction,\r\n- when receiving a RETIRE_PATH_ID frame, the peer may raise the limit advertised by MAX_PATH_IDS.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400306454)**\r\n```\r\n@kazuho 's idea is quite useful, I added these mechanism:\r\n\r\n- TP initial_max_paths for the initial max Path ID limitation.\r\n- MP_MAX_PATHS frames could solve this issue by raise the limit of Path Identifier.\r\n\r\nWe don't need a RETIRE_PATH_ID here because Path Abandon has already been a clear signal for Path ID retirement.\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400406713)**\r\n```\r\nThanks. I\u2019m afraid PATH_ABANDON cannot be used, as it is sent in the different direction. We need a new frame.\r\n\r\nIIUC, PATH_ABANDON is a frame sent by the issuer of CIDs (who will also the issuer of path IDs in the new design). It is a frame that \u201crequests the peer\u201d to abandon the path.\r\n\r\nWhat we are looking for now is a frame that is sent by the receiver (i.e., the user) of the CIDs / path IDs, that carries the fact that the path has been abandoned.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400415916)**\r\n```\r\nI think it's fine for the issuer of Path IDs to take responsibility of retiring them.\r\nBesides, the receiver of the Path IDs could also use the Path Abandon to trigger the retirement of Path Identifier for both sides.\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400444377)**\r\n```\r\n> I think it's fine for the issuer of Path IDs to take responsibility of retiring them.\r\nConsider the case of an endpoint deciding to stop using a path on which it sends packets. That endpoint has to retire the CID (or the path identifier in the new design) that is issued by the peer.\r\n\r\nIn -05, we use RETIRE_CONNECTION_ID as a signal. But in the new design, we are splitting CIDs and path IDs. So we need a new frame.\r\n\r\n> Besides, the receiver of the Path IDs could also use the Path Abandon to trigger the retirement of Path Identifier for both sides.\r\nThe path ID space will be different for each endpoint, won't it be? This is because each endpoint has its own view of paths, similar to Connection IDs.\r\n\r\nIf we are to use PATH_ABANDON for requesting retirement of path ID that the endpoint issued and also for signalling that retirement of a path ID that the peer issued, we need to add a field indicating to which side of path ID space (i.e., the endpoint or the peer) that the frame is referring.\r\n\r\nBut as the role of the frame will be different (as said, one endpoint signals the request to retire path ID, whereas the other side signals the fact that the path ID has been retired; that is how PATH_ABANDON and RETIRE_CONNECTION_ID work today), it might be better to have a different frame.\r\n```\r\n\r\n**@[yangfurong](https://github.com/yangfurong) yangfurong [on Nov 22, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1401979774)**\r\n```\r\n>The path ID space will be different for each endpoint, won't it be? This is because each endpoint has its own view of paths, similar to Connection IDs.\r\n\r\nWhy can't we use the same path ID space for both endpoints? I understand that it is necessary to have different spaces when the DCID sequence number is used for identifying paths. But, it is a result of using DCID sequence numbers as path identifiers which are not stable during the lifetime of paths. Since we are going to use explicit and stable path IDs, is it still necessary to have different ID spaces?\r\n```\r\n\r\n**@[yangfurong](https://github.com/yangfurong) yangfurong [on Nov 22, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1402009196)**\r\n```\r\nIf the two endpoints use the same path ID for a specific path, the situation becomes simpler.\r\n\r\n1. When the client finds the establishment of path1 and path2 fails, it should send two PATH_ABANDON frames to the server;\r\n2. Once the server receives the PATH_ABANDON frames, it should reply with two PATH_ABANDON frames and issue new CIDs associated with path3 and path4;\r\n3. When the client receives PATH_ABANDON frames from its peer, it should also issue new CIDs associated with path3 and path4;\r\n4. Once the client notices that both endpoints have available CIDs for the next path to be created and the active path count is less than the limit, it can request to open a new path.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1402884204)**\r\n```\r\nUsing the same Path ID for both sides will introduce more negotiation and frame order dependency, we'd better avoid that.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1402890767)**\r\n```\r\nI'm considering add a retirement frame for Path ID.\r\nAs @kazuho points out, we need retirement signals for both sides:\r\n\r\n- Although in normal situations Path Abandon could release the Path ID associated on both sides, but there're situations when endpoint try to create a new path by Path Challenge but the peer doesn't receive the packet and don't know what happened to the Path ID consumed.\r\n- Also, when endpoint allocates new CIDs for new Path IDs, it will not know whether it touch the max limit or not, as we don't have a retirement signal for Path ID and peer could maintain the history Path IDs. It's the same situation happens to CIDs, and that's why we need retirement frame and Retire Prior To field.\r\n ```\r\n\r\n**@[michael-eriksson](https://github.com/michael-eriksson) michael-eriksson [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1403338005)**\r\n```\r\n> Using the same Path ID for both sides will introduce more negotiation and frame order dependency, we'd better avoid that.\r\n\r\nWhy is that? The connection IDs are signalled before the path is used and will uniquely identify the path; the first time a peer sees a connection ID used in a packet it can directly map the CID to a path which has a single stable path identifier. No negotiation or other extra signalling is needed.\r\n\r\nIf/when the protocol is extended to allow servers to initiate paths, the protocol should use even/odd path IDs, exactly like stream IDs are already used.\r\n```\r\n\r\n\r\n**@[huitema](https://github.com/huitema) huitema [on Nov 26, 2023](https://github.com/quicwg/multipath/issues/new#r1405472143)**\r\n```\r\nWe need more discussion of that specific point. The current situation is ambiguous. For example, what does \"Abandon path 17\" means? I am pretty sure that some implementations are going to get confused between \"the ID chosen by the server\" and \"the ID chosen by the client\".\r\n```\r\n\r\n**@[huitema](https://github.com/huitema) huitema [3 weeks ago](https://github.com/quicwg/multipath/issues/new#r1495321688)**\r\n```\r\nI think that if we go through the trouble of changing the current solution, we should go for having the same path ID in both directions. It will make management much simpler, and it is not very hard, see later comments.\r\n```",
       "createdAt": "2024-03-12T13:27:22Z",
-      "updatedAt": "2024-03-12T13:27:23Z",
+      "updatedAt": "2024-03-17T07:29:37Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If we let Path Abandon to do the job of retiring the associated Path ID, we don't need RETIRE_PATH_ID as far as I know.",
+          "createdAt": "2024-03-17T06:24:57Z",
+          "updatedAt": "2024-03-17T06:24:57Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "See issue #313, which is somewhat related. ",
+          "createdAt": "2024-03-17T07:29:35Z",
+          "updatedAt": "2024-03-17T07:29:35Z"
+        }
+      ]
     },
     {
       "number": 296,
       "id": "I_kwDOGNtpaM6CCZDW",
       "title": "Is MP_RETIRE_CONNECTION_ID needed?",
       "url": "https://github.com/quicwg/multipath/issues/296",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -8100,8 +8118,8 @@
       ],
       "body": "From discussion in PR #292:\r\n\r\n**[huitema](https://github.com/huitema) [on Nov 20, 2023](https://github.com/quicwg/multipath/issues/new#r1399591428)**\r\n```\r\nI think adding an MP_RETIRE_CONNECTION_ID is unnecessary, and complicates the design. It is simpler to keep connection sequence number unique globally, and leave the RETIRE CONNECTION ID unchanged.\r\n ```\r\n\r\n**@[michael-eriksson](https://github.com/michael-eriksson) michael-eriksson [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1403355808)**\r\n```\r\nI think that a per-path CID sequence number space is simpler, in particular since the MP_NEW_CONNECTION_ID has a Retire Prior To field. Retiring CIDs (which could be in use) for other paths when you get new CIDs for a path seems complex and not very useful.\r\n```",
       "createdAt": "2024-03-12T13:45:31Z",
-      "updatedAt": "2024-03-13T04:39:21Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-17T06:19:10Z",
+      "closedAt": "2024-03-17T06:19:10Z",
       "comments": [
         {
           "author": "mirjak",
@@ -8130,6 +8148,13 @@
           "body": "Yes.",
           "createdAt": "2024-03-13T04:39:20Z",
           "updatedAt": "2024-03-13T04:39:20Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes. MP_RETIRE_CONNECTION_ID is needed. It's consensus",
+          "createdAt": "2024-03-17T06:19:10Z",
+          "updatedAt": "2024-03-17T06:19:10Z"
         }
       ]
     },
@@ -8143,12 +8168,13 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
+        "has PR",
         "design",
         "explicit path ID"
       ],
       "body": "From PR #292:\r\n\r\n**@[huitema](https://github.com/huitema) huitema [on Nov 20, 2023](https://github.com/quicwg/multipath/issues/new#r1399607235)**\r\n```\r\nThe path identifier is used to build the nonce. Reusing the same identifier would require either continuing the previously used sequence number space, otherwise the nonce would not be unique. But then that would require keeping these old number spaces in memory until the end of the connection, which seems like a waste of resource. Then there is the risk of confusion, what happens if old packets are delivered from a previous path using the path identifier.\r\n\r\nWe should make this very clear in the design. If the design goes for \"re-use\", then the node has to allocate an array of number spaces for the negotiated max number of spaces, and keep that for the duration of the connection. The effect of \"Abandon path\" becomes complicated -- if a CID for path N has never been used, should it be retired?\r\n\r\nIf the design goes for \"unique path ID\", the management of path and sequence numbers becomes simpler, but we need some logic to enforce the \"maximum number of active paths\". An advantage there is that endpoints can allocate more CID and more path than really needed, so the endpoint is always ready to start a new path after a previous one has been abandoned.\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400043855)**\r\n```\r\nI do not feel strongly, but I think current design is fine as is.\r\n\r\nIn the new design, a QUIC Multipath connection that support N concurrent paths is essentially equivalent to N QUIC v1 connections running in parallel. If we think that way, migrating a particular path of a multipath connection can be equivalent to QUIC v1 doing intentional path migration.\r\n\r\nI do not think we have a problem in the design of QUIC v1 doing path migration. Do we?\r\n\r\ncc: @marten-seemann as also brought up the point.\r\n```\r\n\r\n**@[marten-seemann](https://github.com/marten-seemann) marten-seemann [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400055027)**\r\n```\r\nI don't think we should reuse path identifiers. As @huitema correctly points out, reusing path identifiers means we can't start the packet number at 0 for reused paths, since that would be nonce reuse. The situation is even worse: As packet numbers are encoded in a maximum of 4 bytes, it wouldn't be possible to reuse a path ID once packet numbers have surpassed 2^32, unless you want to keep state for retired paths.\r\n\r\nHere's an idea (not fully fleshed out): We could define a PATH_LIMIT { HighestPathID (i) } frame. The receiver of this frame can then issue CIDs up to the highest Path ID, and the sender can use this path as soon as it received CIDs.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400071961)**\r\n```\r\nI also prefer \"unique path ID\" here for AEAD security consideration. Not reusing resources and less corner case.\r\n```\r\n\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400077386)**\r\n```\r\n@marten-seemann\r\n\r\n> As @huitema correctly points out, reusing path identifiers means we can't start the packet number at 0 for reused paths, since that would be nonce reuse. The situation is even worse: As packet numbers are encoded in a maximum of 4 bytes, it wouldn't be possible to reuse a path ID once packet numbers have surpassed 2^32, unless you want to keep state for retired paths.\r\nI'm afraid this analysis is incorrect (specifically the 2nd sentence).\r\n\r\nIn QUIC v1, we retain packet numbers and those information for one path. In Multipath QUIC, we can do the same for N concurrent paths.\r\n\r\nIt is as simple as that.\r\n\r\n@Yanmei-Liu\r\n\r\n>Not reusing resources and less corner case.\r\n\r\n\"Not reusing resources\" this is correct. But the downside of not reusing path identifiers is that and endpoint has to issue credit to the other side (like MAX_STREAMS or NEW_CONNECTION_ID of QUIC v1).\r\n\r\nIt is the trade off between the two.\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400081152)**\r\n```\r\nFor the purpose of pushing this PR forward as an experiment, I'm happy with going with the \"no-reuse\" route, but I want to have the records straight, as we will be coming back to the discussion of if the \"explicit path identifiers\" concept really makes sense.\r\n```\r\n\r\n**@[marten-seemann](https://github.com/marten-seemann) marten-seemann [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400089897)**\r\n```\r\n> unless you want to keep state for retired paths\r\n\r\nI don't think my analysis is incorrect. You need to be able to reconstruct the packet number if you want to be able to decrypt the packet. So at the very least, you need to keep state to save the highest received packet number for every path ID.\r\n\r\nThat's not a lot of state, but there are other problems with reusing path IDs, namely that you're introducing much more reliance on timers than if you just keep incrementing. That's the reason why none of the other identifiers we use in the protocol ever wrap around (packet numbers, stream IDs, etc.).\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400099026)**\r\n```\r\n>I don't think my analysis is incorrect. You need to be able to reconstruct the packet number if you want to be able to decrypt the packet. So at the very least, you need to keep state to save the highest received packet number for every path ID.\r\n\r\nThe presumption of reusing path identifiers is, as @huitema points out, that the packet number space would be retained. Highest received packet number is a property of a packet number space, so it does not cause any extra burden.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400141853)**\r\n```\r\nHow about we use an interval for PATH_LIMIT { lowest path ID, highest path ID} frame here?\r\nTo inform the peer about the available range for Path IDs, and it has a clear signal for retirement of Path IDs.\r\n```\r\n\r\n**@[kazuho](https://github.com/kazuho) kazuho [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#discussion_r1400150933)**\r\n```\r\n@Yanmei-Liu I'm not sure if we can use a contiguous range for representing valid IDs.\r\n\r\nConsider the case of an endpoint sticking to using path ID 0, while retiring all paths between ID 2 to 9.\r\n\r\nI think it would make more sense to follow the design that we have for stream IDs / Connection IDs; i.e., have one frame that issues the new maximum, and another that informs the peer one path ID that is being disposed.\r\n```\r\n\r\n**@[Yanmei-Liu](https://github.com/Yanmei-Liu) Yanmei-Liu [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400211449)**\r\n```\r\nPlease check the MP_MAX_PATHS frames part, it's Marten's idea and he reminds me of the mechanism is quite the same with MAX_STREAMS. I also update the mechanism of transport parameter for \"initial_max_paths\". It's true that we will not be able use contiguous range. I just use the maximum value.\r\n```\r\n\r\n**@[mirjak](https://github.com/mirjak) mirjak [on Nov 21, 2023](https://github.com/quicwg/multipath/issues/new#r1400478032)**\r\n```\r\nShould we can keep using the Destination Connection ID sequence number for the nonce and use a common sequence number space for all CIDs (as I believe CIDs should probably to be unique as well)? That means the encryption changes when the CID changes but I don't think that is a big issue...?\r\n```\r\n\r\n **@[michael-eriksson](https://github.com/michael-eriksson) michael-eriksson [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1403382401)**\r\n```\r\nWe should definitely not reuse path IDs. One of the nice things with QUIC is that it doesn't reuse any identifiers, not even packet numbers, which makes implementations cleaner and simpler.\r\n\r\nWhen it comes to limiting the number of paths, I think there are two main designs:\r\n\r\n1. Reuse the design for connection IDs: limit the number of active paths. The max number of active CIDs is signalled as a transport parameter (active_connection_id_limit) and an endpoint is allowed to issue a new CID only after the peer has retired a previous CID. Analogously, an endpoint would only issue CIDs for a new path after a previous path had been abandoned.\r\n2. Use a MP_MAX_PATHS frame to dynamically allow new paths (similar to a MAX_STREAMS frame).\r\n\r\nIn short summary, 1. has less signalling and 2. can dynamically adapt the number of concurrent paths. Both designs have prior art in RFC 9000.\r\n```\r\n\r\n** @[michael-eriksson](https://github.com/michael-eriksson) michael-eriksson [on Nov 23, 2023](https://github.com/quicwg/multipath/issues/new#r1403398359)**\r\n```\r\n> Should we can keep using the Destination Connection ID sequence number for the nonce and use a common sequence number space for all CIDs (as I believe CIDs should probably to be unique as well)? That means the encryption changes when the CID changes but I don't think that is a big issue...?\r\n\r\nI don't think that a common sequence number space for all CIDs match well with the Retire Prior To field in the MP_NEW_CONNECTION_ID (see also other comment above) so using the path ID is a simpler way to get a unique nonce. When a packet is received, you anyway need to look up the per-path state, and the packet number space in particular, before you can expand the truncated packet number and then decrypt the packet which means that you can trivially also access the path ID.\r\n\r\nThere is also https://github.com/quicwg/multipath/issues/215 (now closed) as another solution to the nonce handling.\r\n```\r\n\r\n**@[huitema](https://github.com/huitema) huitema [on Nov 26, 2023](https://github.com/quicwg/multipath/issues/new#r1405471433)**\r\n```\r\nI like@kazuho's suggestion of using the same logic for controlling path ID as for controlling stream ID, but there is a little complicating factor. Stream ID are allocated in clear contexts (uni/bidir, client/server), and then the same stream ID is used in both directions. In the current design, stream IDs are allocated as part of CID, and there is no guarantee that client and server pick the same ID for a new path. DO we want to also handle that?\r\n```",
       "createdAt": "2024-03-12T14:24:37Z",
-      "updatedAt": "2024-03-12T14:45:45Z",
+      "updatedAt": "2024-03-17T10:23:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -8177,12 +8203,13 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
+        "has PR",
         "design",
         "explicit path ID"
       ],
       "body": "Issue raised in PR #292:\r\n\r\n**[huitema](https://github.com/huitema) [3 weeks ago](https://github.com/quicwg/multipath/issues/new#r1493952794)**\r\n```\r\nI think we should be a bit more prescriptive here. I would like MAX_PATHS to follow the same logic as MAX_STREAMS, and describe the number of paths that MAY be created by the peer. I would also like to exploit the asymmetry of clients and servers, in which only the clients create new paths. Something like:\r\n\r\n1. The server send MAX_PATHS to raise the maximum path number that it is willing to accept.\r\n2. The client sends MAX_PATHS to raise the maximum path number that it is willing to create.\r\n3. The server sends MP_NEW_CONNECTION_ID up to the min of client and server MAX_PATHS\r\n4. The client sends MP_NEW_CONNECTION_ID up to the min of client and server MAX_PATHS\r\n5. The client picks a server provided connection ID to create a new path, send a PATH CHALLENGE\r\n6. If the server receives the challenge, it picks a connection ID with the same path ID for sending the PATH RESPONSE\r\n\r\nWe have a set of error conditions:\r\n\r\n- Server sends MP_NEW_CONNECTION_ID with path ID larger than client limit -- protocol error\r\n- Client sends MP_NEW_CONNECTION_ID with path ID larger than server limit -- protocol error\r\n- Server receives a PATH CHALLENGE before receiving MP_NEW_CONNECTION_ID for the path -- not an error, but the PATH \r\n\r\nCHALLENGE is ignored, no response. Or, response is delayed until MP_NEW_CONNECTION_ID arrives.\r\nBut we also achieve path_id symmetry, I guess. Although there is probably some additional complexity with NAT Rebinding.\r\n```\r\n\r\n** @[michael-eriksson](https://github.com/michael-eriksson) michael-eriksson [3 weeks ago](https://github.com/quicwg/multipath/issues/new#r1495900516)\r\n```\r\nI agree, and this is more or less exactly how it is implemented in the Rask stack.\r\n```\r\n\r\n**@[huitema](https://github.com/huitema) huitema [2 weeks ago](https://github.com/quicwg/multipath/issues/new#r1501348942)**\r\n```\r\nThere is another issue regarding probing for new paths. When a client wants to create a new path, it is supposed to use a \"new\" path_id, select CID that match the path ID, send a Path Challenge, and wait for the Path Response. The Path Response may well never arrive. That means that the Path ID is \"burned\" for the client, but also for the server. But the server does not know, will not know until the client sends a Path Abandon. We should be clear that the client should do that. We should also clarify how the Path Abandon causes all the CID allocated for the path ID to be retired.\r\n```",
       "createdAt": "2024-03-12T14:45:23Z",
-      "updatedAt": "2024-03-12T14:45:23Z",
+      "updatedAt": "2024-03-17T12:43:38Z",
       "closedAt": null,
       "comments": []
     },
@@ -8195,10 +8222,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "needs PR"
+      ],
       "body": "The draft lacks content in the security consideration section. It is definitely time to start dealing with this. \r\n\r\nIssues for MP-QUIC include:\r\n\r\n- Max paths allowed to be open gives the size for what amount of traffic an attacker can cause towards an attack target by having the server send path_validate + path_challenge. \r\n- Having path resource control opens up for similar errors as have been found in QUIC. \r\n- etc. ",
       "createdAt": "2024-03-16T06:16:36Z",
-      "updatedAt": "2024-03-16T06:16:36Z",
+      "updatedAt": "2024-03-18T06:23:47Z",
       "closedAt": null,
       "comments": []
     },
@@ -8211,10 +8240,13 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial",
+        "needs PR"
+      ],
       "body": "Section 2:\r\n\r\n\"Further, the sequence number of Destination Connection ID is used as numerical identifier in control frames.\" This is unclear in how the sequence number works. This likely should have a reference to Section 5.1.1 in RFC 9000.\r\n",
       "createdAt": "2024-03-16T06:24:34Z",
-      "updatedAt": "2024-03-16T06:24:34Z",
+      "updatedAt": "2024-03-18T06:24:07Z",
       "closedAt": null,
       "comments": []
     },
@@ -8230,9 +8262,24 @@
       "labels": [],
       "body": "Section 4.1:\r\n\r\n\"To alleviate such a token ambiguity issue, a server may issue a token that is capable of validating any of the previously validated addresses.\" \r\n\r\nisn't this against this normative rule in Section 8.1.1 of RFC 9000: \r\n\r\n\"A token sent in a NEW_TOKEN frame or a Retry packet MUST be constructed in a way that allows the server to identify how it was provided to a client. These tokens are carried in the same field but require different handling from servers.\"?\r\n\r\n",
       "createdAt": "2024-03-16T06:31:13Z",
-      "updatedAt": "2024-03-16T06:31:13Z",
+      "updatedAt": "2024-03-18T06:38:32Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes it updates/changes this rule.",
+          "createdAt": "2024-03-18T06:24:52Z",
+          "updatedAt": "2024-03-18T06:24:52Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The rule in 8.1.1 is about distinguishing \"real time\" tokens created when sending a RETRY packet, and \"long term\" tokens send in NEW_TOKEN frames. The general expectation is that real time tokens are very short lived, but that NEW_TOKEN are valid longer. That's explained in section 8.1.3.\r\n\r\nThe NEW_TOKEN serve to attest that the client can legitimately send packets from a source IP address, and thus that address validation can be bypassed. This is generally done by linking the token to exactly one address, but there is no hard rule against linking to several IP addresses, as long as the server is convinced that the client can legitimately send packets from these IP addresses.\r\n\r\n",
+          "createdAt": "2024-03-18T06:38:30Z",
+          "updatedAt": "2024-03-18T06:38:30Z"
+        }
+      ]
     },
     {
       "number": 304,
@@ -8267,10 +8314,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Section 4.4:\r\n\r\nI think Figure 1 should be split in one state diagram per role of sender on a path and receiver on a path. ",
       "createdAt": "2024-03-16T06:35:24Z",
-      "updatedAt": "2024-03-16T06:35:24Z",
+      "updatedAt": "2024-03-18T06:23:21Z",
       "closedAt": null,
       "comments": []
     },
@@ -8283,10 +8332,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "body": "Section 5.1\r\n\"If the multipath extension has been successfully negotiated, ACK frames in 1-RTT packets acknowledge packets sent with the Connection ID having sequence number 0.\"\r\n\r\nI want to note the following in RFC 9000 from section 5.1.1:\r\n\"If the preferred_address transport parameter is sent, the sequence number of the supplied connection ID is 1.\"\r\n\r\nTo my understanding there is this case discussed in Section 4:\r\n\"They can also start using multiple paths, unless both server preferred addresses and a disable_active_migration transport parameter were provided by the server, in which case a client is forbidden to establish new paths until \"after a client has acted on a preferred_address transport parameter\" (Section 18.2. of [QUIC-TRANSPORT]).\"\r\n\r\nIsn't it necessary to use normal ACK frames while performing this migration. Thus, normal ACKS may also be used for sequence number 1? Or should one use MP_ACKS for this sequnce number space?\r\n\r\nSo text should be updated to include this exception or clarify usage of MP_ACK in this case. . ",
       "createdAt": "2024-03-16T06:36:58Z",
-      "updatedAt": "2024-03-16T06:38:35Z",
+      "updatedAt": "2024-03-18T06:23:04Z",
       "closedAt": null,
       "comments": []
     },
@@ -8299,10 +8350,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "body": "Sectionm 5.2:\r\n\"Section 19 of [QUIC-TRANSPORT] encodes the Connection ID Sequence Number as a variable-length integer, allowing values up to 2^62-1; in this specification, a range of less than 2^32-1 values MUST be used before updating the packet protection key\"\r\n\r\nI think this is unlikely to cause a real issue, but is sloppy writing. At no point in time may a sequence number n and its next wrapped value ( n+2^32) be protected by the same packet protection key. This is unlikely to ever happen due to AEAD limits of at least current ciphers. But I think it would be good to be formally correct here.\r\n\r\nI will note that there is duplication of the imprecise requirement in the last paragraph of the seciton too: \"Due to the way the nonce is constructed, endpoints MUST NOT use more than 2^32 Connection IDs without a key update.\"\r\n",
       "createdAt": "2024-03-16T06:40:23Z",
-      "updatedAt": "2024-03-16T06:40:23Z",
+      "updatedAt": "2024-03-18T06:22:29Z",
       "closedAt": null,
       "comments": []
     },
@@ -8315,10 +8368,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Section 7.2:\r\n\"Multipath TCP uses the LIA congestion control scheme specified in [RFC6356] to solve this problem.\"\r\n\r\nPlease expand \"LIA\".",
       "createdAt": "2024-03-16T06:40:46Z",
-      "updatedAt": "2024-03-16T06:40:46Z",
+      "updatedAt": "2024-03-18T06:21:15Z",
       "closedAt": null,
       "comments": []
     },
@@ -8334,9 +8389,52 @@
       "labels": [],
       "body": "Section 7.6\r\nIs refragmentation of data in DATA frames allowed to cope with PMTUD. Maybe should be mentioned explicitly to ensure that this is not resulting in implementation issues. Sender responsibility?\r\n",
       "createdAt": "2024-03-16T06:42:38Z",
-      "updatedAt": "2024-03-16T06:42:38Z",
+      "updatedAt": "2024-03-18T07:00:10Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "refragmentation? When?",
+          "createdAt": "2024-03-18T06:21:00Z",
+          "updatedAt": "2024-03-18T06:21:00Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Picoquic has been doing refragmentation of retransmitted packets for several years. That is tested in the interop runner, and does not create any particular interop issue. Hey, I think that the code may well split a stream_data_frame in several segments and send the segments over different paths...",
+          "createdAt": "2024-03-18T06:28:34Z",
+          "updatedAt": "2024-03-18T06:28:34Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "I think it would be good to add some text in the specification that sender MAY do this and receiver MUST be able to accept refragmentation done in retransmissions. ",
+          "createdAt": "2024-03-18T06:35:42Z",
+          "updatedAt": "2024-03-18T06:35:42Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Why is this different in the multipath case than in RFC9000?",
+          "createdAt": "2024-03-18T06:44:21Z",
+          "updatedAt": "2024-03-18T06:44:21Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@mirjak exactly. Besides, if the packet was lost, the receiver has not seen the first copy of the frame, so it cannot tell that it is a retransmission. It is a well tested feature of RFC9000.",
+          "createdAt": "2024-03-18T06:58:14Z",
+          "updatedAt": "2024-03-18T06:58:14Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "I don't think it is different. It is just more likely to occur. In RFC 9000 an MTU change is most likely to occur due to a connection migration event. Thus you may have some outstanding stream data ranges that needs to be retransmitted. In MP-QUIC you might attempt to send retransmission for a 1400 byte block over the other path that can only fit a 1200 byte data block. Thus, you will be forced to create two stream frames and send them in two packets if you are going to retransmitt. ",
+          "createdAt": "2024-03-18T07:00:08Z",
+          "updatedAt": "2024-03-18T07:00:08Z"
+        }
+      ]
     },
     {
       "number": 310,
@@ -8347,10 +8445,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Section 8.1: \r\n\"The sequence number of the Connection ID identifying the packet number space of the 0-RTT and 1-RTT packets which are acknowledged by the ACK_MP frame.\" \r\nAccording to the sender of this ACK. I think clarifying that the seuqence numbers are of the CIDs used belong to the receiver of the acked packets.\r\n",
       "createdAt": "2024-03-16T06:44:01Z",
-      "updatedAt": "2024-03-16T06:44:01Z",
+      "updatedAt": "2024-03-18T06:20:16Z",
       "closedAt": null,
       "comments": []
     },
@@ -8366,9 +8466,24 @@
       "labels": [],
       "body": "Section 8.3:\r\n\"The sequence number of the Destination Connection ID used by the receiver of this frame to send packets over the path the status update corresponds to. All Destination Connection IDs that have been issued MAY be specified, even if they are not yet in use over a path.\"\r\n\r\nSo this is the PATH_STANDBY senders own CIDs sequence numbers. Consider simplifying.\r\n",
       "createdAt": "2024-03-16T06:45:27Z",
-      "updatedAt": "2024-03-16T06:45:27Z",
+      "updatedAt": "2024-03-18T06:22:55Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't think I understand you comment. Can you propose text?",
+          "createdAt": "2024-03-18T06:19:53Z",
+          "updatedAt": "2024-03-18T06:19:53Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Yes, I can create an PR. ",
+          "createdAt": "2024-03-18T06:22:54Z",
+          "updatedAt": "2024-03-18T06:22:54Z"
+        }
+      ]
     },
     {
       "number": 312,
@@ -8382,9 +8497,17 @@
       "labels": [],
       "body": "Section 8.3: \r\nA variable-length integer specifying the sequence number assigned for this PATH_STANDBY frame. The sequence number space is shared with the PATH_AVAILABLE frame and the sequence number MUST be monotonically increasing generated by the sender of the PATH_STANDBY frame in the same connection. The receiver of the PATH_STANDBY frame needs to use and compare the sequence numbers separately for each Destination Connection ID Sequence Number.\r\n\r\nSo are sequnce number spaces per CID? But shared across the PATH_STANDBY and PATH_AVAILABLE\r\n",
       "createdAt": "2024-03-16T06:48:02Z",
-      "updatedAt": "2024-03-16T06:48:02Z",
+      "updatedAt": "2024-03-18T06:18:28Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "No one number space but you only compare to the number that you previously received for the same CID.\r\n\r\nE.g. you received\r\n\r\nSEQ=1 CID=1\r\nSEQ=2 CID=2\r\nSEQ=4 CID=1\r\nSEQ=3 CID=2\r\n\r\nThat means you have to update both paths and not throw away the frame with SEQ=3",
+          "createdAt": "2024-03-18T06:18:27Z",
+          "updatedAt": "2024-03-18T06:18:27Z"
+        }
+      ]
     },
     {
       "number": 313,
@@ -8395,10 +8518,12 @@
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "explicit path ID"
+      ],
       "body": "In the Unique Path ID model, the creation of a CID is always linked to the creation of a potential path. CIDs are managed using two frames:\r\n\r\n* MP_NEW_CONNECTION_ID with parameters CID value, path ID, sequence, and retire prior.\r\n* MP_RETIRE_CID with parameters path ID and sequence.\r\n\r\nPath IDs are not supposed to live forever. If a path is abandoned, the path ID will not be reused, because of potential ambiguity: reusing path id and sequence numbers could break encryption; when packets arrive for an abandoned path ID and the path state has been delete, there is no way to distinguish new packets from copies of old packets. Yet, as long as there is a valid CID available, nothing prevents a node from using it and sending packets with that corresponding path_id.\r\n\r\nThe sender of the MP_NEW_CONNECTION_ID can only force retirement of old path IDs by sending an MP_NEW_CONNECTION_ID frame and setting the \"retire prior\" value, but doing so creates a new CID for the old path and does not actually \"retire all CID for the path\".\r\n\r\nIn the current specification, these \"old path CID\" can only be retired by the peer, who could send series of MP_RETIRE_CID frames. The local node knows that the path is abandoned, so it could refrain from providing new CID to replace them. But nothing forces the peer to do that.\r\n\r\nWe miss a way to say \"retire all CID for that path\". One way would be to state that as a side effect of \"PATH_ABANDON\": the peer should immediately retire all CIDs tied to that path. We should also specify that a node MUST retain knowledge of all valid CID until they have been retired -- otherwise we get issue like a peer sending packets with old CID values, resulting in a stateless reset. Instead, the node that receive a packet with an old CID for an abandoned path should probably just ignore it. \r\n\r\nMaybe there are simpler solutions, but the current behavior is under-specified.\r\n",
       "createdAt": "2024-03-16T20:50:08Z",
-      "updatedAt": "2024-03-17T00:24:09Z",
+      "updatedAt": "2024-03-18T06:14:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -8407,6 +8532,190 @@
           "body": "To my understanding is that how it is currently specified is that each endpoint need to close the path in the direction towards  itself by first sending the path_abandon then wait the 3*PTO, then send the retire CID for all the CIDs used by that path. And if the peer don't send a path_abandon back to you when you have sent one, this results in a path that is open in only one direction. That is probably not what we want the situation to be in. \r\n",
           "createdAt": "2024-03-17T00:24:08Z",
           "updatedAt": "2024-03-17T00:24:08Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "I would suggest that we ensure that we have when it comes to the path close scenarion, that one says first stop sending, i.e. path_abandon. Then a path_close that retires the path in this direction and all related CIDs. This could actually be a frame that says path_closed which references a path Index. \r\n\r\nThen when it comes to cycle CIDs used by a path one need MP_NEW_CONNECTION_ID frame to add new CIDs to a path. This can retire older ones when one moved forward. A question is if one need a MP_RETIRE_CONNECTION_ID that can deal with path + CID addressing properly as the single path sequence number assumption does not hold when one have explicit path IDs. ",
+          "createdAt": "2024-03-17T02:14:02Z",
+          "updatedAt": "2024-03-17T02:14:02Z"
+        }
+      ]
+    },
+    {
+      "number": 317,
+      "id": "I_kwDOGNtpaM6CkvtK",
+      "title": "explicit path IDs: Should server preferred address have its own path ID?",
+      "url": "https://github.com/quicwg/multipath/issues/317",
+      "state": "OPEN",
+      "author": "marten-seemann",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "needs PR",
+        "explicit path ID"
+      ],
+      "body": "It's kind of weird that for the migration to the server preferred address path, the path ID is defined as 0. It might be advantageous to keep the anycast and the unicast path open for a limited amount of time.\r\n\r\nWe could consider defining this path to have path ID 1?",
+      "createdAt": "2024-03-17T13:25:01Z",
+      "updatedAt": "2024-03-18T06:14:40Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "+1. I was under the impression that the preferred path was path-id=1 from the start.",
+          "createdAt": "2024-03-18T03:42:03Z",
+          "updatedAt": "2024-03-18T03:42:03Z"
+        }
+      ]
+    },
+    {
+      "number": 318,
+      "id": "I_kwDOGNtpaM6ClMrF",
+      "title": "Should path numbers be continuous?",
+      "url": "https://github.com/quicwg/multipath/issues/318",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "editorial",
+        "needs PR",
+        "explicit path ID"
+      ],
+      "body": "We observed an interop failure between picoquic and the Quiche implementation modified by Quentin. The picoquic client is waiting for a CID with pathID=1 before opening the second path with path number 1, but Quentin's implementation will only send paths with even numbers.\r\n\r\nThe immediate interop issue would be fixed if Picoquic used number 2 for its first path creation, but that is not a long term solution. If one implementation expects to see all number used and the other only uses one of them, we will shortly see an issue -- some CID do not get used but still contribute to the \"MAX_PATHS\" limits, or to the implicit number of path limit at the client. Creation of new paths will then stop, even if the number of paths in actual use remains below the limit.\r\n\r\nShould we have a rule about not skipping path numbers? ",
+      "createdAt": "2024-03-17T18:04:56Z",
+      "updatedAt": "2024-03-18T06:35:18Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Path validation on a particular path might fail, without the server receiving any packet for that path. When the client then validates another path, this will look like a skipped path to the server.\r\n\r\nSo to answer the question: Path IDs SHOULD be used sequentially, but you can't enforce this.",
+          "createdAt": "2024-03-18T03:09:23Z",
+          "updatedAt": "2024-03-18T03:09:23Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, we do have the case in with the client probes path[3] and the server never gets the probe. The client should send an Abandon[3] to clear the state.",
+          "createdAt": "2024-03-18T03:43:28Z",
+          "updatedAt": "2024-03-18T03:43:28Z"
+        },
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "That's true, but you don't know when the PATH_ABANDON arrives. It might be lost / reordered. So you'll need to deal with what looks like non-continuous use of Path IDs anyway.",
+          "createdAt": "2024-03-18T03:47:48Z",
+          "updatedAt": "2024-03-18T03:47:48Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes. My real concern was one of the nodes issuing just some CID -- like Quentin's code only creating CID for even numbers, 0, 2, etc. We will have two limits:\r\n\r\n1) the \"max paths\" value, which determines the maximum but does not force the peers to send that much.\r\n2) the lower \"local maximum\" value, based on available memory and other local resource.\r\n\r\nMy real concern is that if nodes are not going to publish CID for all possible paths, they should start with the lowest numbers to maximize chances of finding numbers supported by both sides.",
+          "createdAt": "2024-03-18T04:00:31Z",
+          "updatedAt": "2024-03-18T04:00:31Z"
+        },
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I would consider this a misbehaviour of the peer. If you refuse to use path IDs available to you, the protocol might get stuck.",
+          "createdAt": "2024-03-18T04:07:46Z",
+          "updatedAt": "2024-03-18T04:07:46Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes. But the current draft does not say \"dont do that\"",
+          "createdAt": "2024-03-18T04:24:55Z",
+          "updatedAt": "2024-03-18T04:24:55Z"
+        }
+      ]
+    },
+    {
+      "number": 319,
+      "id": "I_kwDOGNtpaM6ClRiu",
+      "title": "What if a client falsely links two paths using CIDs associated with the same path ID",
+      "url": "https://github.com/quicwg/multipath/issues/319",
+      "state": "OPEN",
+      "author": "yfmascgy",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "explicit path ID"
+      ],
+      "body": "Stable path ID is helpful to link two paths when CID rotation and NAT rebinding happen at the same time. However, this could also have a downside. There's a chance that a client might falsely apply a CID from an old path to a new one. If this happens, the server may incorrectly treat both paths as identical, despite changes in the CID and the 4-tuple. Should the server opt to retain the congestion window under this assumption, it could inadvertently trigger network congestion, affecting other clients on the new path. Moreover, this vulnerability could be exploited by attackers to deliberately disrupt service for others.",
+      "createdAt": "2024-03-17T18:42:17Z",
+      "updatedAt": "2024-03-18T08:12:26Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "I don't understand how this happens I think you may have to make event diagram to explain how one would draw the wrong conlcusion. To my understanding you are talking about this case:\r\n\r\nSo for path 1 the server has announced DCIDs X, Y, Z to the client\r\n\r\nA (Client) -> NAT -> B (server):\r\nIP_A:port_A ->IP_B:Port_B: DCID:X  -> arrive as IP_N:Port_N1 -> IP_B:Port_B DCID:X\r\nThen the client decides to cycle DCID\r\nIP_A:port_A ->IP_B:Port_B: DCID:Y  -> arrive as IP_N:Port_N2 -> IP_B:Port_B DCID:Y\r\nThis triggers a path challenge by the server on the related reverse path. \r\nSo if the client correctly associates the reverse path the path challenge is what should indicate to the client that something have occurred that require client to reset its path state. But, as the client's forward path will continue to be correctly acked by server I don't see this is case which likely have significant transport impact. A port rebinding would not affect the client to NAT path conditions. It could possibly affect ECMP etc betwen NAT and server. \r\nThe server will clearly know that the path changed and if it is larger than just a port change or not. \r\n\r\n",
+          "createdAt": "2024-03-18T01:31:21Z",
+          "updatedAt": "2024-03-18T01:31:21Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I don't understand how this happens I think you may have to make event diagram to explain how one would draw the wrong conlcusion. To my understanding you are talking about this case:\r\n> \r\n> So for path 1 the server has announced DCIDs X, Y, Z to the client\r\n> \r\n> A (Client) -> NAT -> B (server): IP_A:port_A ->IP_B:Port_B: DCID:X -> arrive as IP_N:Port_N1 -> IP_B:Port_B DCID:X Then the client decides to cycle DCID IP_A:port_A ->IP_B:Port_B: DCID:Y -> arrive as IP_N:Port_N2 -> IP_B:Port_B DCID:Y This triggers a path challenge by the server on the related reverse path. So if the client correctly associates the reverse path the path challenge is what should indicate to the client that something have occurred that require client to reset its path state. But, as the client's forward path will continue to be correctly acked by server I don't see this is case which likely have significant transport impact. A port rebinding would not affect the client to NAT path conditions. It could possibly affect ECMP etc betwen NAT and server. The server will clearly know that the path changed and if it is larger than just a port change or not.\r\n\r\nOne possibility is a \"bad\" client behavior, either intentionally or unintentionally. For example, a client simply opens a new UDP socket on a different interface and uses DCID Y.\r\n\r\nI think we should say something like `\"An endpoint MUST NOT reuse a path ID when sending from more than one local address\"`.",
+          "createdAt": "2024-03-18T03:53:15Z",
+          "updatedAt": "2024-03-18T03:53:15Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The issue is NAT. Suppose the client has path[1] from address 10.0.0.1:1234, and path[2] from address 10.0.0.2:4567. Suppose that the NAT intercepts a packet send on path[1] and re-sends it from address 10.0.0.2:4567. The CID will still say \"path[1]\", but the IP addresses will end up being exactly the same.",
+          "createdAt": "2024-03-18T04:04:53Z",
+          "updatedAt": "2024-03-18T04:04:53Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The issue is NAT. Suppose the client has path[1] from address 10.0.0.1:1234, and path[2] from address 10.0.0.2:4567. Suppose that the NAT intercepts a packet send on path[1] and re-sends it from address 10.0.0.2:4567. The CID will still say \"path[1]\", but the IP addresses will end up being exactly the same.\r\n\r\nIs that a real problem we have to worry about? Otherwise we could just close the path?",
+          "createdAt": "2024-03-18T06:37:16Z",
+          "updatedAt": "2024-03-18T06:37:16Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "> I think we should say something like \"An endpoint MUST NOT reuse a path ID when sending from more than one local address\".\r\n\r\nMaybe saying this is part of the clarification of what is path. To my understanding if one changes anything in the 5-tuple one is forced to use a new path and a CID that indicates this path. \r\n\r\n> The issue is NAT. Suppose the client has path[1] from address 10.0.0.1:1234, and path[2] from address 10.0.0.2:4567. Suppose that the NAT intercepts a packet send on path[1] and re-sends it from address 10.0.0.2:4567. The CID will still say \"path[1]\", but the IP addresses will end up being exactly the same.\r\n\r\nSo, the NAT would be totally broken if it collapse both these UDP flows to one external port on the same IP address, Thus, I would suggest two flows through one NAT would still get differnet ports, and thus be the receiver be handled as two different paths. Also for the client as they have different destination ports for incoming packet flows they will be treated differently. \r\n",
+          "createdAt": "2024-03-18T06:57:08Z",
+          "updatedAt": "2024-03-18T06:57:08Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I believe these scenarios cannot normally happen. A NAT will normally not give the same mappings to two different paths. When that happens, it is probably some kind of attack: either the client is deliberately trying to pile up multiple paths through the same bottleneck, or an observer on path is re-injecting packets trying to do some damage. In the latter case, the defense would be to remain with the old path and not execute the NAT rebinding.",
+          "createdAt": "2024-03-18T08:12:25Z",
+          "updatedAt": "2024-03-18T08:12:25Z"
+        }
+      ]
+    },
+    {
+      "number": 320,
+      "id": "I_kwDOGNtpaM6Cnx6F",
+      "title": "Sending NEW_CONNECTION_ID and RETIRE_CONNECTION_ID frames when multipath has been negotiated",
+      "url": "https://github.com/quicwg/multipath/issues/320",
+      "state": "OPEN",
+      "author": "michael-eriksson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [
+        "explicit path ID"
+      ],
+      "body": "It should be explicitly specified if it is allowed/discouraged/forbidden to send `NEW_CONNECTION_ID` and `RETIRE_CONNECTION_ID` frames (implicitly referencing path ID 0) when multipath has been negotiated.\r\n",
+      "createdAt": "2024-03-18T07:51:14Z",
+      "updatedAt": "2024-03-18T08:11:22Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we have to allow it because it could be sent before multipath is \"negotiated\". Also not that QUIC does really negotiate but rather another, which is another reason why forbidding based RFC frames is generally hard.\r\n\r\nWe could say this more explicitly but we don't have to because it is a general thing about how QUIC transport parameters work.",
+          "createdAt": "2024-03-18T08:11:22Z",
+          "updatedAt": "2024-03-18T08:11:22Z"
         }
       ]
     }
@@ -27572,7 +27881,7 @@
       "labels": [],
       "body": "As the design required revision of the entire draft, this PR attempts to be a start point.",
       "createdAt": "2023-11-20T04:48:03Z",
-      "updatedAt": "2024-03-16T07:13:39Z",
+      "updatedAt": "2024-03-18T07:35:06Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
@@ -29605,6 +29914,366 @@
               "updatedAt": "2024-03-16T07:13:39Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuGxk",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:45:32Z",
+          "updatedAt": "2024-03-17T12:45:32Z",
+          "comments": [
+            {
+              "originalPosition": 897,
+              "body": "No strong opinion on the name, keeping things consistent seems fine. However, I had to read this thread to understand what was actually meant. It would probably help to add a description below the frame that describes that this is the maximum path ID.",
+              "createdAt": "2024-03-17T12:45:32Z",
+              "updatedAt": "2024-03-17T12:45:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuG3Y",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:47:25Z",
+          "updatedAt": "2024-03-17T12:47:26Z",
+          "comments": [
+            {
+              "originalPosition": 930,
+              "body": "This is inconsistent with the other QUIC MAX_* frames. Path 3 should be allowed.",
+              "createdAt": "2024-03-17T12:47:25Z",
+              "updatedAt": "2024-03-17T12:47:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuG8W",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:49:04Z",
+          "updatedAt": "2024-03-17T12:49:04Z",
+          "comments": [
+            {
+              "originalPosition": 936,
+              "body": "I believe this is more succinct and clearer:\r\n```suggestion\r\nAn endpoint MUST NOT initiate a path with a path ID higher than the Maximum Paths value.\r\nAn endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens more paths than was permitted. \r\n```",
+              "createdAt": "2024-03-17T12:49:04Z",
+              "updatedAt": "2024-03-17T12:49:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuHAM",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:50:27Z",
+          "updatedAt": "2024-03-17T12:50:27Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "Probably better: `initial_max_path_id`. This would mirror the meaning of the frame as suggested in https://github.com/quicwg/multipath/pull/292/files#r1527500161.",
+              "createdAt": "2024-03-17T12:50:27Z",
+              "updatedAt": "2024-03-17T12:50:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuHIZ",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:53:32Z",
+          "updatedAt": "2024-03-17T12:53:32Z",
+          "comments": [
+            {
+              "originalPosition": 263,
+              "body": "Should PATH_ABANDON automatically retire the connection IDs, without the need to send any frames? It would be nice if we don't have to deal with a malicious / misbehaving peer that abandons a path, but keeps the CIDs active.",
+              "createdAt": "2024-03-17T12:53:32Z",
+              "updatedAt": "2024-03-17T12:53:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuHPP",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:55:28Z",
+          "updatedAt": "2024-03-17T12:55:28Z",
+          "comments": [
+            {
+              "originalPosition": 274,
+              "body": "```suggestion\r\nA failed path validation consumes the Path ID used for probing of this path.\r\nAn endpoint MUST not use the same Path ID to probe a different path. Instead, it\r\nMUST send a PATH_ABANDON frame to retire the Path ID. \r\n```",
+              "createdAt": "2024-03-17T12:55:28Z",
+              "updatedAt": "2024-03-17T12:55:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuHXA",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:58:32Z",
+          "updatedAt": "2024-03-17T12:58:32Z",
+          "comments": [
+            {
+              "originalPosition": 289,
+              "body": "This seems backwards. Connection IDs are issues for paths, not the other way around.\r\nAlso, if I allow you to open 1 million paths, you're probably wise to not issue me 1 million CIDs.",
+              "createdAt": "2024-03-17T12:58:32Z",
+              "updatedAt": "2024-03-17T12:58:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuHgj",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T12:59:38Z",
+          "updatedAt": "2024-03-17T12:59:38Z",
+          "comments": [
+            {
+              "originalPosition": 303,
+              "body": "```suggestion\r\nwill not be used again. If the path is still active, the peer SHOULD replace it with a new connection ID using a MP_NEW_CONNECTION_ID frame.\r\n```",
+              "createdAt": "2024-03-17T12:59:38Z",
+              "updatedAt": "2024-03-17T12:59:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuHxA",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T13:05:56Z",
+          "updatedAt": "2024-03-17T13:05:56Z",
+          "comments": [
+            {
+              "originalPosition": 439,
+              "body": "I don't understand how a key update protects against nonce reuse. I'd prefer to define the path ID as a value between 0 and 2^32-1. 4 billion paths should be fine for most applications.\r\n\r\nOf course, the varint format allows the encoding of up to 2^62-1, but this is something we can check immediately when decoding the transport parameter and the respective frames. There's plenty of precedent for limiting the range of acceptable values in RFC 9000.",
+              "createdAt": "2024-03-17T13:05:56Z",
+              "updatedAt": "2024-03-17T13:05:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuJYB",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T13:22:36Z",
+          "updatedAt": "2024-03-17T13:22:36Z",
+          "comments": [
+            {
+              "originalPosition": 439,
+              "body": "Reading through the issues, I think this is what @gloinul pointed out in #307.",
+              "createdAt": "2024-03-17T13:22:36Z",
+              "updatedAt": "2024-03-17T13:22:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuOXp",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T14:57:17Z",
+          "updatedAt": "2024-03-17T14:57:17Z",
+          "comments": [
+            {
+              "originalPosition": 936,
+              "body": "I think it should be \"An endpoint MUST NOT send an MP_NEW_CONNECTION_ID frame with a path ID higher than the Maximum Paths value\".",
+              "createdAt": "2024-03-17T14:57:17Z",
+              "updatedAt": "2024-03-17T14:57:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuOtM",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T15:04:43Z",
+          "updatedAt": "2024-03-17T15:04:43Z",
+          "comments": [
+            {
+              "originalPosition": 263,
+              "body": "Yes, it should! Or at least the complete closing of a path, with dual `PATH_ABANDON` frames should.",
+              "createdAt": "2024-03-17T15:04:43Z",
+              "updatedAt": "2024-03-17T15:04:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuO7f",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T15:09:53Z",
+          "updatedAt": "2024-03-17T15:09:54Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "I think it should remain `initial_max_paths` to be symmetric with `initial_max_streams_*`. \r\n\r\nThe explanation can be copied from [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000.html#section-18.2-4.22.1):\r\n\r\n> Setting this parameter is equivalent to sending a MAX_PATHS of the corresponding type with the same value.",
+              "createdAt": "2024-03-17T15:09:54Z",
+              "updatedAt": "2024-03-17T15:09:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuPD-",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T15:13:00Z",
+          "updatedAt": "2024-03-17T15:13:00Z",
+          "comments": [
+            {
+              "originalPosition": 274,
+              "body": "Wouldn't it be enough to retire the connection ID? Abandoning the whole (potential) path seems like overkill.",
+              "createdAt": "2024-03-17T15:13:00Z",
+              "updatedAt": "2024-03-17T15:13:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zud0i",
+          "commit": {
+            "abbreviatedOid": "5b85733"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T18:26:09Z",
+          "updatedAt": "2024-03-17T18:26:09Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "> I think one can clarify that a path is defined as unidirectional forwarding path from A to B. Where the path ID has a set of Destination CIDs that identify packets belonging to the ID. An endpoint will bind its local 5-tuple to the PATH ID when first sending or receiving on the ID.\r\n\r\nI can see the difficulty in path definition here, especially when continuity of a path is involved. I am not sure defining a path as \"unidirectional forwarding path from A to B\" is a good definition because it does provide a set of criteria that uniquely distinguishes a path from the others. ",
+              "createdAt": "2024-03-17T18:26:09Z",
+              "updatedAt": "2024-03-17T18:26:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zux5f",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-18T00:37:33Z",
+          "updatedAt": "2024-03-18T00:37:34Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "My 2c: There's only so much value you get from consistency with RFC 9000. This has created a fair amount of confusion in the review of this PR, and it seems like calling it `initial_max_path_id` (and the corresponding renaming of the frame), would make it 100% clear what is meant, without the need for long explanations.",
+              "createdAt": "2024-03-18T00:37:34Z",
+              "updatedAt": "2024-03-18T00:37:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuzYu",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-18T00:40:22Z",
+          "updatedAt": "2024-03-18T00:40:23Z",
+          "comments": [
+            {
+              "originalPosition": 274,
+              "body": "I think that complicates things. Path validation can fail for a number of reasons. In particular, either the forward path (client -> server) or the return path (server -> client) could be broken separately.\r\n\r\nTherefore, from the fact that path validation failed, you cannot conclude that the server didn't see that particular path ID. Nuking the entire path ID seems like the easiest way to avoid confusion between client and server.",
+              "createdAt": "2024-03-18T00:40:22Z",
+              "updatedAt": "2024-03-18T00:40:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zwujW",
+          "commit": {
+            "abbreviatedOid": "60ea99c"
+          },
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-18T07:35:06Z",
+          "updatedAt": "2024-03-18T07:35:06Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "Well, then I think that the frame type should be `MAX_PATH_ID` to further reduce the confusion and increase the multipath specification consistency.",
+              "createdAt": "2024-03-18T07:35:06Z",
+              "updatedAt": "2024-03-18T07:35:06Z"
+            }
+          ]
         }
       ]
     },
@@ -29659,6 +30328,160 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 314,
+      "id": "PR_kwDOGNtpaM5p2jkZ",
+      "title": "[+] Explicit Path ID: solving issue #297",
+      "url": "https://github.com/quicwg/multipath/pull/314",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-03-17T06:15:25Z",
+      "updatedAt": "2024-03-17T13:22:35Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "dev/path_id",
+      "baseRefOid": "60ea99c70220f3989c6a8247356a60236ef5d414",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/path_id_simple",
+      "headRefOid": "1e1646f29eb091e16d3bc6b42e10afdefe603be4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM5zuIT7",
+          "commit": {
+            "abbreviatedOid": "1d99dcf"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-17T13:13:19Z",
+          "updatedAt": "2024-03-17T13:13:40Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Once a Path ID is abandoned, it MUST NOT be reused on any other path.",
+              "createdAt": "2024-03-17T13:13:20Z",
+              "updatedAt": "2024-03-17T13:13:40Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 315,
+      "id": "PR_kwDOGNtpaM5p209j",
+      "title": "[+] Explicit Path ID: Clarify that endpoints use the same Path ID in both directions.",
+      "url": "https://github.com/quicwg/multipath/pull/315",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Solving issue #294 ",
+      "createdAt": "2024-03-17T10:15:59Z",
+      "updatedAt": "2024-03-17T13:24:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "dev/path_id",
+      "baseRefOid": "60ea99c70220f3989c6a8247356a60236ef5d414",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/path_id_for_both_direction",
+      "headRefOid": "4926786f10fdb8e36d48bcf88c1895b7ccd90adf",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM5zuIc_",
+          "commit": {
+            "abbreviatedOid": "d1d6c6e"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "This needs to be a MUST.",
+          "createdAt": "2024-03-17T13:16:28Z",
+          "updatedAt": "2024-03-17T13:17:07Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nThe client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.\r\n```",
+              "createdAt": "2024-03-17T13:16:28Z",
+              "updatedAt": "2024-03-17T13:17:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM5zuIqG",
+          "commit": {
+            "abbreviatedOid": "a20fadb"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-17T13:18:56Z",
+          "updatedAt": "2024-03-17T13:19:01Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "```suggestion\r\nWhen path validation of a new path fails, the client MUST consider the Path ID as consumed, and MUST abandon the path by sending a PATH_ABANDON frame.\r\n```",
+              "createdAt": "2024-03-17T13:18:56Z",
+              "updatedAt": "2024-03-17T13:19:01Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 316,
+      "id": "PR_kwDOGNtpaM5p3BjM",
+      "title": "[+] Explicit Path ID: Clarify use of MAX_PATHS",
+      "url": "https://github.com/quicwg/multipath/pull/316",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Solving issue #298. ",
+      "createdAt": "2024-03-17T12:39:28Z",
+      "updatedAt": "2024-03-17T13:09:31Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "dev/path_id",
+      "baseRefOid": "60ea99c70220f3989c6a8247356a60236ef5d414",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/path_id_max_paths",
+      "headRefOid": "54fdf7421c758f931f391d328f2bbb994cd9f01a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM5zuH6Y",
+          "commit": {
+            "abbreviatedOid": "54fdf74"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I'm not a fan of _negotiating_ the value. I'd much rather have peers _declare_ the maximum path ID they're willing to accept. This requires path IDs to be unidirectional.",
+          "createdAt": "2024-03-17T13:09:31Z",
+          "updatedAt": "2024-03-17T13:09:31Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
