@@ -534,8 +534,9 @@ peer during the address validation procedure. According to
 {{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
-If endpoint fails to validate a path and consume an available Path Identifier,
-it SHOULD send a PATH_ABANDON frame to retire the associated Path Identifier. 
+A failed path validation consumes the Path ID used for probing of this path.
+An endpoint MUST not use the same Path ID to probe a different path. Instead, it
+MUST send a PATH_ABANDON frame to retire the Path ID. 
 
 
 ### Allocating, Consuming and Retiring Connection IDs {#consume-retire-cid}
