@@ -338,7 +338,7 @@ the client sends MAX_PATHS to raise the maximum path number that it is willing t
 Endpoints MUST NOT issue new Connection ID with Path ID larger than the minimum of MAX_PATHS
 announced by both endpoints. For example, the server sends MP_NEW_CONNECTION_ID frame containing 
 Path ID up to the minimum of MAX_PATHS issued by client and server. The client sends 
-MP_NEW_CONNECTION_ID frame containing Path ID up to the mininum of MAX_PATHS issued by each sides.
+MP_NEW_CONNECTION_ID frame containing Path ID up to the minimum of MAX_PATHS issued by each sides.
 
 If an endpoint receives a MP_NEW_CONNECTION_ID frame containing Path ID larger than 
 the mininum of MAX_PATHS announced by each sides, it MUST treat this as a connection error of type
