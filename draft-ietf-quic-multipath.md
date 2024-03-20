@@ -337,7 +337,7 @@ Path ID up to the minimum of MAX_PATHS issued by client and server. The client s
 MP_NEW_CONNECTION_ID frame containing Path ID up to the minimum of MAX_PATHS issued by each sides.
 
 If an endpoint receives a MP_NEW_CONNECTION_ID frame containing Path ID larger than 
-the mininum of MAX_PATHS announced by each sides, it MUST treat this as a connection error of type
+the minimum of MAX_PATHS announced by each sides, it MUST treat this as a connection error of type
 MP_PROTOCOL_VIOLATION and close the connection.
 
 
