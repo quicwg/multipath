@@ -332,7 +332,7 @@ Path Identifier.
 
 When there is not enough unused Path Identifiers, endpoints SHOULD
 send MAX_PATHS frame to inform the peer that new Path Identifiers are available.
-For example, the server send MAX_PATHS to raise the maximum path number that it is willing to accept,
+For example, the server sends MAX_PATHS to raise the maximum path number that it is willing to accept,
 the client sends MAX_PATHS to raise the maximum path number that it is willing to create.
 
 Endpoints MUST NOT issue new Connection ID with Path ID larger than the mininum of MAX_PATHS
