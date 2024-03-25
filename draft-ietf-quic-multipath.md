@@ -304,7 +304,11 @@ Each Connection ID is associated with a Path Identifier, as documented in {{mp-n
 Multiple connection IDs can be associated with the same path identifier.
 
 Endpoints use Path Identifier to address a path in the multipath control frames,
-such as PATH_ABANDON, PATH_STANDBY, and PATH_AVAILABLE frames.
+such as PATH_ABANDON, PATH_STANDBY, and PATH_AVAILABLE frames. 
+
+Path IDs are generated monotonically increasing, which means the retired Path IDs 
+MUST NOT be reused. Once a Path ID is retired by PATH_ABANDON, 
+it MUST NOT be reused on any other path.
 
 Each endpoint associates a Receiver Packet Number space to each Path Identifier 
 that it provides to the peer. Each endpoint associates a Sender Packet Number space 
@@ -325,7 +329,7 @@ that does not change the path ID.
 
 Endpoints use PATH_ABANDON frame to inform the peer of the retirement of associated 
 Path Identifier. When there is not enough unused Path Identifiers, endpoints SHOULD
-send MAX_PATHS frame to inform the peer that new Path Identifiers are available.
+send MAX_PATHS frame to inform the peer that new Path Identifiers are available. 
 
 
 # Path Setup and Removal {#setup}
