@@ -314,6 +314,18 @@ Each endpoint associates a Receiver Packet Number space to each Path Identifier
 that it provides to the peer. Each endpoint associates a Sender Packet Number space 
 to each Path Identifier received from the peer.
 
+Endpoints use the same Path ID for one specific path in both directions. 
+For a client-initiated path, the client decides which Path ID used for the new path, 
+it picks one of the server allocated CID with the specified Path ID. 
+Then the client send a PATH_CHALLENGE with the chosen CID. If the server receives the PATH_CHALLENGE, 
+it picks a Connection ID with the same path ID for sending the PATH_RESPONSE.
+
+The client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.
+If the server receives a PATH_CHALLENGE before receiving MP_NEW_CONNECTION_ID 
+for the specific path, it MAY choose to ignore the PATH_CHALLENGE, or it can
+choose to send PATH_RESPONSE until it receives the MP_NEW_CONNECTION_ID containing
+the corresponding Path ID arrives.
+
 The Path Identifier associated with the Destination Connection ID is used to 
 construct the packet protection nonce defined in {#multipath-aead}.
 
@@ -475,6 +487,11 @@ does not necessarily advertise path abandon (see {{retire-cid-close}}).
 However, implicit signals such as idle time or packet losses might be
 the only way for an endhost to detect path closure (see
 {{idle-time-close}}).
+
+PATH_ABANDON frame causes all the CID allocated for the specified Path ID to be retired.
+
+When path validation of a new path fails, the client MUST consider the Path ID as consumed, and MUST abandon the path by sending a PATH_ABANDON frame.
+to inform the server that the Path ID can’t be used in the future.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
 apply on the whole connection. In particular, the reception of either a
