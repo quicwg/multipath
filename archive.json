@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-26T00:39:51.598810+00:00",
+  "timestamp": "2024-03-28T00:40:24.361018+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -4343,7 +4343,7 @@
       "id": "I_kwDOGNtpaM5fKl2a",
       "title": "Proposal: Explicit path identification",
       "url": "https://github.com/quicwg/multipath/issues/179",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -4353,8 +4353,8 @@
       ],
       "body": "I think given the dynamic nature of the CID usage on paths that leads to some existing design issues(see #137, #158), it is worth having some stable path identification (to address, e.g., #169).\r\n\r\n# What does not change\r\n\r\nI think we now agree that a Multipath QUIC connection uses different Connection IDs on different paths, and each Connection ID has its own packet number space. Such a design enables end-hosts to easily receive packets and decrypt them without assuming anything about the network path (relying directly on the perceived 4-tuple makes the approach fragile). Note that we keep the ACK_MP as it (i.e., we acknowledge packet numbers that used a specific DCID).\r\n\r\n# Identifying network paths (until now)\r\n\r\nSo far, end hosts directly maps the (Destination) Connection ID sequence number as the path identifier of the network path. This path identifier is then used in the path-specific frames (PATH_ABANDON, PATH_STATUS,\u2026). Such an approach has the advantage that we do not have to define additional signalling to identify a network path, and it is relatively easy to track that. However, this means that if one endhost changes the DCID it uses over a given path, this means its identifier changes. Having such dynamic changing identifiers for a stable path causes design issues when using an identifier no more valid in the path-specific frames.\r\n\r\n# Proposal: explicit path identification advertisement during path validation\r\n\r\nThe path validation process establish the identification of a path through the advertisement of the \u201cEntry Point ID\u201d (EPID) used by the packet sender. Each path is identified by a tuple (local EPID, peer EPID). This identification is then used in the path-specific frames to identify the concerned path. Note that each endhost uses EPID 0 on the initial path.\r\n\r\nThis implies that we need an augmented version of the PATH_CHALLENGE/PATH_RESPONSE frames (let\u2019s say PATH_CHALLENGE_MP/PATH_REPSONSE_MP) that include the EPID that the sender used to send the frame.\r\n\r\n## Example\r\n\r\nLet\u2019s consider this initial situation.\r\n\r\n```\r\n  DCID 0 EPID 0                   DCID 0 EPID 0\r\n   +------------------------------------+\r\n   |                                    |\r\nClient                               Server\r\n```\r\n\r\nIn this initial state, each endhost has one path:\r\n\r\nClient\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n\r\nFrom the server perspective, we have\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n\r\nNow the client wants to create a new path on a new local address, but still on the same server address (same IP and port at server side). When the server just processed the PATH_CHALLENGE_MP(data, EPID=1) sent by the client with DCID seq 1, we have this state:\r\n\r\nClient\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, ???) using DCID seq 1\r\n\r\nServer\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1\r\n\r\nNote that the server can figure out at packet reception on which local address it saw, and thus map the corresponding local EPID to the new seen path. The server can then replies with a PATH_RESPONSE_MP(data, EPID=0) (and also initiates a PATH_CHALLENGE_MP as well). Assume here it uses the DCID with seq 2. Once the PATH_RESPONSE_MP is received by the client, we have this state.\r\n\r\nClient\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using DCID seq 1 and SCID seq 2\r\n\r\nServer\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1 and DCID seq 2\r\n\r\nNow the client can refer to the lower path in PATH_STATUS/PATH_ABANDON frame using (1, 0), and the server could use (1, 0). Note that it makes also possible to extend these frames to the set of paths sharing a given EPID. This tuple is stable as long as end hosts do not change the EPID they use when performing further path validations.\r\n\r\n```\r\n  DCID 0 EPID 0                   DCID 0 EPID 0\r\n   +------------------------------------+\r\n   |                                    |\r\nClient                               Server\r\n   |                                    |\r\n   +------------------------------------+\r\n  DCID 1 EPID 1                   DCID 2 EPID 0\r\n```\r\n\r\nConsider now a specific edge case, that is also hard to handle with the current (CID identification) design: the client decides to change the DCID it uses (now seq 2) on its path (EPID 1, EPID 0), but the very first packet sent experiences a NAT rebinding, making the server see a new 4-tuple. The end hosts\u2019 states just after the server received that packet is\r\n\r\nClient:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using SCID seq 2 and DCID seq 2\r\n\r\nServer:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1 and DCID seq 2\r\n- (EPID 0, EPID ???) using SCID seq 2\r\n\r\nTo address this new unknown path, the server will initiate path validation over that new path using a new DCID (let\u2019s say with seq 3), so it sends a MP_PATH_CHALLENGE(EPID=0) on the lower path. Once the packet reaches and after its processing, we have\r\n\r\nClient:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using SCID seq 3 and DCID seq 2\r\n\r\nServer:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 1 and DCID seq 2\r\n- (EPID 0, EPID ???) using SCID seq 2 and DCID seq 3\r\n\r\n\r\nFinally, the client replies with a MP_PATH_RESPONSE on its perceived EPID (hence EPID 1) and the response can reach the server, which can then figure out that the path is actually the same as the previous one (it experienced involuntary 4-tuple change, this is not a new path). The final state is hence\r\n\r\nClient:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 1, EPID 0) using SCID seq 3 and DCID seq 2\r\n\r\nServer:\r\n- (EPID 0, EPID 0) using SCID seq 0 and DCID seq 0\r\n- (EPID 0, EPID 1) using SCID seq 2 and DCID seq 3\r\n\r\n\r\n## Additional remarks\r\n\r\nIntroducing such additional identifiers may require additional care to cope with EPID that change over a same address or to avoid a same EPID over multiple 4-tuples. I think we can require that new EPID values cannot decrease (monotonically increasing) and observing a same EPID coming from different addresses probably indicates that something is wrong there.\r\n\r\nWe can also extend the required state of a path to be \"Active\", i.e., we need to have both local and peer EPID of a path before considering it as active.\r\n\r\nHaving two endpoint-specific values instead of a single shared one (as suggested by #170) may be desirable to support the edge case mentioned above.",
       "createdAt": "2023-02-23T10:40:22Z",
-      "updatedAt": "2023-11-21T12:34:42Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-27T05:24:05Z",
+      "closedAt": "2024-03-27T05:24:05Z",
       "comments": [
         {
           "author": "yfmascgy",
@@ -4397,6 +4397,13 @@
           "body": "I think PR #292 could also solve this issue : )",
           "createdAt": "2023-11-21T12:34:41Z",
           "updatedAt": "2023-11-21T12:34:41Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Closed as PR #292 has been merged.",
+          "createdAt": "2024-03-27T05:24:05Z",
+          "updatedAt": "2024-03-27T05:24:05Z"
         }
       ]
     },
@@ -16436,7 +16443,7 @@
       "labels": [],
       "body": "Fix issue #112 and #115 ",
       "createdAt": "2022-03-21T09:09:27Z",
-      "updatedAt": "2022-07-08T08:27:37Z",
+      "updatedAt": "2024-03-27T05:28:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "71de7b625e2d1faac4329d2b6dee7ec404288123",
@@ -16631,7 +16638,7 @@
       "labels": [],
       "body": "For issue #22",
       "createdAt": "2022-04-06T04:12:48Z",
-      "updatedAt": "2022-07-11T12:19:39Z",
+      "updatedAt": "2024-03-27T05:28:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "07b692f4bae6381c23fca051a0cf7026609a7d2c",
@@ -17940,7 +17947,7 @@
       "labels": [],
       "body": "Fix issue #136 ",
       "createdAt": "2022-09-21T10:00:17Z",
-      "updatedAt": "2022-09-23T09:27:19Z",
+      "updatedAt": "2024-03-27T05:27:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "68e5e02c4cca6057c8181a22e8fc9f3084791de0",
@@ -23072,7 +23079,7 @@
       "labels": [],
       "body": "Let's give the facts to the implementers, without providing too specific guidance neither.\r\n\r\nFix #183 and may also address #190.",
       "createdAt": "2023-03-09T10:41:32Z",
-      "updatedAt": "2023-03-13T14:52:04Z",
+      "updatedAt": "2024-03-27T05:27:58Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "6e279069cf117af0b6bee17d0248ba726ed4bbbe",
@@ -26468,7 +26475,7 @@
       "labels": [],
       "body": "fix #251 ",
       "createdAt": "2023-07-06T14:04:27Z",
-      "updatedAt": "2023-07-07T07:02:12Z",
+      "updatedAt": "2024-03-27T05:27:54Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "3a7f3f134e312f7e32caf520bc4c50f65f9d8639",
@@ -30586,7 +30593,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-12T15:46:55Z",
-      "updatedAt": "2024-03-12T15:50:33Z",
+      "updatedAt": "2024-03-27T05:26:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "674c819488354a45fd12d56e6245b9aa9dd6f64a",
