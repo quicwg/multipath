@@ -323,8 +323,8 @@ it picks a Connection ID with the same path ID for sending the PATH_RESPONSE.
 The client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.
 If the server receives a PATH_CHALLENGE before receiving MP_NEW_CONNECTION_ID 
 for the specific path, it MAY choose to ignore the PATH_CHALLENGE, or it can
-choose to send PATH_RESPONSE until it receives the MP_NEW_CONNECTION_ID containing
-the corresponding Path ID arrives.
+choose to send the PATH_RESPONSE frame upon reception of a
+MP_NEW_CONNECTION_ID frame containing the corresponding Path ID.
 
 The Path Identifier associated with the Destination Connection ID is used to 
 construct the packet protection nonce defined in {#multipath-aead}.
