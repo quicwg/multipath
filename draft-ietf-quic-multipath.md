@@ -1472,7 +1472,8 @@ specified by Path Identifier, encoded as a variable-length integer.
 
 ## MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames {#max-paths-frame}
 
-The MAX_CLIENT_PATHS and MAX_SERVER_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of client initiated and server initiated paths for which it MAY publish
+The MAX_CLIENT_PATHS and MAX_SERVER_PATHS frame (type=0x15228c0b) informs the peer of the cumulative
+number of client initiated and server initiated paths for which it MAY publish
 MP_NEW_CONNECTION_ID frames. 
 
 MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
@@ -1494,23 +1495,23 @@ MAX_SERVER_PATHS Frame {
 MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames contain the following field:
 
 Maximum Path Identifier:
-: A count of the cumulative number of path that can be opened 
-over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not 
-possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits 
-opening of a path with Path Identifier larger than this limit MUST be treated 
+: A count of the cumulative number of path that can be opened
+over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not
+possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits
+opening of a path with Path Identifier larger than this limit MUST be treated
 as a connection error of type FRAME_ENCODING_ERROR. This MUST be
 an even value for client initiated paths, and an odd value for
 server initiated path.
 
-Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with 
-a lower path limit than was previously received. MAX_PATHS frames that 
+Loss or reordering can cause an endpoint to receive a MAX_CLIENT_PATHS or MAX_SERVER_PATHS frame with
+a lower path limit than was previously received. MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames that
 do not increase the path limit MUST be ignored.
 
 An endpoint MUST NOT initiate publish MP_NEW_CONNECTION_ID frames with a path ID higher
 than the Maximum Paths value advertised in MAX_CLIENT_PATHS for even numbered paths
 or in MAX_SERVER_PATHS for odd numbers.
 An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION
-if a peer published MP_NEW_CONNECTION_ID frames with higher Path Identifiers than was permitted. 
+if a peer published MP_NEW_CONNECTION_ID frames with higher Path Identifiers than was permitted.
 
 
 # Error Codes {#error-codes}
