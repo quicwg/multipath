@@ -1434,8 +1434,8 @@ definition in NEW_CONNECTION_ID frame {{Section 19.15 of QUIC-TRANSPORT}}.
 
 Note that Connection IDs issued in NEW_CONNECTION_ID frames MUST be treated as
 their Path Identifier is 0. Also the retire prior to field of NEW_CONNECTION_ID frames
-just effect the Connection IDs of initial path with path ID 0. This machanism
-is compatible with {{QUIC-Transport}}.
+just effect the Connection IDs of initial path with path ID 0. This mechanism
+is compatible with {{QUIC-TRANSPORT}}.
 
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
