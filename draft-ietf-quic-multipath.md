@@ -271,7 +271,7 @@ defined as follows:
   the connection with an error of type TRANSPORT_PARAMETER_ERROR. Setting 
   this parameter is equivalent to sending a MAX_SERVER_PATHS ({{max-paths-frame}}) 
   of the corresponding type with the same value. If the
-  initial_max_server_paths is not advertised by both endpoitns, servers
+  initial_max_server_paths is not advertised by both endpoints, servers
   MUST NOT initiate paths.
 
 If any of the endpoints does not advertise the initial_max_client_paths transport
