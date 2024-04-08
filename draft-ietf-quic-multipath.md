@@ -1472,7 +1472,7 @@ specified by Path Identifier, encoded as a variable-length integer.
 
 ## MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames {#max-paths-frame}
 
-The MAX_CLIENT_PATHS and MAX_SERVER_PATHS frame (type=0x15228c0b) informs the peer of the cumulative
+The MAX_CLIENT_PATHS (type=0x15228c0c) and MAX_SERVER_PATHS (type=0x15228c0d) frames inform the peer of the cumulative
 number of client initiated and server initiated paths for which it MAY publish
 MP_NEW_CONNECTION_ID frames. 
 
