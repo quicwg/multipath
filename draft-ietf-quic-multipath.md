@@ -304,7 +304,7 @@ frames to provide new Connection IDs for the peer after the initial_max_paths pa
 Endpoints MUST NOT issue Connection IDs with even numbered Path Identifiers larger than 
 the path limitation declared by the initial_max_client_paths transport parameter 
 and MAX_CLIENT_PATHS frames.
-They MUST NOT issue Connection IDs with even numbered Path Identifiers larger than 
+They MUST NOT issue Connection IDs with odd numbered Path Identifiers larger than 
 the path limitation declared by the initial_max_server_paths transport parameter 
 and MAX_SERVER_PATHS frames.
 
