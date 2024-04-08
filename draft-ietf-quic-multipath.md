@@ -1396,10 +1396,10 @@ Path Identifier:
 means the current Connection ID can only be used on the corresponding path.
 
 Sequence Number:
-The sequence number assigned to the connection ID by the sender on the path 
-specified by Path Identifier, encoded as a variable-length integer. 
-Note that the sequence number is allocated dependently on each path, 
-which means different Connection IDs on different paths may have the same 
+The sequence number assigned to the connection ID by the sender on the path
+specified by Path Identifier, encoded as a variable-length integer.
+Note that the sequence number is allocated dependently on each path,
+which means different Connection IDs on different paths may have the same
 sequence number value.
 
 Retire Prior To:
