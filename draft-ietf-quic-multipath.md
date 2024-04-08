@@ -1511,7 +1511,8 @@ An endpoint MUST NOT initiate publish MP_NEW_CONNECTION_ID frames with a path ID
 than the Maximum Paths value advertised in MAX_CLIENT_PATHS for even numbered paths
 or in MAX_SERVER_PATHS for odd numbers.
 An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION
-if a peer published MP_NEW_CONNECTION_ID frames with higher Path Identifiers than was permitted.
+if a peer published MP_NEW_CONNECTION_ID frames with higher Path Identifiers than the
+respective limit advertised by the receiving host.
 
 
 # Error Codes {#error-codes}
