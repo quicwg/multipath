@@ -321,7 +321,7 @@ The explicit Path Identifier is an integer between 0 and 2^32 - 1 (inclusive).
 A QUIC endpoint MUST NOT reuse a path ID within a connection.
 The least significant bit (0x01) of the path ID identifies the initiator of the path.
 Client-initiated paths have even-numbered path IDs (with the bit set to 0),
-and server-initiated paths have odd-numbered stream IDs (with the bit set to 1).
+and server-initiated paths have odd-numbered path IDs (with the bit set to 1).
 
 The Path Identifier is pre-allocated when endpoints provide new Connection IDs
 with MP_NEW_CONNECTION_ID frames {{mp-new-conn-id-frame}}. Both endpoints issue
