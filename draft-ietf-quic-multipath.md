@@ -326,7 +326,7 @@ and server-initiated paths have odd-numbered path IDs (with the bit set to 1).
 The Path Identifier is pre-allocated when endpoints provide new Connection IDs
 with MP_NEW_CONNECTION_ID frames {{mp-new-conn-id-frame}}. Both endpoints issue
 MP_NEW_CONNECTION_ID frames for both even and odd Path Identifiers, within
-the limits set by MAX_PATHS frames {{max-paths-frame}}.
+the limits set by MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames {{max-paths-frame}}.
 
 Each Connection ID is associated with a Path Identifier, as documented in {{mp-new-conn-id-frame}}. 
 Multiple connection IDs can be associated with the same path identifier.
