@@ -1496,7 +1496,7 @@ MAX_SERVER_PATHS Frame {
 MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames contain the following field:
 
 Maximum Number of Client/Server Path:
-: A count of the cumulative number of respectively client orserver path that can be opened
+: A count of the cumulative number of respectively client-initiated or server-initiated paths that can be opened
 over the lifetime of the connection. The client path identifiers sent by either
 endpoint MUST be lower than 2 times the Maximum Number of Client Paths announced py the peer.
 The server path identifiers sent by either
