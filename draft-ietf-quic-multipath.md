@@ -1501,7 +1501,7 @@ over the lifetime of the connection. The client path identifiers sent by either
 endpoint MUST be lower than 2 times the Maximum Number of Client Paths announced py the peer.
 The server path identifiers sent by either
 endpoint MUST be lower than 2 times the Maximum Number of Server Paths announced py the peer
-plus 1. These values cannot exceed 2^30-1, as it is not
+plus 1. These values cannot exceed 2^31-1, as it is not
 possible to encode Path IDs larger than 2^32-1.
 
 Receipt of a frame that permits
