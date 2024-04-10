@@ -1506,9 +1506,7 @@ possible to encode Path IDs larger than 2^32-1.
 
 Receipt of a frame that permits
 opening of a path with Path Identifier larger than the corresponding limit MUST be treated
-as a connection error of type FRAME_ENCODING_ERROR. This MUST be
-an even value for client initiated paths, and an odd value for
-server initiated path.
+as a connection error of type FRAME_ENCODING_ERROR.
 
 Loss or reordering can cause an endpoint to receive a MAX_CLIENT_PATHS or MAX_SERVER_PATHS frame with
 a lower path limit than was previously received. MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames that
