@@ -914,14 +914,14 @@ or the quality of RTT or loss rate is becoming worse) and wants to close
 the initial path.
 
 {{fig-example-path-close1}} illustrates an example of path closing. For the first path, the
-server's 1-RTT packets use DCID C1, which has a path identifier of 1; the
-client's 1-RTT packets use DCID S2, which has a path identifier of 2. For the
-second path, the server's 1-RTT packets use DCID C2, which has a path identifier of 2;
-the client's 1-RTT packets use DCID S3, which has a path identifier
-of 3. Note that the paths use different packet number spaces. In this case, the
+server's 1-RTT packets use DCID C1, which has a path identifier of 2; the
+client's 1-RTT packets use DCID S2, which also has a path identifier of 2. For the
+second path, the server's 1-RTT packets use DCID C2, which has a path identifier of 4;
+the client's 1-RTT packets use DCID S3, which also has a path identifier
+of 4. Note that the paths use different packet number spaces. In this case, the
 client is going to close the first path. It identifies the path by the Path Identifier
 of the DCID its peer uses for sending packets over that path,
-hence using the DCID with path identifier 1 (which relates to C1). Optionally, the
+hence using the DCID with path identifier 2 (which relates to C1). Optionally, the
 server confirms the path closure by sending an PATH_ABANDON frame
 by indicating the path identifier the client uses to send over that path,
 which corresponds to the path identifier 2 (of S2). Both the client and
@@ -932,14 +932,14 @@ for that path.
 Client                                                      Server
 
 (client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[PathID=1]->
+1-RTT[X]: DCID=S2 PATH_ABANDON[PathID=2]->
                            (server tells client to abandon a path)
                <-1-RTT[Y]: DCID=C1 PATH_ABANDON[PathID=2],
                                                ACK_MP[PID=2, PN=X]
 (client retires the corresponding CID)
-1-RTT[U]: DCID=S3 MP_RETIRE_CONNECTION_ID[PathId=2, Seq=0], ACK_MP[PID=1, PN=Y] ->
+1-RTT[U]: DCID=S3 MP_RETIRE_CONNECTION_ID[PathId=4, Seq=0], ACK_MP[PID=1, PN=Y] ->
                             (server retires the corresponding CID)
- <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[PID=3, PN=U]
+ <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[PID=4, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
@@ -1006,7 +1006,8 @@ state of either the sender or receiver number spaces. For example:
 
 * RTT measurements and congestion state are logically associated
   with the 4-tuple. They will remain unchanged if data starts
-  being received or sent through the same 4-tuple using new CIDs.
+  being received or sent through the same 4-tuple using new CIDs,
+  which refer to the same path ID.
 
 * Implementations of loss recovery typically maintain lists of
   packets sent and not yet acknowledged. Such information, along
@@ -1481,12 +1482,12 @@ MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
 ~~~
 MAX_CLIENT_PATHS Frame {
   Type (i) = 0x15228c0c,
-  Maximum Path Identifier (i),
+  Maximum Number of Client Paths (i),
 }
 
 MAX_SERVER_PATHS Frame {
   Type (i) = 0x15228c0d,
-  Maximum Path Identifier (i),
+   Maximum Number of Server Paths (i),
 }
 
 ~~~
@@ -1494,18 +1495,26 @@ MAX_SERVER_PATHS Frame {
 
 MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames contain the following field:
 
-Maximum Path Identifier:
-: A count of the cumulative number of path that can be opened
-over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not
-possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits
-opening of a path with Path Identifier larger than this limit MUST be treated
+Maximum Number of Client/Server Path:
+: A count of the cumulative number of respectively client orserver path that can be opened
+over the lifetime of the connection. The client path identifiers sent by either
+endpoint MUST be lower than 2 times the Maximum Number of Client Paths announced py the peer.
+The server path identifiers sent by either
+endpoint MUST be lower than 2 times the Maximum Number of Server Paths announced py the peer
+plus 1. These values cannot exceed 2^30-1, as it is not
+possible to encode Path IDs larger than 2^32-1.
+
+Receipt of a frame that permits
+opening of a path with Path Identifier larger than the corresponding limit MUST be treated
 as a connection error of type FRAME_ENCODING_ERROR. This MUST be
 an even value for client initiated paths, and an odd value for
-server initiated path.
+server initiated path. 
 
 Loss or reordering can cause an endpoint to receive a MAX_CLIENT_PATHS or MAX_SERVER_PATHS frame with
 a lower path limit than was previously received. MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames that
-do not increase the path limit MUST be ignored.
+do not increase the path limit MUST be ignored. MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames that
+do not advertise a value larger than the announced in the initial_max_client_paths and
+initial_max_server_paths parameters MUST also be ignored.
 
 An endpoint MUST NOT initiate publish MP_NEW_CONNECTION_ID frames with a path ID higher
 than the Maximum Paths value advertised in MAX_CLIENT_PATHS for even numbered paths
@@ -1513,7 +1522,6 @@ or in MAX_SERVER_PATHS for odd numbers.
 An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION
 if a peer published MP_NEW_CONNECTION_ID frames with higher Path Identifiers than the
 respective limit advertised by the receiving host.
-
 
 # Error Codes {#error-codes}
 Multipath QUIC transport error codes are 62-bit unsigned integers
@@ -1526,7 +1534,6 @@ These errors apply to the entire connection.
 MP_PROTOCOL_VIOLATION (experiments use 0x1001d76d3ded42f3): An endpoint detected
 an error with protocol compliance that was not covered by
 more specific error codes.
-
 
 # IANA Considerations
 
