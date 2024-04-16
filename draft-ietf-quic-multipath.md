@@ -52,14 +52,12 @@ author:
 
 
 normative:
-  RFC2119:
   QUIC-TRANSPORT: rfc9000
   QUIC-TLS: rfc9001
   QUIC-RECOVERY: rfc9002
 
 informative:
   RFC6356:
-  QUIC-Timestamp: I-D.huitema-quic-ts
   OLIA:
     title: "MPTCP is not pareto-optimal: performance issues and
 a possible solution"
@@ -223,9 +221,11 @@ of a path, but it can validate a new path created by a client.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
 (see {{Section 8 of QUIC-TRANSPORT}}).
+
 The Path Identifier number space is split in two subsets,
 the even numbers used for client initiated paths and
 the odd numbers used for server initiated paths.
+
 The Path Identifier communicated when advertising a
 Destination Connection ID is used to associate a packet to a packet number space
 that is used on a valid path. Further, the
@@ -1495,7 +1495,6 @@ MAX_SERVER_PATHS Frame {
 
 MAX_CLIENT_PATHS and MAX_SERVER_PATHS frames contain the following field:
 
-Maximum Number of Client/Server Path:
 : A count of the cumulative number of respectively client-initiated or server-initiated paths that can be opened
 over the lifetime of the connection. The client path identifiers sent by either
 endpoint MUST be lower than 2 times the Maximum Number of Client Paths announced py the peer.
