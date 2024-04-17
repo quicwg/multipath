@@ -294,7 +294,7 @@ TRANSPORT_PARAMETER error.
 
 # Path Identifier {#pathid}
 
-The explicit Path Identifier is an integer between 0 and 2^32 - 1 (inclusive).
+The explicit Path Identifier is an even integer between 0 and 2^32 - 2 (inclusive).
 The Path Identifier is pre-allocated when endpoints provide new Connection IDs
 with MP_NEW_CONNECTION_ID frames {{mp-new-conn-id-frame}}.
 
@@ -328,6 +328,15 @@ that does not change the path ID.
 Endpoints use PATH_ABANDON frame to inform the peer of the retirement of associated
 Path Identifier. When there is not enough unused Path Identifiers, endpoints SHOULD
 send MAX_PATHS frame to inform the peer that new Path Identifiers are available.
+
+## Using even numbers for path ID
+
+This specification requires path IDs to be even numbers. We anticipate
+that future extensions will lift the requirement in {{path-initiation}} that
+paths are only initiated by clients. In that case, to avoid collisions,
+we will need separate path IDs number spaces for client-initiated and
+server initiated spaces, such as using even numbered path IDs for client initiated paths
+and odd numbered path IDs for server initiated paths.
 
 
 # Path Setup and Removal {#setup}
@@ -838,17 +847,17 @@ using multiple packet number spaces.
 
    (Exchanges start on default path)
    1-RTT[]: MP_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
-             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
-             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
+             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S1, Seq=0, PathID=2]
+             <-- 1-RTT[]: MP_NEW_CONNECTION_ID[S2, Seq=0, PathID=4]
    ...
    (starts new path)
    1-RTT[0]: DCID=S2, PATH_CHALLENGE[X] -->
-                   Checks AEAD using nonce(CID sequence 2, PN 0)
+                   Checks AEAD using nonce(Path ID 2, PN 0)
      <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
                                               ACK_MP[PID=2,PN=0]
-   Checks AEAD using nonce(CID sequence 1, PN 0)
+   Checks AEAD using nonce(Path ID 2, PN 0)
    1-RTT[1]: DCID=S2, PATH_RESPONSE[Y],
-             ACK_MP[PID=1, PN=0], ... -->
+             ACK_MP[PID=2, PN=0], ... -->
 
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
@@ -897,14 +906,14 @@ for that path.
 Client                                                      Server
 
 (client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[PathID=1]->
+1-RTT[X]: DCID=S2 PATH_ABANDON[PathID=2]->
                            (server tells client to abandon a path)
                <-1-RTT[Y]: DCID=C1 PATH_ABANDON[PathID=2],
                                                ACK_MP[PID=2, PN=X]
 (client retires the corresponding CID)
-1-RTT[U]: DCID=S3 MP_RETIRE_CONNECTION_ID[PathId=2, Seq=0], ACK_MP[PID=1, PN=Y] ->
+1-RTT[U]: DCID=S3 MP_RETIRE_CONNECTION_ID[PathId=2, Seq=0], ACK_MP[PID=2, PN=Y] ->
                             (server retires the corresponding CID)
- <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[1], ACK_MP[PID=3, PN=U]
+ <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[PathId=2, Seq=0], ACK_MP[PID=2, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
@@ -1383,6 +1392,19 @@ Stateless Reset Token:
 A 128-bit value that will be used for a stateless reset when the associated
 connection ID is used.
 
+
+The Path Identifier MUST be an even number. MP_NEW_CONNECTION_ID received as
+with an odd numbered path identifier MUST be treated as
+a connection error of type MP_PROTOCOL_VIOLATION.
+
+The Path Identifier MUST NOT be larger than the value authorized in the
+last MAX_PATHS frame received from the peer, or the value received
+from the peer in
+the initial_max_paths transport parameters if no MAX_PATHS frames have
+been received. MP_NEW_CONNECTION_ID received as
+with a laue larger than authorized MUST be treated as
+a connection error of type MP_PROTOCOL_VIOLATION.
+
 The Sequence Number field and Retire Prior To field is allocated
 for each path independently. The Retire Prior To field indicates which connection IDs
 should be retired on the corresponding path of Path Identifier.
@@ -1452,20 +1474,28 @@ MAX_PATHS Frame {
 
 MAX_PATHS frames contain the following field:
 
-Maximum Path Identifier:
+Maximum Paths:
 : A count of the cumulative number of path that can be opened
-over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not
-possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits
-opening of a path with Path Identifier larger than this limit MUST be treated
+over the lifetime of the connection.
+
+The endpoint receiving this frame MAY send MP_NEW_CONNECTION_ID frames
+with Path IDs strictly lower than twice the Maximum Paths.
+For example, if an endpoint received a Maximum Paths value of 2,
+it may send MP_NEW_CONNECTION_ID with Path ID 0 and 2, but not higher.
+
+The Maximum Paths value cannot exceed 2^31-1, as it is not
+possible to encode Path IDs larger than 2^32-2. Receipt of a 
+Path Identifier larger than this limit MUST be treated
 as a connection error of type FRAME_ENCODING_ERROR.
+
+The Maximum Paths value MUST NOT be lower than the value
+advertised in the "initial_max_paths" transport parameter. Receipt
+of a value lower than the "initial_max_paths" transport parameter
+MUST be treated as a connection error of type MP_PROTOCOL_ERROR.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a lower path limit than was previously received. MAX_PATHS frames that
 do not increase the path limit MUST be ignored.
-
-An endpoint MUST NOT initiate a path with a path ID higher than the Maximum Paths value.
-An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens more paths than was permitted.
-
 
 # Error Codes {#error-codes}
 Multipath QUIC transport error codes are 62-bit unsigned integers
@@ -1492,7 +1522,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d07) | initial_max_paths | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d08) | initial_max_paths | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -1508,7 +1538,7 @@ TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{p
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-TBD-06 (experiments use 0x15228c0b)                  | MAX_PATHS              | {{max-paths-frame}}
+TBD-06 (experiments use 0x15228c0c)                  | MAX_PATHS              | {{max-paths-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
