@@ -336,7 +336,7 @@ that future extensions will lift the requirement in {{path-initiation}} that
 paths are only initiated by clients. In that case, to avoid collisions,
 we will need separate path IDs number spaces for client-initiated and
 server-initiated paths, such as using even numbered path IDs for client-initiated paths
-and odd numbered path IDs for server initiated paths.
+and odd numbered path IDs for server-initiated paths.
 
 
 # Path Setup and Removal {#setup}
