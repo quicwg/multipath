@@ -1401,7 +1401,7 @@ The Path Identifier MUST NOT be larger than the value authorized in the
 last MAX_PATHS frame received from the peer, or the value received
 from the peer in
 the initial_max_paths transport parameters if no MAX_PATHS frames have
-been received. MP_NEW_CONNECTION_ID received as
+been received. MP_NEW_CONNECTION_ID received
 with Path ID value larger than authorized MUST be treated as
 a connection error of type MP_PROTOCOL_VIOLATION.
 
