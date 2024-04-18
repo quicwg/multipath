@@ -1402,7 +1402,7 @@ last MAX_PATHS frame received from the peer, or the value received
 from the peer in
 the initial_max_paths transport parameters if no MAX_PATHS frames have
 been received. MP_NEW_CONNECTION_ID received as
-with a laue larger than authorized MUST be treated as
+with Path ID value larger than authorized MUST be treated as
 a connection error of type MP_PROTOCOL_VIOLATION.
 
 The Sequence Number field and Retire Prior To field is allocated
