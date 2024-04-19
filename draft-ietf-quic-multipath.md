@@ -1480,8 +1480,8 @@ over the lifetime of the connection.
 
 The endpoint receiving this frame MAY send MP_NEW_CONNECTION_ID frames
 with Path IDs strictly lower than twice the Maximum Paths.
-For example, if an endpoint received a Maximum Paths value of 2,
-it may send MP_NEW_CONNECTION_ID with Path ID 0 and 2, but not higher.
+For example, if an endpoint received a Maximum Paths value of 3,
+it may send MP_NEW_CONNECTION_ID with Path ID 0, 2 and 4, but not higher.
 
 The Maximum Paths value cannot exceed 2^31-1, as it is not
 possible to encode Path IDs larger than 2^32-2. Receipt of a
