@@ -1228,8 +1228,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 PATH_ABANDON frames contain the following fields:
 
 Path Identifier:
-: The Path Identifier of the Destination Connection ID used by the
-  receiver of the frame to send packets over the path to abandon.
+: The Path Identifier to abandon.
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
@@ -1271,9 +1270,8 @@ PATH_STANDBY frames are formatted as shown in {{fig-path-standby-format}}.
 PATH_STANDBY Frames contain the following fields:
 
 Path Identifier:
-: The Path Identifier of the Destination Connection ID used by the
-  receiver of this frame to send packets over the path the status update
-  corresponds to. All Destination Connection IDs that have been issued
+: The Path Identifier the status update corresponds to.
+  All Destination Connection IDs that have been issued
   MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
@@ -1321,9 +1319,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 PATH_AVAILABLE frames contain the following fields:
 
 Path Identifier:
-: The Path Identifier of the Destination Connection ID used by the
-  receiver of this frame to send packets over the path the status update
-  corresponds to.
+: The Path Identifier the status update corresponds to.
 
 Path Status sequence number:
 : A variable-length integer specifying
