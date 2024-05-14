@@ -127,7 +127,7 @@ path management in {{Section 9 of QUIC-TRANSPORT}} and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}.
 
-This extension specifies a new Path Identifier (Path ID), which is
+This extension specifies a new Path Identifier (Path ID), which is an
 integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
 monotonically increasing and cannot be reused.
 
