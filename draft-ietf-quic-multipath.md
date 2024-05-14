@@ -127,7 +127,7 @@ path management in {{Section 9 of QUIC-TRANSPORT}} and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}.
 
-This extension specifies a new Path Identifier (Path ID), which is 
+This extension specifies a new Path Identifier (Path ID), which is
 integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
 monotonically increasing and cannot be reused.
 
@@ -135,7 +135,7 @@ The Path ID is used to
 address a path the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as ACK_MP {{ack-mp-frame}}.
-Further, Connection IDs are issued per Path ID. 
+Further, Connection IDs are issued per Path ID.
 Each connection ID is associated with one path identifier
 but multiple connection IDs can be associated with the same path identifier.
 
@@ -281,7 +281,7 @@ This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
 The initial_max_paths transport parameter limits the initial maximum number of active paths
-that can be used during a connection. 
+that can be used during a connection.
 The transport parameter "active_connection_id_limit"
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
 initial_max_paths parameter is negotiated successfully.
@@ -323,8 +323,8 @@ the path limitation declared by the initial_max_paths transport parameter
 or MAX_PATHS frames.
 
 To open a new path, an endpoint MUST use a connection ID assciated with
-a new, unused Path ID. 
-Still, the receiver may observe a connection ID associated with a used Path ID 
+a new, unused Path ID.
+Still, the receiver may observe a connection ID associated with a used Path ID
 on different 4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
 as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
 and using a new connection ID for the same Path ID.
