@@ -1232,7 +1232,7 @@ PATH_STANDBY Frames contain the following fields:
 Path Identifier:
 : The Path Identifier of the Destination Connection ID used by the
   receiver of this frame to send packets over the path the status update
-  corresponds to. All Destination Connection IDs that have been issued
+  corresponds to. All Path IDs that have been issued
   MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
