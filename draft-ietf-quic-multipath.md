@@ -1157,8 +1157,7 @@ Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
 field is added.
 
 Path Identifier:
-: The path identifier pre-allocated of the Destination Connection ID. This
-  field identifies the packet number space of the 0-RTT and 1-RTT packets
+: The path identifier associated with the packet number space of the 0-RTT and 1-RTT packets
   which are acknowledged by the ACK_MP frame.
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
