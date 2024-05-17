@@ -489,7 +489,7 @@ the only way for an endhost to detect path closure (see
 
 PATH_ABANDON frame causes all CID allocated by both of the endpoints for the specified Path ID to be retired.
 
-When path validation of a new path fails, the used Path ID is anyway consumed, 
+When path validation of a new path fails, the used Path ID is anyway consumed,
 and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
 on another path to inform the peer that the Path ID cannot be used anymore.
 
