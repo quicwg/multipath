@@ -487,7 +487,7 @@ However, implicit signals such as idle time or packet losses might be
 the only way for an endhost to detect path closure (see
 {{idle-time-close}}).
 
-PATH_ABANDON frame causes all the CID allocated for the specified Path ID to be retired.
+PATH_ABANDON frame causes all CID allocated by both of the endpoints for the specified Path ID to be retired.
 
 When path validation of a new path fails, the client MUST consider the Path ID as consumed, and MUST abandon the path by sending a PATH_ABANDON frame.
 to inform the server that the Path ID can’t be used in the future.
