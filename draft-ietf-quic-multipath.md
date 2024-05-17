@@ -132,7 +132,7 @@ integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
 monotonically increasing and cannot be reused.
 
 The Path ID is used to
-address a path the new multipath control frames,
+address a path in the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as ACK_MP {{ack-mp-frame}}.
 Further, Connection IDs are issued per Path ID.
@@ -140,23 +140,23 @@ Each connection ID is associated with one path identifier
 but multiple connection IDs can be associated with the same path identifier.
 
 The Path ID of the initial path is 0. Connection IDs
-which are issued by an NEW_CONNECTION_ID frame {{Section 19.15. of QUIC-TRANSPORT}}
+which are issued by a NEW_CONNECTION_ID frame {{Section 19.15. of QUIC-TRANSPORT}}
 respectively are asociated with Path ID 0. Also, the Path ID for
 the connection ID specified in the "preferred address" transport parameter is 0.
 Use of the "preferred address" is considered as a migration event
 that does not change the Path ID.
 
 This extension uses multiple packet number spaces, one for each active path.
-As such each path has two associated packet number spaces for each direction.
+As such, each path maintains distinct packet number states for sending and receiving packets, as in {{QUIC-TRANSPORT}}.
 Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
-{{QUIC-RECOVERY}}.
+{{QUIC-RECOVERY}} on a per-path basis.
 
 Using multiple packet number spaces requires changes in the way AEAD is
 applied for packet protection, as explained in {{multipath-aead}},
 and tighter constraints for key updates, as explained in {{multipath-key-update}}.
 The Path Identifier associated with the Destination Connection ID is used to
-construct the packet protection nonce defined in {#multipath-aead}.
+construct the packet protection nonce defined in {{multipath-aead}}.
 
 This specification
 requires the sender to use a non-zero connection ID when opening an
@@ -232,8 +232,8 @@ of a path, but it can validate a new path created by a client.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
 (see {{Section 8 of QUIC-TRANSPORT}}).
-The connection ID of a packet is used to associate a packet to a path identifier.
-And the path identifier is used to associate the packet to a packet number space.
+The connection ID of a packet binds the packet to a path identifier, and therefore
+to a packet number space.
 Further, the path identifier is used as numerical identifier
 in control frames. E.g. an endpoint sends a PATH_ABANDON frame to request its peer to
 abandon a certain path.
@@ -319,10 +319,11 @@ frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_
 retire connection IDs after a successful handshake indicating multipath support by both endpoints.
 
 Endpoints MUST NOT issue connection IDs with path identifiers larger than
-the path limitation declared by the initial_max_paths transport parameter
-or MAX_PATHS frames.
+the path limitation advertised by the peer, corresponding to the maximum value
+between the peer's initial_max_paths transport parameter and received
+MAX_PATHS frames.
 
-To open a new path, an endpoint MUST use a connection ID assciated with
+To open a new path, an endpoint MUST use a connection ID associated with
 a new, unused Path ID.
 Still, the receiver may observe a connection ID associated with a used Path ID
 on different 4-tuples due to, e.g., NAT rebinding. In such case, the receiver reacts
@@ -344,7 +345,7 @@ Connection IDs cannot be reused, thus opening a new path requires the
 use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
 each endpoint uses MP_NEW_CONNECTION_ID frames
-to issue usable connections IDs to reach it. As such to open
+to issue usable Path ID-specific connections IDs to reach it. As such to open
 a new path by initiating path validation, both sides need at least
 one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
 with an unused Path ID.
@@ -676,7 +677,7 @@ in {{Section 8.2 of QUIC-TRANSPORT}}.
 The endhost can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
 of new data on a path. Note that if a path became idle due to a timeout,
-the endpoint SHOULD send an PATH_ABANDON frame before closing the path.
+the endpoint SHOULD send a PATH_ABANDON frame before closing the path.
 
 In the "Closing" state, the endhost SHOULD NOT send packets on this
 path anymore, as there is no guarantee that the peer can still map
@@ -1208,7 +1209,8 @@ PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 Once a Path ID is retired by PATH_ABANDON,
-it MUST NOT be reused on any other path.
+endpoints MUST NOT send packets associated with that Path ID anymore,
+even on other network paths.
 
 ## PATH_STANDBY frame {#path-standby-frame}
 
