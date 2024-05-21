@@ -103,7 +103,7 @@ migration.
 which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
   * The use of this multipath extension requires the use of non-zero
-connection IDs in both directions.
+length connection IDs in both directions.
   * A path is determined by the 4-tuple of source and destination IP
 address as well as source and destination port. Therefore, there can be
 at most one active paths/connection ID per 4-tuple.
@@ -135,7 +135,7 @@ The Path ID is used to
 address a path in the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as ACK_MP {{ack-mp-frame}}.
-Further, Connection IDs are issued per Path ID.
+Further, connection IDs are issued per Path ID.
 Each connection ID is associated with one path identifier
 but multiple connection IDs can be associated with the same path identifier.
 
@@ -267,7 +267,7 @@ parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
 When advertising the initial_max_paths transport parameter, the endpoint
-MUST use non-zero Source and Destination Connection IDs.
+MUST use non-zero length Source and Destination Connection IDs.
 If an initial_max_paths transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
@@ -282,7 +282,7 @@ defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
 The initial_max_paths transport parameter limits the initial maximum number of active paths
 that can be used during a connection.
-The transport parameter "active_connection_id_limit"
+The active_connection_id_limit transport parameter
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
 initial_max_paths parameter is negotiated successfully.
 Endpoints might prefer to retain spare connection IDs so that they can
@@ -551,7 +551,7 @@ Path Identifiers.
 
 Receiving a MP_RETIRE_CONNECTION_ID frame causes an endpoint to discard
 the resources associated with that connection ID. Note that retirement of
-connection IDs will not effect the use of Path Identifier for the specific path.
+connection IDs will not retire the Path Identifier for the specific path.
 The list of received packets used to send acknowledgements also remains
 uneffected as the packet number space is associated with a path.
 
