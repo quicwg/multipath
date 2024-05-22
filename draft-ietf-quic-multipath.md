@@ -557,7 +557,7 @@ uneffected as the packet number space is associated with a path.
 
 The peer, that sends the MP_RETIRE_CONNECTION_ID frame, can keep sending data using
 the same IP addresses and UDP ports previously associated with
-that connection ID, but MUST use a different connection ID when doing so.
+that connection ID, but has to use a different connection ID when doing so.
 If no new connection ID is available anymore, the endpoint cannot send on
 this path. This can happen if, e.g., the connection ID issuer requests retirement of a
 connection ID using the Retire Prior To field in the NEW_CONNECTION_ID frame but does
