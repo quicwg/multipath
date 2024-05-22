@@ -341,7 +341,7 @@ All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation {#path-initiation}
 
-Connection IDs cannot be reused, thus opening a new path requires the
+Opening a new path requires the
 use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
 each endpoint uses MP_NEW_CONNECTION_ID frames
