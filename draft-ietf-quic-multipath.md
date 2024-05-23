@@ -153,10 +153,11 @@ loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}} on a per-path basis.
 
 Using multiple packet number spaces requires changes in the way AEAD is
-applied for packet protection, as explained in {{multipath-aead}},
-and tighter constraints for key updates, as explained in {{multipath-key-update}}.
-The Path Identifier associated with the Destination Connection ID is used to
-construct the packet protection nonce defined in {{multipath-aead}}.
+applied for packet protection, as explained in {{multipath-aead}}. 
+More concretely, the path identifier is used to construct the
+packet protection nonce in addition to the packet number
+in order to enable use of the same packet number on different paths.
+Further, tighter constraints for key updates are needed, as explained in {{multipath-key-update}}.
 
 This specification
 requires the sender to use a non-zero connection ID when opening an
