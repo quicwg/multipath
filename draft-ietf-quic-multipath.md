@@ -554,7 +554,7 @@ Receiving a MP_RETIRE_CONNECTION_ID frame causes an endpoint to discard
 the resources associated with that connection ID. Note that retirement of
 connection IDs will not retire the Path Identifier for the specific path.
 The list of received packets used to send acknowledgements also remains
-uneffected as the packet number space is associated with a path.
+unaffected as the packet number space is associated with a path.
 
 The peer, that sends the MP_RETIRE_CONNECTION_ID frame, can keep sending data using
 the same IP addresses and UDP ports previously associated with
