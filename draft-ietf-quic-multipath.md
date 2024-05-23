@@ -153,7 +153,7 @@ loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}} on a per-path basis.
 
 Using multiple packet number spaces requires changes in the way AEAD is
-applied for packet protection, as explained in {{multipath-aead}}. 
+applied for packet protection, as explained in {{multipath-aead}}.
 More concretely, the path identifier is used to construct the
 packet protection nonce in addition to the packet number
 in order to enable use of the same packet number on different paths.
