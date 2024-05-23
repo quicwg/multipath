@@ -517,7 +517,7 @@ MUST send a PATH_ABANDON frame to retire the Path ID.
 
 ### Allocating, Consuming and Retiring Connection IDs {#consume-retire-cid}
 
-Each endpoints pre-allocate a Path Identifier for each new connection ID.
+Each connection ID is associated with a Path ID.
 The Path Identifier 0 indicates the initial path of the connection.
 Endpoints SHOULD issue at least one unused connection ID with unused Path Identifier.
 
