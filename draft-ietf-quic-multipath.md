@@ -514,7 +514,6 @@ probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
 
-
 ### Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
