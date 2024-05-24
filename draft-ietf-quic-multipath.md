@@ -383,18 +383,6 @@ All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation
 
-Connection IDs cannot be reused, thus opening a new path requires the
-use of a new Connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
-Following {{QUIC-TRANSPORT}}, each endpoint uses MP_NEW_CONNECTION_ID frames
-to issue usable connections IDs to reach it. As such to open
-a new path by initiating path validation, both sides need at least
-one Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated with an unused Path ID.
-
-If the transport parameter "initial_max_paths" is negotiated as N,
-and the client is already actively using N paths, the limit is reached.
-If the client wants to start a new path, it has to retire one of
-the established paths.
-
 When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
@@ -403,6 +391,26 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
+
+If the transport parameter "initial_max_paths" is negotiated as N,
+and the client is already actively using N paths, the limit is reached.
+If the client wants to start a new path, it has to retire one of
+the established paths.
+
+Connection IDs cannot be reused, thus opening a new path requires the
+use of a new Connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
+Following {{QUIC-TRANSPORT}}, each endpoint uses MP_NEW_CONNECTION_ID frames
+to issue usable connections IDs to reach it. As such to open
+a new path by initiating path validation, both sides need at least
+one Connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated with an unused Path ID.
+
+Endpoints use the same Path ID for one specific path in both directions.
+The client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.
+An endpoint decides which Path ID is used for the new path
+by picking one of the peer-allocated CID with the specified Path ID.
+Then, the endpoint sends a PATH_CHALLENGE with the chosen CID. 
+If the peer receives the PATH_CHALLENGE,
+it MUST pick a Connection ID with the same path ID for sending the PATH_RESPONSE.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
