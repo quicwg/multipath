@@ -129,7 +129,7 @@ parameter, as specified in {{nego}}.
 
 This extension specifies a new Path Identifier (Path ID), which is an
 integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
-monotonically increasing and cannot be reused. 
+monotonically increasing and cannot be reused.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
