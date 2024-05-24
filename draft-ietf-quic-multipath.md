@@ -129,15 +129,15 @@ parameter, as specified in {{nego}}.
 
 This extension specifies a new Path Identifier (Path ID), which is an
 integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
-monotonically increasing and cannot be reused.
+monotonically increasing and cannot be reused. 
 
-The Path ID is used to
+The same Path ID is used in both directions to
 address a path in the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as ACK_MP {{ack-mp-frame}}.
 Further, connection IDs are issued per Path ID.
-Each connection ID is associated with one path identifier
-but multiple connection IDs can be associated with the same path identifier.
+That means each connection ID is associated with exactly one path identifier
+but multiple connection IDs are usually issued for each path identifier.
 
 The Path ID of the initial path is 0. Connection IDs
 which are issued by a NEW_CONNECTION_ID frame {{Section 19.15. of QUIC-TRANSPORT}}
