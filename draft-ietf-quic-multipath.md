@@ -365,7 +365,7 @@ a new path by initiating path validation, both sides need at least
 one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
 with an unused Path ID.
 
-Endpoints use the same Path ID for one specific path in both directions.
+The same Path ID is used in both directions.
 The client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.
 An endpoint decides which Path ID is used for the new path
 by picking one of the peer-allocated CID with the specified Path ID.
