@@ -474,7 +474,7 @@ packet was sent on the path, as defined in {{Section 6.2 of QUIC-RECOVERY}},
 before sending MP_RETIRE_CONNECTION_ID frames.
 This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}.
 Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
-for all connection IDs associated to the Path ID of the abandoned path.
+for all connection IDs associated to the Path ID of the abandoned path
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
 The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in the
