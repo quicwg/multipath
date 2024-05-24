@@ -370,6 +370,10 @@ it MUST pick a Connection ID with the same path ID for sending the PATH_RESPONSE
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initation attempt.
+However, as the used Path ID is anyway consumed,
+and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
+on another path to inform the peer that the Path ID cannot be used anymore.
+
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. When the multipath extension
 is negotiated, the reception of "non-probing"
@@ -452,10 +456,6 @@ the only way for an endhost to detect path closure (see
 
 PATH_ABANDON frame causes all CIDs allocated by both
 of the endpoints for the specified Path ID to be retired.
-
-When path validation of a new path fails, the used Path ID is anyway consumed,
-and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
-on another path to inform the peer that the Path ID cannot be used anymore.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
 apply on the whole connection. In particular, the reception of either a
