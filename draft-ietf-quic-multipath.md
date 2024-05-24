@@ -477,6 +477,18 @@ The receiver of a PATH_ABANDON frame MAY also send
 a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
+The PATH_ABANDON frame is retires the associated Path Identifier.
+When an endpoint receives a PATH_ABANDON frame,
+it SHOULD NOT use the associated Path Identifier in future packets, except
+in ACK_MP frames for inflight packets and
+in MP_RETIRE_CONNECTION_ID frames for CID retirement.
+
+PATH_ABANDON frames can be sent on any path,
+not only the path that is intended to be closed. Thus, a path can
+be abandoned even if connectivity on that path is already broken.
+Respectively, if there is still an active path, it is RECOMMENDED to
+send a PATH_ABANDON frame after an idle time on another path.
+
 When a path is abandoned, all CIDs allocated by both
 of the endpoints for the specified Path ID need to be retired.
 When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
@@ -491,12 +503,6 @@ are properly discarded.
 The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in the
 next section.
 
-PATH_ABANDON frames can be sent on any path,
-not only the path that is intended to be closed. Thus, a path can
-be abandoned even if connectivity on that path is already broken.
-Respectively, if there is still an active path, it is RECOMMENDED to
-send a PATH_ABANDON frame after an idle time on another path.
-
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. If the client received a PATH_ABANDON
@@ -507,11 +513,7 @@ the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
-Note that PATH_ABANDON frame is also used as a signal for the retirement
-of the associated Path Identifier. When endpoint received PATH_ABANDON frame,
-it SHOULD NOT use the associated Path Identifier in future packets, except
-in ACK_MP frames for inflight packets or
-in MP_RETIRE_CONNECTION_ID frames for CID retirement.
+
 
 ### Refusing a New Path
 
