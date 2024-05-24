@@ -367,6 +367,12 @@ one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
 with the same, unused Path ID. If the peer receives the PATH_CHALLENGE,
 it MUST pick a Connection ID with the same path ID for sending the PATH_RESPONSE.
 
+If the server receives a PATH_CHALLENGE before receiving
+a MP_NEW_CONNECTION_ID for the specific path, it MAY choose
+to ignore the PATH_CHALLENGE, or it can choose to send the
+PATH_RESPONSE frame upon reception of a MP_NEW_CONNECTION_ID
+frame containing the corresponding Path ID.
+
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initation attempt.
