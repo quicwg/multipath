@@ -131,13 +131,13 @@ This extension specifies a new Path Identifier (Path ID), which is an
 integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
 monotonically increasing and cannot be reused.
 
-The Path ID is used to
+The same Path ID is used in both directions to
 address a path in the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as ACK_MP {{ack-mp-frame}}.
 Further, connection IDs are issued per Path ID.
-Each connection ID is associated with one path identifier
-but multiple connection IDs can be associated with the same path identifier.
+That means each connection ID is associated with exactly one path identifier
+but multiple connection IDs are usually issued for each path identifier.
 
 The Path ID of the initial path is 0. Connection IDs
 which are issued by a NEW_CONNECTION_ID frame {{Section 19.15. of QUIC-TRANSPORT}}
@@ -342,20 +342,6 @@ All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation {#path-initiation}
 
-Opening a new path requires the
-use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
-Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
-each endpoint uses MP_NEW_CONNECTION_ID frames
-to issue usable Path ID-specific connections IDs to reach it. As such to open
-a new path by initiating path validation, both sides need at least
-one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
-with an unused Path ID.
-
-If the transport parameter "initial_max_paths" is negotiated as N,
-and the client is already actively using N paths, the limit is reached.
-If the client wants to start a new path, it has to retire one of
-the established paths.
-
 When the multipath option is negotiated, clients that want to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames described in
@@ -365,9 +351,29 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
+If the transport parameter "initial_max_paths" is negotiated as N,
+and the client is already actively using N paths, the limit is reached.
+If the client wants to start a new path, it has to retire one of
+the established paths.
+
+Opening a new path requires the
+use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
+Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
+each endpoint uses MP_NEW_CONNECTION_ID frames
+to issue Path ID-specific connections IDs.
+The same Path ID is used in both directions. As such to open
+a new path, both sides need at least
+one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
+with the same, unused Path ID. If the peer receives the PATH_CHALLENGE,
+it MUST pick a Connection ID with the same path ID for sending the PATH_RESPONSE.
+
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initation attempt.
+However, as the used Path ID is anyway consumed,
+and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
+on another path to inform the peer that the Path ID cannot be used anymore.
+
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. When the multipath extension
 is negotiated, the reception of "non-probing"
@@ -459,16 +465,6 @@ Both endpoints, namely the client and the server, can initiate path closure,
 by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
 requests the peer to stop sending packets with the corresponding Path Identifier.
 
-When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
-least three times the current Probe Timeout (PTO) interval as defined in
-{{Section 6.2 of QUIC-RECOVERY}} after the last packet was sent on the path,
-before sending the MP_RETIRE_CONNECTION_ID frame for all the corresponding Connection
-IDs used for this path. This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}
-to ensure that paths close cleanly and that delayed or reordered packets
-are properly discarded.
-The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in the
-next section.
-
 Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
 the path is or will be not usable anymore, e.g. in case of a mobility
@@ -481,11 +477,31 @@ The receiver of a PATH_ABANDON frame MAY also send
 a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
+The PATH_ABANDON frame is retires the associated Path Identifier.
+When an endpoint receives a PATH_ABANDON frame,
+it SHOULD NOT use the associated Path Identifier in future packets, except
+in ACK_MP frames for inflight packets and
+in MP_RETIRE_CONNECTION_ID frames for CID retirement.
+
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
 Respectively, if there is still an active path, it is RECOMMENDED to
 send a PATH_ABANDON frame after an idle time on another path.
+
+When a path is abandoned, all CIDs allocated by both
+of the endpoints for the specified Path ID need to be retired.
+When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
+least three times the current Probe Timeout (PTO) interval after the last
+packet was sent on the path, as defined in {{Section 6.2 of QUIC-RECOVERY}},
+before sending MP_RETIRE_CONNECTION_ID frames.
+This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}.
+Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
+for all connection IDs associated to the Path ID of the abandoned path
+to ensure that paths close cleanly and that delayed or reordered packets
+are properly discarded.
+The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in the
+next section.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
@@ -497,11 +513,6 @@ the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
-Note that PATH_ABANDON frame is also used as a signal for the retirement
-of the associated Path Identifier. When endpoint received PATH_ABANDON frame,
-it SHOULD not use the associated Path Identifier in future packets, it can
-only use the Path ID in ACK_MP frames for inflight packets or
-in MP_RETIRE_CONNECTION_ID frames for CID retirement.
 
 ### Refusing a New Path
 
@@ -1185,8 +1196,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 PATH_ABANDON frames contain the following fields:
 
 Path Identifier:
-: The Path Identifier of the Destination Connection ID used by the
-  receiver of the frame to send packets over the path to abandon.
+: The Path Identifier to abandon.
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
@@ -1232,9 +1242,8 @@ PATH_STANDBY frames are formatted as shown in {{fig-path-standby-format}}.
 PATH_STANDBY Frames contain the following fields:
 
 Path Identifier:
-: The Path Identifier of the Destination Connection ID used by the
-  receiver of this frame to send packets over the path the status update
-  corresponds to. All Path IDs that have been issued
+: The Path Identifier the status update corresponds to.
+  All Path IDs that have been issued
   MAY be specified, even if they are not yet in use over a path.
 
 Path Status sequence number:
@@ -1282,9 +1291,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 PATH_AVAILABLE frames contain the following fields:
 
 Path Identifier:
-: The Path Identifier of the Destination Connection ID used by the
-  receiver of this frame to send packets over the path the status update
-  corresponds to.
+: The Path Identifier the status update corresponds to.
 
 Path Status sequence number:
 : A variable-length integer specifying
