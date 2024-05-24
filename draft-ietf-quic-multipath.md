@@ -360,17 +360,11 @@ Opening a new path requires the
 use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
 each endpoint uses MP_NEW_CONNECTION_ID frames
-to issue usable Path ID-specific connections IDs to reach it. As such to open
-a new path by initiating path validation, both sides need at least
+to issue Path ID-specific connections IDs. 
+The same Path ID is used in both directions. As such to open
+a new path, both sides need at least
 one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
-with an unused Path ID.
-
-The same Path ID is used in both directions.
-The client MUST choose a previously unused Path ID for which both endpoints have already issued at least one connection ID.
-An endpoint decides which Path ID is used for the new path
-by picking one of the peer-allocated CID with the specified Path ID.
-Then, the endpoint sends a PATH_CHALLENGE with the chosen CID. 
-If the peer receives the PATH_CHALLENGE,
+with the same, unused Path ID. If the peer receives the PATH_CHALLENGE,
 it MUST pick a Connection ID with the same path ID for sending the PATH_RESPONSE.
 
 If validation succeeds, the client can continue to use the path.
