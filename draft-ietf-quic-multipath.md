@@ -454,8 +454,8 @@ However, implicit signals such as idle time or packet losses might be
 the only way for an endhost to detect path closure (see
 {{idle-time-close}}).
 
-PATH_ABANDON frame causes all CIDs allocated by both
-of the endpoints for the specified Path ID to be retired.
+When a path is abandoned, all CIDs allocated by both
+of the endpoints for the specified Path ID need to be retired.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
 apply on the whole connection. In particular, the reception of either a
