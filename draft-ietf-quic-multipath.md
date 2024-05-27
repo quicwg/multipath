@@ -637,14 +637,14 @@ after a spurious estimate of path abandonment by the client.
        o
        | PATH_CHALLENGE sent/received on new path
        v
- +------------+    Path validation abandoned
+ +------------+    Path validation failed
  | Validating |----------------------------------+
  +------------+                                  |
        |                                         |
        | PATH_RESPONSE received                  |
        |                                         |
        v                                         |
- +------------+     Path blackhole detected      |
+ +------------+        Idle timeout              |
  |   Active   |----------------------------------+
  +------------+                                  |
        |                                         |
