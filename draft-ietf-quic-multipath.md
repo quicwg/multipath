@@ -1378,7 +1378,7 @@ a connection error of type FRAME_ENCODING_ERROR.
 Length, Connection ID, Stateless Reset Token fields have exactly the same
 definition in NEW_CONNECTION_ID frame {{Section 19.15 of QUIC-TRANSPORT}}.
 
-Note that connection IDs issued in NEW_CONNECTION_ID frames MUST be treated as if
+Note that connection IDs issued or retired in NEW_CONNECTION_ID frames MUST be treated as if
 their Path Identifier is 0 for compatibility with {{QUIC-TRANSPORT}}.
 
 
