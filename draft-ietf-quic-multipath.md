@@ -552,12 +552,6 @@ using the corresponding connection IDs of the specified path and retire them
 with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection ID
 to the set of active connection IDs belonging to the specified path.
 
-Endpoints MUST NOT issue new connection IDs which has Path Identifiers larger than
-the max path identifier field in MP_MAX_PATHS frames {{max-paths-frame}}.
-When endpoint finds it has not enough available unused Path Identifiers,
-it SHOULD send a MP_MAX_PATHS frame to inform the peer that it could use larger active
-Path Identifiers.
-
 
 ### Effect of MP_RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
@@ -896,12 +890,6 @@ After a path is abandoned, the Path Identifier associated with the path
 is considered retired and MUST NOT be reused in new paths for security
 consideration {{multipath-aead}}.
 
-Endpoint SHOULD send MAX_PATHS frames {{max-paths-frame}} to raise
-the limit of Path Identifiers when endpoint finds there are not enough unused
-Path Identifiers (e.g. more than half of the available Path Identifiers
-are used).
-
-
 # Implementation Considerations
 
 ## Number Spaces
@@ -1179,9 +1167,6 @@ Path Identifier:
 
 The PATH_ABANDON frame informs the peer to abandon a path and retire the associated Path ID.
 
-When there is not enough unused Path Identifiers, endpoints SHOULD
-send MAX_PATHS frame to inform the peer that new Path Identifiers are available.
-
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
@@ -1433,7 +1418,7 @@ MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
 ~~~
 MAX_PATHS Frame {
   Type (i) = 0x15228c0b,
-  Maximum Paths (i),
+  Maximum Path Identifier (i),
 }
 ~~~
 {: #fig-max-paths-frame-format title="MAX_PATHS Frame Format"}
@@ -1441,18 +1426,28 @@ MAX_PATHS Frame {
 MAX_PATHS frames contain the following field:
 
 Maximum Path Identifier:
-: A count of the cumulative number of path that can be opened
-over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not
-possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits
-opening of a path with Path Identifier larger than this limit MUST be treated
-as a connection error of type FRAME_ENCODING_ERROR.
+: The latest Path ID that can be used for this connection.
+  This value cannot exceed 2^32-1, as it is not
+  possible to encode Path IDs larger than 2^32-1.
+
+Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
+that uses a Path ID that is larger than the announced Path ID
+MUST be treated as a connection error of type FRAME_ENCODING_ERROR.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
-a lower path limit than was previously received. MAX_PATHS frames that
-do not increase the path limit MUST be ignored.
+a smaller Path ID than was previously received. MAX_PATHS frames that
+do not announce a larger Path ID than previously received MUST be ignored.
 
-An endpoint MUST NOT initiate a path with a path ID higher than the Maximum Paths value.
-An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens more paths than was permitted.
+Endpoints SHOULD NOT issue new connection IDs which have path identifiers larger than
+the Path ID announced in the Maximum Path Identifier field in the 
+MP_MAX_PATHS frame {{max-paths-frame}}.
+
+An endpoint MUST NOT initiate a path with a Path ID larger than the Maximum Path Identifier value.
+An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION
+if a peer opens a path with a larger Path ID than permitted.
+
+When there is not enough unused path identifiers, endpoints can
+send MAX_PATHS frame to inform the peer that new path identifiers are available.
 
 
 # Error Codes {#error-codes}
