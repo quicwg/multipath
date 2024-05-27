@@ -360,7 +360,7 @@ the established paths.
 Opening a new path requires the
 use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
-each endpoint uses the MP_NEW_CONNECTION_ID frames as specified in this extension
+each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
 to issue Path ID-specific connections IDs.
 The same Path ID is used in both directions. As such to open
 a new path, both sides need at least
