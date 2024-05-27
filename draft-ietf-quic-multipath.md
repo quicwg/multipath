@@ -565,12 +565,12 @@ connection IDs will not retire the Path Identifier for the specific path.
 The list of received packets used to send acknowledgements also remains
 unaffected as the packet number space is associated with a path.
 
-The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data using
-the same IP addresses and UDP ports associated with
-the path ID, but uses a different connection ID when doing so.
-If no other connection ID is available, the endpoint cannot send on
+The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
+on the path that the retired connection ID was used on but has
+to use a different connection ID for the same Path ID when doing so.
+If no other connection ID for the same Path ID is available, the endpoint cannot send on
 this path. This can happen if, e.g., the connection ID issuer requests retirement of a
-connection ID using the Retire Prior To field in the NEW_CONNECTION_ID frame but does
+connection ID using the Retire Prior To field in the MP_NEW_CONNECTION_ID frame but does
 provide sufficient new CIDs.
 
 Note that even if a peer cannot send on a path anymore because it does not have
