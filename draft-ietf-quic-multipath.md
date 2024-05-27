@@ -319,11 +319,6 @@ for at least one unused path identifier. Endpoints SHOULD use the MP_NEW_CONNECT
 frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to
 retire connection IDs after a successful handshake indicating multipath support by both endpoints.
 
-Endpoints MUST NOT issue connection IDs with path identifiers larger than
-the path limitation advertised by the peer, corresponding to the maximum value
-between the peer's initial_max_paths transport parameter and received
-MAX_PATHS frames.
-
 To open a new path, an endpoint MUST use a connection ID associated with
 a new, unused Path ID.
 Still, the receiver may observe a connection ID associated with a used Path ID
@@ -1441,6 +1436,8 @@ do not announce a larger Path ID than previously received MUST be ignored.
 Endpoints SHOULD NOT issue new connection IDs which have path identifiers larger than
 the Path ID announced in the Maximum Path Identifier field in the 
 MP_MAX_PATHS frame {{max-paths-frame}}.
+If no MAX_PATHS frame was received yet, the maximum Path ID
+correspondes to value of initial_max_paths transport parameter.
 
 An endpoint MUST NOT initiate a path with a Path ID larger than the Maximum Path Identifier value.
 An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION
