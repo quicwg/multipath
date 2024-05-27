@@ -939,11 +939,12 @@ from the list of CID provided by the peer. Packets received
 on the path carry a Destination CID selected by the peer from
 the list provided to that peer.
 
-The relation between packet number spaces and paths is fixed. CIDs are
-separately allocated for each Path Identifier. Rotating the destination CID on a
-path does not change the path identifier. NAT rebinding, though it changes the
-4-tuple of the path, also does not change the path identifier. The packet number
-space does not change when CID rotation happens within a given Path ID.
+The relation between packet number spaces and paths is fixed.
+CIDs are separately allocated for each Path ID. Rotating the connection ID on a
+path does not change the Path ID. NAT rebinding, though it changes the
+4-tuple of the path, also does not change the path identifier.
+The packet number space does not change when connection ID 
+rotation happens within a given Path ID.
 
 Data associated with the transmission and reception on a given
 path can be associated to either the "path state", or to the
