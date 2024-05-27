@@ -1295,7 +1295,8 @@ their Path ID is 0 for compatibility with {{QUIC-TRANSPORT}}.
 
 An endpoint sends a MP_RETIRE_CONNECTION_ID frame (type=0x15228c0a) instead of
 RETIRE_CONNECTION_ID frame to indicate that it will no longer use a connection ID for a specific path
-that was issued by its peer. For Path ID includes the connection ID provided during the handshake.
+that was issued by its peer. This includes the connection ID used
+during the handshake for the initial path with Path ID 0.
 Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for future use, unless the path specified
 by the Path ID has been abandoned. New connection IDs can be
