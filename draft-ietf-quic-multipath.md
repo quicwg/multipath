@@ -1300,7 +1300,7 @@ during the handshake for the initial path with Path ID 0.
 Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for future use, unless the path specified
 by the Path ID has been abandoned. New connection IDs can be
-delivered to a peer using the MP_NEW_CONNECTION_ID frame ({{mp-new-conn-id-frame}}).
+delivered to a peer using the MP_NEW_CONNECTION_ID frame (see Section {{mp-new-conn-id-frame}}).
 
 Retiring a connection ID invalidates the stateless reset token associated with that connection ID.
 
