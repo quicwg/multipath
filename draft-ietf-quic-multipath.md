@@ -113,7 +113,7 @@ due to a NAT rebinding), this is considered as a migration event.
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
 a new preferred path, and it allows the peer to release resources
-associated with the old path. the multipath extension specified in this document requires
+associated with the old path. The multipath extension specified in this document requires
 several changes to that mechanism:
 
   *  Allow simultaneous transmission of non-probing packets on multiple
