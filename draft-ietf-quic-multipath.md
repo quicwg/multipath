@@ -481,7 +481,7 @@ The PATH_ABANDON frame is retires the associated Path Identifier.
 When an endpoint receives a PATH_ABANDON frame,
 it SHOULD NOT use the associated Path Identifier in future packets, except
 in ACK_MP frames for inflight packets and
-in MP_RETIRE_CONNECTION_ID frames for CID retirement.
+in MP_RETIRE_CONNECTION_ID frames for connection ID retirement.
 
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
@@ -489,7 +489,7 @@ be abandoned even if connectivity on that path is already broken.
 Respectively, if there is still an active path, it is RECOMMENDED to
 send a PATH_ABANDON frame after an idle time on another path.
 
-When a path is abandoned, all CIDs allocated by both
+When a path is abandoned, all connection IDs allocated by both
 of the endpoints for the specified Path ID need to be retired.
 When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
 least three times the current Probe Timeout (PTO) interval after the last
@@ -573,12 +573,12 @@ that connection ID, but has to use a different connection ID when doing so.
 If no new connection ID is available anymore, the endpoint cannot send on
 this path. This can happen if, e.g., the connection ID issuer requests retirement of a
 connection ID using the Retire Prior To field in the NEW_CONNECTION_ID frame but does
-provide sufficient new CIDs.
+provide sufficient new connection IDs.
 
 Note that even if a peer cannot send on a path anymore because it does not have
 a valid connection ID to use, it can still acknowledge packets received on the path,
 by sending ACK_MP frames on another path, if available. Also note that,
-as there is no valid CID associated with the path, both endpoints can still send
+as there is no valid connection ID associated with the path, both endpoints can still send
 multipath control frames that contain the Path Identifier on available paths, such
 as PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE.
 
@@ -718,7 +718,7 @@ each Path Identifier is linked to a separate packet number space.
 Each PathID-specific packet number space starts at packet number 0. When following
 the packet number encoding algorithm described in {{Section A.2 of QUIC-TRANSPORT}},
 the largest packet number (largest_acked) that has been acknowledged by the
-peer in this new CID's packet number space is initially set to "None".
+peer in this new connection ID's packet number space is initially set to "None".
 
 ## Sending Acknowledgements
 
@@ -849,7 +849,7 @@ an unused connection IDs available for each side.
 In this example, the client chooses the connection ID S2
 as the Destination Connection ID in the new path.
 
-If the client has used all the allocated CID, it is supposed to retire
+If the client has used all the allocated connection IDs, it is supposed to retire
 those that are not used anymore, and the server is supposed to provide
 replacements, as specified in {{QUIC-TRANSPORT}}.
 Usually, it is desired to provide one more connection ID as currently
@@ -937,16 +937,17 @@ in {{fig-number-spaces}}.
 The path is defined by the 4-tuple through which packets are
 received and sent. Packets sent on the path will include the
 Destination Connection ID currently used for that path, selected
-from the list of CID provided by the peer. Packets received
+from the list of connection IDs provided by the peer. Packets received
 on the path carry a Destination CID selected by the peer from
 the list provided to that peer.
 
 The relation between packet number spaces and paths is fixed.
-CIDs are pre-allocated for each Path Identifier. Once CIDs are issued,
-they are assigned to one specific Path Identifier. A node may
-decide to rotate the Destination CID it uses, a NAT may decide
+Connection IDs are pre-allocated for each path identifier.
+Once connection IDs are issued,
+they are assigned to one specific path identifier. A node may
+decide to rotate the Destination connection ID it uses, a NAT may decide
 to change the 4-tuple over which packets from that path will be
-received. The packet number space does not change when CID
+received. The packet number space does not change when connection ID
 rotation happens within a given Path ID.
 
 Data associated with the transmission and reception on a given
@@ -955,18 +956,19 @@ state of either the sender or receiver number spaces. For example:
 
 * RTT measurements and congestion state are logically associated
   with the 4-tuple. They will remain unchanged if data starts
-  being received or sent through the same 4-tuple using new CIDs.
+  being received or sent through the same 4-tuple using new
+  connection IDs.
 
 * Implementations of loss recovery typically maintain lists of
   packets sent and not yet acknowledged. Such information, along
   with the value of the next PN to use for sending, is
   logically associated with the "Sender Number Space", which remain
-  unchanged when CID rotation happens.
+  unchanged when connection ID rotation happens.
 
 * Sending of acknowledgement requires keeping track of the PN of
   received packets and of acknowledgements previously sent. Such
   information is logically associated with the "Receiver Number Space",
-  which remain unchanged when CID rotation happens.
+  which remain unchanged when connection ID rotation happens.
 
 
 ## Congestion Control {#congestion-control}
