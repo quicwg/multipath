@@ -575,7 +575,7 @@ provide sufficient new connection IDs.
 Note that even if a peer cannot send on a path anymore because it does not have
 a valid connection ID to use, it can still acknowledge packets received on the path
 by sending ACK_MP frames on another path, if available. Also note that
-even if there is no valid coonection ID associated with the path, both endpoints can still send
+even if there is no valid connection ID associated with the path, both endpoints can still send
 multipath control frames that contain the Path ID (such as PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE)
 on other available paths.
 
