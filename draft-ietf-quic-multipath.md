@@ -1429,7 +1429,7 @@ do not announce a larger Path ID than previously received MUST be ignored.
 Endpoints SHOULD NOT issue new connection IDs which have path identifiers larger than
 the Path ID announced in the Maximum Path Identifier field in the
 MP_MAX_PATHS frame {{max-paths-frame}}.
-If no MAX_PATHS frame was received yet, the maximum Path Identifier
+If no MAX_PATHS frame was received yet, the Maximum Path Identifier
 corresponds to the value of initial_max_paths transport parameter.
 
 An endpoint MUST NOT initiate a path with a Path ID larger than the Maximum Path Identifier value.
