@@ -167,7 +167,7 @@ However, when a node selects to use zero-length connection IDs, it is not
 possible to use different connection IDs for distinguishing packets
 sent to that node over different paths.
 
-Each endhost may use several IP addresses to serve the connection. In
+Each endpoint may use several IP addresses to serve the connection. In
 particular, the multipath extension supports the following scenarios.
 
   * The client uses multiple IP addresses and the server listens on only
@@ -451,7 +451,7 @@ terminate the path by sending the PATH_ABANDON frame (see
 connection ID retirement, only retiring the associated connection ID
 does not necessarily advertise path abandon (see {{retire-cid-close}}).
 However, implicit signals such as idle time or packet losses might be
-the only way for an endhost to detect path closure (see
+the only way for an endpoint to detect path closure (see
 {{idle-time-close}}).
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
@@ -668,7 +668,7 @@ after a spurious estimate of path abandonment by the client.
 In non-final states, hosts have to track the following information.
 
 - Associated 4-tuple: The tuple (source IP, source port, destination IP,
-destination port) used by the endhost to send packets over the path.
+destination port) used by the endpoint to send packets over the path.
 
 - Associated Path Identifier: The Path ID used to address the path.
 The endpoint relies on its sequence number to send path control information
@@ -686,24 +686,24 @@ packets over the path.
 A path in the "Validating" state performs path validation as described
 in {{Section 8.2 of QUIC-TRANSPORT}}.
 
-The endhost can use all the paths in the "Active" state, provided
+The endpoint can use all the paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
 of new data on a path. Note that if a path became idle due to a timeout,
 the endpoint SHOULD send a PATH_ABANDON frame before closing the path.
 
-In the "Closing" state, the endhost SHOULD NOT send packets on this
+In the "Closing" state, the endpoint SHOULD NOT send packets on this
 path anymore, as there is no guarantee that the peer can still map
-the packets to the connection. The endhost SHOULD wait for
+the packets to the connection. The endpoint SHOULD wait for
 the acknowledgment of the PATH_ABANDON frame before moving the path
 to the "Closed" state to ensure a graceful termination of the path.
 
-When a path reaches the "Closed" state, the endhost releases all the
+When a path reaches the "Closed" state, the endpoint releases all the
 path's associated resources, including the associated connection IDs.
 Endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames for releasing the
 associated connection IDs following {{QUIC-TRANSPORT}}. Considering
 endpoints are not expected to send packets on the current path in the "Closed"
 state, endpoints can send MP_RETIRE_CONNECTION_ID frames on other
-available paths. Consequently, the endhost is not able to send nor
+available paths. Consequently, the endpoint is not able to send or
 receive packets on this path anymore.
 
 # Multipath Operation with Multiple Packet Number Spaces
