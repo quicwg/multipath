@@ -942,7 +942,7 @@ CIDs are separately allocated for each Path ID.
 Rotating the connection ID on a path does not change the Path ID.
 NAT rebinding, though it changes the 4-tuple of the path,
 also does not change the path identifier.
-The packet number space does not change when connection ID 
+The packet number space does not change when connection ID
 rotation happens within a given Path ID.
 
 Data associated with the transmission and reception on a given
