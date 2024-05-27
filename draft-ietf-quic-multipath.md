@@ -483,7 +483,7 @@ it SHOULD NOT use the associated Path ID in future frames, except
 in ACK_MP frames for inflight packets and
 in MP_RETIRE_CONNECTION_ID frames for connection ID retirement.
 
-After a path is abandoned, the Path ID MUST NOT be reused 
+After a path is abandoned, the Path ID MUST NOT be reused
 for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
 
 PATH_ABANDON frames can be sent on any path,
