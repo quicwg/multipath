@@ -1398,8 +1398,8 @@ Sequence Number:
 
 ## MAX_PATHS frames {#max-paths-frame}
 
-A MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths
-it is permitted to open.
+A MAX_PATHS frame (type=0x15228c0b) informs the peer of largest Path ID that
+is permitted to use on any path.
 
 MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
@@ -1414,14 +1414,13 @@ MAX_PATHS Frame {
 MAX_PATHS frames contain the following field:
 
 Maximum Path Identifier:
-: The latest Path ID that can be used for this connection.
+: The largest Path ID that can be used for this connection.
   This value cannot exceed 2^32-1, as it is not
-  possible to encode Path IDs larger than 2^32-1.
+  possible to encode Path IDs larger than 2^32-1 as variable integer.
 
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
 that uses a Path ID that is larger than the announced Path ID
 MUST be treated as a connection error of type FRAME_ENCODING_ERROR.
-
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a smaller Path ID than was previously received. MAX_PATHS frames that
@@ -1430,7 +1429,7 @@ do not announce a larger Path ID than previously received MUST be ignored.
 Endpoints SHOULD NOT issue new connection IDs which have path identifiers larger than
 the Path ID announced in the Maximum Path Identifier field in the
 MP_MAX_PATHS frame {{max-paths-frame}}.
-If no MAX_PATHS frame was received yet, the maximum Path ID
+If no MAX_PATHS frame was received yet, the maximum Path Identifier
 correspondes to value of initial_max_paths transport parameter.
 
 An endpoint MUST NOT initiate a path with a Path ID larger than the Maximum Path Identifier value.
