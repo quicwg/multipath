@@ -255,12 +255,13 @@ defined as follows:
   initial_max_paths transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This is
   a variable-length integer value specifying the maximum number of
-  active concurrent paths an endpoint is willing to build.
+  active concurrent paths an endpoint is willing to maintain.
   The value of the initial_max_paths parameter MUST be at least 2.
   An endpoint that receives a value less than 2 MUST close
-  the connection with an error of type TRANSPORT_PARAMETER_ERROR. Setting
-  this parameter is equivalent to sending a MAX_PATHS ({{max-paths-frame}})
-  of the corresponding type with the same value.
+  the connection with an error of type TRANSPORT_PARAMETER_ERROR.
+
+Setting initial_max_paths parameter is equivalent to sending a
+MAX_PATHS frame ({{max-paths-frame}}) with the same value.
 
 If either of the endpoints does not advertise the initial_max_paths transport
 parameter, then the endpoints MUST NOT use any frame or
@@ -351,7 +352,7 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
-If the transport parameter "initial_max_paths" is negotiated as N,
+If the transport parameter initial_max_paths is negotiated as N,
 and the client is already actively using N paths, the limit is reached.
 If the client wants to start a new path, it has to retire one of
 the established paths.
