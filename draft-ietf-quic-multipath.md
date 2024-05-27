@@ -730,7 +730,7 @@ to distinguish the path-specific packet number space.
 
 Acknowledgements of Initial and Handshake packets MUST be carried using
 ACK frames, as specified in {{QUIC-TRANSPORT}}. The ACK frames, as defined
-in {{QUIC-TRANSPORT}}, do not have a 
+in {{QUIC-TRANSPORT}}, do not have a
 Path Identifier field to identify the path and this the packet number space.
 If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
