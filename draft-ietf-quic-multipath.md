@@ -500,7 +500,7 @@ Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
 for all connection IDs associated to the Path ID of the abandoned path
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
-The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in 
+The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in
 Section {{retire-cid-close}}.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
@@ -879,7 +879,7 @@ rotation happens within a given Path ID.
 
 Data associated with the transmission and reception such RTT measurements,
 congestion control state, or loss recovery are maintained per packet number
-space and as such per Path ID. 
+space and as such per Path ID.
 
 
 ## Congestion Control {#congestion-control}
