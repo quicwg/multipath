@@ -1436,7 +1436,7 @@ a smaller Path ID than was previously received. MAX_PATHS frames that
 do not announce a larger Path ID than previously received MUST be ignored.
 
 Endpoints SHOULD NOT issue new connection IDs which have path identifiers larger than
-the Path ID announced in the Maximum Path Identifier field in the 
+the Path ID announced in the Maximum Path Identifier field in the
 MP_MAX_PATHS frame {{max-paths-frame}}.
 If no MAX_PATHS frame was received yet, the maximum Path ID
 correspondes to value of initial_max_paths transport parameter.
