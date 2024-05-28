@@ -373,6 +373,7 @@ If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initation attempt.
 However, as the used Path ID is anyway consumed,
 and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
+and retire all corresponding connection IDs by sending MP_RETIRE_CONNECTION_ID frames
 on another path to inform the peer that the Path ID cannot be used anymore.
 
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
@@ -493,7 +494,8 @@ PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
 Respectively, if there is still an active path, it is RECOMMENDED to
-send a PATH_ABANDON frame after an idle time on another path.
+send a PATH_ABANDON frame and retire all corresponding connection IDs
+by sending MP_RETIRE_CONNECTION_ID frames on another path after an idle time.
 
 When a path is abandoned, all connection IDs allocated by both
 of the endpoints for the specified Path ID need to be retired.
