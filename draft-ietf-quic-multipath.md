@@ -1334,8 +1334,8 @@ Sequence Number:
 
 ## MAX_PATHS frames {#max-paths-frame}
 
-A MAX_PATHS frame (type=0x15228c0b) informs the peer of largest Path ID that
-is permitted to use on any path.
+A MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths
+it is permitted to open.
 
 When there are not enough unused path identifiers, endpoints SHOULD
 send MAX_PATHS frame to inform the peer that new path identifiers are available.
@@ -1345,7 +1345,7 @@ MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
 ~~~
 MAX_PATHS Frame {
   Type (i) = 0x15228c0b,
-  Maximum Path Identifier (i),
+  Maximum Paths (i),
 }
 ~~~
 {: #fig-max-paths-frame-format title="MAX_PATHS Frame Format"}
@@ -1353,25 +1353,26 @@ MAX_PATHS Frame {
 MAX_PATHS frames contain the following field:
 
 Maximum Path Identifier:
-: The largest Path ID that can be used for this connection.
-  This value cannot exceed 2^32-1, as it is not
-  secure to use Path IDs larger than 2^32-1 with the security considerations outlined in {{multipath-aead}}.
+: A count of the cumulative number of paths that can be opened
+  over the lifetime of the connection. This value MUST NOT exceed 2^32-1, as
+  Path IDs are defined with a maximum value 2^32-1 as the 32 bits of the Path ID are used
+  to calculate the nonce (see Section {{multipath-aead}}).
 
-The Maximum Path Identifier MUST NOT be lower than the value
+The Maximum Paths value MUST NOT be lower than the value
 advertised in the initial_max_paths transport parameter. Receipt
-of a Path ID lower than the value of initial_max_paths transport parameter
+of a Maximum Paths value lower than the value of initial_max_paths transport parameter
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
-that uses a Path ID that is larger than the announced Path ID
+that uses a Path ID that is larger than the announced Maximum Paths value
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
-a smaller Path ID than was previously received. MAX_PATHS frames that
-do not announce a larger Path ID than previously received MUST be ignored.
+a smaller Maximum Paths value than was previously received. MAX_PATHS frames that
+do not announce a larger maximum Paths value than previously received MUST be ignored.
 
 Endpoints MUST NOT issue new connection IDs which have path identifiers larger than
-the Path ID announced by the peer in the Maximum Path Identifier field in the MAX_PATHS frame.
-If no MAX_PATHS frame was received yet, the Maximum Path Identifier
+the Maximum Paths value announced by the peer in the MAX_PATHS frame.
+If no MAX_PATHS frame was received yet, the Maximum Paths value
 corresponds to the value of initial_max_paths transport parameter.
 
 
