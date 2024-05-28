@@ -1363,7 +1363,7 @@ of a Path ID lower than the value of initial_max_paths transport parameter
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
 that uses a Path ID that is larger than the announced Path ID
-MUST be treated as a connection error of type FRAME_ENCODING_ERROR.
+MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a smaller Path ID than was previously received. MAX_PATHS frames that
