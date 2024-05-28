@@ -354,7 +354,7 @@ unless it has previously validated that address.
 
 If the transport parameter initial_max_paths is negotiated as N,
 and the client is already actively using N paths, the limit is reached.
-If the client wants to start a new path, it has to retire one of
+If the client wants to start a new path, it has to close one of
 the established paths.
 
 Opening a new path requires the
