@@ -1103,7 +1103,7 @@ Path Identifier:
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
-The PATH_ABANDON frame informs the peer to abandon a path and retire the associated Path ID.
+The PATH_ABANDON frame informs the peer to abandon a path.
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
