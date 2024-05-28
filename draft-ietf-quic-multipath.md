@@ -533,7 +533,7 @@ that is idenfied by the Path ID as specified in the Path Identifier field of
 the MP_NEW_CONNECTION_ID frame {{mp-new-conn-id-frame}}.
 The Path ID 0 indicates the initial path of the connection.
 Respectively, the connection IDs used during the handshake belong to the initial path
-with Path ID 0. 
+with Path ID 0.
 The MP_NEW_CONNECTION_ID frame is used to new issue connection IDs for all paths.
 Endpoints SHOULD issue at least one connection ID for an unused path identifier
 to allow new paths to be opened.
