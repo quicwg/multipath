@@ -859,6 +859,14 @@ ACK_MP[Path ID=1, PN=Y] ->
                                                 ACK_MP[Path ID=1, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
+After a path is abandoned, the path identifier associated with the path
+is considered retired and MUST NOT be reused in new paths for security
+considerations discussed in {{multipath-aead}}.
+
+Endpoint SHOULD send MAX_PATHS frames {{max-paths-frame}} to raise
+the limit of Path ID when endpoint finds there are not enough unused
+Path ID (e.g. more than half of the available Path ID are used).
+
 
 # Implementation Considerations
 
