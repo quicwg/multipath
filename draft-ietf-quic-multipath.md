@@ -157,7 +157,8 @@ applied for packet protection, as explained in {{multipath-aead}}.
 More concretely, the Path ID is used to construct the
 packet protection nonce in addition to the packet number
 in order to enable use of the same packet number on different paths.
-Further, tighter constraints for key updates are needed, as explained in {{multipath-key-update}}.
+The Path ID is limited to 32 bits to ensure a unique nonce.
+Further, additional consideration on key updates are explained in {{multipath-key-update}}.
 
 This specification
 requires the sender to use a non-zero connection ID when opening an
@@ -319,11 +320,6 @@ for at least one unused path identifier. Endpoints SHOULD use the MP_NEW_CONNECT
 frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to
 retire connection IDs after a successful handshake indicating multipath support by both endpoints.
 
-Endpoints MUST NOT issue connection IDs with path identifiers larger than
-the path limitation advertised by the peer, corresponding to the maximum value
-between the peer's initial_max_paths transport parameter and received
-MAX_PATHS frames.
-
 To open a new path, an endpoint MUST use a connection ID associated with
 a new, unused Path ID.
 Still, the receiver may observe a connection ID associated with a used Path ID
@@ -337,11 +333,22 @@ This proposal adds four multipath control frames for path management:
 (see {{path-abandon-frame}}),
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame}} and {{path-available-frame}}), and
-- MAX_PATHS frame increase the limit of active paths.
+- MAX_PATHS frame for increasing the limit of active paths.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation {#path-initiation}
+
+Opening a new path requires the
+use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
+Instead of NEW_CONNECTION_ID frame as specified in {{Section 19.15 of QUIC-TRANSPORT}},
+each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
+to issue Path ID-specific connections IDs.
+The same Path ID is used in both directions. As such to open
+a new path, both sides need at least
+one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
+with the same, unused Path ID. When the peer receives the PATH_CHALLENGE,
+it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
 
 When the multipath extension is negotiated, a client that wants to use an
 additional path MUST first initiate the Address Validation procedure
@@ -351,22 +358,6 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
-
-If the transport parameter initial_max_paths is negotiated as N,
-and the client is already actively using N paths, the limit is reached.
-If the client wants to start a new path, it has to close one of
-the established paths.
-
-Opening a new path requires the
-use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
-Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
-each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
-to issue Path ID-specific connections IDs.
-The same Path ID is used in both directions. As such to open
-a new path, both sides need at least
-one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
-with the same, unused Path ID. If the peer receives the PATH_CHALLENGE,
-it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
@@ -557,10 +548,10 @@ Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. If the path is still active, the peer SHOULD replace
 it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
 
-Endpoints MUST NOT issue new connection IDs which have Path IDs larger than
-the Maximum Path Identifier field in MAX_PATHS frames {{max-paths-frame}}.
+Endpoints MUST NOT issue new connection IDs with Path IDs greater than
+the Maximum Path Identifier field in MAX_PATHS frames (see Section {{max-paths-frame}}).
 When an endpoint finds it has not enough available unused path identifiers,
-it SHOULD send a MAX_PATHS frame to inform the peer that it could use larger active
+it SHOULD send a MAX_PATHS frame to inform the peer that it could use new active
 path identifiers.
 
 
@@ -874,10 +865,6 @@ ACK_MP[Path ID=1, PN=Y] ->
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
-Endpoint SHOULD send MAX_PATHS frames {{max-paths-frame}} to raise
-the limit of Path ID when endpoint finds there are not enough unused
-Path ID (e.g. more than half of the available Path ID are used).
-
 
 # Implementation Considerations
 
@@ -1056,12 +1043,12 @@ All frames defined in this document MUST only be sent in 1-RTT packets.
 If an endpoint receives a multipath-specific frame in a different packet type,
 it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
-All multipath-specific frames relate to a Path ID.
-If an endpoint receives a frame with a Path ID greater than
-the Maximum Path Idenfier announced by the MAX_PATHS frame or
-in the initial_max_paths transport parameter
+Receipt of multipath-specific frames
+that use a Path ID that is greater than the announced Maximum Paths value
+in the MAX_PATHS frame or in the initial_max_paths transport parameter,
 if no MAX_PATHS frame was received yet,
-it MUST treat this as a connection error of type MP_PROTOCOL_VIOLATION.
+MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
+
 If an endpoint receives a multipath-specific frame
 with a path identifier that it cannot process
 anymore (e.g., because the path might have been abandoned), it
@@ -1336,18 +1323,18 @@ MAX_PATHS Frame {
 MAX_PATHS frames contain the following field:
 
 Maximum Path Identifier:
-: A count of the cumulative number of path that can be opened
-  over the lifetime of the connection. This value cannot exceed 2^32-1, as it is not
-  possible to encode Path IDs larger than 2^32-1. Receipt of a frame that permits
-  opening of a path with Path ID larger than this limit MUST be treated
-  as a connection error of type FRAME_ENCODING_ERROR.
+: A count of the cumulative number of paths that can be opened
+  over the lifetime of the connection. This value MUST NOT exceed 2^32-1, as
+  Path IDs are defined with a maximum value 2^32-1 as the 32 bits of the Path ID are used
+  to calculate the nonce (see Section {{multipath-aead}}).
+  The Maximum Paths value MUST NOT be lower than the value
+  advertised in the initial_max_paths transport parameter. Receipt
+  of an invalid Maximum Paths value MUST be treated as a
+  connection error of type MP_PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
-a lower path limit than was previously received. MAX_PATHS frames that
+a smaller Maximum Paths value than was previously received. MAX_PATHS frames that
 do not increase the path limit MUST be ignored.
-
-An endpoint MUST NOT initiate a path with a Path ID higher than the Maximum Paths value.
-An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION if a peer opens more paths than was permitted.
 
 
 # Error Codes {#error-codes}
