@@ -1364,7 +1364,7 @@ MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a smaller Maximum Paths value than was previously received. MAX_PATHS frames that
-do not announce a larger maximum Paths value than previously received MUST be ignored.
+do not increase the path limit MUST be ignored.
 
 Endpoints MUST NOT issue new connection IDs which have path identifiers larger than
 the Maximum Paths value announced by the peer in the MAX_PATHS frame.
