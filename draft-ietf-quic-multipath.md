@@ -529,7 +529,7 @@ is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 ### Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
 With the multipath extension, each connection ID is associated with one path
-that is identified by the Path ID specified in the Path Identifier field of
+that is identified by the Path ID that is specified in the Path Identifier field of
 the MP_NEW_CONNECTION_ID frame {{mp-new-conn-id-frame}}.
 The Path ID 0 indicates the initial path of the connection.
 Respectively, the connection IDs used during the handshake belong to the initial path
