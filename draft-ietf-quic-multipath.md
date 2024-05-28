@@ -722,7 +722,7 @@ contains the receiver's Path ID to distinguish the path-specific packet number s
 Acknowledgements of Initial and Handshake packets MUST be carried using
 ACK frames, as specified in {{QUIC-TRANSPORT}}.
 
-As soon as  after the handshake concluded and the negotiation of multipath support is succeeded,
+As soon as the handshake concluded and the negotiation of multipath support is succeeded,
 endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
 data packets, including 0-RTT packets, using Path ID 0 for the initial path.
 
