@@ -1356,6 +1356,7 @@ Maximum Path Identifier:
   advertised in the initial_max_paths transport parameter. Receipt
   of an invalid Maximum Paths value MUST be treated as a
   connection error of type MP_PROTOCOL_VIOLATION.
+
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
 that uses a Path ID that is larger than the announced Maximum Paths value
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
