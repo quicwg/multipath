@@ -719,7 +719,7 @@ acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the ACK_MP frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.
 
-As multipath support is unknown during the handshake, acknowledgements of Initial and Handshake packets are be sent using
+As multipath support is unknown during the handshake, acknowledgements of Initial and Handshake packets are sent using
 ACK frames.
 
 After the handshake concluded if negotiation of multipath support succeeded,
