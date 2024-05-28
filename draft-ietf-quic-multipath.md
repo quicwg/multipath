@@ -1355,7 +1355,7 @@ MAX_PATHS frames contain the following field:
 Maximum Path Identifier:
 : The largest Path ID that can be used for this connection.
   This value cannot exceed 2^32-1, as it is not
-  possible to encode Path IDs larger than 2^32-1 as variable integer.
+  secure to use Path IDs larger than 2^32-1 with the security considerations outlined in {{multipath-aead}}.
 
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
 that uses a Path ID that is larger than the announced Path ID
