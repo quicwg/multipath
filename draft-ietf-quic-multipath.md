@@ -556,7 +556,7 @@ Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. If the path is still active, the peer SHOULD replace
 it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
 
-Endpoints MUST NOT issue new connection IDs with Path IDs larger than
+Endpoints MUST NOT issue new connection IDs which have Path IDs larger than
 the Maximum Path Identifier field in MAX_PATHS frames {{max-paths-frame}}.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATHS frame to inform the peer that it could use larger active
