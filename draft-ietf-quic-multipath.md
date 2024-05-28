@@ -1369,9 +1369,8 @@ Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a smaller Path ID than was previously received. MAX_PATHS frames that
 do not announce a larger Path ID than previously received MUST be ignored.
 
-Endpoints SHOULD NOT issue new connection IDs which have path identifiers larger than
-the Path ID announced in the Maximum Path Identifier field in the
-MP_MAX_PATHS frame {{max-paths-frame}}.
+Endpoints MUST NOT issue new connection IDs which have path identifiers larger than
+the Path ID announced by the peer in the Maximum Path Identifier field in the MAX_PATHS frame.
 If no MAX_PATHS frame was received yet, the Maximum Path Identifier
 corresponds to the value of initial_max_paths transport parameter.
 
