@@ -479,7 +479,7 @@ The receiver of a PATH_ABANDON frame MAY also send
 a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
-Receiption of the PATH_ABANDON frame is the first step to retire a
+Reception of the PATH_ABANDON frame is the first step to retire a
 path ID. However, the Path ID can only be retired after all active
 connection IDs for the Path ID have been retired.
 Still, when an endpoint receives an PATH_ABANDON frame,
