@@ -1070,8 +1070,8 @@ MUST silently ignore the frame.
 
 The ACK_MP frame (types TBD-00 and TBD-01)
 is an extension of the ACK frame specified in {{Section 19.3 of QUIC-TRANSPORT}}. It is
-used to acknowledge packets that were sent on different paths using
-each an own packet number space. If the frame type is TBD-01, ACK_MP frames
+used to acknowledge packets that were sent on different paths, as
+each path as its own packet number space. If the frame type is TBD-01, ACK_MP frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.
 
