@@ -1371,7 +1371,7 @@ the Maximum Paths value announced by the peer in the MAX_PATHS frame.
 If no MAX_PATHS frame was received yet, the Maximum Paths value
 corresponds to the value of initial_max_paths transport parameter.
 
-When there are not enough unused path identifiers, endpoints can
+When there are no connection IDs available for unused path identifiers, endpoints can
 send a MAX_PATHS frame to inform the peer that new path identifiers are available.
 
 
