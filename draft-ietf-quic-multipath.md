@@ -1375,9 +1375,6 @@ MP_MAX_PATHS frame {{max-paths-frame}}.
 If no MAX_PATHS frame was received yet, the Maximum Path Identifier
 corresponds to the value of initial_max_paths transport parameter.
 
-An endpoint MUST NOT initiate a path with a Path ID larger than the Maximum Path Identifier value.
-An endpoint MUST terminate the a connection with an error of type MP_PROTOCOL_VIOLATION
-if a peer opens a path with a larger Path ID than permitted.
 
 When there are not enough unused path identifiers, endpoints can
 send a MAX_PATHS frame to inform the peer that new path identifiers are available.
