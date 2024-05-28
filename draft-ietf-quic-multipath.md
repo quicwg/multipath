@@ -1268,11 +1268,11 @@ Compared to the NEW_CONNECTION_ID frame specified in
 field is added:
 
 Path Identifier:
-: The Path ID assocaited with the connection ID. This
+: The Path ID associated with the connection ID. This
   means the provided connection ID can only be used on the corresponding path.
 
 Note that, other than for the NEW_CONNECTION_ID frame of {{Section 19.15 of QUIC-TRANSPORT}},
-the sequence number is set dependently for each path.
+the sequence number applies on a per-path context.
 This means different connection IDs on different paths may have the same
 sequence number value. Respectively, the Retire Prior To field indicates which connection IDs
 should be retired for the path with the Path ID in the Path Identifier field.
