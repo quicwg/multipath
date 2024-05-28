@@ -859,6 +859,7 @@ ACK_MP[Path ID=1, PN=Y] ->
                                                 ACK_MP[Path ID=1, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
+
 After a path is abandoned, the path identifier associated with the path
 is considered retired and MUST NOT be reused in new paths for security
 considerations discussed in {{multipath-aead}}.
