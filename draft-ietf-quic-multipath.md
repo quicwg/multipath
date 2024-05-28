@@ -1245,7 +1245,7 @@ The MP_NEW_CONNECTION_ID frame (type=0x15228c09)
 is an extension of the NEW_CONNECTION_ID frame specified in
 {{Section 19.15 of QUIC-TRANSPORT}}.
 It is used to provide its peer with alternative connection IDs for 1-RTT packets
-for a specific path. The peer can then use a different connection on the same path
+for a specific path. The peer can then use a different connection ID on the same path
 to break linkability when migrating on that path; see also {{Section 9.5 of QUIC-TRANSPORT}}.
 
 MP_NEW_CONNECTION_ID frames are formatted as shown in {{fig-mp-connection-id-frame-format}}.
