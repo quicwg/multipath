@@ -552,6 +552,7 @@ When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATHS frame to inform the peer that it could use larger active
 path identifiers.
 
+
 ### Effect of MP_RETIRE_CONNECTION_ID Frame {#retire-cid-close}
 
 Receiving a MP_RETIRE_CONNECTION_ID frame causes an endpoint to discard
