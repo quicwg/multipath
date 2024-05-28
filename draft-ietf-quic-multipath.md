@@ -683,7 +683,7 @@ in Section {{path-initiation}}.
 
 The endpoint can use all paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
-of new data on a path. 
+of new data on a path.
 
 "Closing" state is entered after an PATH_ABANDON frame was sent or received.
 In this state, the endpoint waits for three PTOs before sending MP_RETIRE_CONNECTION_ID frames.
