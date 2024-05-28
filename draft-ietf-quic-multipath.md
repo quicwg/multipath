@@ -546,11 +546,13 @@ using the corresponding connection IDs of the specified path and retire them
 with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection ID
 to the set of active connection IDs belonging to the specified path.
 
-Endpoints MUST NOT issue new connection IDs which have Path IDs larger than
-the Maximum Path Identifier field in MAX_PATHS frames {{max-paths-frame}}.
-When an endpoint finds it has not enough available unused path identifiers,
-it SHOULD send a MAX_PATHS frame to inform the peer that it could use larger active
-path identifiers.
+Endpoints MUST NOT issue new connection IDs which have Path IDs greater than
+the Maximum Path Identifier field in MAX_PATHS frames (see Section {{max-paths-frame}}).
+If no MAX_PATHS frame was received yet, the Maximum Paths value
+corresponds to the value of initial_max_paths transport parameter.
+
+When there are no connection IDs available for unused path identifiers, endpoints can
+send a MAX_PATHS frame to inform the peer that new path identifiers are available.
 
 
 ### Effect of MP_RETIRE_CONNECTION_ID Frame {#retire-cid-close}
@@ -1041,12 +1043,12 @@ All frames defined in this document MUST only be sent in 1-RTT packets.
 If an endpoint receives a multipath-specific frame in a different packet type,
 it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
-All multipath-specific frames relate to a Path ID.
-If an endpoint receives a frame with a Path ID greater than
-the Maximum Path Idenfier announced by the MAX_PATHS frame or
-in the initial_max_paths transport parameter
+Receipt of multipath-specific frames
+that use a Path ID that is greater than the announced Maximum Paths value
+in the MAX_PATHS frame or in the initial_max_paths transport parameter,
 if no MAX_PATHS frame was received yet,
-it MUST treat this as a connection error of type MP_PROTOCOL_VIOLATION.
+MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
+
 If an endpoint receives a multipath-specific frame
 with a path identifier that it cannot process
 anymore (e.g., because the path might have been abandoned), it
@@ -1358,21 +1360,9 @@ Maximum Path Identifier:
   of an invalid Maximum Paths value MUST be treated as a
   connection error of type MP_PROTOCOL_VIOLATION.
 
-Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
-that uses a Path ID that is larger than the announced Maximum Paths value
-MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
-
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
 a smaller Maximum Paths value than was previously received. MAX_PATHS frames that
 do not increase the path limit MUST be ignored.
-
-Endpoints MUST NOT issue new connection IDs which have path identifiers larger than
-the Maximum Paths value announced by the peer in the MAX_PATHS frame.
-If no MAX_PATHS frame was received yet, the Maximum Paths value
-corresponds to the value of initial_max_paths transport parameter.
-
-When there are no connection IDs available for unused path identifiers, endpoints can
-send a MAX_PATHS frame to inform the peer that new path identifiers are available.
 
 
 # Error Codes {#error-codes}
