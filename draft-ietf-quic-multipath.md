@@ -535,8 +535,9 @@ The Path ID 0 indicates the initial path of the connection.
 Respectively, the connection IDs used during the handshake belong to the initial path
 with Path ID 0.
 The MP_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
-Endpoints SHOULD issue at least one connection ID for an unused path identifier
-to allow new paths to be opened.
+In order to let the peer open new paths, it is RECOMMENDED to proactively
+issue a Connection ID for at least one unused path ID, as long as it remains
+compatible with the peer's Maximum Path ID limit.
 
 Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
