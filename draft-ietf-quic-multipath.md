@@ -727,7 +727,7 @@ Path ID 0.
 
 As soon as the negotiation of multipath support is completed,
 endpoints SHOULD use ACK_MP frames instead of ACK frames,
-including 0-RTT packets, using the initial connection ID with
+also for acknowledging so far unacknowledged 0-RTT packets, using
 Path ID 0 after the handshake concluded.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
