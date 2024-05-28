@@ -1352,11 +1352,10 @@ Maximum Path Identifier:
   over the lifetime of the connection. This value MUST NOT exceed 2^32-1, as
   Path IDs are defined with a maximum value 2^32-1 as the 32 bits of the Path ID are used
   to calculate the nonce (see Section {{multipath-aead}}).
-
-The Maximum Paths value MUST NOT be lower than the value
-advertised in the initial_max_paths transport parameter. Receipt
-of a Maximum Paths value lower than the value of initial_max_paths transport parameter
-MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
+  The Maximum Paths value MUST NOT be lower than the value
+  advertised in the initial_max_paths transport parameter. Receipt
+  of an invalid Maximum Paths value MUST be treated as a
+  connection error of type MP_PROTOCOL_VIOLATION.
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
 that uses a Path ID that is larger than the announced Maximum Paths value
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
