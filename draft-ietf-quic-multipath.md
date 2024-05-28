@@ -720,11 +720,11 @@ Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, th
 contains the receiver's Path ID to identify the path-specific packet number space.
 
 As multipath support is unknown during the handshake, acknowledgements of Initial and Handshake packets are be sent using
-ACK frames, as specified in {{QUIC-TRANSPORT}}.
+ACK frames.
 
-After the handshake concluded and negotiation of multipath support succeeded,
-endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
-data packets, including 0-RTT packets by using Path ID 0 for the initial path.
+After the handshake concluded if negotiation of multipath support succeeded,
+endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge
+1-RTT packets. Path ID 0 is used for the initial path.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
 If the ACK_MP is preferred to be sent on the same path as the acknowledged
