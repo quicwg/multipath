@@ -529,12 +529,12 @@ is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 ### Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
 With the multipath extension, each connection ID is associated with one path
-that is idenfied by the Path ID as specified in the Path Identifier field of
+that is identified by the Path ID as specified in the Path Identifier field of
 the MP_NEW_CONNECTION_ID frame {{mp-new-conn-id-frame}}.
 The Path ID 0 indicates the initial path of the connection.
 Respectively, the connection IDs used during the handshake belong to the initial path
 with Path ID 0.
-The MP_NEW_CONNECTION_ID frame is used to new issue connection IDs for all paths.
+The MP_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
 Endpoints SHOULD issue at least one connection ID for an unused path identifier
 to allow new paths to be opened.
 
@@ -1287,9 +1287,9 @@ is an extension of the RETIRE_CONNECTION_ID frame specified in
 {{Section 19.16 of QUIC-TRANSPORT}}. It is used
 to indicate that it will no longer use a connection ID for a specific path
 that was issued by its peer. To retire the connection ID used
-during the handshake on the initial path Path ID 0 is used.
+during the handshake on the initial path, Path ID 0 is used.
 Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer
-to send additional connection IDs for this pth for future use (see also {{Section 5.1 of QUIC-TRANSPORT}},
+to send additional connection IDs for this path (see also {{Section 5.1 of QUIC-TRANSPORT}},
 unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
 delivered to a peer using the MP_NEW_CONNECTION_ID frame (see Section {{mp-new-conn-id-frame}}).
 
