@@ -338,6 +338,17 @@ All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation {#path-initiation}
 
+Opening a new path requires the
+use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
+Instead of NEW_CONNECTION_ID frame as specified in {{Section 19.15 of QUIC-TRANSPORT}},
+each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
+to issue Path ID-specific connections IDs.
+The same Path ID is used in both directions. As such to open
+a new path, both sides need at least
+one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
+with the same, unused Path ID. When the peer receives the PATH_CHALLENGE,
+it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
+
 When the multipath extension is negotiated, a client that wants to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames as described in
@@ -346,17 +357,6 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
-
-Opening a new path requires the
-use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
-Instead of the NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
-each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
-to issue Path ID-specific connections IDs.
-The same Path ID is used in both directions. As such to open
-a new path, both sides need at least
-one connection ID (see {{Section 5.1.1 of QUIC-TRANSPORT}}), which is associated
-with the same, unused Path ID. If the peer receives the PATH_CHALLENGE,
-it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
