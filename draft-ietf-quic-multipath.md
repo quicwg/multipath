@@ -1357,6 +1357,10 @@ Maximum Path Identifier:
   This value cannot exceed 2^32-1, as it is not
   secure to use Path IDs larger than 2^32-1 with the security considerations outlined in {{multipath-aead}}.
 
+The Maximum Path Identifier MUST NOT be lower than the value
+advertised in the initial_max_paths transport parameter. Receipt
+of a Path ID lower than the value of initial_max_paths transport parameter
+MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 Receipt of PATH_AVAILABLE, PATH_STANDBY, PATH_ABANDON or MP_ACK frames
 that uses a Path ID that is larger than the announced Path ID
 MUST be treated as a connection error of type FRAME_ENCODING_ERROR.
