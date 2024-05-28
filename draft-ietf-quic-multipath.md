@@ -546,7 +546,7 @@ using the corresponding connection IDs of the specified path and retire them
 with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection ID
 to the set of active connection IDs belonging to the specified path.
 
-Endpoints MUST NOT issue new connection IDs which have Path IDs greater than
+Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATHS frames (see Section {{max-paths-frame}}).
 If no MAX_PATHS frame was received yet, the Maximum Paths value
 corresponds to the value of initial_max_paths transport parameter.
