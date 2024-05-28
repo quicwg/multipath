@@ -332,7 +332,7 @@ This proposal adds four multipath control frames for path management:
 (see {{path-abandon-frame}}),
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame}} and {{path-available-frame}}), and
-- MAX_PATHS frame increase the limit of active paths.
+- MAX_PATHS frame for increasing the limit of active paths.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -347,14 +347,9 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
-If the transport parameter initial_max_paths is negotiated as N,
-and the client is already actively using N paths, the limit is reached.
-If the client wants to start a new path, it has to close one of
-the established paths.
-
 Opening a new path requires the
 use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
-Instead of NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
+Instead of the NEW_CONNECTION_ID frame as specified in {{QUIC-TRANSPORT}},
 each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
 to issue Path ID-specific connections IDs.
 The same Path ID is used in both directions. As such to open
