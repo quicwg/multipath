@@ -724,7 +724,7 @@ ACK frames, as specified in {{QUIC-TRANSPORT}}.
 
 After the handshake concluded and negotiation of multipath support succeeded,
 endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application
-data packets, including 0-RTT packets, using Path ID 0 for the initial path.
+data packets, including 0-RTT packets by using Path ID 0 for the initial path.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
 If the ACK_MP is preferred to be sent on the same path as the acknowledged
