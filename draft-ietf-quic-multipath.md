@@ -530,12 +530,17 @@ The Path Identifier 0 indicates the initial path of the connection.
 Endpoints SHOULD issue at least one unused connection ID with an unused path identifier.
 
 An endpoint maintains a set of connection IDs received from its peer for each path,
-any of which it can use when sending packets, as the same in {{QUIC-TRANSPORT}}.
+any of which it can use when sending packets, as specified in {{Section 5.1 of QUIC-TRANSPORT}}.
 In the multipath extension, each connection ID belongs to one path specified by
 the Path Identifier field of MP_NEW_CONNECTION_ID frame in {{mp-new-conn-id-frame}}.
 The connection IDs used during the handshake belong to the initial path
-with Path ID 0.
+with Path ID 0. Usually, it is desired to provide at least one more connection ID for
+for all used path and at least one for an unused Path ID, to allow for migration and
+opening of new paths.
 
+If the client has used all the allocated connection IDs, it is supposed to retire
+those that are not used anymore, and the server is supposed to provide
+replacements, as specified in {{Section 5.1.1. of QUIC-TRANSPORT}}.
 Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. If the path is still active, the peer SHOULD replace
 it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
@@ -549,9 +554,9 @@ with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection 
 to the set of active connection IDs belonging to the specified path.
 
 Endpoints MUST NOT issue new connection IDs which have Path IDs larger than
-the Maximum Path Identifier field in MP_MAX_PATHS frames {{max-paths-frame}}.
+the Maximum Path Identifier field in MAX_PATHS frames {{max-paths-frame}}.
 When an endpoint finds it has not enough available unused path identifiers,
-it SHOULD send a MP_MAX_PATHS frame to inform the peer that it could use larger active
+it SHOULD send a MAX_PATHS frame to inform the peer that it could use larger active
 path identifiers.
 
 
@@ -821,12 +826,6 @@ an unused connection IDs for the same unused Path ID available for each side.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path.
 
-
-If the client has used all the allocated connection IDs, it is supposed to retire
-those that are not used anymore, and the server is supposed to provide
-replacements, as specified in {{QUIC-TRANSPORT}}.
-Usually, it is desired to provide one more connection ID as currently
-in use, to allow for new paths or migration.
 
 ## Path Closure
 
