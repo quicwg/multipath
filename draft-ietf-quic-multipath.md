@@ -726,7 +726,7 @@ negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
 Path ID 0.
 
 After the handshake concluded if negotiation of multipath support succeeded,
-endpoints SHOULD use ACK_MP frames instead of ACK frames.
+endpoints SHOULD use ACK_MP frames instead of ACK frames,
 also for acknowledging so far unacknowledged 0-RTT packets, using
 Path ID 0.
 
