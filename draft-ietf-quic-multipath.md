@@ -717,7 +717,7 @@ peer in the Path ID-specfic packet number space is initially set to "None".
 The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in {{QUIC-TRANSPORT}}, the ACK_MP frame additionally
-contains the receiver's Path ID to distinguish the path-specific packet number space.
+contains the receiver's Path ID to identify the path-specific packet number space.
 
 As multipath support is unknown during the handshake, acknowledgements of Initial and Handshake packets are be sent using
 ACK frames, as specified in {{QUIC-TRANSPORT}}.
