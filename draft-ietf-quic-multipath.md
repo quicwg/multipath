@@ -841,7 +841,7 @@ ABANBON frame over the second path using the DCID S2. In this example, the
 server confirms the path closure by sending an PATH_ABANDON frame
 by for the same Path ID to the client also using the other path with DCID C2.
 Both the client and the server can close the path after receiving
-the RETIRE_CONNECTION_ID frame for that path.
+the MP_RETIRE_CONNECTION_ID frame for that path.
 
 ~~~
 Client                                                      Server
