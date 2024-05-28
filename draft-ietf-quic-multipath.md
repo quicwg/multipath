@@ -541,10 +541,10 @@ to allow new paths to be opened.
 Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
 Usually, it is desired to provide at least one additional connection ID for
-for all used paths, to allow for migration.
+all used paths, to allow for migration.
 
 {{Section 5.1.2. of QUIC-TRANSPORT}} specifies the retirement of connection IDs.
-In order to identify a connection ID correctly when the mulitpath extension is used,
+In order to identify a connection ID correctly when the multipath extension is used,
 endpoints have to use the MP_RETIRE_CONNECTION_ID frame instead
 of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
 connection ID sequence number, at least for all paths with a Path ID other than 0.
