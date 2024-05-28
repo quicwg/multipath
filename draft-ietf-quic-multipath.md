@@ -484,6 +484,9 @@ it SHOULD NOT use the associated Path ID in future frames, except
 in ACK_MP frames for inflight packets and
 in MP_RETIRE_CONNECTION_ID frames for connection ID retirement.
 
+After a path is abandoned, the Path ID MUST NOT be reused
+for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
+
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
@@ -869,10 +872,6 @@ ACK_MP[Path ID=1, PN=Y] ->
                                                 ACK_MP[Path ID=1, PN=U]
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
-
-After a path is abandoned, the path identifier associated with the path
-is considered retired and MUST NOT be reused in new paths for security
-considerations discussed in {{multipath-aead}}.
 
 Endpoint SHOULD send MAX_PATHS frames {{max-paths-frame}} to raise
 the limit of Path ID when endpoint finds there are not enough unused
