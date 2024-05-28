@@ -157,7 +157,8 @@ applied for packet protection, as explained in {{multipath-aead}}.
 More concretely, the Path ID is used to construct the
 packet protection nonce in addition to the packet number
 in order to enable use of the same packet number on different paths.
-Further, tighter constraints for key updates are needed, as explained in {{multipath-key-update}}.
+The Path ID is limited to 32 bits to ensure a unique nonce.
+Further, additional consideration on key updates are explained in {{multipath-key-update}}.
 
 This specification
 requires the sender to use a non-zero connection ID when opening an
