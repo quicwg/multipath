@@ -660,7 +660,7 @@ sending a packet with a new connection ID on that path.
 ~~~
 {: #fig-path-states title="States of a path"}
 
-In all bit the "Closed" states, hosts have to track the following information.
+In all but the "Closed" states, hosts have to track the following information.
 
 - Associated 4-tuple: The tuple (source IP, source port, destination IP,
 destination port) used by the endpoint to send packets over the path.
