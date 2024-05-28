@@ -821,6 +821,13 @@ an unused connection IDs for the same unused Path ID available for each side.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path.
 
+
+If the client has used all the allocated connection IDs, it is supposed to retire
+those that are not used anymore, and the server is supposed to provide
+replacements, as specified in {{QUIC-TRANSPORT}}.
+Usually, it is desired to provide one more connection ID as currently
+in use, to allow for new paths or migration.
+
 ## Path Closure
 
 In this example, the client detects a network environment change
