@@ -514,16 +514,49 @@ the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
+### Idle Timeout {#idle-time-close}
 
-### Refusing a New Path
+{{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
+for too long. The connection idle timeout when using the multipath extension is defined
+as "no packet received on any path for the duration of the idle timeout".
+When only one path is available, servers MUST follow the specifications
+in {{QUIC-TRANSPORT}}.
+
+When more than one path is available, hosts shall monitor the arrival of
+non-probing packets and the acknowledgements for the packets sent over each
+path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
+idle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}}
+(a) no non-probing packet was received or (b) no
+non-probing packet sent over this path was acknowledged, but MAY ignore that
+rule if it would disqualify all available paths.
+
+To avoid idle timeout of a path, endpoints
+can send ack-eliciting packets such as packets containing PING frames
+({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.  Sending
+periodic PING frames also helps prevent middlebox timeout, as discussed in
+{{Section 10.1.2 of QUIC-TRANSPORT}}.
+
+Server MAY release the resources associated with a path for
+which no non-probing packet was received for a sufficiently long
+path-idle delay, but SHOULD only release resources for the last
+available path if no traffic is received for the duration of the idle
+timeout, as specified in {{Section 10.1 of QUIC-TRANSPORT}}.
+This means if all paths remain idle for the idle timeout, the connection
+is implicitly closed.
+
+Server implementations need to select the sub-path idle timeout as a trade-
+off between keeping resources, such as connection IDs, in use
+for an excessive time or having to promptly re-establish a path
+after a spurious estimate of path abandonment by the client.
+
+## Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
 peer during the address validation procedure. According to
 {{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
-
-### Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
+## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
 With the multipath extension, each connection ID is associated with one path
 that is identified by the Path ID that is specified in the Path Identifier field of
@@ -593,42 +626,7 @@ the path. If, before the idle timer expires, a new connection ID gets issued
 by its peer, the endpoint can re-activate the path by
 sending a packet with a new connection ID on that path.
 
-### Idle Timeout {#idle-time-close}
-
-{{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
-for too long. The connection idle timeout when using the multipath extension is defined
-as "no packet received on any path for the duration of the idle timeout".
-When only one path is available, servers MUST follow the specifications
-in {{QUIC-TRANSPORT}}.
-
-When more than one path is available, hosts shall monitor the arrival of
-non-probing packets and the acknowledgements for the packets sent over each
-path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
-idle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}}
-(a) no non-probing packet was received or (b) no
-non-probing packet sent over this path was acknowledged, but MAY ignore that
-rule if it would disqualify all available paths.
-
-To avoid idle timeout of a path, endpoints
-can send ack-eliciting packets such as packets containing PING frames
-({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.  Sending
-periodic PING frames also helps prevent middlebox timeout, as discussed in
-{{Section 10.1.2 of QUIC-TRANSPORT}}.
-
-Server MAY release the resources associated with a path for
-which no non-probing packet was received for a sufficiently long
-path-idle delay, but SHOULD only release resources for the last
-available path if no traffic is received for the duration of the idle
-timeout, as specified in {{Section 10.1 of QUIC-TRANSPORT}}.
-This means if all paths remain idle for the idle timeout, the connection
-is implicitly closed.
-
-Server implementations need to select the sub-path idle timeout as a trade-
-off between keeping resources, such as connection IDs, in use
-for an excessive time or having to promptly re-establish a path
-after a spurious estimate of path abandonment by the client.
-
-## Path States
+# Path States
 
 {{fig-path-states}} shows the states that an endpoint's path can have.
 
@@ -664,7 +662,7 @@ after a spurious estimate of path abandonment by the client.
 ~~~
 {: #fig-path-states title="States of a path"}
 
-In non-final states, hosts have to track the following information.
+In all but the "Closed" states, hosts have to track the following information.
 
 - Associated 4-tuple: The tuple (source IP, source port, destination IP,
 destination port) used by the endpoint to send packets over the path.
@@ -677,33 +675,25 @@ packet number space.
 - Associated Destination Connection IDs: The connection IDs used to send
 packets over the path.
 
-In Active state, hosts MUST also track the following information:
+In Active state, hosts also tracks the following information:
 
 - Associated Source Connection IDs: The connection IDs used to receive
 packets over the path.
 
 A path in the "Validating" state performs path validation as described
-in {{Section 8.2 of QUIC-TRANSPORT}}.
+in Section {{path-initiation}}.
 
 The endpoint can use all paths in the "Active" state, provided
 that the congestion control and flow control currently allow sending
-of new data on a path. Note that if a path became idle due to a timeout,
-the endpoint SHOULD send a PATH_ABANDON frame before closing the path.
+of new data on a path.
 
-In the "Closing" state, the endpoint SHOULD NOT send packets on this
-path anymore, as there is no guarantee that the peer can still map
-the packets to the connection. The endpoint SHOULD wait for
-the acknowledgment of the PATH_ABANDON frame before moving the path
-to the "Closed" state to ensure a graceful termination of the path.
+"Closing" state is entered after an PATH_ABANDON frame was sent or received.
+In this state, the endpoint waits for three PTOs before sending MP_RETIRE_CONNECTION_ID frames.
+This allows for graceful tear down and processing of in-flight packets.
 
 When a path reaches the "Closed" state, the endpoint releases all the
-path's associated resources, including the associated connection IDs.
-Endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames for releasing the
-associated connection IDs following {{QUIC-TRANSPORT}}. Considering
-endpoints are not expected to send packets on the current path in the "Closed"
-state, endpoints can send MP_RETIRE_CONNECTION_ID frames on other
-available paths. Consequently, the endpoint is not able to send or
-receive packets on this path anymore.
+path's associated resources, including the associated connection IDs and the path identifier.
+
 
 # Multipath Operation with Multiple Packet Number Spaces
 
