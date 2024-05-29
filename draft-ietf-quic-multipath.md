@@ -456,7 +456,22 @@ Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
 Either endpoint can initiate path closure
 by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
-requests the peer to stop sending packets with the corresponding Path ID.
+requests the peer to stop sending packets on the the path with
+the corresponding Path ID.
+
+When a path is abandoned, all connection IDs allocated by both
+of the endpoints for the specified Path ID need to be retired.
+When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
+least three times the current Probe Timeout (PTO) interval after the last
+packet was sent on the path, as defined in {{Section 6.2 of QUIC-RECOVERY}},
+before sending MP_RETIRE_CONNECTION_ID frames.
+This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}.
+Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
+for all connection IDs associated to the Path ID of the abandoned path
+to ensure that paths close cleanly and that delayed or reordered packets
+are properly discarded.
+The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in
+Section {{retire-cid-close}}.
 
 Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
@@ -489,20 +504,6 @@ be abandoned even if connectivity on that path is already broken.
 Respectively, if there is still an active path, it is RECOMMENDED to
 send a PATH_ABANDON frame and retire all corresponding connection IDs
 by sending MP_RETIRE_CONNECTION_ID frames on another path after an idle time.
-
-When a path is abandoned, all connection IDs allocated by both
-of the endpoints for the specified Path ID need to be retired.
-When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
-least three times the current Probe Timeout (PTO) interval after the last
-packet was sent on the path, as defined in {{Section 6.2 of QUIC-RECOVERY}},
-before sending MP_RETIRE_CONNECTION_ID frames.
-This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}.
-Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
-for all connection IDs associated to the Path ID of the abandoned path
-to ensure that paths close cleanly and that delayed or reordered packets
-are properly discarded.
-The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in
-Section {{retire-cid-close}}.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
