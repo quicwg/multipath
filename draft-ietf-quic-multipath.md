@@ -399,7 +399,7 @@ token ambiguity issue, a server may issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
 found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
-## Path State Management
+## Path Status Management
 
 An endpoint uses the PATH_STANDBY and PATH_AVAILABLE frames to inform the peer that it should
 send packets with the preference expressed by these frames.
