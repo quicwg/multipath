@@ -364,6 +364,7 @@ If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initation attempt.
 However, as the used Path ID is anyway consumed,
 and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
+and retire all corresponding connection IDs by sending MP_RETIRE_CONNECTION_ID frames
 on another path to inform the peer that the Path ID cannot be used anymore.
 
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
@@ -469,10 +470,14 @@ The receiver of a PATH_ABANDON frame MAY also send
 a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
-The PATH_ABANDON frame retires the associated Path ID.
-When an endpoint receives a PATH_ABANDON frame,
+Reception or sending of the PATH_ABANDON frame is
+the first step to release all resources related to a
+Path ID. However, the Path ID can only be released after all active
+connection IDs for the Path ID have been retired or timed-out after
+the PATH_ABANDON frame was sent.
+Still, when an endpoint receives an PATH_ABANDON frame,
 it SHOULD NOT use the associated Path ID in future frames, except
-in ACK_MP frames for inflight packets and
+in ACK_MP frames for acknowledging inflight packets and
 in MP_RETIRE_CONNECTION_ID frames for connection ID retirement.
 
 After a path is abandoned, the Path ID MUST NOT be reused
@@ -482,7 +487,8 @@ PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
 Respectively, if there is still an active path, it is RECOMMENDED to
-send a PATH_ABANDON frame after an idle time on another path.
+send a PATH_ABANDON frame and retire all corresponding connection IDs
+by sending MP_RETIRE_CONNECTION_ID frames on another path after an idle time.
 
 When a path is abandoned, all connection IDs allocated by both
 of the endpoints for the specified Path ID need to be retired.
@@ -1094,7 +1100,7 @@ Path Identifier:
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
-The PATH_ABANDON frame informs the peer to abandon a path and retire the associated Path ID.
+The PATH_ABANDON frame informs the peer to abandon a path.
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
