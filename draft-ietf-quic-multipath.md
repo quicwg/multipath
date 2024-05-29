@@ -627,7 +627,7 @@ the path. If, before the idle timer expires, a new connection ID gets issued
 by its peer, the endpoint can re-activate the path by
 sending a packet with a new connection ID on that path.
 
-# Path States
+## Path States
 
 {{fig-path-states}} shows the states that an endpoint's path can have.
 
