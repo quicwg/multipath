@@ -479,9 +479,11 @@ The receiver of a PATH_ABANDON frame MAY also send
 a PATH_ABANDON frame to indicate its own unwillingness to receive
 any packet on this path anymore.
 
-Reception of the PATH_ABANDON frame is the first step to retire a
-path ID. However, the Path ID can only be retired after all active
-connection IDs for the Path ID have been retired.
+Reception or sending of the PATH_ABANDON frame is
+the first step to release all resources related to a
+Path ID. However, the Path ID can only be released after all active
+connection IDs for the Path ID have been retired or timed-out after
+the PATH_ABANDON frame was sent.
 Still, when an endpoint receives an PATH_ABANDON frame,
 it SHOULD NOT use the associated Path ID in future frames, except
 in ACK_MP frames for acknowledging inflight packets and
