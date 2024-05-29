@@ -1307,6 +1307,10 @@ Path Identifier:
 Note that the RETIRE_CONNECTION_ID frame can only be used to retire
 connection IDs for the initial path with Path ID 0.
 
+As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
+the sequence number in the MP_RETIRE_CONNECTION_ID frame
+also needs to be considered in the context of the Path Identifier field.
+
 ## MAX_PATHS frames {#max-paths-frame}
 
 A MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths
