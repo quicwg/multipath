@@ -540,6 +540,11 @@ In order to identify a connection ID correctly when the multipath extension is u
 endpoints have to use the MP_RETIRE_CONNECTION_ID frame instead
 of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
 connection ID sequence number, at least for all paths with a Path ID other than 0.
+Endpoints can also use MP_NEW_CONNECTION_ID and
+MP_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
+however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
+is still valid as well and endpoints need to process these frames accordingly
+as corresponding to Path ID 0. 
 
 If the client has used all the allocated connection IDs for a path, it is supposed to retire
 those that are not used anymore, and the server is supposed to provide
