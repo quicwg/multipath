@@ -517,43 +517,47 @@ peer during the address validation procedure. According to
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
 
-### Allocating, Consuming and Retiring Connection IDs {#consume-retire-cid}
+### Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
-Each connection ID is associated with a Path ID.
-The Path Identifier 0 indicates the initial path of the connection.
-Endpoints SHOULD issue at least one unused connection ID with an unused path identifier.
+With the multipath extension, each connection ID is associated with one path
+that is identified by the Path ID that is specified in the Path Identifier field of
+the MP_NEW_CONNECTION_ID frame {{mp-new-conn-id-frame}}.
+The Path ID 0 indicates the initial path of the connection.
+Respectively, the connection IDs used during the handshake belong to the initial path
+with Path ID 0.
+The MP_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
+In order to let the peer open new paths, it is RECOMMENDED to proactively
+issue a Connection ID for at least one unused path ID, as long as it remains
+compatible with the peer's Maximum Path ID limit.
 
-An endpoint maintains a set of connection IDs received from its peer for each path,
-any of which it can use when sending packets, as specified in {{Section 5.1 of QUIC-TRANSPORT}}.
-In the multipath extension, each connection ID belongs to one path specified by
-the Path Identifier field of MP_NEW_CONNECTION_ID frame in {{mp-new-conn-id-frame}}.
-The connection IDs used during the handshake belong to the initial path
-with Path ID 0. Usually, it is desired to provide at least one more connection ID for
-for all used path and at least one for an unused Path ID, to allow for migration and
-opening of new paths.
+Each endpoint maintains the set of connection IDs received from its peer for each path,
+any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
+Usually, it is desired to provide at least one additional connection ID for
+all used paths, to allow for migration.
 
-If the client has used all the allocated connection IDs, it is supposed to retire
+{{Section 5.1.2. of QUIC-TRANSPORT}} specifies the retirement of connection IDs.
+In order to identify a connection ID correctly when the multipath extension is used,
+endpoints have to use the MP_RETIRE_CONNECTION_ID frame instead
+of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
+connection ID sequence number, at least for all paths with a Path ID other than 0.
+Endpoints can also use MP_NEW_CONNECTION_ID and
+MP_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
+however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
+is still valid as well and endpoints need to process these frames accordingly
+as corresponding to Path ID 0.
+
+If the client has used all the allocated connection IDs for a path, it is supposed to retire
 those that are not used anymore, and the server is supposed to provide
-replacements, as specified in {{Section 5.1.1. of QUIC-TRANSPORT}}.
+replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
 Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. If the path is still active, the peer SHOULD replace
 it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
 
-Note that Sequeunce Number and Retire Prior To fields correspond to
-the path with the Path ID that is specified by the Path Identifier field.
-
-Upon receipt of an increased Retire Prior To field, the peer MUST stop
-using the corresponding connection IDs of the specified path and retire them
-with MP_RETIRE_CONNECTION_ID frames before adding the newly provided connection ID
-to the set of active connection IDs belonging to the specified path.
-
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATHS frames (see Section {{max-paths-frame}}).
-If no MAX_PATHS frame was received yet, the Maximum Paths value
-corresponds to the value of initial_max_paths transport parameter.
-
-When there are no connection IDs available for unused path identifiers, endpoints can
-send a MAX_PATHS frame to inform the peer that new path identifiers are available.
+When an endpoint finds it has not enough available unused path identifiers,
+it SHOULD send a MAX_PATHS frame to inform the peer that it could use new active
+path identifiers.
 
 
 ### Effect of MP_RETIRE_CONNECTION_ID Frame {#retire-cid-close}
@@ -1058,9 +1062,9 @@ MUST silently ignore the frame.
 ## ACK_MP Frame {#ack-mp-frame}
 
 The ACK_MP frame (types TBD-00 and TBD-01)
-is an extension of the ACK frame defined by {{QUIC-TRANSPORT}}. It is
-used to acknowledge packets that were sent on different paths using
-multiple packet number spaces. If the frame type is TBD-01, ACK_MP frames
+is an extension of the ACK frame specified in {{Section 19.3 of QUIC-TRANSPORT}}. It is
+used to acknowledge packets that were sent on different paths, as
+each path as its own packet number space. If the frame type is TBD-01, ACK_MP frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.
 
@@ -1230,11 +1234,12 @@ before or during path initiation.
 
 ## MP_NEW_CONNECTION_ID frames {#mp-new-conn-id-frame}
 
-An endpoint sends a MP_NEW_CONNECTION_ID frame (type=0x15228c09) instead of
-the NEW_CONNECTION_ID frame to provide its peer with alternative connection IDs for 1-RTT packets
-for a specific path. The peer can then used a different connection on the same path
-to break linkability when migrating connections;
-see {{Section 19.15 of QUIC-TRANSPORT}}.
+The MP_NEW_CONNECTION_ID frame (type=0x15228c09)
+is an extension of the NEW_CONNECTION_ID frame specified in
+{{Section 19.15 of QUIC-TRANSPORT}}.
+It is used to provide its peer with alternative connection IDs for 1-RTT packets
+for a specific path. The peer can then use a different connection ID on the same path
+to break linkability when migrating on that path; see also {{Section 9.5 of QUIC-TRANSPORT}}.
 
 MP_NEW_CONNECTION_ID frames are formatted as shown in {{fig-mp-connection-id-frame-format}}.
 
@@ -1251,65 +1256,35 @@ MP_NEW_CONNECTION_ID Frame {
 ~~~
 {: #fig-mp-connection-id-frame-format title="MP_NEW_CONNECTION_ID Frame Format"}
 
-MP_NEW_CONNECTION_ID frames contain the following fields:
+Compared to the NEW_CONNECTION_ID frame specified in
+{{Section 19.15 of QUIC-TRANSPORT}}, the following
+field is added:
 
 Path Identifier:
-: A Path ID which is pre allocated when the connection ID is generated, which
-means the current connection ID can only be used on the corresponding path.
+: The Path ID associated with the connection ID. This
+  means the provided connection ID can only be used on the corresponding path.
 
-Sequence Number:
-The sequence number assigned to the connection ID by the sender on the path
-specified in the Path Identifier field, encoded as a variable-length integer.
-Note that the sequence number is allocated dependently on each path,
-which means different connection IDs on different paths may have the same
-sequence number value.
-
-Retire Prior To:
-: A variable-length integer indicating which connection IDs should be retired
-on the path specified in the Path Identifier field; see {{consume-retire-cid}}.
-
-Length:
-An 8-bit unsigned integer containing the length of the connection ID. Values
-less than 1 and greater than 20 are invalid and MUST be treated as a connection
-error of type FRAME_ENCODING_ERROR.
-
-Connection ID:
-A connection ID of the specified length.
-
-Stateless Reset Token:
-A 128-bit value that will be used for a stateless reset when the associated
-connection ID is used.
-
-The Sequence Number field and Retire Prior To field is allocated
-for each path independently. The Retire Prior To field indicates which connection IDs
+Note that, other than for the NEW_CONNECTION_ID frame of {{Section 19.15 of QUIC-TRANSPORT}},
+the sequence number applies on a per-path context.
+This means different connection IDs on different paths may have the same
+sequence number value. Respectively, the Retire Prior To field indicates which connection IDs
 should be retired for the path with the Path ID in the Path Identifier field.
 
-The Retire Prior To field applies to connection IDs established during
-connection setup. If the Path ID is 0 is applies to the initial path; see {{consume-retire-cid}}.
-The value in the Retire Prior To field MUST be less than or equal to the value
-in the Sequence Number field. Receiving a value in the Retire Prior To field
-that is greater than that in the Sequence Number field MUST be treated as
-a connection error of type FRAME_ENCODING_ERROR.
-
-Length, Connection ID, Stateless Reset Token fields have exactly the same
-definition in NEW_CONNECTION_ID frame {{Section 19.15 of QUIC-TRANSPORT}}.
-
-Note that connection IDs issued or retired in NEW_CONNECTION_ID frames MUST be treated as if
-their Path ID is 0 for compatibility with {{QUIC-TRANSPORT}}.
-
+Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
+connection IDs for the initial path with Path ID 0.
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
 
-An endpoint sends a MP_RETIRE_CONNECTION_ID frame (type=0x15228c0a) instead of
-RETIRE_CONNECTION_ID frame to indicate that it will no longer use a connection ID for a specific path
-that was issued by its peer. This includes the connection ID used
-during the handshake for the initial path with Path ID 0.
+The MP_RETIRE_CONNECTION_ID frame (type=0x15228c0a)
+is an extension of the RETIRE_CONNECTION_ID frame specified in
+{{Section 19.16 of QUIC-TRANSPORT}}. It is used
+to indicate that it will no longer use a connection ID for a specific path
+that was issued by its peer. To retire the connection ID used
+during the handshake on the initial path, Path ID 0 is used.
 Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer
-to send additional connection IDs for future use, unless the path specified
-by the Path ID has been abandoned. New connection IDs can be
+to send additional connection IDs for this path (see also {{Section 5.1 of QUIC-TRANSPORT}},
+unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
 delivered to a peer using the MP_NEW_CONNECTION_ID frame (see Section {{mp-new-conn-id-frame}}).
-
-Retiring a connection ID invalidates the stateless reset token associated with that connection ID.
 
 MP_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-connection-id-frame-format}}.
 
@@ -1322,14 +1297,19 @@ MP_RETIRE_CONNECTION_ID Frame {
 ~~~
 {: #fig-mp-retire-connection-id-frame-format title="MP_RETIRE_CONNECTION_ID Frame Format"}
 
+Compared to the RETIRE_CONNECTION_ID frame specified in
+{{Section 19.16 of QUIC-TRANSPORT}}, the following
+field is added:
+
 Path Identifier:
-: A Path ID which is pre-allocated when the connection ID is generated, which
-  means the current connection ID can only be used on the corresponding path.
+: The Path ID associated with the connection ID to retire.
 
-Sequence Number:
-: The sequence number assigned to the connection ID by the sender for the path
-  specified by Path ID, encoded as a variable-length integer.
+Note that the RETIRE_CONNECTION_ID frame can only be used to retire
+connection IDs for the initial path with Path ID 0.
 
+As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
+the sequence number in the MP_RETIRE_CONNECTION_ID frame
+also needs to be considered in the context of the Path Identifier field.
 
 ## MAX_PATHS frames {#max-paths-frame}
 
