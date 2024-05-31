@@ -1321,7 +1321,7 @@ MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
 ~~~
 MAX_PATHS Frame {
   Type (i) = 0x15228c0b,
-  Maximum Paths (i),
+  Maximum Path Identifier (i),
 }
 ~~~
 {: #fig-max-paths-frame-format title="MAX_PATHS Frame Format"}
@@ -1332,18 +1332,19 @@ Maximum Path Identifier:
 : A count of the cumulative number of paths that can be opened
   over the lifetime of the connection. This value MUST NOT exceed 2^32-1, as
   Path IDs are defined with a maximum value 2^32-1 as the 32 bits of the Path ID are used
-  to calculate the nonce (see Section {{multipath-aead}}).
+  to calculate the nonce (see {{multipath-aead}}).
   The Maximum Paths value MUST NOT be lower than the value
   advertised in the initial_max_paths transport parameter. Receipt
-  of an invalid Maximum Paths value MUST be treated as a
+  of an invalid Maximum Path Identifier value MUST be treated as a
   connection error of type MP_PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
-a smaller Maximum Paths value than was previously received. MAX_PATHS frames that
-do not increase the path limit MUST be ignored.
+a smaller Maximum Path Identifier value than was previously received.
+MAX_PATHS frames that do not increase the path limit MUST be ignored.
 
 
 # Error Codes {#error-codes}
+
 Multipath QUIC transport error codes are 62-bit unsigned integers
 following {{QUIC-TRANSPORT}}.
 
