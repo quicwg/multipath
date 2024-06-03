@@ -442,7 +442,7 @@ An endpoint that wants to close a path SHOULD explicitly
 terminate the path by sending a PATH_ABANDON frame (see
 {{path-abandon-close}}). Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
-does not indicate path abandonment (see {{retire-cid-close}}).
+does not indicate path abandonment (see further {{consume-retire-cid}}).
 Implicit signals such as idle time or packet losses might be
 the only way for an endpoint to detect path closure (see {(idle-time-close}})
 if connectivity is broken on that path.
@@ -470,8 +470,6 @@ Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
 for all connection IDs associated to the Path ID of the abandoned path
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
-The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in
-Section {{retire-cid-close}}.
 
 Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
