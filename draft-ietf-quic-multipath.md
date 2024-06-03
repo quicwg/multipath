@@ -438,7 +438,7 @@ connectivity or local preferences. After an endpoint abandons
 a path, the peer can expect to not receive any more non-probing packets on
 that path.
 
-An endpoint that wants to close a path SHOULD explicitly
+An endpoint that wants to close a path MUST explicitly
 terminate the path by sending a PATH_ABANDON frame (see
 {{path-abandon-close}}). Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
