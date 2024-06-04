@@ -438,8 +438,8 @@ a path, the peer can expect to not receive any more non-probing packets on
 that path.
 
 An endpoint that wants to close a path MUST explicitly
-terminate the path by sending a PATH_ABANDON frame (see
-{{path-abandon-close}}). Note that while abandoning a path will cause
+terminate the path by sending a PATH_ABANDON frame.
+Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
 does not indicate path abandonment (see {{retire-cid-close}}).
 This is true whether the decision to close the path results
