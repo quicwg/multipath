@@ -575,6 +575,14 @@ any of which it can use when sending packets on that path; see also {{Section 5.
 Usually, it is desired to provide at least one additional connection ID for
 all used paths, to allow for migration.
 
+Over a given path, both endpoints use Connection IDs associated to a given Path
+ID. To initiate a path, each endpoint needs to advertise at least one Connection ID
+for a given Path ID to its peer. Endpoints SHOULD NOT create Path ID discontinuity
+through their Connection ID advertisements. For instance, if the Maximum Path ID
+limit is 2 and the endpoint wants to provide Connection IDs for only one Path ID,
+it should select Path ID 1 (and not Path ID 2). Similarly, endpoints SHOULD consume
+Path IDs in a continuous way, i.e., when creating paths.
+
 {{Section 5.1.2. of QUIC-TRANSPORT}} specifies the retirement of connection IDs.
 In order to identify a connection ID correctly when the multipath extension is used,
 endpoints have to use the MP_RETIRE_CONNECTION_ID frame instead
