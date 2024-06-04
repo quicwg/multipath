@@ -577,9 +577,9 @@ all used paths, to allow for migration.
 
 Over a given path, both endpoints use Connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one Connection ID
-for a given Path ID to its peer. Endpoints SHOULD NOT create Path ID discontinuity
-through their Connection ID advertisements. For instance, if the Maximum Path ID
-limit is 2 and the endpoint wants to provide Connection IDs for only one Path ID,
+for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
+in the usage of Path ID through their Connection ID advertisements. For instance, if the Maximum Path ID
+limit is 2 and the endpoint wants to provide Connection IDs for only one Path ID inside range[1, 2],
 it should select Path ID 1 (and not Path ID 2). Similarly, endpoints SHOULD consume
 Path IDs in a continuous way, i.e., when creating paths.
 
