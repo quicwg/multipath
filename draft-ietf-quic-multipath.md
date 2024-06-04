@@ -220,10 +220,10 @@ the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration m
 selects only one path at a time to exchange such packets.
 
 A multipath QUIC connection starts with a QUIC handshake as a regular QUIC connection.
-The peers use the initial_max_paths transport parameter during the handshake to
+The peers use the initial_max_path_id transport parameter during the handshake to
 indicate the support of the multipath extension (see {{nego}}).
 The multipath QUIC extension is thus successfully negotiated when QUIC
-connection is established where the initial_max_paths transport parameter
+connection is established where the initial_max_path_id transport parameter
 was provided by both endpoints.
 
 To add a new path to an existing QUIC connection with multipath support, a client starts a path validation on
@@ -252,41 +252,39 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- initial_max_paths (current version uses 0x0f739bbc1b666d07): the
-  initial_max_paths transport parameter is included if the endpoint supports
+- initial_max_path_id (current version uses 0x0f739bbc1b666d07): the
+  initial_max_path_id transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This is
-  a variable-length integer value specifying the maximum number of
-  active concurrent paths an endpoint is willing to maintain.
-  The value of the initial_max_paths parameter MUST be at least 2.
+  a variable-length integer specifying the initial maximum value of
+  available path identifier an endpoint is willing to support.
+  The value of the initial_max_path_id parameter MUST be at least 2.
   An endpoint that receives a value less than 2 MUST close
   the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
-Setting initial_max_paths parameter is equivalent to sending a
+Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATHS frame ({{max-paths-frame}}) with the same value.
 
-If either of the endpoints does not advertise the initial_max_paths transport
+If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
-When advertising the initial_max_paths transport parameter, the endpoint
+When advertising the initial_max_path_id transport parameter, the endpoint
 MUST use non-zero length Source and Destination Connection IDs.
-If an initial_max_paths transport
+If an initial_max_path_id transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
 MP_PROTOCOL_VIOLATION and close the connection.
 
-The initial_max_paths parameter MUST NOT be remembered
+The initial_max_path_id parameter MUST NOT be remembered
 ({{Section 7.4.1 of QUIC-TRANSPORT}}).
 New paths can only be used after handshake completion.
 
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
-The initial_max_paths transport parameter limits the initial maximum number of active paths
-that can be used during a connection.
 The active_connection_id_limit transport parameter
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
-initial_max_paths parameter is negotiated successfully.
+initial_max_path_id parameter is negotiated successfully.
 Endpoints might prefer to retain spare connection IDs so that they can
 respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}).
 
@@ -1047,7 +1045,7 @@ it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
 Receipt of multipath-specific frames
 that use a Path ID that is greater than the announced Maximum Paths value
-in the MAX_PATHS frame or in the initial_max_paths transport parameter,
+in the MAX_PATHS frame or in the initial_max_path_id transport parameter,
 if no MAX_PATHS frame was received yet,
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
@@ -1334,7 +1332,7 @@ Maximum Path Identifier:
   Path IDs are defined with a maximum value 2^32-1 as the 32 bits of the Path ID are used
   to calculate the nonce (see Section {{multipath-aead}}).
   The Maximum Paths value MUST NOT be lower than the value
-  advertised in the initial_max_paths transport parameter. Receipt
+  advertised in the initial_max_path_id transport parameter. Receipt
   of an invalid Maximum Paths value MUST be treated as a
   connection error of type MP_PROTOCOL_VIOLATION.
 
@@ -1368,7 +1366,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d07) | initial_max_paths | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d07) | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
