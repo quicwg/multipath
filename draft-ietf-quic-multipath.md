@@ -501,7 +501,7 @@ The immediate retirement of connection identifiers received for the
 path guarantees that spurious stateless reset packets
 sent by the peer will not cause the closure of the QUIC connection.
 
-### Handling MP_ACK for abandoned paths {#ack-after-abandon}
+### Handling ACK_MP for abandoned paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some other packets may well
