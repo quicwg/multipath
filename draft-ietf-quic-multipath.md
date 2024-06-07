@@ -152,6 +152,11 @@ Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
 {{QUIC-RECOVERY}} on a per-path basis.
 
+Each Path ID-specific packet number space starts at packet number 0. When following
+the packet number encoding algorithm described in {{Section A.2 of QUIC-TRANSPORT}},
+the largest packet number (largest_acked) that has been acknowledged by the
+peer in the Path ID-specfic packet number space is initially set to "None".
+
 Using multiple packet number spaces requires changes in the way AEAD is
 applied for packet protection, as explained in {{multipath-aead}}.
 More concretely, the Path ID is used to construct the
@@ -295,6 +300,22 @@ the multipath extension. If such a cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
 TRANSPORT_PARAMETER error.
 
+The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
+acknowledge 1-RTT packets.
+Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the ACK_MP frame additionally
+contains the receiver's Path ID to identify the path-specific packet number space.
+
+As multipath support is unknown during the handshake, acknowledgements of
+Initial and Handshake packets are sent using ACK frames.
+If the multipath extension has been successfully
+negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
+Path ID 0.
+
+After the handshake concluded if negotiation of multipath support succeeded,
+endpoints SHOULD use ACK_MP frames instead of ACK frames,
+also for acknowledging so far unacknowledged 0-RTT packets, using
+Path ID 0.
+
 # Path Management {#path-management}
 
 After completing the handshake, endpoints have agreed to enable
@@ -358,6 +379,12 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
+
+ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
+If the ACK_MP is preferred to be sent on the same path as the acknowledged
+packet (see {{compute-rtt}} for further guidance), it can be beneficial
+to bundle an ACK_MP frame with the PATH_RESPONSE frame during
+path validation.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
@@ -695,45 +722,7 @@ This allows for graceful tear down and processing of in-flight packets.
 When a path reaches the "Closed" state, the endpoint releases all the
 path's associated resources, including the associated connection IDs and the path identifier.
 
-
-# Multipath Operation with Multiple Packet Number Spaces
-
-The QUIC multipath extension uses different packet number spaces for each path.
-This also means that the same packet number can occur on each path and the
-packet number is not a unique identifier anymore. This requires changes to
-the ACK frame as well as packet protection as described in the following subsections.
-
-When multipath is negotiated, separate packet number space is linked to a Path ID.
-Each Path ID-specific packet number space starts at packet number 0. When following
-the packet number encoding algorithm described in {{Section A.2 of QUIC-TRANSPORT}},
-the largest packet number (largest_acked) that has been acknowledged by the
-peer in the Path ID-specfic packet number space is initially set to "None".
-
-## Sending Acknowledgements
-
-The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
-acknowledge 1-RTT packets.
-Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the ACK_MP frame additionally
-contains the receiver's Path ID to identify the path-specific packet number space.
-
-As multipath support is unknown during the handshake, acknowledgements of
-Initial and Handshake packets are sent using ACK frames.
-If the multipath extension has been successfully
-negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
-Path ID 0.
-
-After the handshake concluded if negotiation of multipath support succeeded,
-endpoints SHOULD use ACK_MP frames instead of ACK frames,
-also for acknowledging so far unacknowledged 0-RTT packets, using
-Path ID 0.
-
-ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
-If the ACK_MP is preferred to be sent on the same path as the acknowledged
-packet (see {{compute-rtt}} for further guidance), it can be beneficial
-to bundle an ACK_MP frame with the PATH_RESPONSE frame during
-path validation.
-
-## Packet Protection {#multipath-aead}
+# Packet Protection {#multipath-aead}
 
 Packet protection for QUIC version 1 is specified in {{Section 5 of QUIC-TLS}}.
 The general principles of packet protection are not changed for
@@ -743,6 +732,8 @@ initial secrets, header protection, use of 0-RTT keys, receiving
 out-of-order protected packets, receiving protected packets,
 or retry packet integrity. However, the use of multiple number spaces
 for 1-RTT packets requires changes in AEAD usage.
+
+## Nonce Calculation
 
 {{Section 5.3 of QUIC-TLS}} specifies AEAD usage, and in particular
 the use of a nonce, N, formed by combining the packet protection IV
