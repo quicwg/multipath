@@ -144,7 +144,7 @@ address.
 
 In addition to these core features, an application using the multipath extension will typically
 need additional algorithms to handle the number of active paths and how they are used to
-send packets. As these differ depending on the application's requirements, 
+send packets. As these differ depending on the application's requirements,
 this proposal only specifies a simple basic packet
 scheduling algorithm (see Section {{packet-scheduling}}),
 in order to provide some basic implementation
