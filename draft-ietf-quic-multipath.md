@@ -549,7 +549,7 @@ MUST do so explicitly by sending a PATH_ABANDON frame, as defined in
 
 ### Early Abandon {#abandon-early}
 
-The are are scenarios in which an endpoint will receive a PATH_ABANDON frame
+There are scenarios in which an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be establish, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
