@@ -553,7 +553,7 @@ There are scenarios in which an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
-to abandon a path for any reason, such as for example removing a hole from
+to abandon a path for any reason, for example, removing a hole from
 the sequence of path IDs in use. This is not an error. The endpoint that
 receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
