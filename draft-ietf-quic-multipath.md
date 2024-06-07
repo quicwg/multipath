@@ -456,7 +456,7 @@ connection identifiers sent to the peer for a short period,
 as specified in {{spurious-stateless-reset}}.
 
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
-promptly send MP_ACK frames to acknowledge all packets received on
+promptly send ACK_MP frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
 When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
