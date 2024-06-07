@@ -507,7 +507,7 @@ When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some other packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
-send MP_ACK frames promptly, to avoid unnecessary data
+send ACK_MP frames promptly, to avoid unnecessary data
 retransmission after the peer deletes path resources.
 
 These MP_ACK frames SHOULD be send on a different path than the
