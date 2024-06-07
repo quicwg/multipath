@@ -513,7 +513,7 @@ retransmission after the peer deletes path resources.
 These ACK_MP frames SHOULD be send on a different path than the
 path being abandoned.
 
-MP_ACK frames received after the endpoint has entirely deleted
+ACK_MP frames received after the endpoint has entirely deleted
 a path MUST be silently discarded.
 
 ### Idle Timeout {#idle-time-close}
