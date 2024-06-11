@@ -255,10 +255,12 @@ defined as follows:
 - initial_max_path_id (current version uses 0x0f739bbc1b666d09): the
   initial_max_path_id transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This is
-  a variable-length integer specifying the initial maximum value of
-  available path identifier an endpoint is willing to support.
-  The value of the initial_max_path_id parameter MUST be at least 2.
-  An endpoint that receives a value less than 2 MUST close
+   a variable-length integer specifying the maximum path identifier
+  an endpoint is willing to maintain at connection initiation.
+  E.g. if initial_max_path_id is set to 1, only connection IDs associated to Path IDs 0 and 1
+  should be issued by the peer.
+  The value of the initial_max_path_id parameter MUST be at least 1.
+  An endpoint that receives a value less than 1 MUST close
   the connection with an error of type TRANSPORT_PARAMETER_ERROR.
 
 Setting initial_max_path_id parameter is equivalent to sending a
