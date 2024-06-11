@@ -449,17 +449,23 @@ of local resources. It is also possible to abandon a path for which no
 packet has been sent (see {{abandon-early}}).
 
 When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding
-PATH_ABANDON frame if it has not already done so, and it MUST treat all
+PATH_ABANDON frame if it has not already done so. It MUST stop sending
+any new packet on the abandoned path, and it MUST treat all
 connection identifiers received from the peer for that path as immediately
-retired. However, the endpoint should retain some knowledge of the
-connection identifiers sent to the peer for a short period,
-as specified in {{spurious-stateless-reset}}.
+retired. However, knowledge of the
+connection identifiers received from the peer and of the state
+of the number space associated to the path SHOULD be retained while
+packets from the peer might still be in transit, i.e., for a delay of
+3 PTO after the PATH_ABANDON frame has been received from the peer,
+both to avoid generating spurious stateless packets as specified in
+{{spurious-stateless-reset}} and to be able to acknowledge the
+last packets received from the peer as specified in {{ack-after-abandon}}).
 
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
-promptly send ACK_MP frames to acknowledge all packets received on
+promptly send MP_ACK frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
 When an endpoint finally deletes all resource associated with the path,
-the packets sent over the path and not yet acknowledged MUST be considered lost.
+the packets sent over the path and not yet acknowledged MUST be considered lost. 
 
 After a path is abandoned, the Path ID MUST NOT be reused
 for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
@@ -493,7 +499,8 @@ well arrive after the PATH_ABANDON frames have been sent or received.
 If these packets arrive after the connection identifiers sent to the peer
 have been retired, they will not be recognizes as bound for the local
 connection and could trigger the peer to send a Stateless Reset
-packet. The rule to "retain knowledge of connection ID for a short period"
+packet. The rule to "retain knowledge of connection ID for 3 PTO
+after receiving a PATH_ABANDON"
 is intended to reduce the risk of sending such spurious stateless
 packets, but it cannot completely avoid that risk.
 
@@ -501,19 +508,19 @@ The immediate retirement of connection identifiers received for the
 path guarantees that spurious stateless reset packets
 sent by the peer will not cause the closure of the QUIC connection.
 
-### Handling ACK_MP for abandoned paths {#ack-after-abandon}
+### Handling MP_ACK for abandoned paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some other packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
-send ACK_MP frames promptly, to avoid unnecessary data
+send MP_ACK frames promptly, to avoid unnecessary data
 retransmission after the peer deletes path resources.
 
-These ACK_MP frames SHOULD be send on a different path than the
+These MP_ACK frames SHOULD be send on a different path than the
 path being abandoned.
 
-ACK_MP frames received after the endpoint has entirely deleted
+MP_ACK frames received after the endpoint has entirely deleted
 a path MUST be silently discarded.
 
 ### Idle Timeout {#idle-time-close}
@@ -549,11 +556,11 @@ MUST do so explicitly by sending a PATH_ABANDON frame, as defined in
 
 ### Early Abandon {#abandon-early}
 
-There are scenarios in which an endpoint will receive a PATH_ABANDON frame
+The are scenarios in which an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
-tries to initiate a path and the path cannot be established, it will send a
+tries to initiate a path and the path cannot be establish, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
-to abandon a path for any reason, for example, removing a hole from
+to abandon a path for any reason, such as for example removing a hole from
 the sequence of path IDs in use. This is not an error. The endpoint that
 receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
@@ -563,7 +570,7 @@ An endpoint may deny the establishment of a new path initiated by its
 peer during the address validation procedure. According to {{QUIC-TRANSPORT}},
 the standard way to deny the establishment of a path is to not send a
 PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
-
+ 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
 With the multipath extension, each connection ID is associated with one path
