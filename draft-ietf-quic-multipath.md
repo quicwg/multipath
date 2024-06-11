@@ -517,7 +517,7 @@ PATH_ABANDON frame. As specified above, the endpoints SHOULD
 send ACK_MP frames promptly, to avoid unnecessary data
 retransmission after the peer deletes path resources.
 
-These ACK_MP frames SHOULD be send on a different path than the
+These ACK_MP frames MUST be sent on a different path than the
 path being abandoned.
 
 ACK_MP frames received after the endpoint has entirely deleted
