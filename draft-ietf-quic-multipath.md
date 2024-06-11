@@ -462,7 +462,7 @@ both to avoid generating spurious stateless packets as specified in
 last packets received from the peer as specified in {{ack-after-abandon}}).
 
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
-promptly send MP_ACK frames to acknowledge all packets received on
+promptly send ACK_MP frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
 When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
@@ -508,19 +508,19 @@ The immediate retirement of connection identifiers received for the
 path guarantees that spurious stateless reset packets
 sent by the peer will not cause the closure of the QUIC connection.
 
-### Handling MP_ACK for abandoned paths {#ack-after-abandon}
+### Handling ACK_MP for abandoned paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some other packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
-send MP_ACK frames promptly, to avoid unnecessary data
+send ACK_MP frames promptly, to avoid unnecessary data
 retransmission after the peer deletes path resources.
 
-These MP_ACK frames SHOULD be send on a different path than the
+These ACK_MP frames SHOULD be send on a different path than the
 path being abandoned.
 
-MP_ACK frames received after the endpoint has entirely deleted
+ACK_MP frames received after the endpoint has entirely deleted
 a path MUST be silently discarded.
 
 ### Idle Timeout {#idle-time-close}
@@ -558,9 +558,9 @@ MUST do so explicitly by sending a PATH_ABANDON frame, as defined in
 
 The are scenarios in which an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
-tries to initiate a path and the path cannot be establish, it will send a
+tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
-to abandon a path for any reason, such as for example removing a hole from
+to abandon a path for any reason, for example, removing a hole from
 the sequence of path IDs in use. This is not an error. The endpoint that
 receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
@@ -895,7 +895,7 @@ for example the PTO timeout: if an ACK_MP is not received after more
 than 350ms, either the data packet or its ACK_MP were probably lost.
 
 The simplest implementation is to compute smoothedRTT and RTTvar per
-{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACKs are
+{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which ACK_MPs are
 received. This algorithm will provide good results,
 except if the set of paths changes and the ACK_MP sender
 revisits its sending preferences. This is not very
