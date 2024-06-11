@@ -465,7 +465,7 @@ After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
 promptly send MP_ACK frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
 When an endpoint finally deletes all resource associated with the path,
-the packets sent over the path and not yet acknowledged MUST be considered lost. 
+the packets sent over the path and not yet acknowledged MUST be considered lost.
 
 After a path is abandoned, the Path ID MUST NOT be reused
 for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
@@ -570,7 +570,7 @@ An endpoint may deny the establishment of a new path initiated by its
 peer during the address validation procedure. According to {{QUIC-TRANSPORT}},
 the standard way to deny the establishment of a path is to not send a
 PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
- 
+
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
 With the multipath extension, each connection ID is associated with one path
