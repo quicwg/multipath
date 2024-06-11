@@ -257,8 +257,8 @@ defined as follows:
   the multipath extension as defined in this document. This is
    a variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
-  E.g. if initial_max_path_id is set to 1, only connection IDs associated to Path IDs 0 and 1
-  should be issued by the peer.
+  E.g. if initial_max_path_id is set to 1, only connection IDs 
+  associated to Path IDs 0 and 1 should be issued by the peer.
   The value of the initial_max_path_id parameter MUST be at least 1.
   An endpoint that receives a value less than 1 MUST close
   the connection with an error of type TRANSPORT_PARAMETER_ERROR.
@@ -283,6 +283,9 @@ New paths can only be used after handshake completion.
 
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
+
+The initial_max_path_id transport parameter limits the initial maximum number of active paths
+that can be used during a connection.
 
 The active_connection_id_limit transport parameter
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
