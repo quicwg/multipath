@@ -254,17 +254,17 @@ defined as follows:
 
 - initial_max_path_id (current version uses 0x0f739bbc1b666d09): the
   initial_max_path_id transport parameter is included if the endpoint supports
-  the multipath extension as defined in this document. This is 
+  the multipath extension as defined in this document. This is
   a variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
   E.g. if initial_max_path_id is set to 1, only connection IDs
   associated to Path IDs 0 and 1 should be issued by the peer.
-  If an endpoint receives transport parameter initial_max_path_id with value 0, 
-  it MUST NOT cause any error, and notice that the peer want to 
-  enable the multipath extension without allowing extra paths immediately 
+  If an endpoint receives transport parameter initial_max_path_id with value 0,
+  it MUST NOT cause any error, and notice that the peer want to
+  enable the multipath extension without allowing extra paths immediately
   after the handshake is done. If initial_max_path_id is successfully negotiated
-  (including negotiated as 0), endpoints can still use MAX_PATHS frame to raise up 
-  the limitation for maximum path identifier of the connection in the future. 
+  (including negotiated as 0), endpoints can still use MAX_PATHS frame to raise up
+  the limitation for maximum path identifier of the connection in the future.
 
 Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATHS frame ({{max-paths-frame}}) with the same value.
