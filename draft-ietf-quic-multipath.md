@@ -1316,7 +1316,7 @@ also needs to be considered in the context of the Path Identifier field.
 
 ## MAX_PATH_ID frames {#max-paths-frame}
 
-A MAX_PATH_ID frame (type=0x15228c0b) informs the peer of the maximum path identifier
+A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
 
 When there are not enough unused path identifiers, endpoints SHOULD
@@ -1326,7 +1326,7 @@ MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
 ~~~
 MAX_PATH_ID Frame {
-  Type (i) = 0x15228c0b,
+  Type (i) = 0x15228c0c,
   Maximum Paths (i),
 }
 ~~~
