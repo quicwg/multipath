@@ -1401,25 +1401,25 @@ TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath prot
 
 ## Path States
 
-As the maximum Path ID is negotiated by both endpoints with transport parameter initial_max_path_id 
-and MAX_PATH_ID frame, Endpoints can limit the usage of Path ID and associated path resources by 
-limiting the maximum Path ID issued by themselves. 
+As the maximum Path ID is negotiated by both endpoints with transport parameter initial_max_path_id
+and MAX_PATH_ID frame, Endpoints can limit the usage of Path ID and associated path resources by
+limiting the maximum Path ID issued by themselves.
 
-Before creating a new path, endpoints MUST issue unused CIDs for the corresponding Path ID. 
-Endpoints also have a strategy to only issue new CIDs of the lowest available unused Path ID 
+Before creating a new path, endpoints MUST issue unused CIDs for the corresponding Path ID.
+Endpoints also have a strategy to only issue new CIDs of the lowest available unused Path ID
 for limiting the creation for new paths.
 
-Consider allocating memory resources and other path related resources in a minimized manner 
-to avoid being exploited by vulnerabilities, endpoints are suggested to allocate the necessary path resource 
+Consider allocating memory resources and other path related resources in a minimized manner
+to avoid being exploited by vulnerabilities, endpoints are suggested to allocate the necessary path resource
 after the path validation is fully completed.
 
 
 ## Request Forgery with Spoofed Address
 
-Note that Clients are able to present a spoofed source address as part of new path creation / path migration 
+Note that Clients are able to present a spoofed source address as part of new path creation / path migration
 to cause a server to send datagrams to that address, as the same in {{Section 21.5.4 of QUIC-TRANSPORT}}.
 
-Endpoints MUST follow the anti-amplification limitation of {{QUIC-TRANSPORT}}, which ensures that an endpoint 
+Endpoints MUST follow the anti-amplification limitation of {{QUIC-TRANSPORT}}, which ensures that an endpoint
 cannot be used for a traffic amplification attack.
 
 
