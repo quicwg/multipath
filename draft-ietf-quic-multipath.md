@@ -257,7 +257,7 @@ defined as follows:
   the multipath extension as defined in this document. This is
   a variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
-  E.g. if initial_max_path_id is set to 1, only connection IDs
+  For example, if initial_max_path_id is set to 1, only connection IDs
   associated to Path IDs 0 and 1 should be issued by the peer.
   If an endpoint receives transport parameter initial_max_path_id with value 0,
   it MUST NOT cause any error, and notice that the peer want to
