@@ -263,7 +263,7 @@ defined as follows:
   it MUST NOT cause any error, and notice that the peer want to
   enable the multipath extension without allowing extra paths immediately
   after the handshake is done. If initial_max_path_id is successfully negotiated
-  (including negotiated as 0), endpoints can still use MAX_PATH_ID frame to raise up
+  (including negotiated as 0), endpoints can use MAX_PATH_ID frame to increase
   the limitation for maximum path identifier of the connection in the future.
 
 Setting initial_max_path_id parameter is equivalent to sending a
