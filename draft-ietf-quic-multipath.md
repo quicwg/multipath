@@ -1335,8 +1335,8 @@ MAX_PATH_ID Frame {
 MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
-: The maximum path identifier that the sending endpoint is willing to accept. 
-  This value MUST NOT exceed 2^32-1, as Path IDs are defined with a maximum value 2^32-1 
+: The maximum path identifier that the sending endpoint is willing to accept.
+  This value MUST NOT exceed 2^32-1, as Path IDs are defined with a maximum value 2^32-1
   as the 32 bits of the Path ID are used to calculate the nonce (see {{multipath-aead}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
   advertised in the initial_max_path_id transport parameter. Receipt
