@@ -259,7 +259,7 @@ defined as follows:
   an endpoint is willing to maintain at connection initiation.
   For example, if initial_max_path_id is set to 1, only connection IDs
   associated with Path IDs 0 and 1 should be issued by the peer.
-  If an endpoint receives transport parameter initial_max_path_id with value 0,
+  If an endpoint receives an initial_max_path_id transport parameter with value 0,
   it MUST NOT cause any error, and notice that the peer want to
   enable the multipath extension without allowing extra paths immediately
   after the handshake is done. If initial_max_path_id is successfully negotiated
