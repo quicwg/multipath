@@ -264,7 +264,7 @@ defined as follows:
   enable the multipath extension without allowing extra paths immediately
   after the handshake is done. If initial_max_path_id is successfully negotiated
   (including negotiated as 0), endpoints can use MAX_PATH_ID frame to increase
-  the limitation for maximum path identifier of the connection in the future.
+  the maximum path identifier and enable the use of new paths.
 
 Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
