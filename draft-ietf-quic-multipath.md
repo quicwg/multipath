@@ -1423,6 +1423,17 @@ Endpoints MUST follow the anti-amplification limitation of {{QUIC-TRANSPORT}}, w
 cannot be used for a traffic amplification attack.
 
 
+## Transport Layer Security
+
+Multipath extension is enabled after the handshake negotiation of QUIC connection is finished, and all the multipath
+extension frames can only be sent on 1-RTT short header packets. 
+Therefore, multipath extension generally follows the transport security mechanism in {{QUIC-TLS}}, 
+including encryption key exchange, peer authentication, etc. 
+
+About packet protection, multipath extension uses path identifier as part of AEAD encryption nonce (See {{multipath-aead}}). 
+For security consideration, path identifiers MUST NOT be reused for another path in the same connection in the future. 
+
+
 # Contributors
 
 This document is a collaboration of authors that combines work from
