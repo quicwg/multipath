@@ -363,7 +363,7 @@ If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
 However, as the used Path ID is anyway consumed,
-and the endpoint MUST explicitly close the path as specified in
+the endpoint MUST explicitly close the path as specified in
 {{path-close}}.
 
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
@@ -497,7 +497,7 @@ per {{Section 10.3 of QUIC-TRANSPORT}}.
 Due to packet losses and network delays, packets sent on the path may
 well arrive after the PATH_ABANDON frames have been sent or received.
 If these packets arrive after the connection identifiers sent to the peer
-have been retired, they will not be recognizes as bound for the local
+have been retired, they will not be recognized as bound for the local
 connection and could trigger the peer to send a Stateless Reset
 packet. The rule to "retain knowledge of connection ID for 3 PTO
 after receiving a PATH_ABANDON"
