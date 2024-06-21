@@ -583,8 +583,8 @@ requires available connection IDs for the same Path ID on both sides. For instan
 if the maximum Path ID limit is 2 and the endpoint wants to provide connection IDs
 for only one Path ID inside range [1, 2], it should select Path ID 1 (and not Path
 ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
-creating paths. However, endpoints cannot expect to receive path
-creation attempts with in order use of Path IDs
+creating paths. However, endpoints cannot expect to receive new connection IDs
+or path creation attempts with in order use of Path IDs
 due to out-of-order delivery or path validation failure.
 
 {{Section 5.1.2. of QUIC-TRANSPORT}} specifies the retirement of connection IDs.
