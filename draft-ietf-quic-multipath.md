@@ -391,11 +391,10 @@ be processed.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
-remove any status associated to the path initation attempt.
+remove any status associated to the path initiation attempt.
 However, as the used Path ID is anyway consumed,
-and the endpoint MUST abandon the path by sending a PATH_ABANDON frame
-and retire all corresponding connection IDs by sending MP_RETIRE_CONNECTION_ID frames
-on another path to inform the peer that the Path ID cannot be used anymore.
+the endpoint MUST explicitly close the path as specified in
+{{path-close}}.
 
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. A packet that contains at least
@@ -458,7 +457,6 @@ to detect and ignore outdated information.
 If all active paths are marked as "standby", no guidance is provided about
 which path should be used.
 
-
 ## Path Close
 
 Each endpoint manages the set of paths that are available for
@@ -468,60 +466,40 @@ connectivity or local preferences. After an endpoint abandons
 a path, the peer can expect to not receive any more non-probing packets on
 that path.
 
-An endpoint that wants to close a path SHOULD explicitly
-terminate the path by sending a PATH_ABANDON frame (see
-{{path-abandon-close}}). Note that while abandoning a path will cause
-connection ID retirement, the inverse is not true: retiring the associated connection IDs
-does not indicate path abandonment (see further {{consume-retire-cid}}).
-Implicit signals such as idle time or packet losses might be
-the only way for an endpoint to detect path closure (see {(idle-time-close}})
-if connectivity is broken on that path.
-
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
 apply on the whole connection. In particular, the reception of either a
 CONNECTION_CLOSE ({{Section 10.2 of QUIC-TRANSPORT}}) or a Stateless
 Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
-### Use PATH_ABANDON Frame to Close a Path {#path-abandon-close}
+An endpoint that wants to close a path MUST explicitly
+terminate the path by sending a PATH_ABANDON frame.
+Note that while abandoning a path will cause
+connection ID retirement, the inverse is not true: retiring the associated connection IDs
+does not indicate path abandonment (see further {{consume-retire-cid}}).
+This is true whether the decision to close the path results
+from implicit signals such as idle time or packet losses
+(see {(idle-time-close}}) or for any other reason, such as management
+of local resources. It is also possible to abandon a path for which no
+packet has been sent (see {{abandon-early}}).
 
-Either endpoint can initiate path closure
-by sending a PATH_ABANDON frame (see {{path-abandon-frame}}) which
-requests the peer to stop sending packets on the the path with
-the corresponding Path ID.
+When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding
+PATH_ABANDON frame if it has not already done so. It MUST stop sending
+any new packet on the abandoned path, and it MUST treat all
+connection identifiers received from the peer for that path as immediately
+retired. However, knowledge of the
+connection identifiers received from the peer and of the state
+of the number space associated to the path SHOULD be retained while
+packets from the peer might still be in transit, i.e., for a delay of
+3 PTO after the PATH_ABANDON frame has been received from the peer,
+both to avoid generating spurious stateless packets as specified in
+{{spurious-stateless-reset}} and to be able to acknowledge the
+last packets received from the peer as specified in {{ack-after-abandon}}).
 
-When a path is abandoned, all connection IDs allocated by both
-of the endpoints for the specified Path ID need to be retired.
-When sending or receiving a PATH_ABANDON frame, endpoints SHOULD wait for at
-least three times the current Probe Timeout (PTO) interval after the last
-packet was sent on the path, as defined in {{Section 6.2 of QUIC-RECOVERY}},
-before sending MP_RETIRE_CONNECTION_ID frames.
-This is inline with the requirement of {{Section 10.2 of QUIC-TRANSPORT}}.
-Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
-for all connection IDs associated to the Path ID of the abandoned path
-to ensure that paths close cleanly and that delayed or reordered packets
-are properly discarded.
-
-Usually, it is expected that the PATH_ABANDON frame is used by the client
-to indicate to the server that path conditions have changed such that
-the path is or will be not usable anymore, e.g. in case of a mobility
-event. The PATH_ABANDON frame therefore recommends to the receiver
-that no packets should be sent on that path anymore.
-In addition, the MP_RETIRE_CONNECTION_ID frame is used indicate to the receiving peer
-that the sender will not send any packets associated to the
-connection ID used on that path anymore.
-The receiver of a PATH_ABANDON frame MAY also send
-a PATH_ABANDON frame to indicate its own unwillingness to receive
-any packet on this path anymore.
-
-Reception or sending of the PATH_ABANDON frame is
-the first step to release all resources related to a
-Path ID. However, the Path ID can only be released after all active
-connection IDs for the Path ID have been retired or timed-out after
-the PATH_ABANDON frame was sent.
-Still, when an endpoint receives an PATH_ABANDON frame,
-it SHOULD NOT use the associated Path ID in future frames, except
-in ACK_MP frames for acknowledging inflight packets and
-in MP_RETIRE_CONNECTION_ID frames for connection ID retirement.
+After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
+promptly send ACK_MP frames to acknowledge all packets received on
+the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
+When an endpoint finally deletes all resource associated with the path,
+the packets sent over the path and not yet acknowledged MUST be considered lost.
 
 After a path is abandoned, the Path ID MUST NOT be reused
 for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
@@ -530,8 +508,7 @@ PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus, a path can
 be abandoned even if connectivity on that path is already broken.
 Respectively, if there is still an active path, it is RECOMMENDED to
-send a PATH_ABANDON frame and retire all corresponding connection IDs
-by sending MP_RETIRE_CONNECTION_ID frames on another path after an idle time.
+send the PATH_ABANDON frames on another path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
@@ -542,6 +519,43 @@ or a CONNECTION_CLOSE frame is received from the server. Similarly
 the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
+
+### Avoiding Spurious Stateless Resets {#spurious-stateless-reset}
+
+The peers that send a PATH_ABANDON frame MUST treat all connection
+identifiers received from the peer for the path ID as immediately
+retired. The Stateless Reset Tokens associated with these connection
+identifiers MUST NOT be used to identify Stateless Reset packets
+per {{Section 10.3 of QUIC-TRANSPORT}}.
+
+Due to packet losses and network delays, packets sent on the path may
+well arrive after the PATH_ABANDON frames have been sent or received.
+If these packets arrive after the connection identifiers sent to the peer
+have been retired, they will not be recognized as bound for the local
+connection and could trigger the peer to send a Stateless Reset
+packet. The rule to "retain knowledge of connection ID for 3 PTO
+after receiving a PATH_ABANDON"
+is intended to reduce the risk of sending such spurious stateless
+packets, but it cannot completely avoid that risk.
+
+The immediate retirement of connection identifiers received for the
+path guarantees that spurious stateless reset packets
+sent by the peer will not cause the closure of the QUIC connection.
+
+### Handling ACK_MP for abandoned paths {#ack-after-abandon}
+
+When an endpoint decides to send a PATH_ABANDON frame, there may
+still be some unacknowledged packets. Some other packets may well
+be in transit, and could be received shortly after sending the
+PATH_ABANDON frame. As specified above, the endpoints SHOULD
+send ACK_MP frames promptly, to avoid unnecessary data
+retransmission after the peer deletes path resources.
+
+These ACK_MP frames MUST be sent on a different path than the
+path being abandoned.
+
+ACK_MP frames received after the endpoint has entirely deleted
+a path MUST be silently discarded.
 
 ### Idle Timeout {#idle-time-close}
 
@@ -565,25 +579,31 @@ can send ack-eliciting packets such as packets containing PING frames
 periodic PING frames also helps prevent middlebox timeout, as discussed in
 {{Section 10.1.2 of QUIC-TRANSPORT}}.
 
-Server MAY release the resources associated with a path for
-which no non-probing packet was received for a sufficiently long
-path-idle delay, but SHOULD only release resources for the last
-available path if no traffic is received for the duration of the idle
-timeout, as specified in {{Section 10.1 of QUIC-TRANSPORT}}.
-This means if all paths remain idle for the idle timeout, the connection
-is implicitly closed.
-
 Server implementations need to select the sub-path idle timeout as a trade-
 off between keeping resources, such as connection IDs, in use
 for an excessive time or having to promptly re-establish a path
 after a spurious estimate of path abandonment by the client.
 
+Endpoints that desire to close a path because of the idle timer rule
+MUST do so explicitly by sending a PATH_ABANDON frame on another active path, as defined in
+{{path-close}}.
+
+### Early Abandon {#abandon-early}
+
+The are scenarios in which an endpoint will receive a PATH_ABANDON frame
+before receiving or sending any traffic on a path. For example, if the client
+tries to initiate a path and the path cannot be established, it will send a
+PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
+to abandon a path for any reason, for example, removing a hole from
+the sequence of path IDs in use. This is not an error. The endpoint that
+receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
+
 ## Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
-peer during the address validation procedure. According to
-{{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
-is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
+peer during the address validation procedure. According to {{QUIC-TRANSPORT}},
+the standard way to deny the establishment of a path is to not send a
+PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
@@ -652,73 +672,6 @@ The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
 to use a different connection ID for the same Path ID when doing so.
 
-## Path States
-
-{{fig-path-states}} shows the states that an endpoint's path can have.
-
-~~~
-       o
-       | PATH_CHALLENGE sent/received on new path
-       v
- +------------+    Path validation failed
- | Validating |----------------------------------+
- +------------+                                  |
-       |                                         |
-       | PATH_RESPONSE received                  |
-       |                                         |
-       v                                         |
- +------------+        Idle timeout              |
- |   Active   |----------------------------------+
- +------------+                                  |
-       |                                         |
-       | PATH_ABANDON sent/received              |
-       v                                         |
- +------------+                                  |
- |   Closing  |                                  |
- +------------+                                  |
-       |                                         |
-       | MP_RETIRE_CONNECTION_ID sent && received|
-       | or                                      |
-       | Path's draining timeout                 |
-       | (at least 3 PTO)                        |
-       v                                         |
- +------------+                                  |
- |   Closed   |<---------------------------------+
- +------------+
-~~~
-{: #fig-path-states title="States of a path"}
-
-In all but the "Closed" states, hosts have to track the following information.
-
-- Associated 4-tuple: The tuple (source IP, source port, destination IP,
-destination port) used by the endpoint to send packets over the path.
-
-- Associated Path Identifier: The Path ID used to address the path.
-The endpoint relies on the path identifier to send path control information
-and specifically acknowledge packets belonging to that path-specific
-packet number space.
-
-- Associated Destination Connection IDs: The connection IDs used to send
-packets over the path.
-
-In Active state, hosts also tracks the following information:
-
-- Associated Source Connection IDs: The connection IDs used to receive
-packets over the path.
-
-A path in the "Validating" state performs path validation as described
-in Section {{path-initiation}}.
-
-The endpoint can use all paths in the "Active" state, provided
-that the congestion control and flow control currently allow sending
-of new data on a path.
-
-"Closing" state is entered after an PATH_ABANDON frame was sent or received.
-In this state, the endpoint waits for three PTOs before sending MP_RETIRE_CONNECTION_ID frames.
-This allows for graceful tear down and processing of in-flight packets.
-
-When a path reaches the "Closed" state, the endpoint releases all the
-path's associated resources, including the associated connection IDs and the path identifier.
 
 # Packet Protection {#multipath-aead}
 
@@ -939,7 +892,7 @@ for example the PTO timeout: if an ACK_MP is not received after more
 than 350ms, either the data packet or its ACK_MP were probably lost.
 
 The simplest implementation is to compute smoothedRTT and RTTvar per
-{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACKs are
+{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which ACK_MP frames are
 received. This algorithm will provide good results,
 except if the set of paths changes and the ACK_MP sender
 revisits its sending preferences. This is not very
