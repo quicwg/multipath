@@ -1399,6 +1399,14 @@ TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath prot
 
 # Security Considerations
 
+The multipath extension inherits all the security designs of {{QUIC-TRANSPORT}} and {{QUIC-TLS}}, particularly regarding the utilization of TLS, with the exception of enhancements in four specific areas:
+
+- The allocation of resources for Connection Identifiers on a per-path basis;
+- The provisioning of multiple concurrent path contexts and the associated resources;
+- An increased frequency in path creation, thus the risk of request forgery attacks needs to be carefully considered and addressed;
+- The implementation of numerous number spaces and the corresponding encryption mandates.
+
+
 ## Memory Allocation for Per-Path Resources
 
 The initial_max_path_id transport parameter and the Max Path ID field in the MAX_PATH_ID frame limit the number of paths an endpoint is willing to maintain and accordingly limits the associated path resources.
