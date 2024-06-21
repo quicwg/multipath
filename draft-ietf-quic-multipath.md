@@ -857,7 +857,6 @@ Client                                                      Server
 {: #fig-example-path-close1 title="Example of closing a path."}
 
 
-
 # Implementation Considerations
 
 ## Number Spaces
