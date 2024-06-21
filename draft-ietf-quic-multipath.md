@@ -464,7 +464,7 @@ An endpoint that wants to close a path MUST explicitly
 terminate the path by sending a PATH_ABANDON frame.
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
-does not indicate path abandonment (see {{retire-cid-close}}).
+does not indicate path abandonment (see further {{consume-retire-cid}}).
 This is true whether the decision to close the path results
 from implicit signals such as idle time or packet losses
 (see {(idle-time-close}}) or for any other reason, such as management
