@@ -829,8 +829,8 @@ Path ID 1), and server provides two connection IDs
 Before the client opens a new path by sending a packet on that path
 with a PATH_CHALLENGE frame, it has to check whether there is
 an unused connection IDs for the same unused Path ID available for each side.
-Endpoints SHOULD consume the smallest unused Path ID available
-when creating the new path as specified in {{consume-retire-cid}}.
+In this example the Path ID 1 is used which is the smallest unused Path ID available
+as recommended in {{consume-retire-cid}}.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path.
 
