@@ -260,11 +260,9 @@ defined as follows:
   For example, if initial_max_path_id is set to 1, only connection IDs
   associated with Path IDs 0 and 1 should be issued by the peer.
   If an endpoint receives an initial_max_path_id transport parameter with value 0,
-  it MUST NOT cause any error, and notice that the peer want to
-  enable the multipath extension without allowing extra paths immediately
-  after the handshake is done. If initial_max_path_id is successfully negotiated
-  (including negotiated as 0), endpoints can use MAX_PATH_ID frame to increase
-  the maximum path identifier and enable the use of new paths.
+the peer aims to  enable the multipath extension without allowing extra paths immediately.
+To allow for the use of more paths later,
+endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
 Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
