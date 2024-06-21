@@ -1425,8 +1425,7 @@ However, while {{QUIC-TRANSPORT}} only allows the use of one path simultaneously
 The multipath extension as specified in this document is only enabled after a successful handshake when both endpoints indicate support for this extension. Respectively, all new frames defined in this extension are only used in 1-RTT packets.
 As the handshake is not changed by this extension, the transport security mechanisms as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication remain unchanged as well and the respective security considerations in {{QUIC-TLS}} applied unaltered.
 
-About packet protection, multipath extension uses path identifier as part of AEAD encryption nonce (See {{multipath-aead}}).
-For security consideration, path identifiers MUST NOT be reused for another path in the same connection in the future.
+This specification changes the AEAD calculation by using the path identifier as part of AEAD encryption nonce (see {{multipath-aead}}). To ensure a unique nonce, path identifiers are limited to 32 bits and cannot be reused for another path in the same connection.
 
 
 # Contributors
