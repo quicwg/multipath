@@ -852,7 +852,7 @@ the closed Path ID, and the closed Path ID MUST NOT be reused in the future.
 ~~~
 Client                                                      Server
 
-(client tells server to abandon a path with Path ID=1)
+(client tells server to abandon a path with Path ID 1)
 1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->
                            (server tells client to abandon a path)
                     <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
