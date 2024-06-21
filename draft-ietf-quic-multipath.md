@@ -840,14 +840,9 @@ as the Destination Connection ID of the new path.
 {{fig-example-path-close1}} illustrates an example of path closure.
 
 In this example, the client wants to close the path with Path ID 1.
-It sends the PATH_ABANDON frame to terminate the path. After received
-the PATH_ABANDON frame containing Path ID 1, the server decide to close
-the path with sending PATH_ABANDON frame either. During this time,
-if endpoints still receive inflight packets except the acknowledgements,
-endpoints only sends PATH_ABANDON frame as reply or choose to ignore the inflight packets.
-After a short period of time (3 PTOs as specified in {#path-close}),
-both endpoints retire and free all the resources associated with
-the closed Path ID, and the closed Path ID MUST NOT be reused in the future.
+It sends the PATH_ABANDON frame to terminate the path. After receiving
+the PATH_ABANDON frame with Path ID 1, the server also send a 
+PATH_ABANDON frame with Path ID 1. 
 
 ~~~
 Client                                                      Server
