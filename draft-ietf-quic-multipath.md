@@ -450,7 +450,6 @@ to detect and ignore outdated information.
 If all active paths are marked as "standby", no guidance is provided about
 which path should be used.
 
-
 ## Path Close
 
 Each endpoint manages the set of paths that are available for
@@ -459,6 +458,11 @@ abandon one of these paths, for example following changes in local
 connectivity or local preferences. After an endpoint abandons
 a path, the peer can expect to not receive any more non-probing packets on
 that path.
+
+Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
+apply on the whole connection. In particular, the reception of either a
+CONNECTION_CLOSE ({{Section 10.2 of QUIC-TRANSPORT}}) or a Stateless
+Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
 An endpoint that wants to close a path MUST explicitly
 terminate the path by sending a PATH_ABANDON frame.
