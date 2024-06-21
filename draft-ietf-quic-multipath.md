@@ -662,7 +662,7 @@ on the path that the retired connection ID was used on but has
 to use a different connection ID for the same Path ID when doing so.
 
 
-## Packet Protection {#multipath-aead}
+# Packet Protection {#multipath-aead}
 
 Packet protection for QUIC version 1 is specified in {{Section 5 of QUIC-TLS}}.
 The general principles of packet protection are not changed for
