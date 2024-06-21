@@ -853,8 +853,6 @@ Client                                                      Server
                     <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
                                            ACK_MP[PATH ID=1, PN=X]
 1-RTT[U]: DCID=S1 ACK_MP[Path ID=1, PN=Y] ->
-(After 3 PTOs, client retires the corresponding CID)
-              (After 3 PTOs, server retires the corresponding CID)
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
