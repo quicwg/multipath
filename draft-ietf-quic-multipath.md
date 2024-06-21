@@ -1399,19 +1399,13 @@ TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath prot
 
 # Security Considerations
 
-## Path States
+## Memory Allocation for Per-Path Resources
 
-As the maximum Path ID is negotiated by both endpoints with transport parameter initial_max_path_id
-and MAX_PATH_ID frame, Endpoints can limit the usage of Path ID and associated path resources by
-limiting the maximum Path ID issued by themselves.
+The initial_max_path_id transport parameter and the Max Path ID field in the MAX_PATH_ID frame limit the number of paths an endpoint is willing to maintain and accordingly limits the associated path resources.
 
-Before creating a new path, endpoints MUST issue unused CIDs for the corresponding Path ID.
-Endpoints also have a strategy to only issue new CIDs of the lowest available unused Path ID
-for limiting the creation for new paths.
+Furthermore, as connection IDs have to be issued by both endpoint for the same path ID before an endpoint can open a path, each endpoint can further control the per-path resource usage (beyond the connection IDs) by limiting the number of Path ID that is issues connection IDs for.
 
-Consider allocating memory resources and other path related resources in a minimized manner
-to avoid being exploited by vulnerabilities, endpoints are suggested to allocate the necessary path resource
-after the path validation is fully completed.
+Therefore to avoid unnecessarily resource usage that potentially could be exploited in a resource exhaustion attack, endpoints should allocate those additional path resource, such as e.g. for packet number handling, only after path validation has successfully completed.
 
 
 ## Request Forgery with Spoofed Address
