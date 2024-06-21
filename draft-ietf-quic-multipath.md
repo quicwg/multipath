@@ -1416,8 +1416,9 @@ after the path validation is fully completed.
 
 ## Request Forgery with Spoofed Address
 
-Note that Clients are able to present a spoofed source address as part of new path creation / path migration
-to cause a server to send datagrams to that address, as the same in {{Section 21.5.4 of QUIC-TRANSPORT}}.
+The path validation mechanism as specified in {{Section 8.2. of QUIC-TRANSPORT}} for migration is used
+unchanged for initiation of new paths in this extension. Respectively the security considerations
+on source address spoofing as outlined In {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
 
 Endpoints MUST follow the anti-amplification limitation of {{QUIC-TRANSPORT}}, which ensures that an endpoint
 cannot be used for a traffic amplification attack.
