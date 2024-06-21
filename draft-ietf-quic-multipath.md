@@ -856,9 +856,6 @@ Client                                                      Server
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
-Note that if endpoints have other available paths, endpoints are also
-able to send the PATH_ABANDON frame on another available path. This mechanism
-can be used for closing blackhole paths.
 
 
 # Implementation Considerations
