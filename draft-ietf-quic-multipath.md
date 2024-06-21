@@ -249,41 +249,45 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- initial_max_paths (current version uses 0x0f739bbc1b666d07): the
-  initial_max_paths transport parameter is included if the endpoint supports
+- initial_max_path_id (current version uses 0x0f739bbc1b666d09): the
+  initial_max_path_id transport parameter is included if the endpoint supports
   the multipath extension as defined in this document. This is
-  a variable-length integer value specifying the maximum number of
-  active concurrent paths an endpoint is willing to maintain.
-  The value of the initial_max_paths parameter MUST be at least 2.
-  An endpoint that receives a value less than 2 MUST close
-  the connection with an error of type TRANSPORT_PARAMETER_ERROR.
+  a variable-length integer specifying the maximum path identifier
+  an endpoint is willing to maintain at connection initiation.
+  For example, if initial_max_path_id is set to 1, only connection IDs
+  associated with Path IDs 0 and 1 should be issued by the peer.
+  If an endpoint receives an initial_max_path_id transport parameter with value 0,
+  the peer aims to  enable the multipath extension without allowing extra paths immediately.
+  To allow for the use of more paths later,
+  endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
-Setting initial_max_paths parameter is equivalent to sending a
-MAX_PATHS frame ({{max-paths-frame}}) with the same value.
+Setting initial_max_path_id parameter is equivalent to sending a
+MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
 
-If either of the endpoints does not advertise the initial_max_paths transport
+If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 
-When advertising the initial_max_paths transport parameter, the endpoint
+When advertising the initial_max_path_id transport parameter, the endpoint
 MUST use non-zero length Source and Destination Connection IDs.
-If an initial_max_paths transport
+If an initial_max_path_id transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
 MP_PROTOCOL_VIOLATION and close the connection.
 
-The initial_max_paths parameter MUST NOT be remembered
+The initial_max_path_id parameter MUST NOT be remembered
 ({{Section 7.4.1 of QUIC-TRANSPORT}}).
 New paths can only be used after handshake completion.
 
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
-The initial_max_paths transport parameter limits the initial maximum number of active paths
+The initial_max_path_id transport parameter limits the initial maximum number of active paths
 that can be used during a connection.
+
 The active_connection_id_limit transport parameter
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
-initial_max_paths parameter is negotiated successfully.
+initial_max_path_id parameter is negotiated successfully.
 Endpoints might prefer to retain spare connection IDs so that they can
 respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}).
 
@@ -346,7 +350,7 @@ This proposal adds four multipath control frames for path management:
 (see {{path-abandon-frame}}),
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame}} and {{path-available-frame}}), and
-- MAX_PATHS frame for increasing the limit of active paths.
+- MAX_PATH_ID frame for increasing the limit of active paths.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -604,9 +608,9 @@ is still valid as well and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.
 
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
-the Maximum Path Identifier field in MAX_PATHS frames (see Section {{max-paths-frame}}).
+the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}}).
 When an endpoint finds it has not enough available unused path identifiers,
-it SHOULD send a MAX_PATHS frame to inform the peer that it could use new active
+it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active
 path identifiers.
 
 If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
@@ -1009,8 +1013,8 @@ it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
 
 Receipt of multipath-specific frames
 that use a Path ID that is greater than the announced Maximum Paths value
-in the MAX_PATHS frame or in the initial_max_paths transport parameter,
-if no MAX_PATHS frame was received yet,
+in the MAX_PATH_ID frame or in the initial_max_path_id transport parameter,
+if no MAX_PATH_ID frame was received yet,
 MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 If an endpoint receives a multipath-specific frame
@@ -1270,42 +1274,42 @@ As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
 the sequence number in the MP_RETIRE_CONNECTION_ID frame
 also needs to be considered in the context of the Path Identifier field.
 
-## MAX_PATHS frames {#max-paths-frame}
+## MAX_PATH_ID frames {#max-paths-frame}
 
-A MAX_PATHS frame (type=0x15228c0b) informs the peer of the cumulative number of paths
-it is permitted to open.
+A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
+it is permitted to use.
 
 When there are not enough unused path identifiers, endpoints SHOULD
-send MAX_PATHS frame to inform the peer that new path identifiers are available.
+send MAX_PATH_ID frame to inform the peer that new path identifiers are available.
 
-MAX_PATHS frames are formatted as shown in {{fig-max-paths-frame-format}}.
+MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
 ~~~
-MAX_PATHS Frame {
-  Type (i) = 0x15228c0b,
-  Maximum Paths (i),
+MAX_PATH_ID Frame {
+  Type (i) = 0x15228c0c,
+  Maximum Path Identifier (i),
 }
 ~~~
-{: #fig-max-paths-frame-format title="MAX_PATHS Frame Format"}
+{: #fig-max-paths-frame-format title="MAX_PATH_ID Frame Format"}
 
-MAX_PATHS frames contain the following field:
+MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
-: A count of the cumulative number of paths that can be opened
-  over the lifetime of the connection. This value MUST NOT exceed 2^32-1, as
-  Path IDs are defined with a maximum value 2^32-1 as the 32 bits of the Path ID are used
-  to calculate the nonce (see Section {{multipath-aead}}).
-  The Maximum Paths value MUST NOT be lower than the value
-  advertised in the initial_max_paths transport parameter. Receipt
-  of an invalid Maximum Paths value MUST be treated as a
+: The maximum path identifier that the sending endpoint is willing to accept.
+  This value MUST NOT exceed 2^32-1, as Path IDs are defined with a maximum value 2^32-1
+  as the 32 bits of the Path ID are used to calculate the nonce (see {{multipath-aead}}).
+  The Maximum Path Identifier value MUST NOT be lower than the value
+  advertised in the initial_max_path_id transport parameter. Receipt
+  of an invalid Maximum Path Identifier value MUST be treated as a
   connection error of type MP_PROTOCOL_VIOLATION.
 
-Loss or reordering can cause an endpoint to receive a MAX_PATHS frame with
-a smaller Maximum Paths value than was previously received. MAX_PATHS frames that
-do not increase the path limit MUST be ignored.
+Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
+a smaller Maximum Path Identifier value than was previously received.
+MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 
 # Error Codes {#error-codes}
+
 Multipath QUIC transport error codes are 62-bit unsigned integers
 following {{QUIC-TRANSPORT}}.
 
@@ -1330,7 +1334,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d07) | initial_max_paths | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d09) | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -1346,7 +1350,7 @@ TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{p
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-TBD-06 (experiments use 0x15228c0b)                  | MAX_PATHS              | {{max-paths-frame}}
+TBD-06 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
@@ -1430,4 +1434,4 @@ one of the original proposals are:
 
 # Acknowledgments
 
-Thanks to Marten Seemann and Kazuho Oku for their thorough reviews and valuable contributions!
+Thanks to Marten Seemann, Kazuho Oku, and Martin Thomson for their thorough reviews and valuable contributions!
