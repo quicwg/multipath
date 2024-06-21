@@ -574,6 +574,10 @@ Each endpoint maintains the set of connection IDs received from its peer for eac
 any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
 Usually, it is desired to provide at least one additional connection ID for
 all used paths, to allow for migration.
+As further specified in {{Section 5.1 of QUIC-TRANSPORT}} connection IDs
+cannot be issued more than once on the same connection
+and therefore are unique for the scope of the connection,
+regardless of the associated Path ID.
 
 Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
