@@ -457,7 +457,7 @@ to detect and ignore outdated information.
 If all active paths are marked as "standby", no guidance is provided about
 which path should be used.
 
-## Path Close
+## Path Close {#path-close}
 
 Each endpoint manages the set of paths that are available for
 transmission. At any time in the connection, each endpoint can decide to
@@ -737,6 +737,11 @@ should not cause linkability issue.
 {{fig-example-new-path}} illustrates an example of new path establishment
 using multiple packet number spaces.
 
+In this example it is assumed that both endpoint have
+indicated an initial_max_path_id value of at least 2, which means
+both endpoints can use Path IDs 0, 1, and 2. Note that
+Path ID 0 is already used for the initial path.
+
 ~~~
    Client                                                  Server
 
@@ -749,10 +754,10 @@ using multiple packet number spaces.
    1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] -->
                            Checks AEAD using nonce(Path ID 1, PN 0)
         <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
-                                                 ACK_MP[PID=1,PN=0]
+                                             ACK_MP[PathID=1, PN=0]
    Checks AEAD using nonce(Path ID 1, PN 0)
    1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
-             ACK_MP[PID=1, PN=0], ... -->
+            ACK_MP[PathID=1, PN=0], ... -->
 
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
@@ -766,48 +771,34 @@ Path ID 1), and server provides two connection IDs
 Before the client opens a new path by sending a packet on that path
 with a PATH_CHALLENGE frame, it has to check whether there is
 an unused connection IDs for the same unused Path ID available for each side.
+In this example the Path ID 1 is used which is the smallest unused Path ID available
+as recommended in {{consume-retire-cid}}.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path.
 
 
 ## Path Closure
 
-In this example, the client detects a network environment change
-(client's 4G/Wi-Fi is turned off, Wi-Fi signal is fading below a threshold,
-or the quality of RTT or loss rate is becoming worse) and wants to close
-an existing path.
+{{fig-example-path-close1}} illustrates an example of path closure.
 
-{{fig-example-path-close1}} illustrates an example of path closing. For the first path, the
-server's 1-RTT packets use DCID C1 and the
-client's 1-RTT packets use DCID S1 for the path with Path ID 1. For the
-second path, the server's 1-RTT packets use DCID C2 and
-the client's 1-RTT packets use DCID S2 for the path with Path ID
-2.
-
-Note that the paths use different packet number spaces. In this case, the
-client is going to close the first path with Path ID 1 but it sends the
-ABANBON frame over the second path using the DCID S2. In this example, the
-server confirms the path closure by sending an PATH_ABANDON frame
-by for the same Path ID to the client also using the other path with DCID C2.
-Both the client and the server can close the path after receiving
-the MP_RETIRE_CONNECTION_ID frame for that path.
+In this example, the client wants to close the path with Path ID 1.
+It sends the PATH_ABANDON frame to terminate the path. After receiving
+the PATH_ABANDON frame with Path ID 1, the server also send a
+PATH_ABANDON frame with Path ID 1.
 
 ~~~
 Client                                                      Server
 
-(client tells server to abandon a path)
-1-RTT[X]: DCID=S2 PATH_ABANDON[Path ID=1]->
+(client tells server to abandon a path with Path ID 1)
+1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->
                            (server tells client to abandon a path)
-               <-1-RTT[Y]: DCID=C2 PATH_ABANDON[Path ID=1],
-                                               ACK_MP[PATH ID=1, PN=X]
-(client retires the corresponding CID)
-1-RTT[U]: DCID=S2 MP_RETIRE_CONNECTION_ID[Path ID=1, Seq=0],
-ACK_MP[Path ID=1, PN=Y] ->
-                            (server retires the corresponding CID)
-           <- 1-RTT[V]: DCID=C2 RETIRE_CONNECTION_ID[Path ID1, Seq=0],
-                                                ACK_MP[Path ID=1, PN=U]
+                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
+                                           ACK_MP[PATH ID=1, PN=X]
+1-RTT[U]: DCID=S2 ACK_MP[Path ID=1, PN=Y] ->
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
+
+Note that the last acknowledgement needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
 
 
 # Implementation Considerations
