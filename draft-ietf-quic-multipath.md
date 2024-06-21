@@ -1399,19 +1399,20 @@ TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath prot
 
 # Security Considerations
 
-The multipath extension retains all the security feature of {{QUIC-TRANSPORT}} and {{QUIC-TLS}}, particularly regarding the use of TLS, but requires some additional consideration regarding the following amendments:
+The multipath extension retains all the security features of {{QUIC-TRANSPORT}} and {{QUIC-TLS}}
+but requires some additional consideration regarding the following amendments:
 
 - the need of potential additional resources as connection IDs are now maintained per-path;
 - the provisioning of multiple concurrent path contexts and the associated resources;
 - the possibility to create and use multiple simultaneous paths and the corresponding increased amplification risk for request forgery attacks;
-- the changes on encryption requirements due to the use of multiple number spaces.
+- the changes on encryption requirements due to the use of multiple packet number spaces.
 
 
 ## Memory Allocation for Per-Path Resources
 
 The initial_max_path_id transport parameter and the Max Path ID field
 in the MAX_PATH_ID frame limit the number of paths an endpoint is willing
-to maintain and accordingly limits the associated path resources.
+to maintain and accordingly limit the associated path resources.
 
 Furthermore, as connection IDs have to be issued by both endpoint for the
 same path ID before an endpoint can open a path, each endpoint can further
@@ -1427,7 +1428,7 @@ such as e.g. for packet number handling, only after path validation has successf
 
 The path validation mechanism as specified in {{Section 8.2. of QUIC-TRANSPORT}} for migration is used
 unchanged for initiation of new paths in this extension. Respectively the security considerations
-on source address spoofing as outlined In {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
+on source address spoofing as outlined in {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
 Similarly, the anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}} need to be
 followed to limit the amplification risk.
 
