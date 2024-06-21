@@ -852,9 +852,11 @@ Client                                                      Server
                            (server tells client to abandon a path)
                     <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
                                            ACK_MP[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S1 ACK_MP[Path ID=1, PN=Y] ->
+1-RTT[U]: DCID=S2 ACK_MP[Path ID=1, PN=Y] ->
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
+
+Note that the last acknowledgement needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
 
 
 # Implementation Considerations
