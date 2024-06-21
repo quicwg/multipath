@@ -841,8 +841,8 @@ as the Destination Connection ID of the new path.
 
 In this example, the client wants to close the path with Path ID 1.
 It sends the PATH_ABANDON frame to terminate the path. After receiving
-the PATH_ABANDON frame with Path ID 1, the server also send a 
-PATH_ABANDON frame with Path ID 1. 
+the PATH_ABANDON frame with Path ID 1, the server also send a
+PATH_ABANDON frame with Path ID 1.
 
 ~~~
 Client                                                      Server
