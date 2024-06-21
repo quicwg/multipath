@@ -461,7 +461,7 @@ An endpoint that wants to close a path SHOULD explicitly
 terminate the path by sending a PATH_ABANDON frame (see
 {{path-abandon-close}}). Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
-does not indicate path abandonment (see {{retire-cid-close}}).
+does not indicate path abandonment (see further {{consume-retire-cid}}).
 Implicit signals such as idle time or packet losses might be
 the only way for an endpoint to detect path closure (see {(idle-time-close}})
 if connectivity is broken on that path.
@@ -489,8 +489,6 @@ Both endpoints SHOULD send MP_RETIRE_CONNECTION_ID frames
 for all connection IDs associated to the Path ID of the abandoned path
 to ensure that paths close cleanly and that delayed or reordered packets
 are properly discarded.
-The effect of receiving a MP_RETIRE_CONNECTION_ID frame is specified in
-Section {{retire-cid-close}}.
 
 Usually, it is expected that the PATH_ABANDON frame is used by the client
 to indicate to the server that path conditions have changed such that
@@ -605,46 +603,27 @@ however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid as well and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.
 
-If the client has used all the allocated connection IDs for a path, it is supposed to retire
-those that are not used anymore, and the server is supposed to provide
-replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
-Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
-will not be used anymore. If the path is still active, the peer SHOULD replace
-it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
-
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATHS frames (see Section {{max-paths-frame}}).
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATHS frame to inform the peer that it could use new active
 path identifiers.
 
+If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
+those that are not actively used anymore, and the server is supposed to provide
+replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
+Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
+will not be used anymore. In response, if the path is still active, the peer
+SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.
 
-### Effect of MP_RETIRE_CONNECTION_ID Frame {#retire-cid-close}
-
-Receiving a MP_RETIRE_CONNECTION_ID frame causes an endpoint to discard
-the resources associated with that connection ID. Note that retirement of
-connection IDs will not retire the Path ID for the specific path.
+Retirement of connection IDs will not retire the Path ID
+that correspones to the connection ID.
 The list of received packets used to send acknowledgements also remains
 unaffected as the packet number space is associated with a path.
 
 The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
 to use a different connection ID for the same Path ID when doing so.
-If no other connection ID for the same Path ID is available, the endpoint cannot send on
-this path. This can happen if, e.g., the connection ID issuer requests retirement of a
-connection ID using the Retire Prior To field in the MP_NEW_CONNECTION_ID frame but does
-provide sufficient new connection IDs.
-
-Note that even if a peer cannot send on a path anymore because it does not have
-a valid connection ID to use, it can still acknowledge packets received on the path
-by sending ACK_MP frames on another path, if available.
-Similarly it can still send multipath control frames for that Path ID
-(such as PATH_ABANDON, PATH_STANDBY or PATH_AVAILABLE) on other available paths.
-
-If the peer cannot send on a path and no data is received on the path, the idle time-out will close
-the path. If, before the idle timer expires, a new connection ID gets issued
-by its peer, the endpoint can re-activate the path by
-sending a packet with a new connection ID on that path.
 
 ## Path States
 
