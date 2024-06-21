@@ -590,12 +590,12 @@ When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATHS frame to inform the peer that it could use new active
 path identifiers.
 
-If the client has used all the allocated connection IDs for a path, it is supposed to retire
-those that are not used anymore, and the server is supposed to provide
+If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
+those that are not actively used anymore, and the server is supposed to provide
 replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
 Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
-will not be used anymore. If the path is still active, the peer SHOULD replace
-it with a new connection ID using a MP_NEW_CONNECTION_ID frame.
+will not be used anymore. In response, if the path is still active, the peer
+SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.
 
 Retirement of connection IDs will not retire the Path ID
 that correspones to the connection ID.
