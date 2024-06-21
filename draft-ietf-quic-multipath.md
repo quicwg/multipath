@@ -795,9 +795,10 @@ should not cause linkability issue.
 {{fig-example-new-path}} illustrates an example of new path establishment
 using multiple packet number spaces.
 
-In the handshake negotiation of the example flow, Client and Server
-successfully negotiate the initial_max_path_id value as 2, which means
-both endpoints could use Path ID 0, 1, and 2.
+In this example it is assume that both endpoint have
+indicated a initial_max_path_id value as at least 2, which means
+both endpoints can use Path IDs 0, 1, and 2. Note that
+Path ID 0 is already used for the initial path.
 
 ~~~
    Client                                                  Server
