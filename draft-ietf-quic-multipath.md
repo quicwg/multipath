@@ -382,6 +382,13 @@ packet (see {{compute-rtt}} for further guidance), it can be beneficial
 to bundle an ACK_MP frame with the PATH_RESPONSE frame during
 path validation.
 
+If the server receives a PATH_CHALLENGE before receiving
+a MP_NEW_CONNECTION_ID for the specific path, it SHOULD
+ignore the PATH_CHALLENGE. Note that the
+MP_NEW_CONNECTION_ID might be sent in the same
+packet and in this case the PATH_CHALLENGE SHOULD
+be processed.
+
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initation attempt.
