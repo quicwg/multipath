@@ -574,7 +574,7 @@ for an excessive time or having to promptly re-establish a path
 after a spurious estimate of path abandonment by the client.
 
 Endpoints that desire to close a path because of the idle timer rule
-MUST do so explicitly by sending a PATH_ABANDON frame, as defined in
+MUST do so explicitly by sending a PATH_ABANDON frame on another active path, as defined in
 {{path-close}}.
 
 ### Early Abandon {#abandon-early}
