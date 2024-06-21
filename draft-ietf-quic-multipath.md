@@ -1420,8 +1420,10 @@ The path validation mechanism as specified in {{Section 8.2. of QUIC-TRANSPORT}}
 unchanged for initiation of new paths in this extension. Respectively the security considerations
 on source address spoofing as outlined In {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
 
-Endpoints MUST follow the anti-amplification limitation of {{QUIC-TRANSPORT}}, which ensures that an endpoint
-cannot be used for a traffic amplification attack.
+Similarly, the anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}} need to be
+followed to limit the amplification risk.
+
+However, while {{QUIC-TRANSPORT}} only allows the use of one path simultaneously and therefore only one path migration at the time should be validated, this extension allows for multiple open paths, that could in theory be migrated all at the same time, and it allows for multiple active paths that could be initialised simultaneously. Therefore, each path could be used to further amplify an attack. Respectively endpoints needs limit the number of maximum paths and might consider additional measures to limit the number of concurrent path validation processes e.g. by pacing them out or limiting the number of path initiation attempts over a certain time period.
 
 
 ## Transport Layer Security
