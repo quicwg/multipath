@@ -795,8 +795,8 @@ should not cause linkability issue.
 {{fig-example-new-path}} illustrates an example of new path establishment
 using multiple packet number spaces.
 
-In this example it is assume that both endpoint have
-indicated a initial_max_path_id value as at least 2, which means
+In this example it is assumed that both endpoint have
+indicated an initial_max_path_id value of at least 2, which means
 both endpoints can use Path IDs 0, 1, and 2. Note that
 Path ID 0 is already used for the initial path.
 
