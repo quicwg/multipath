@@ -249,20 +249,22 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- initial_max_path_id (current version uses 0x0f739bbc1b666d09): the
-  initial_max_path_id transport parameter is included if the endpoint supports
-  the multipath extension as defined in this document. This is
-  a variable-length integer specifying the maximum path identifier
+- initial_max_path_id (current version uses 0x0f739bbc1b666d09): a
+  variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
-  For example, if initial_max_path_id is set to 1, only connection IDs
-  associated with Path IDs 0 and 1 should be issued by the peer.
-  If an endpoint receives an initial_max_path_id transport parameter with value 0,
-  the peer aims to  enable the multipath extension without allowing extra paths immediately.
-  To allow for the use of more paths later,
-  endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.
+  This value MUST NOT exceed 2^32-1, as Path IDs are defined
+  with a maximum value 2^32-1 as the 32 bits of the Path ID
+  are used to calculate the nonce (see {{multipath-aead}}).
+
+For example, if initial_max_path_id is set to 1, only connection IDs
+associated with Path IDs 0 and 1 should be issued by the peer.
+If an endpoint receives an initial_max_path_id transport parameter with value 0,
+the peer aims to  enable the multipath extension without allowing extra paths immediately.
 
 Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
+As such to allow for the use of more paths later,
+endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
 If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
@@ -690,10 +692,10 @@ for 1-RTT packets requires changes in AEAD usage.
 the use of a nonce, N, formed by combining the packet protection IV
 with the packet number. When multiple packet number spaces are used,
 the packet number alone would not guarantee the uniqueness of the nonce.
-
-In order to guarantee the uniqueness of the nonce, the nonce N is
-calculated by combining the packet protection IV with the packet number
-and with the least significant 32 bits of the Path ID.
+Therefore, the nonce N is calculated by combining the packet protection
+IV with the packet number and with the least significant 32 bits of the
+Path ID. In order to guarantee the uniqueness of the nonce, the Path ID
+is limited to a max value of 2^30-1.
 
 To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
 significant 32 bits of the Path ID in network byte order,
@@ -1266,9 +1268,10 @@ Maximum Path Identifier:
   This value MUST NOT exceed 2^32-1, as Path IDs are defined with a maximum value 2^32-1
   as the 32 bits of the Path ID are used to calculate the nonce (see {{multipath-aead}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
-  advertised in the initial_max_path_id transport parameter. Receipt
-  of an invalid Maximum Path Identifier value MUST be treated as a
-  connection error of type MP_PROTOCOL_VIOLATION.
+  advertised in the initial_max_path_id transport parameter.
+  
+Receipt of an invalid Maximum Path Identifier value MUST be treated as a
+connection error of type MP_PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
