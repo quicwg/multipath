@@ -187,7 +187,7 @@ and use of multiple packet number spaces as further explained in the next sectio
 ## Introduction of an Explicit Path Identifier
 
 This extension specifies a new path identifier (Path ID), which is an
-integer between 0 and 2^32 - 1 (inclusive). Path identifies are generated
+integer between 0 and 2^32-1 (inclusive). Path identifies are generated
 monotonically increasing and cannot be reused.
 The connection ID of a packet binds the packet to a path identifier, and therefore
 to a packet number space.
@@ -523,7 +523,7 @@ CONNECTION_CLOSE frame.
 ### Avoiding Spurious Stateless Resets {#spurious-stateless-reset}
 
 The peers that send a PATH_ABANDON frame MUST treat all connection
-identifiers received from the peer for the path ID as immediately
+identifiers received from the peer for the Path ID as immediately
 retired. The Stateless Reset Tokens associated with these connection
 identifiers MUST NOT be used to identify Stateless Reset packets
 per {{Section 10.3 of QUIC-TRANSPORT}}.
@@ -579,8 +579,8 @@ can send ack-eliciting packets such as packets containing PING frames
 periodic PING frames also helps prevent middlebox timeout, as discussed in
 {{Section 10.1.2 of QUIC-TRANSPORT}}.
 
-Server implementations need to select the sub-path idle timeout as a trade-
-off between keeping resources, such as connection IDs, in use
+Server implementations need to select the sub-path idle timeout as a
+trade-off between keeping resources, such as connection IDs, in use
 for an excessive time or having to promptly re-establish a path
 after a spurious estimate of path abandonment by the client.
 
@@ -595,7 +595,7 @@ before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
 to abandon a path for any reason, for example, removing a hole from
-the sequence of path IDs in use. This is not an error. The endpoint that
+the sequence of Path IDs in use. This is not an error. The endpoint that
 receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
 ## Refusing a New Path
@@ -615,7 +615,7 @@ Respectively, the connection IDs used during the handshake belong to the initial
 with Path ID 0.
 The MP_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
 In order to let the peer open new paths, it is RECOMMENDED to proactively
-issue a Connection ID for at least one unused path ID, as long as it remains
+issue a Connection ID for at least one unused Path ID, as long as it remains
 compatible with the peer's Maximum Path ID limit.
 
 Each endpoint maintains the set of connection IDs received from its peer for each path,
