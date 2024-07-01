@@ -1376,7 +1376,7 @@ e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
 
 
-## Transport Layer Security
+## Use of Transport Layer Security and the AEAD Encryption Nonce
 
 The multipath extension as specified in this document is only enabled after a
 successful handshake when both endpoints indicate support for this extension.
@@ -1384,8 +1384,12 @@ Respectively, all new frames defined in this extension are only used in 1-RTT pa
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication,
 remain unchanged as well and the respective security considerations in {{QUIC-TLS}} applied unaltered.
+Note that sepcficially also the limits as discussed on Appendix B of {{QUIC-TLS}}
+are unconfined valid and apply to all packets sent on any path. Further note,
+that with the use of this extension multiple nonces can be in use simulanteously,
+which need to be considered when tracking these limits and for key updates.
 
-This specification changes the AEAD calculation by using the path identifier as part of
+Respectively, this specification changes the AEAD calculation by using the path identifier as part of
 AEAD encryption nonce (see {{multipath-aead}}). To ensure a unique nonce, path identifiers
 are limited to 32 bits and cannot be reused for another path in the same connection.
 
