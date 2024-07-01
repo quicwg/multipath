@@ -435,14 +435,27 @@ send packets with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
 Each peer indicates its preference of path usage independently of the other peer.
-It means that peers may have different usage preferences for the same path.
-Depending on the sender's decisions, this may lead to usage of paths that have been
+That means that peers may have different usage preferences for the same path.
+Depending on the data sender's decisions, this may lead to usage of paths that have been
 indicated as "standby" by the peer or non-usage of some locally available paths.
 
 PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
+
 PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
 should be sent on that path if another path is available.
+If all active paths are marked as "standby", no guidance is provided about
+which path should be used.
+If an endpoints starts using a path that was marked as "standby" by its peer
+because it has detected issues on the paths marked as "available", it is RECOMMENDED
+to updates it own path state signaling such that the peer avoids using the broken path.
+An enpoints that detects a path breakage can also explicitly close the path
+by sending a PATH_ABANDON frame (see section {{path-close}}) in order to avoid
+that its peer keeps using it and enable faster switch over to a standby path.
+If the endpoints does not want to close the path immediately, as connectivity
+could be re-established, it is RECOMMENDED to send PING frames to quickly detect
+connecivtity changes and switch back in a timely way.
+
 If no frame indicating a path usage preference was received for a certain path,
 the preference of the peer is unknown and the sender needs to decide based on it
 own local logic if the path should be used.
@@ -453,9 +466,6 @@ changed. Note that both frames can be sent via a different path
 and therefore might arrive in different orders.
 The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space
 to detect and ignore outdated information.
-
-If all active paths are marked as "standby", no guidance is provided about
-which path should be used.
 
 ## Path Close {#path-close}
 
