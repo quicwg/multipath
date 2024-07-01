@@ -375,6 +375,10 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
+An endpoint MAY deny the establishment of a new path initiated by its
+peer by not replying with a PATH_RESPONSE frame but sending a
+PATH_ABANDON frame on another path for the associated Path ID used
+for the PATH_CHALLENGE instead.
 
 ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
 If the ACK_MP is preferred to be sent on the same path as the acknowledged
@@ -595,15 +599,8 @@ before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
 to abandon a path for any reason, for example, removing a hole from
-the sequence of path IDs in use. This is not an error. The endpoint that
-receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
-
-## Refusing a New Path
-
-An endpoint may deny the establishment of a new path initiated by its
-peer during the address validation procedure. According to {{QUIC-TRANSPORT}},
-the standard way to deny the establishment of a path is to not send a
-PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
+the sequence of path IDs in use. This is not an error. An endpoint that
+receives such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
