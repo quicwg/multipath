@@ -98,10 +98,7 @@ a new preferred path, and it allows the peer to release resources
 associated with the old path. The multipath extension specified in this document requires
 several changes to that mechanism:
 
-  *  Simultaneous transmission of non-probing packets on multiple
-paths.
-  *  Continuous use of an existing path even if non-probing packets have
-been received on another path.
+  *  Simultaneous transmission on multiple paths.
   *  Introduction of an path idendifier to manage connection IDs and
      packet number spaces per path.
   *  Removal of paths that have been abandoned.
@@ -400,22 +397,20 @@ the endpoint MUST explicitly close the path as specified in
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
 is negotiated, the reception of a "non-probing"
-packet on a new path needs to be considered as a path initiation
-attempt that does not impact the path status of any existing
+packet on a new path with a new so far unused PatID
+does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 ({{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
 
-Further, in contrast with the specification in
-{{Section 9 of QUIC-TRANSPORT}}, the server MUST NOT assume that
-receiving non-probing packets on a new path with a new connection ID
-indicates an attempt
-to migrate to that path.  Instead, servers SHOULD consider new paths
-over which non-probing packets have been received as available
-for transmission. Reception of QUIC packets containing a connection ID that is already in use
-but has a different 4-tuple than previously observed with this connection ID
-should be considered as a path migration as further discussed in {{migration}}.
+Connection migration as specified in 
+{{Section 9 of QUIC-TRANSPORT}} still applies for the use of
+a new connection ID associated to a Path ID of an active path. 
+With the successful negotiation of the extension specified
+in this draft, endpoints have to consider the receiption of
+a packet with a connection ID associated to an
+so far unused Path ID as an attempt to establish a new paths.
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
@@ -463,7 +458,7 @@ Each endpoint manages the set of paths that are available for
 transmission. At any time in the connection, each endpoint can decide to
 abandon one of these paths, for example following changes in local
 connectivity or local preferences. After an endpoint abandons
-a path, the peer can expect to not receive any more non-probing packets on
+a path, the peer can expect to not receive any more packets on
 that path.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
@@ -566,12 +561,13 @@ When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
 When more than one path is available, hosts shall monitor the arrival of
-non-probing packets and the acknowledgements for the packets sent over each
-path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
+packets and acknowledgements for packets sent over each
+path. Hosts MAY consider closing a path if for at least the period of the
 idle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}}
-(a) no non-probing packet was received or (b) no
-non-probing packet sent over this path was acknowledged, but MAY ignore that
-rule if it would disqualify all available paths.
+(a) no packet was received or (b) no packet sent over this path was acknowledged.
+Endpoints that desire to close a path because of the idle timer rule
+MUST do so explicitly by sending a PATH_ABANDON frame on another active path,
+as defined in {{path-close}}.
 
 To avoid idle timeout of a path, endpoints
 can send ack-eliciting packets such as packets containing PING frames
@@ -583,10 +579,6 @@ Server implementations need to select the sub-path idle timeout as a trade-
 off between keeping resources, such as connection IDs, in use
 for an excessive time or having to promptly re-establish a path
 after a spurious estimate of path abandonment by the client.
-
-Endpoints that desire to close a path because of the idle timer rule
-MUST do so explicitly by sending a PATH_ABANDON frame on another active path, as defined in
-{{path-close}}.
 
 ### Early Abandon {#abandon-early}
 
@@ -626,6 +618,13 @@ As further specified in {{Section 5.1 of QUIC-TRANSPORT}} connection IDs
 cannot be issued more than once on the same connection
 and therefore are unique for the scope of the connection,
 regardless of the associated Path ID.
+
+{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the connection ID it uses to another available one
+at any time during the connection. For the extension specified in
+this draft, only connection IDs associated to the same
+Path ID MUST be used on the same path. Use of a connection ID assocaited with
+a another Path ID will be considered as an attempt to open new path instead.
 
 Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
@@ -948,28 +947,6 @@ Some applications may wish to ensure that one path remains active, while others 
 two or more active paths during the connection lifetime. Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
-
-## Connection ID Changes and NAT Rebindings {#migration}
-
-{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
-can change the connection ID it uses to another available one
-at any time during the connection. As such a sole change of the Connection
-ID without any change in the address does not indicate a path change and
-the endpoint can keep the same congestion control and RTT measurement state.
-
-While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. Servers observing a 4-tuple change will
-perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
-If path validation process succeeds, the endpoints set
-the path's congestion controller and round-trip time
-estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
-
-{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
-a peer address if that address has been seen recently. However, when the
-multipath extension is used and an endpoint has multiple addresses that
-could lead to switching between different paths, it should rather maintain
-multiple open paths instead.
 
 # New Frames {#frames}
 
