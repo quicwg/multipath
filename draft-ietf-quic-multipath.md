@@ -1269,6 +1269,7 @@ Maximum Path Identifier:
   as the 32 bits of the Path ID are used to calculate the nonce (see {{multipath-aead}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
   advertised in the initial_max_path_id transport parameter.
+  
 Receipt of an invalid Maximum Path Identifier value MUST be treated as a
 connection error of type MP_PROTOCOL_VIOLATION.
 
