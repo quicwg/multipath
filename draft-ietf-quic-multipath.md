@@ -964,8 +964,8 @@ at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.
 
-While endpoints send a packet on a specific path with the associated
-4-tuple, networks events such as NAT rebinding may make the packet's receiver
+While endpoints assign a connection ID to a specific sending 4-tuple,
+networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
 perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
 If path validation process succeeds, the endpoints set
