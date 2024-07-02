@@ -315,11 +315,14 @@ Path ID 0.
 # Path Management {#path-management}
 
 After completing the handshake, endpoints have agreed to enable
-multipath support. They can also start using multiple paths, unless both
-server preferred addresses and a disable_active_migration transport parameter
-were provided by the server, in which case a client is forbidden to establish
-new paths until "after a client has acted on a preferred_address transport
-parameter" ({{Section 18.2. of QUIC-TRANSPORT}}).
+multipath support. They can also start using multiple paths when both endpoints
+have issued available connection IDs for at least one unused Path ID.
+If endpoint receives a disable_active_migration transport parameter 
+provided by the peer, it is forbidden to use a new local address 
+to establish new paths for the peer address used during handshake, 
+but establishment of additional paths to other peer addresses 
+(e.g carried by peer’s preferred_address) is valid immediately.
+
 
 This document
 does not specify how an endpoint that is reachable via several addresses
