@@ -344,13 +344,15 @@ on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver 
 as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
 but MUST use a new connection ID for the same Path ID.
 
-This proposal adds four multipath control frames for path management:
+This proposal adds five multipath control frames for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}}),
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame}} and {{path-available-frame}}), and
-- MAX_PATH_ID frame for increasing the limit of active paths.
+- MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
+active paths, while MAX_PATH_ID_BLOCKED frame (see {{max-paths-blocked-frame}})
+indicates that the limit of active paths set by the peer has been reached.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -652,9 +654,12 @@ as corresponding to Path ID 0.
 
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}}).
-When an endpoint finds it has not enough available unused path identifiers,
-it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active
-path identifiers.
+When an endpoint finds it has not enough available unused path identifiers, 
+it SHOULD either send a MAX_PATH_ID frame to increase the active path limit 
+(when limited by the sender) or a MAX_PATH_ID_BLOCKED frame 
+(see Section {{max-paths-blocked-frame}}) to inform the peer that a new path 
+identifier was needed but the current limit set by the peer prevented the 
+creation of the new path.
 
 If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
 those that are not actively used anymore, and the server is supposed to provide
@@ -1246,8 +1251,10 @@ also needs to be considered in the context of the Path Identifier field.
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
 
-When there are not enough unused path identifiers, endpoints SHOULD
-send MAX_PATH_ID frame to inform the peer that new path identifiers are available.
+When there are not enough unused path identifiers, endpoints SHOULD either send a 
+MAX_PATH_ID frame to increase the active path limit (when limited by the sender) 
+or a MAX_PATH_ID_BLOCKED frame to inform the peer that a new path identifier was needed 
+but the limit of active paths set by the peer has been reached.
 
 MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
@@ -1274,6 +1281,30 @@ Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
+## MAX_PATH_ID_BLOCKED frames {#max-paths-blocked-frame}
+
+A sender SHOULD send a MAX_PATH_ID_BLOCKED frame (type=0x15228c0d) when 
+it wishes to open a path but is unable to do so due to the maximum path identifier 
+limit set by its peer;
+
+MAX_PATH_ID_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.
+
+~~~
+MAX_PATH_ID_BLOCKED Frame {
+  Type (i) = 0x15228c0d,
+  Maximum Path Identifier (i),
+}
+~~~
+{: #fig-max-paths-blocked-frame-format title="MAX_PATH_ID_BLOCKED Frame Format"}
+
+MAX_PATH_ID frames contain the following field:
+
+Maximum Path Identifier:
+A variable-length integer indicating the maximum number of path identifiers 
+allowed at the time the frame was sent. This value MUST NOT exceed 2^32-1 
+and MUST NOT be lower than the value advertised in the initial_max_path_id 
+transport parameter. Receipt of an invalid Maximum Path Identifier value MUST 
+be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 # Error Codes {#error-codes}
 
@@ -1317,7 +1348,9 @@ TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{p
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-TBD-06 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
+TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
+TBD-08 (experiments use 0x15228c0d)                  | MAX_PATH_ID_BLOCKED    | {{max-paths-blocked-frame}}
+
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
