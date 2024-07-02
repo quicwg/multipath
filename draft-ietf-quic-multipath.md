@@ -104,11 +104,15 @@ which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
   * The use of this multipath extension requires the use of non-zero
 length connection IDs in both directions.
-  * A path is determined by the 4-tuple of source and destination IP
-address as well as source and destination port. Therefore, there can be
-at most one active paths/connection ID per 4-tuple.
-  * If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration event.
+  * Connection IDs are associated with a path ID. The path initiation
+processes associate that path ID with a 4-tuple of source and destination IP
+address as well as source and destination port.
+  * Migration events, including NAT rebinding, are detected when packets
+are received from a different 4-tuple than the one previously associated
+with the path ID.
+  * Paths can be closed at any time, as specified in {{path-close}}.
+  * It is not impossible to create multiple paths sharing the same 4-tuple.
+Each of these paths can be closed at any time, like any other path.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
@@ -181,8 +185,8 @@ particular, the multipath extension supports the following scenarios.
     listens on only one.
 
 Note that in the last scenario, it still remains possible to have
-multiple paths over the connection, given that a path is not only
-defined by the IP addresses being used, but also the port numbers.
+multiple paths over the connection, as long as each path is
+associated with a different Path ID.
 In particular, the client can use one or several ports per IP
 address and the server can listen on one or several ports per IP
 address.
@@ -230,8 +234,8 @@ To add a new path to an existing QUIC connection with multipath support, a clien
 the chosen path, as further described in {{path-initiation}}.
 In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
-A new path can only be used once the associated 4-tuple has been validated
-by ensuring that the peer is able to receive packets at that address
+A new path can only be used once it has been validated
+by ensuring that the peer is able to receive packets at the specified address and port,
 (see {{Section 8 of QUIC-TRANSPORT}}).
 The connection ID of a packet binds the packet to a path identifier, and therefore
 to a packet number space.
@@ -429,7 +433,7 @@ If all active paths are marked as "standby", no guidance is provided about
 which path should be used.
 
 
-## Path Close
+## Path Close {#path-close}
 
 Each endpoint manages the set of paths that are available for
 transmission. At any time in the connection, each endpoint can decide to
@@ -556,6 +560,8 @@ An endpoint may deny the establishment of a new path initiated by its
 peer during the address validation procedure. According to
 {{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path
 is to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
+
+
 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
@@ -1024,8 +1030,8 @@ at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.
 
-While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
+While endpoints send a packet on a specific path with the associated
+4-tuple, networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
 perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
 If path validation process succeeds, the endpoints set
