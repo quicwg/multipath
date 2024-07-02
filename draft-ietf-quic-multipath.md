@@ -184,7 +184,7 @@ pointing to an existing path ID, but the connection ID and/or the
 4-tuple are different from the value associated with that path
 (see {{migration}}).
   * Paths can be closed at any time, as specified in {{path-close}}.
-  * It is not impossible to create multiple paths sharing the same 4-tuple.
+  * It is possible to create multiple paths sharing the same 4-tuple.
 Each of these paths can be closed at any time, like any other path.
 
 Further the design of this extension introduces an explicit path identifier
