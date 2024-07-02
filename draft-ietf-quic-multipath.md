@@ -664,7 +664,7 @@ will not be used anymore. In response, if the path is still active, the peer
 SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.
 
 Retirement of connection IDs will not retire the Path ID
-that correspones to the connection ID.
+that corresponds to the connection ID.
 The list of received packets used to send acknowledgements also remains
 unaffected as the packet number space is associated with a path.
 
@@ -1197,11 +1197,21 @@ Path Identifier:
 Note that, other than for the NEW_CONNECTION_ID frame of {{Section 19.15 of QUIC-TRANSPORT}},
 the sequence number applies on a per-path context.
 This means different connection IDs on different paths may have the same
-sequence number value. Respectively, the Retire Prior To field indicates which connection IDs
-should be retired for the path with the Path ID in the Path Identifier field.
+sequence number value. However, the value of the Connection ID MUST be unique
+across all paths.
+
+The Retire Prior To field indicates which connection IDs
+should be retired among those that share the Path ID in the Path Identifier field.
+Connection IDs associated with different path IDs are not affected.
 
 Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
 connection IDs for the initial path with Path ID 0.
+
+Endpoints SHOULD NOT issue updates of the Retire Prior To field for a specific path ID
+before receiving RETIRE_CONNECTION_ID frames that retire all connection IDs indicated
+by the previous Retire Prior To value for that path ID. That is, the rule stated
+in the last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} shall be applied
+independently for each path, not for the whole connection.
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
 
@@ -1238,8 +1248,31 @@ Note that the RETIRE_CONNECTION_ID frame can only be used to retire
 connection IDs for the initial path with Path ID 0.
 
 As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
-the sequence number in the MP_RETIRE_CONNECTION_ID frame
-also needs to be considered in the context of the Path Identifier field.
+the sequence number in the MP_RETIRE_CONNECTION_ID frame is also per
+path. The MP_RETIRE_CONNECTION_ID frame retires the Connection ID with
+the specified path ID and sequence number. 
+
+Receipt of an MP_RETIRE_CONNECTION_ID frame containing a sequence number
+greater than any previously sent to the peer for the specified path ID 
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.
+If the multipath extension is negotiated, receipt of
+a RETIRE_CONNECTION_ID frame containing a sequence number
+greater than any previously sent to the peer for path ID 0 MUST 
+be treated as a connection error of type PROTOCOL_VIOLATION,
+regardless of how many path IDs have been sent for other paths.
+
+The sequence number specified in an MP_RETIRE_CONNECTION_ID frame
+MUST NOT refer to the Destination Connection ID field of the packet
+in which the frame is contained. The peer MAY treat this as a connection
+error of type PROTOCOL_VIOLATION. If the multipath extension is negotiated,
+the same error is detected if a RETIRE_CONNECTION_ID frame is received,
+the path ID of the Destination Connection ID field of the packet is 0,
+and the sequence number of that connection ID matches Sequence Number
+field of the RETIRE_CONNECTION_ID frame. 
+
+These last two paragraphs change on
+the processing of RETIRE_CONNECTION_ID frames specified in
+{{Section 19.17 of QUIC-TRANSPORT}}.
 
 ## MAX_PATH_ID frames {#max-paths-frame}
 
