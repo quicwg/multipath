@@ -102,7 +102,7 @@ several changes to that mechanism:
 paths.
   *  Continuous use of an existing path even if non-probing packets have
 been received on another path.
-  *  Introduction of an path idendifier to manage connection IDs and
+  *  Introduction of an path identifier to manage connection IDs and
      packet number spaces per path.
   *  Removal of paths that have been abandoned.
 
@@ -175,11 +175,20 @@ which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
   * The use of this multipath extension requires the use of non-zero
 length connection IDs in both directions.
-  * A path is determined by the 4-tuple of source and destination IP
-address as well as source and destination port. Therefore, there can be
-at most one active paths/connection ID per 4-tuple.
-  * If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration event.
+  * Connection IDs are associated with a path ID. The path initiation
+associates that path ID with a 4-tuple of source and destination IP
+address as well as source and destination port.
+  * Migration is detected without ambiguity
+when a packet arrives with a connection ID
+pointing to an existing path ID, but the connection ID and/or the
+4-tuple are different from the value associated with that path
+(see {{migration}}).
+  * NAT rebinding events are detected when packets
+are received from a different 4-tuple than the one previously associated
+with the path ID.
+  * Paths can be closed at any time, as specified in {{path-close}}.
+  * It is not impossible to create multiple paths sharing the same 4-tuple.
+Each of these paths can be closed at any time, like any other path.
 
 Further the design of this extension introduces an explicit path identifier
 and use of multiple packet number spaces as further explained in the next sections.
@@ -202,7 +211,7 @@ but multiple connection IDs are usually issued for each path identifier.
 
 The Path ID of the initial path is 0. Connection IDs
 which are issued by a NEW_CONNECTION_ID frame {{Section 19.15. of QUIC-TRANSPORT}}
-respectively are asociated with Path ID 0. Also, the Path ID for
+respectively are associated with Path ID 0. Also, the Path ID for
 the connection ID specified in the "preferred address" transport parameter is 0.
 Use of the "preferred address" is considered as a migration event
 that does not change the Path ID.
@@ -413,8 +422,9 @@ receiving non-probing packets on a new path with a new connection ID
 indicates an attempt
 to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
-for transmission. Reception of QUIC packets containing a connection ID that is already in use
-but has a different 4-tuple than previously observed with this connection ID
+for transmission. Reception of QUIC packets with a path ID pointing to
+an existing path but with a different connection ID or from a different 4-tuple
+than the one previously associated with that path ID
 should be considered as a path migration as further discussed in {{migration}}.
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
@@ -633,7 +643,7 @@ for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
 in the issuing of Path IDs through their connection ID advertisements as path initiation
 requires available connection IDs for the same Path ID on both sides. For instance,
 if the maximum Path ID limit is 2 and the endpoint wants to provide connection IDs
-for only one Path ID inside range [1, 2], it should select Path ID 1 (and not Path
+for only one Path ID inside range (1, 2), it should select Path ID 1 (and not Path
 ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
 or path initiation attempts with in order use of Path IDs
@@ -957,8 +967,8 @@ at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.
 
-While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
+While endpoints send a packet on a specific path with the associated
+4-tuple, networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
 perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
 If path validation process succeeds, the endpoints set
