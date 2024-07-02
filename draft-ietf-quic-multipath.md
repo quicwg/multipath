@@ -1300,11 +1300,11 @@ MAX_PATH_ID_BLOCKED Frame {
 MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
-A variable-length integer indicating the maximum number of path identifiers
-allowed at the time the frame was sent. This value MUST NOT exceed 2^32-1
-and MUST NOT be lower than the value advertised in the initial_max_path_id
-transport parameter. Receipt of an invalid Maximum Path Identifier value MUST
-be treated as a connection error of type MP_PROTOCOL_VIOLATION.
+: A variable-length integer indicating the maximum number of path identifiers
+  allowed at the time the frame was sent. This value MUST NOT exceed 2^32-1
+  and MUST NOT be lower than the value advertised in the initial_max_path_id
+  transport parameter. Receipt of an invalid Maximum Path Identifier value MUST
+  be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 # Error Codes {#error-codes}
 
