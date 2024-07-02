@@ -317,10 +317,10 @@ Path ID 0.
 After completing the handshake, endpoints have agreed to enable
 multipath support. They can also start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused Path ID.
-If endpoint receives a disable_active_migration transport parameter 
-provided by the peer, it is forbidden to use a new local address 
-to establish new paths for the peer address used during handshake, 
-but establishment of additional paths to other peer addresses 
+If endpoint receives a disable_active_migration transport parameter
+provided by the peer, it is forbidden to use a new local address
+to establish new paths for the peer address used during handshake,
+but establishment of additional paths to other peer addresses
 (e.g carried by peer’s preferred_address) is valid immediately.
 
 
