@@ -183,9 +183,6 @@ when a packet arrives with a connection ID
 pointing to an existing path ID, but the connection ID and/or the
 4-tuple are different from the value associated with that path
 (see {{migration}}).
-  * NAT rebinding events are detected when packets
-are received from a different 4-tuple than the one previously associated
-with the path ID.
   * Paths can be closed at any time, as specified in {{path-close}}.
   * It is not impossible to create multiple paths sharing the same 4-tuple.
 Each of these paths can be closed at any time, like any other path.
