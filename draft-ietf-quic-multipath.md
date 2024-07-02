@@ -1250,14 +1250,14 @@ connection IDs for the initial path with Path ID 0.
 As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
 the sequence number in the MP_RETIRE_CONNECTION_ID frame is also per
 path. The MP_RETIRE_CONNECTION_ID frame retires the Connection ID with
-the specified path ID and sequence number. 
+the specified path ID and sequence number.
 
 Receipt of an MP_RETIRE_CONNECTION_ID frame containing a sequence number
-greater than any previously sent to the peer for the specified path ID 
+greater than any previously sent to the peer for the specified path ID
 MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 If the multipath extension is negotiated, receipt of
 a RETIRE_CONNECTION_ID frame containing a sequence number
-greater than any previously sent to the peer for path ID 0 MUST 
+greater than any previously sent to the peer for path ID 0 MUST
 be treated as a connection error of type PROTOCOL_VIOLATION,
 regardless of how many path IDs have been sent for other paths.
 
@@ -1268,7 +1268,7 @@ error of type PROTOCOL_VIOLATION. If the multipath extension is negotiated,
 the same error is detected if a RETIRE_CONNECTION_ID frame is received,
 the path ID of the Destination Connection ID field of the packet is 0,
 and the sequence number of that connection ID matches Sequence Number
-field of the RETIRE_CONNECTION_ID frame. 
+field of the RETIRE_CONNECTION_ID frame.
 
 These last two paragraphs change on
 the processing of RETIRE_CONNECTION_ID frames specified in
