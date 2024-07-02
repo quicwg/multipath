@@ -654,11 +654,11 @@ as corresponding to Path ID 0.
 
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}}).
-When an endpoint finds it has not enough available unused path identifiers, 
-it SHOULD either send a MAX_PATH_ID frame to increase the active path limit 
-(when limited by the sender) or a MAX_PATH_ID_BLOCKED frame 
-(see Section {{max-paths-blocked-frame}}) to inform the peer that a new path 
-identifier was needed but the current limit set by the peer prevented the 
+When an endpoint finds it has not enough available unused path identifiers,
+it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
+(when limited by the sender) or a MAX_PATH_ID_BLOCKED frame
+(see Section {{max-paths-blocked-frame}}) to inform the peer that a new path
+identifier was needed but the current limit set by the peer prevented the
 creation of the new path.
 
 If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
@@ -1251,9 +1251,9 @@ also needs to be considered in the context of the Path Identifier field.
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
 
-When there are not enough unused path identifiers, endpoints SHOULD either send a 
-MAX_PATH_ID frame to increase the active path limit (when limited by the sender) 
-or a MAX_PATH_ID_BLOCKED frame to inform the peer that a new path identifier was needed 
+When there are not enough unused path identifiers, endpoints SHOULD either send a
+MAX_PATH_ID frame to increase the active path limit (when limited by the sender)
+or a MAX_PATH_ID_BLOCKED frame to inform the peer that a new path identifier was needed
 but the limit of active paths set by the peer has been reached.
 
 MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
@@ -1283,8 +1283,8 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 ## MAX_PATH_ID_BLOCKED frames {#max-paths-blocked-frame}
 
-A sender SHOULD send a MAX_PATH_ID_BLOCKED frame (type=0x15228c0d) when 
-it wishes to open a path but is unable to do so due to the maximum path identifier 
+A sender SHOULD send a MAX_PATH_ID_BLOCKED frame (type=0x15228c0d) when
+it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer;
 
 MAX_PATH_ID_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.
@@ -1300,10 +1300,10 @@ MAX_PATH_ID_BLOCKED Frame {
 MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
-A variable-length integer indicating the maximum number of path identifiers 
-allowed at the time the frame was sent. This value MUST NOT exceed 2^32-1 
-and MUST NOT be lower than the value advertised in the initial_max_path_id 
-transport parameter. Receipt of an invalid Maximum Path Identifier value MUST 
+A variable-length integer indicating the maximum number of path identifiers
+allowed at the time the frame was sent. This value MUST NOT exceed 2^32-1
+and MUST NOT be lower than the value advertised in the initial_max_path_id
+transport parameter. Receipt of an invalid Maximum Path Identifier value MUST
 be treated as a connection error of type MP_PROTOCOL_VIOLATION.
 
 # Error Codes {#error-codes}
