@@ -664,7 +664,7 @@ will not be used anymore. In response, if the path is still active, the peer
 SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.
 
 Retirement of connection IDs will not retire the Path ID
-that correspones to the connection ID or any other path ressources
+that corresponds to the connection ID or any other path ressources
 as the packet number space is associated with a path.
 
 The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
