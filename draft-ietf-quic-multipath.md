@@ -397,7 +397,7 @@ the endpoint MUST explicitly close the path as specified in
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
 is negotiated, the reception of a "non-probing"
-packet on a new path with a new so far unused PatID
+packet on a new path with a new so far unused Path ID
 does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
