@@ -1197,8 +1197,7 @@ Path Identifier:
 Note that, other than for the NEW_CONNECTION_ID frame of {{Section 19.15 of QUIC-TRANSPORT}},
 the sequence number applies on a per-path context.
 This means different connection IDs on different paths may have the same
-sequence number value. However, the value of the Connection ID MUST be unique
-across all paths.
+sequence number value.
 
 The Retire Prior To field indicates which connection IDs
 should be retired among those that share the Path ID in the Path Identifier field.
