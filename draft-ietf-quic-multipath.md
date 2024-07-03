@@ -695,7 +695,7 @@ the packet number alone would not guarantee the uniqueness of the nonce.
 Therefore, the nonce N is calculated by combining the packet protection
 IV with the packet number and with the least significant 32 bits of the
 Path ID. In order to guarantee the uniqueness of the nonce, the Path ID
-is limited to a max value of 2^30-1.
+is limited to a max value of 2^32-1.
 
 To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
 significant 32 bits of the Path ID in network byte order,
