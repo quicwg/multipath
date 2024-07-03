@@ -1207,11 +1207,12 @@ Connection IDs associated with different path IDs are not affected.
 Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
 connection IDs for the initial path with Path ID 0.
 
-Endpoints SHOULD NOT issue updates of the Retire Prior To field for a specific path ID
-before receiving RETIRE_CONNECTION_ID frames that retire all connection IDs indicated
-by the previous Retire Prior To value for that path ID. That is, the rule stated
-in the last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} shall be applied
-independently for each path, not for the whole connection.
+The last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} specified how to
+verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
+The same rule
+applies for MP_RETIRE_CONNECTION_ID frames, but it applies per path. After the
+multipath extension is isolated, the rule
+for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
 
@@ -1252,27 +1253,10 @@ the sequence number in the MP_RETIRE_CONNECTION_ID frame is also per
 path. The MP_RETIRE_CONNECTION_ID frame retires the Connection ID with
 the specified path ID and sequence number.
 
-Receipt of an MP_RETIRE_CONNECTION_ID frame containing a sequence number
-greater than any previously sent to the peer for the specified path ID
-MUST be treated as a connection error of type PROTOCOL_VIOLATION.
-If the multipath extension is negotiated, receipt of
-a RETIRE_CONNECTION_ID frame containing a sequence number
-greater than any previously sent to the peer for path ID 0 MUST
-be treated as a connection error of type PROTOCOL_VIOLATION,
-regardless of how many path IDs have been sent for other paths.
-
-The sequence number specified in an MP_RETIRE_CONNECTION_ID frame
-MUST NOT refer to the Destination Connection ID field of the packet
-in which the frame is contained. The peer MAY treat this as a connection
-error of type PROTOCOL_VIOLATION. If the multipath extension is negotiated,
-the same error is detected if a RETIRE_CONNECTION_ID frame is received,
-the path ID of the Destination Connection ID field of the packet is 0,
-and the sequence number of that connection ID matches Sequence Number
-field of the RETIRE_CONNECTION_ID frame.
-
-These last two paragraphs change on
-the processing of RETIRE_CONNECTION_ID frames specified in
-{{Section 19.17 of QUIC-TRANSPORT}}.
+The processing of an incoming RETIRE_CONNECTION_ID frame
+is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
+applies for MP_RETIRE_CONNECTION_ID frames per path, while the 
+processing of an RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MAX_PATH_ID frames {#max-paths-frame}
 
