@@ -840,7 +840,8 @@ guarantee that these paths are fully disjoint. When two (or more paths)
 share the same bottleneck, using a standard congestion control scheme
 could result in an unfair distribution of the bandwidth with
 the multipath connection getting more bandwidth than competing single
-paths connections. Multipath TCP uses the LIA congestion control scheme
+paths connections. Multipath TCP uses the linked increased algorithm (LIA)
+congestion control scheme
 specified in {{RFC6356}} to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
 control schemes have been proposed for Multipath TCP such as {{OLIA}}.
