@@ -454,7 +454,7 @@ by sending a PATH_ABANDON frame (see section {{path-close}}) in order to avoid
 that its peer keeps using it and enable faster switch over to a standby path.
 If the endpoints does not want to close the path immediately, as connectivity
 could be re-established, it is RECOMMENDED to send PING frames to quickly detect
-connecivtity changes and switch back in a timely way.
+connectivity changes and switch back in a timely way.
 
 If no frame indicating a path usage preference was received for a certain path,
 the preference of the peer is unknown and the sender needs to decide based on it
