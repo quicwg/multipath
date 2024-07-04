@@ -1210,7 +1210,7 @@ The last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} specifies how to
 verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
 The same rule
 applies for MP_RETIRE_CONNECTION_ID frames, but it applies per path. After the
-multipath extension is isolated, the rule
+multipath extension is negotiated successfully, the rule
 for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
