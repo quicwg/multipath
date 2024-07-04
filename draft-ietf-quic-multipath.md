@@ -178,8 +178,7 @@ address as well as source and destination port.
   * Migration is detected without ambiguity
 when a packet arrives with a connection ID
 pointing to an existing path ID, but the connection ID and/or the
-4-tuple are different from the value associated with that path
-(see {{migration}}).
+4-tuple are different from the value current used for that path.
   * Paths can be closed at any time, as specified in {{path-close}}.
   * It is possible to create multiple paths sharing the same 4-tuple.
 Each of these paths can be closed at any time, like any other path.
