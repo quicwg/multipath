@@ -252,9 +252,8 @@ defined as follows:
 - initial_max_path_id (current version uses 0x0f739bbc1b666d09): a
   variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
-  This value MUST NOT exceed 2^32-1, as Path IDs are defined
-  with a maximum value 2^32-1 as the 32 bits of the Path ID
-  are used to calculate the nonce (see {{multipath-aead}}).
+  This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
+  restrictions on the nonce calculation (see {{multipath-aead}}).
 
 For example, if initial_max_path_id is set to 1, only connection IDs
 associated with Path IDs 0 and 1 should be issued by the peer.
