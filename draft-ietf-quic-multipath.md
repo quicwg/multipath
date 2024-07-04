@@ -658,7 +658,10 @@ is still valid as well and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.
 
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
-the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}}).
+the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}})
+or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
+Receipt of a frame with a greater Path ID is a connection error as specified
+in Section {{frames}}.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active
 path identifiers.
@@ -1253,9 +1256,6 @@ also needs to be considered in the context of the Path Identifier field.
 
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
-
-When there are not enough unused path identifiers, endpoints SHOULD
-send MAX_PATH_ID frame to inform the peer that new path identifiers are available.
 
 MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
