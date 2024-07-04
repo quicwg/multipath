@@ -452,7 +452,7 @@ to updates it own path state signaling such that the peer avoids using the broke
 An enpoints that detects a path breakage can also explicitly close the path
 by sending a PATH_ABANDON frame (see section {{path-close}}) in order to avoid
 that its peer keeps using it and enable faster switch over to a standby path.
-If the endpoints does not want to close the path immediately, as connectivity
+If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, it is RECOMMENDED to send PING frames to quickly detect
 connectivity changes and switch back in a timely way.
 
