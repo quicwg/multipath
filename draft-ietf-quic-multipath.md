@@ -102,7 +102,7 @@ several changes to that mechanism:
 paths.
   *  Continuous use of an existing path even if non-probing packets have
 been received on another path.
-  *  Introduction of an path idendifier to manage connection IDs and
+  *  Introduction of an path identifier to manage connection IDs and
      packet number spaces per path.
   *  Removal of paths that have been abandoned.
 
@@ -175,11 +175,17 @@ which usually also requires per-path RTT measurements
   * PMTU discovery should be performed per-path
   * The use of this multipath extension requires the use of non-zero
 length connection IDs in both directions.
-  * A path is determined by the 4-tuple of source and destination IP
-address as well as source and destination port. Therefore, there can be
-at most one active paths/connection ID per 4-tuple.
-  * If the 4-tuple changes without the use of a new connection ID (e.g.
-due to a NAT rebinding), this is considered as a migration event.
+  * Connection IDs are associated with a path ID. The path initiation
+associates that path ID with a 4-tuple of source and destination IP
+address as well as source and destination port.
+  * Migration is detected without ambiguity
+when a packet arrives with a connection ID
+pointing to an existing path ID, but the connection ID and/or the
+4-tuple are different from the value associated with that path
+(see {{migration}}).
+  * Paths can be closed at any time, as specified in {{path-close}}.
+  * It is possible to create multiple paths sharing the same 4-tuple.
+Each of these paths can be closed at any time, like any other path.
 
 Further the design of this extension introduces an explicit path identifier
 and use of multiple packet number spaces as further explained in the next sections.
@@ -195,14 +201,14 @@ to a packet number space.
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
-PATH_AVAILABLE {{path-available-frame}} as well as ACK_MP {{ack-mp-frame}}.
+PATH_AVAILABLE {{path-available-frame}} as well as MP_ACK {{mp-ack-frame}}.
 Further, connection IDs are issued per Path ID.
 That means each connection ID is associated with exactly one path identifier
 but multiple connection IDs are usually issued for each path identifier.
 
 The Path ID of the initial path is 0. Connection IDs
 which are issued by a NEW_CONNECTION_ID frame {{Section 19.15. of QUIC-TRANSPORT}}
-respectively are asociated with Path ID 0. Also, the Path ID for
+respectively are associated with Path ID 0. Also, the Path ID for
 the connection ID specified in the "preferred address" transport parameter is 0.
 Use of the "preferred address" is considered as a migration event
 that does not change the Path ID.
@@ -296,9 +302,9 @@ the multipath extension. If such a cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
 TRANSPORT_PARAMETER error.
 
-The ACK_MP frame, as specified in {{ack-mp-frame}}, is used to
+The MP_ACK frame, as specified in {{mp-ack-frame}}, is used to
 acknowledge 1-RTT packets.
-Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the ACK_MP frame additionally
+Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the MP_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.
 
 As multipath support is unknown during the handshake, acknowledgements of
@@ -308,7 +314,7 @@ negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
 Path ID 0.
 
 After the handshake concluded if negotiation of multipath support succeeded,
-endpoints SHOULD use ACK_MP frames instead of ACK frames,
+endpoints SHOULD use MP_ACK frames instead of ACK frames,
 also for acknowledging so far unacknowledged 0-RTT packets, using
 Path ID 0.
 
@@ -376,10 +382,10 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
-ACK_MP frames (defined in {{ack-mp-frame}}) can be returned on any path.
-If the ACK_MP is preferred to be sent on the same path as the acknowledged
+MP_ACK frames (defined in {{mp-ack-frame}}) can be returned on any path.
+If the MP_ACK is preferred to be sent on the same path as the acknowledged
 packet (see {{compute-rtt}} for further guidance), it can be beneficial
-to bundle an ACK_MP frame with the PATH_RESPONSE frame during
+to bundle an MP_ACK frame with the PATH_RESPONSE frame during
 path validation.
 
 If the server receives a PATH_CHALLENGE before receiving
@@ -413,8 +419,9 @@ receiving non-probing packets on a new path with a new connection ID
 indicates an attempt
 to migrate to that path.  Instead, servers SHOULD consider new paths
 over which non-probing packets have been received as available
-for transmission. Reception of QUIC packets containing a connection ID that is already in use
-but has a different 4-tuple than previously observed with this connection ID
+for transmission. Reception of QUIC packets with a path ID pointing to
+an existing path but with a different connection ID or from a different 4-tuple
+than the one previously associated with that path ID
 should be considered as a path migration as further discussed in {{migration}}.
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
@@ -496,7 +503,7 @@ both to avoid generating spurious stateless packets as specified in
 last packets received from the peer as specified in {{ack-after-abandon}}).
 
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
-promptly send ACK_MP frames to acknowledge all packets received on
+promptly send MP_ACK frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
 When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
@@ -542,19 +549,19 @@ The immediate retirement of connection identifiers received for the
 path guarantees that spurious stateless reset packets
 sent by the peer will not cause the closure of the QUIC connection.
 
-### Handling ACK_MP for abandoned paths {#ack-after-abandon}
+### Handling MP_ACK for abandoned paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some other packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
-send ACK_MP frames promptly, to avoid unnecessary data
+send MP_ACK frames promptly, to avoid unnecessary data
 retransmission after the peer deletes path resources.
 
-These ACK_MP frames MUST be sent on a different path than the
+These MP_ACK frames MUST be sent on a different path than the
 path being abandoned.
 
-ACK_MP frames received after the endpoint has entirely deleted
+MP_ACK frames received after the endpoint has entirely deleted
 a path MUST be silently discarded.
 
 ### Idle Timeout {#idle-time-close}
@@ -651,7 +658,10 @@ is still valid as well and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.
 
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
-the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}}).
+the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}})
+or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
+Receipt of a frame with a greater Path ID is a connection error as specified
+in Section {{frames}}.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active
 path identifiers.
@@ -664,9 +674,8 @@ will not be used anymore. In response, if the path is still active, the peer
 SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.
 
 Retirement of connection IDs will not retire the Path ID
-that corresponds to the connection ID.
-The list of received packets used to send acknowledgements also remains
-unaffected as the packet number space is associated with a path.
+that corresponds to the connection ID or any other path ressources
+as the packet number space is associated with a path.
 
 The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
@@ -754,10 +763,10 @@ Path ID 0 is already used for the initial path.
    1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] -->
                            Checks AEAD using nonce(Path ID 1, PN 0)
         <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
-                                             ACK_MP[PathID=1, PN=0]
+                                             MP_ACK[PathID=1, PN=0]
    Checks AEAD using nonce(Path ID 1, PN 0)
    1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
-            ACK_MP[PathID=1, PN=0], ... -->
+            MP_ACK[PathID=1, PN=0], ... -->
 
 ~~~
 {: #fig-example-new-path title="Example of new path establishment"}
@@ -793,8 +802,8 @@ Client                                                      Server
 1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->
                            (server tells client to abandon a path)
                     <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
-                                           ACK_MP[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S2 ACK_MP[Path ID=1, PN=Y] ->
+                                           MP_ACK[PATH ID=1, PN=X]
+1-RTT[U]: DCID=S2 MP_ACK[Path ID=1, PN=Y] ->
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
@@ -840,7 +849,8 @@ guarantee that these paths are fully disjoint. When two (or more paths)
 share the same bottleneck, using a standard congestion control scheme
 could result in an unfair distribution of the bandwidth with
 the multipath connection getting more bandwidth than competing single
-paths connections. Multipath TCP uses the LIA congestion control scheme
+paths connections. Multipath TCP uses the linked increased algorithm (LIA)
+congestion control scheme
 specified in {{RFC6356}} to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
 control schemes have been proposed for Multipath TCP such as {{OLIA}}.
@@ -865,7 +875,7 @@ Terrestrial | 100ms  | 350ms
 Satellite   | 350ms  | 600ms
 {: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
 
-The ACK_MP frames describe packets that were sent on the specified path,
+The MP_ACK frames describe packets that were sent on the specified path,
 but they may be received through any available path. There is an
 understandable concern that if successive acknowledgements are received
 on different paths, the measured RTT samples will fluctuate widely,
@@ -873,26 +883,26 @@ and that might result in poor performance. While this may be a concern,
 the actual behavior is complex.
 
 The computed values reflect both the state of the network path and the
-scheduling decisions by the sender of the ACK_MP frames. In the example
-above, we may assume that the ACK_MP will be sent over the terrestrial
+scheduling decisions by the sender of the MP_ACK frames. In the example
+above, we may assume that the MP_ACK will be sent over the terrestrial
 link, because that provides the best response time. In that case, the
 computed RTT value for the satellite path will be about 350ms. This
-lower than the 600ms that would be measured if the ACK_MP came over
+lower than the 600ms that would be measured if the MP_ACK came over
 the satellite channel, but it is still the right value for computing
-for example the PTO timeout: if an ACK_MP is not received after more
-than 350ms, either the data packet or its ACK_MP were probably lost.
+for example the PTO timeout: if an MP_ACK is not received after more
+than 350ms, either the data packet or its MP_ACK were probably lost.
 
 The simplest implementation is to compute smoothedRTT and RTTvar per
-{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which ACK_MP frames are
+{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which MP_ACK frames are
 received. This algorithm will provide good results,
-except if the set of paths changes and the ACK_MP sender
+except if the set of paths changes and the MP_ACK sender
 revisits its sending preferences. This is not very
 different from what happens on a single path if the routing changes.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
 There is however an exception: some congestion
 control functions rely on estimates of the minimum RTT. It might be prudent
-for nodes to remember the path over which the ACK_MP that produced
+for nodes to remember the path over which the MP_ACK that produced
 the minimum RTT was received, and to restart the minimum RTT computation
 if that path is abandoned.
 
@@ -910,15 +920,15 @@ exceptions), can be sent and received on any active path. The scheduling
 is a local decision, based on the preferences of the application and the
 implementation.
 
-Note that this implies that an endpoint may send and receive ACK_MP
+Note that this implies that an endpoint may send and receive MP_ACK
 frames on a path different from the one that carried the acknowledged
 packets. As noted in {{compute-rtt}} the values computed using
 the standard algorithm reflect both the characteristics of the
-path and the scheduling algorithm of ACK_MP frames. The estimates will converge
+path and the scheduling algorithm of MP_ACK frames. The estimates will converge
 faster if the scheduling strategy is stable, but besides that
 implementations can choose between multiple strategies such as sending
-ACK_MP frames on the path they acknowledge packets, or sending
-ACK_MP frames on the shortest path, which results in shorter control loops
+MP_ACK frames on the path they acknowledge packets, or sending
+MP_ACK frames on the shortest path, which results in shorter control loops
 and thus better performance.
 
 ## Retransmissions
@@ -989,19 +999,19 @@ with a path identifier that it cannot process
 anymore (e.g., because the path might have been abandoned), it
 MUST silently ignore the frame.
 
-## ACK_MP Frame {#ack-mp-frame}
+## MP_ACK Frame {#mp-ack-frame}
 
-The ACK_MP frame (types TBD-00 and TBD-01)
+The MP_ACK frame (types TBD-00 and TBD-01)
 is an extension of the ACK frame specified in {{Section 19.3 of QUIC-TRANSPORT}}. It is
 used to acknowledge packets that were sent on different paths, as
-each path as its own packet number space. If the frame type is TBD-01, ACK_MP frames
+each path as its own packet number space. If the frame type is TBD-01, MP_ACK frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.
 
-ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
+MP_ACK frame is formatted as shown in {{fig-mp-ack-format}}.
 
 ~~~
-  ACK_MP Frame {
+  MP_ACK Frame {
     Type (i) = TBD-00..TBD-01
          (experiments use  0x15228c00-0x15228c01),
     Path Identifier (i),
@@ -1013,14 +1023,14 @@ ACK_MP frame is formatted as shown in {{fig-ack-mp-format}}.
     [ECN Counts (..)],
   }
 ~~~
-{: #fig-ack-mp-format title="ACK_MP Frame Format"}
+{: #fig-mp-ack-format title="MP_ACK Frame Format"}
 
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
 field is added.
 
 Path Identifier:
 : The Path ID associated with the packet number space of the 0-RTT and 1-RTT packets
-  which are acknowledged by the ACK_MP frame.
+  which are acknowledged by the MP_ACK frame.
 
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
@@ -1262,9 +1272,6 @@ processing of an RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
 
-When there are not enough unused path identifiers, endpoints SHOULD
-send MAX_PATH_ID frame to inform the peer that new path identifiers are available.
-
 MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
 ~~~
@@ -1327,7 +1334,7 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.
 
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | ACK_MP              | {{ack-mp-frame}}
+TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | MP_ACK              | {{mp-ack-frame}}
 TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
 TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{path-standby-frame}}
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
