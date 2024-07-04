@@ -1206,7 +1206,7 @@ Connection IDs associated with different path IDs are not affected.
 Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
 connection IDs for the initial path with Path ID 0.
 
-The last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} specified how to
+The last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} specifies how to
 verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
 The same rule
 applies for MP_RETIRE_CONNECTION_ID frames, but it applies per path. After the
@@ -1250,7 +1250,7 @@ connection IDs for the initial path with Path ID 0.
 As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
 the sequence number in the MP_RETIRE_CONNECTION_ID frame is also per
 path. The MP_RETIRE_CONNECTION_ID frame retires the Connection ID with
-the specified path ID and sequence number.
+the specified Path ID and sequence number.
 
 The processing of an incoming RETIRE_CONNECTION_ID frame
 is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
