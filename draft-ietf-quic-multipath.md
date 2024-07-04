@@ -628,7 +628,7 @@ regardless of the associated Path ID.
 can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
 this draft, only connection IDs associated to the same
-Path ID MUST be used on the same path. Use of a connection ID assocaited with
+Path ID MUST be used on the same path. Use of a connection ID associated with
 a another Path ID will be considered as an attempt to open new path instead.
 
 Over a given path, both endpoints use connection IDs associated to a given Path
