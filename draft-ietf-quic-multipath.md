@@ -446,9 +446,10 @@ PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
 should be sent on that path if another path is available.
 If all active paths are marked as "standby", no guidance is provided about
 which path should be used.
+
 If an endpoints starts using a path that was marked as "standby" by its peer
 because it has detected issues on the paths marked as "available", it is RECOMMENDED
-to updates it own path state signaling such that the peer avoids using the broken path.
+to update it own path state signaling such that the peer avoids using the broken path.
 An enpoints that detects a path breakage can also explicitly close the path
 by sending a PATH_ABANDON frame (see section {{path-close}}) in order to avoid
 that its peer keeps using it and enable faster switch over to a standby path.
