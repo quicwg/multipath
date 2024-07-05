@@ -1389,7 +1389,7 @@ are unconfined valid and apply to all packets sent on any path. Further note,
 that with the use of this extension multiple nonces can be in use simulanteously,
 which need to be considered when tracking these limits and for key updates.
 
-Respectively, this specification changes the AEAD calculation by using the path identifier as part of
+This specification changes the AEAD calculation by using the path identifier as part of
 AEAD encryption nonce (see {{multipath-aead}}). To ensure a unique nonce, path identifiers
 are limited to 32 bits and cannot be reused for another path in the same connection.
 
