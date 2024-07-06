@@ -1385,7 +1385,7 @@ As the handshake is not changed by this extension, the transport security mechan
 as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication,
 remain unchanged as well and the respective security considerations in {{QUIC-TLS}} applied unaltered.
 Note that the limits as discussed on Appendix B of {{QUIC-TLS}}
-apply to the total number of packets sent on all path. Further note,
+apply to the total number of packets sent on all paths. Further note,
 that with the use of this extension multiple nonces can be in use simulanteously,
 which need to be considered when tracking these limits and for key updates.
 
