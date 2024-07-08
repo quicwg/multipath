@@ -409,7 +409,7 @@ as long as the anti-amplification limits
 ({{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
 
-Connection ID changes as specified in {{Section 5.1.2 of QUIC-TRANSPORT}} and  
+Connection ID changes as specified in {{Section 5.1.2 of QUIC-TRANSPORT}} and
 in {{Section 9 of QUIC-TRANSPORT}} for connection migration apply for
 connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
