@@ -409,9 +409,9 @@ as long as the anti-amplification limits
 ({{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
 
-Connection migration as specified in
-{{Section 9 of QUIC-TRANSPORT}} still applies for the use of
-a new connection ID associated to a Path ID of an active path.
+Connection ID changes as specified in {{Section 5.1.2 of QUIC-TRANSPORT}} and  
+in {{Section 9 of QUIC-TRANSPORT}} for connection migration apply for
+connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
 in this draft, endpoints have to consider the receiption of
 a packet with a connection ID associated to an
