@@ -1384,10 +1384,11 @@ Respectively, all new frames defined in this extension are only used in 1-RTT pa
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication,
 remain unchanged as well and the respective security considerations in {{QUIC-TLS}} applied unaltered.
-Note that the limits as discussed on Appendix B of {{QUIC-TLS}}
-apply to the total number of packets sent on all paths. Further note,
-that with the use of this extension multiple nonces can be in use simulanteously,
-which need to be considered when tracking these limits and for key updates.
+Note that with the use of this extension, multiple nonces can be in use simultaneously
+for the same AEAD key.
+
+Further note, that the limits as discussed on Appendix B of {{QUIC-TLS}}
+apply to the total number of packets sent on all paths.
 
 This specification changes the AEAD calculation by using the path identifier as part of
 AEAD encryption nonce (see {{multipath-aead}}). To ensure a unique nonce, path identifiers
