@@ -1225,11 +1225,21 @@ Path Identifier:
 Note that, other than for the NEW_CONNECTION_ID frame of {{Section 19.15 of QUIC-TRANSPORT}},
 the sequence number applies on a per-path context.
 This means different connection IDs on different paths may have the same
-sequence number value. Respectively, the Retire Prior To field indicates which connection IDs
-should be retired for the path with the Path ID in the Path Identifier field.
+sequence number value.
+
+The Retire Prior To field indicates which connection IDs
+should be retired among those that share the Path ID in the Path Identifier field.
+Connection IDs associated with different path IDs are not affected.
 
 Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
 connection IDs for the initial path with Path ID 0.
+
+The last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} specifies how to
+verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
+The same rule
+applies for MP_RETIRE_CONNECTION_ID frames, but it applies per path. After the
+multipath extension is negotiated successfully, the rule
+for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MP_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
 
@@ -1266,8 +1276,14 @@ Note that the RETIRE_CONNECTION_ID frame can only be used to retire
 connection IDs for the initial path with Path ID 0.
 
 As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
-the sequence number in the MP_RETIRE_CONNECTION_ID frame
-also needs to be considered in the context of the Path Identifier field.
+the sequence number in the MP_RETIRE_CONNECTION_ID frame is also per
+path. The MP_RETIRE_CONNECTION_ID frame retires the Connection ID with
+the specified Path ID and sequence number.
+
+The processing of an incoming RETIRE_CONNECTION_ID frame
+is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
+applies for MP_RETIRE_CONNECTION_ID frames per path, while the
+processing of an RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MAX_PATH_ID frames {#max-paths-frame}
 
