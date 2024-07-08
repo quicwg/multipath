@@ -381,10 +381,12 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
-An endpoint MAY deny the establishment of a new path initiated by its
-peer by not replying with a PATH_RESPONSE frame but sending a
+A server can also decide to not perform path validation if it wants to deny the new path,
+or not perform it immediately if, e.g., no connection ID is yet available. 
+If an endpoint decides to deny the establishment of a new path,
+this should be considered as a path closure and therefore requires sending a
 PATH_ABANDON frame on another path for the associated Path ID used
-for the PATH_CHALLENGE instead.
+by the client as specified in section {{path-close}}.
 
 MP_ACK frames (defined in {{mp-ack-frame}}) can be returned on any path.
 If the MP_ACK is preferred to be sent on the same path as the acknowledged
