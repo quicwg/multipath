@@ -340,9 +340,9 @@ does not discuss when a client decides to initiate a new path. We
 delegate such discussion to separate documents.
 
 To let the peer open a new path, an endpoint needs to provide its peer with connection IDs
-for at least one unused path identifier. 
-Upon successful handshake negotiation of multipath support from both endpoints, 
-endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new connection IDs, 
+for at least one unused path identifier.
+Upon successful handshake negotiation of multipath support from both endpoints,
+endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new connection IDs,
 and correspondingly use the MP_RETIRE_CONNECTION_ID frame to retire connection IDs.
 
 To open a new path, an endpoint MUST use a connection ID associated with
