@@ -364,7 +364,7 @@ All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 ## Path Initiation {#path-initiation}
 
 Opening a new path requires the use of a new connection ID
-for the smallest unused Path ID (see {{explicit-path-id}}).
+for an unused Path ID (see {{explicit-path-id}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{Section 19.15 of QUIC-TRANSPORT}},
 each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
 to issue Path ID-specific connections IDs.
