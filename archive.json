@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-11T00:46:44.449756+00:00",
+  "timestamp": "2024-07-14T00:51:49.930375+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11024,12 +11024,22 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "Section 1.2:\r\n\"Further, connection IDs are issued per Path ID.\" \r\n\r\nShould this refer to MP_NEW_CONNECTION_ID to be clear that there are new frames for this.\r\n\r\n",
       "createdAt": "2024-07-10T14:22:27Z",
-      "updatedAt": "2024-07-10T14:22:27Z",
+      "updatedAt": "2024-07-11T08:43:18Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fixed in PR #416 ",
+          "createdAt": "2024-07-11T08:42:58Z",
+          "updatedAt": "2024-07-11T08:42:58Z"
+        }
+      ]
     },
     {
       "number": 405,
@@ -11040,12 +11050,22 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "Section 3:\r\n\"Endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs after a successful handshake indicating multipath support by both endpoints.\"\r\n\r\nThe SHOULD appear to point to the wrong aspect. One is required to use MP_NEW_CONNECTION_ID frame to provide new CIDs, what is SHOULD is to do it after a successful handshake. So sentence need reformulation. ",
       "createdAt": "2024-07-10T14:23:55Z",
-      "updatedAt": "2024-07-10T14:23:55Z",
+      "updatedAt": "2024-07-11T12:57:37Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fixed in PR #417 ",
+          "createdAt": "2024-07-11T12:57:36Z",
+          "updatedAt": "2024-07-11T12:57:36Z"
+        }
+      ]
     },
     {
       "number": 406,
@@ -11072,10 +11092,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "Section 3.1:\r\n\"Opening a new path requires the use of a new connection ID (see Section 9.5 of [QUIC-TRANSPORT]).\"\r\n\r\nI think the mentioning of \"new connection ID\" here is pointing to the wrong thing. Isn't what is most important here is to use a new CID for the next path ID. And here to my understanding the next Path ID is the lowest value not yet used for any path challenge and which is not currently in use on any path challenge for another 4-tuple.\r\n",
       "createdAt": "2024-07-10T14:25:20Z",
-      "updatedAt": "2024-07-10T14:25:20Z",
+      "updatedAt": "2024-07-12T03:52:05Z",
       "closedAt": null,
       "comments": []
     },
@@ -11088,12 +11110,22 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "Section 3.3:\r\nThis is true whether the decision to close the path results from implicit signals such as idle time or packet losses (see {(idle-time-close}}) \r\n\r\nErronous internal ref\r\n",
       "createdAt": "2024-07-10T14:25:53Z",
-      "updatedAt": "2024-07-10T14:25:53Z",
+      "updatedAt": "2024-07-11T06:29:44Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "It's true. I fixed it in PR #415 ",
+          "createdAt": "2024-07-11T06:17:27Z",
+          "updatedAt": "2024-07-11T06:17:27Z"
+        }
+      ]
     },
     {
       "number": 409,
@@ -11168,12 +11200,29 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "no-action-needed"
+      ],
       "body": "Section 5.2:\r\nClient                                                      Server\r\n(client tells server to abandon a path with Path ID 1)\r\n1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->\r\n                           (server tells client to abandon a path)\r\n                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],\r\n                                           MP_ACK[PATH ID=1, PN=X]\r\n1-RTT[U]: DCID=S2 MP_ACK[Path ID=1, PN=Y] ->\r\n\r\nShouldn't client send the PATH_ABANDON on DCID=S0 or S2 and not over the path it closes. The same for the server. The spec receommends against sending them over the path being abandoned. \r\n\r\n",
       "createdAt": "2024-07-10T14:33:50Z",
-      "updatedAt": "2024-07-10T14:33:50Z",
+      "updatedAt": "2024-07-12T08:02:43Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In [Section 3.3](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-10#name-path-close) which said:\r\n\r\n> PATH_ABANDON frames can be sent on any path, not only the path that is intended to be closed. Thus, a path can be abandoned even if connectivity on that path is already broken. Respectively, if there is still an active path, it is RECOMMENDED to send the PATH_ABANDON frames on another path.\r\n\r\nI think the current draft doesn't limit that PATH_ABANDON can only be sent on another path. It's recommended that if the corresponding path is considered broken(black hole or high loss ratio), endpoints could choose to send the PATH_ABANDON frames on another path.",
+          "createdAt": "2024-07-12T05:04:43Z",
+          "updatedAt": "2024-07-12T05:04:43Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Ok, in that case I think the quoted text from Section 3.3 needs to be changed. I at least interpret that the recommendation is applying in general, not only to cases where one think the path being abandon is broken or poorly functioning. So I would suggest rewording this, and use another word than \"respectively\" also. \r\n\r\n",
+          "createdAt": "2024-07-12T08:02:42Z",
+          "updatedAt": "2024-07-12T08:02:42Z"
+        }
+      ]
     },
     {
       "number": 414,
@@ -11187,9 +11236,24 @@
       "labels": [],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-07-10T14:34:30Z",
+      "updatedAt": "2024-07-11T17:23:43Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Actually I find that the current draft lack of the definition for path abandon close error code. The [error code](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-10#name-error-code-for-multipath-qu) registered in IANA Registry is used for Connection Close Frame. We definitely need to add this part.",
+          "createdAt": "2024-07-11T13:34:56Z",
+          "updatedAt": "2024-07-11T13:34:56Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Do we really want to replicate the structure of connection close, with 2 frame types, one \"abandon by application\" and the other \"abandon by transport\"? Or do we want to follow the example of \"Stream Reset\" and \"Stop Sending\", which just carry an application defined code?\r\n\r\nI am for \"application defined\", because I think there are only two cases in which the transport originates an Abandon packet \"by itself\": abandon on timer, and abandon in response to an abandon by the peer. Using error code=0 for these two cases seems like a fine simplification.",
+          "createdAt": "2024-07-11T17:23:41Z",
+          "updatedAt": "2024-07-11T17:23:41Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -43324,6 +43388,266 @@
               "updatedAt": "2024-07-04T10:22:00Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 415,
+      "id": "PR_kwDOGNtpaM51DR44",
+      "title": "Editorial: fix error internal ref",
+      "url": "https://github.com/quicwg/multipath/pull/415",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix issue #408.",
+      "createdAt": "2024-07-11T06:14:48Z",
+      "updatedAt": "2024-07-11T17:06:36Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-408",
+      "headRefOid": "9153f02411818fe63e6d216e20f5fdcc338c93fb",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6BaIyC",
+          "commit": {
+            "abbreviatedOid": "9153f02"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-11T07:20:19Z",
+          "updatedAt": "2024-07-11T07:20:19Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6BfdaT",
+          "commit": {
+            "abbreviatedOid": "9153f02"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Good catch. we should have found it by running the CI tests!",
+          "createdAt": "2024-07-11T17:06:11Z",
+          "updatedAt": "2024-07-11T17:06:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6BfdlM",
+          "commit": {
+            "abbreviatedOid": "9153f02"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-11T17:06:36Z",
+          "updatedAt": "2024-07-11T17:06:36Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 416,
+      "id": "PR_kwDOGNtpaM51ELo2",
+      "title": "Editorial: add reference for MP_NEW_CONN_ID frame",
+      "url": "https://github.com/quicwg/multipath/pull/416",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Solving #404 ",
+      "createdAt": "2024-07-11T08:39:48Z",
+      "updatedAt": "2024-07-11T17:09:27Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-404",
+      "headRefOid": "daf95dc211c2c389a030cd73697d90c4013f58bd",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6Ba1ey",
+          "commit": {
+            "abbreviatedOid": "5242f8b"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-11T08:46:57Z",
+          "updatedAt": "2024-07-11T08:46:58Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I think \"using\" rather \"specified in\" here would be more correct, or possibly \"see\" if one to be non-specific. ",
+              "createdAt": "2024-07-11T08:46:57Z",
+              "updatedAt": "2024-07-11T08:46:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Ba4cf",
+          "commit": {
+            "abbreviatedOid": "5242f8b"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-11T08:52:26Z",
+          "updatedAt": "2024-07-11T08:52:26Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Indeed. I updated.",
+              "createdAt": "2024-07-11T08:52:26Z",
+              "updatedAt": "2024-07-11T08:52:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Bb_I5",
+          "commit": {
+            "abbreviatedOid": "daf95dc"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-11T11:09:26Z",
+          "updatedAt": "2024-07-11T11:09:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Bfezf",
+          "commit": {
+            "abbreviatedOid": "daf95dc"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I think this is OK. I am waiting for someone to argue that once the multipath extension is negotiated, even NEW_CONNECTION_ID frames do allocate connection ID per path -- but only for path = 0...",
+          "createdAt": "2024-07-11T17:09:27Z",
+          "updatedAt": "2024-07-11T17:09:27Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 417,
+      "id": "PR_kwDOGNtpaM51F7jf",
+      "title": "Editorial: reconstruct sentence of \"SHOULD use MP_NEW/RETIRE_CONN_ID frames\"",
+      "url": "https://github.com/quicwg/multipath/pull/417",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix issue #405 ",
+      "createdAt": "2024-07-11T12:55:10Z",
+      "updatedAt": "2024-07-11T17:11:32Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-405",
+      "headRefOid": "4db487a26f51ede78e8f5350b1a2791aed0a880b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6BdOQ9",
+          "commit": {
+            "abbreviatedOid": "4db487a"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-11T13:34:27Z",
+          "updatedAt": "2024-07-11T13:34:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6BffuF",
+          "commit": {
+            "abbreviatedOid": "4db487a"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-11T17:11:32Z",
+          "updatedAt": "2024-07-11T17:11:32Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 418,
+      "id": "PR_kwDOGNtpaM51K0YP",
+      "title": "Editorial: fix requirement of opening a new path",
+      "url": "https://github.com/quicwg/multipath/pull/418",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix issue #407 ",
+      "createdAt": "2024-07-12T03:16:06Z",
+      "updatedAt": "2024-07-12T09:26:31Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-407",
+      "headRefOid": "298e059dff748926b3adeffd58e238511aae1428",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> I don't think this change is necessary. It is also not purely editorial. We discussed that before. We recommend that NEW_CONNECTION_ID frames be sent in order of increasing path ID, but we can never guarantee that they will be _received_ in order. Suppose the server send (C1, pathID 1) and (C2, pathID 2), and that C1 is delayed, maybe by packet loss. Your new text will say that the client MUST wait until C1 is received to open a new path. That's wrong.\r\n> \r\n> Also, it is better to have all the discussion of order, etc., in exactly one place. The previous text is better.\r\n\r\n@huitema But in [Section 3.5](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-10#section-3.5) we use \"Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when creating paths.\" I think in the case of retransmission, endpoints should choose to wait for C1 to create the new path, using C2 would break the \"SHOULD\". \r\n\r\nBTW, this issue and pull request is to solve the true requirement of new path initialization is the use of new Path ID. I changed the description of \"the smallest unused Path ID\" to \"an unused Path ID\". Please check again.",
+          "createdAt": "2024-07-12T03:41:03Z",
+          "updatedAt": "2024-07-12T03:41:03Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6Bjtl-",
+          "commit": {
+            "abbreviatedOid": "df4bb20"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "I don't think this change is necessary. It is also not purely editorial. We discussed that before. We recommend that NEW_CONNECTION_ID frames be sent in order of increasing path ID, but we can never guarantee that they will be *received* in order. Suppose the server send (C1, pathID 1) and (C2, pathID 2), and that C1 is delayed, maybe by packet loss. Your new text will say that the client MUST wait until C1 is received to open a new path. That's wrong.\r\n\r\nAlso, it is better to have all the discussion of order, etc., in exactly one place. The previous text is better.",
+          "createdAt": "2024-07-12T03:22:16Z",
+          "updatedAt": "2024-07-12T03:22:16Z",
+          "comments": []
         }
       ]
     }
