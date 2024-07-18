@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-16T00:47:05.730007+00:00",
+  "timestamp": "2024-07-18T00:45:49.692182+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -10951,7 +10951,7 @@
       ],
       "body": "With use of multipath you have a multiple path open but not use all of them concurrently (e.g. for stand-by). Therefore a path time out makes less sense. We probably need to consider if the path if actively used or not. Only you send on a path and all packets are finally marked as lost, that's probably a good indication that the path Is broken and you should close it. If a path is not used, you still might want to keep it open to use it later. Not sure if requirement to send pings on all non-used path is that useful.\r\n\r\nAnother related issue is that if you only send non-ack eliciting packets on a path (like ACKs) and the path is not used by the peer for sending, you might not be able to detect a path breakage. May it would make sense to require sending ack electing frames on all used paths from time to time?",
       "createdAt": "2024-07-01T16:59:00Z",
-      "updatedAt": "2024-07-09T10:31:02Z",
+      "updatedAt": "2024-07-17T21:06:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -10981,6 +10981,13 @@
           "body": "So, yes I propose to only change the first point because there is no need to enforce anything here in the multipath case. If you only have a single path and it breaks, you have to close it at some pre-agreed time because you can't communicate something else to the other peer anymore. However, in the multipath case as long as you still have at least one working path, there is actual no really good reason to force the close by an timeout because any peer can at any time gratefully close the path by sending an abandon frame on another path. \r\n\r\nThis can be useful if e.g. an interface goes down but comes back after a short time. Of course you have to remember that a path is currently not working and somehow recognise when it's up again (by probing it?). But not sure we need to specify much here.\r\n\r\nAlternatively, I think it would probably make sense to have different timeout for the connection and for (sub-)paths and we could revisit that question. But not enforcing anything and just leaving it as local decision is the easiest.\r\n\r\nOn your text above: If the peer keeps sending keep-alive traffic and the endpoint receiving and acknowledging it, then there should never be a time-out no?\r\n\r\nMaybe there are cases where an endpoint could decide to close a path that is only used for keep-alive traffic but that's a different case that we maybe should discuss separately (in the implementation considerations section?).",
           "createdAt": "2024-07-04T14:19:02Z",
           "updatedAt": "2024-07-04T14:19:02Z"
+        },
+        {
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The point of the idle timeout was so that an endpoint need not wake its radio to send closing packets -- it can just let the connection fade away. I think that's an important property we shouldn't lose when multipath is negotiated.\r\n\r\nIf an endpoint wanted to maintain the connection despite having nothing to send, keep-alive traffic is recommended.  The idle timeout informs the peer of the minimum frequency at which it needs to send keep-alive traffic if it wishes to do so.\r\n\r\nSo the scenarios I think we care about for multipath:\r\n\r\n- If I want to keep a standby path alive, how frequently should I send keep-alive traffic?\r\n- When I go to send data, how are timed-out paths considered?\r\n- If I decide to let the entire multipath connection idle-close, at what point does that happen?\r\n\r\nThe normative text in #389 is unnecessary; endpoints don't need permission to close a path based on idle timeout, since they can explicitly close a path at any time for any reason. The existing statement that this reason still requires a PATH_ABANDON is sound.\r\n\r\nRather, I think what we need is guidance on the most productive behavior. I think that would be:\r\n\r\n- On any path you want to keep active, SHOULD send keep-alives based on the indicated timeouts.\r\n- If you don't do keep-alives, you SHOULD probe the path before using it unless it's the only remaining path.\r\n- If you are about to send traffic, you SHOULD send on a path that has not timed out.\r\n- Idle timeout is just like any other reason for closing a path; you MUST send a PATH_ABANDON on another path\r\n  - ...though perhaps not immediately, to avoid waking radios. Bundle in the next packet on any path?\r\n- The connection is closed if all paths have been idle for longer than the idle timeout.",
+          "createdAt": "2024-07-17T21:06:27Z",
+          "updatedAt": "2024-07-17T21:06:27Z"
         }
       ]
     },
@@ -40742,7 +40749,7 @@
       ],
       "body": "fixes #362",
       "createdAt": "2024-07-01T09:57:04Z",
-      "updatedAt": "2024-07-09T05:33:55Z",
+      "updatedAt": "2024-07-16T19:42:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "cbae40aab48eacc08c7b1853d131bb7b2913675f",
@@ -41028,6 +41035,38 @@
           "createdAt": "2024-07-09T05:33:55Z",
           "updatedAt": "2024-07-09T05:33:55Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CAfBu",
+          "commit": {
+            "abbreviatedOid": "b7abb53"
+          },
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-16T19:39:28Z",
+          "updatedAt": "2024-07-16T19:42:37Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nby the client as specified in {{path-close}}.\r\n```",
+              "createdAt": "2024-07-16T19:39:28Z",
+              "updatedAt": "2024-07-16T19:42:37Z"
+            },
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\nA server can also decide not to perform path validation if it wants to deny the new path,\r\n```",
+              "createdAt": "2024-07-16T19:39:37Z",
+              "updatedAt": "2024-07-16T19:42:37Z"
+            },
+            {
+              "originalPosition": 5,
+              "body": "Should this also call out the impact of delaying path validation? For example, are anti-amplification limits in place until the path is validated?",
+              "createdAt": "2024-07-16T19:42:33Z",
+              "updatedAt": "2024-07-16T19:42:37Z"
+            }
+          ]
         }
       ]
     },
@@ -43348,7 +43387,7 @@
       ],
       "body": "Solving issue #343 ",
       "createdAt": "2024-07-02T15:03:19Z",
-      "updatedAt": "2024-07-04T10:32:29Z",
+      "updatedAt": "2024-07-17T20:31:12Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8ad7d8c7bd1e0a9d90368d286260d9b075f47d41",
@@ -43386,6 +43425,32 @@
               "body": "```suggestion\r\nto establish new paths to the same peer address as used during handshake,\r\n```",
               "createdAt": "2024-07-04T10:22:00Z",
               "updatedAt": "2024-07-04T10:22:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CLMlE",
+          "commit": {
+            "abbreviatedOid": "fc5f588"
+          },
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2024-07-17T20:27:51Z",
+          "updatedAt": "2024-07-17T20:31:12Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "```suggestion\r\nIf an endpoint receives a disable_active_migration transport parameter\r\n```",
+              "createdAt": "2024-07-17T20:27:51Z",
+              "updatedAt": "2024-07-17T20:31:12Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\nto establish new paths to the peer's handshake address. However,\r\nestablishment of additional paths from any local address to other peer addresses\r\n```\r\n\r\nI think we need to state that this TP also doesn't restrict the endpoint to a single local address.",
+              "createdAt": "2024-07-17T20:30:26Z",
+              "updatedAt": "2024-07-17T20:31:12Z"
             }
           ]
         }
