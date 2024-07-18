@@ -497,7 +497,7 @@ connection ID retirement, the inverse is not true: retiring the associated conne
 does not indicate path abandonment (see further {{consume-retire-cid}}).
 This is true whether the decision to close the path results
 from implicit signals such as idle time or packet losses
-(see {(idle-time-close}}) or for any other reason, such as management
+(see {{idle-time-close}}) or for any other reason, such as management
 of local resources. It is also possible to abandon a path for which no
 packet has been sent (see {{abandon-early}}).
 
