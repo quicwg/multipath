@@ -146,7 +146,7 @@ In addition to these core features, an application using the multipath extension
 need additional algorithms to handle the number of active paths and how they are used to
 send packets. As these differ depending on the application's requirements,
 this proposal only specifies a simple basic packet
-scheduling algorithm (see Section {{packet-scheduling}}),
+scheduling algorithm (see {{packet-scheduling}}),
 in order to provide some basic implementation
 guidance. However, more advanced algorithms as well as potential
 extensions to enhance signaling of the current path status are expected
@@ -459,7 +459,7 @@ If an endpoints starts using a path that was marked as "standby" by its peer
 because it has detected issues on the paths marked as "available", it is RECOMMENDED
 to update its own path state signaling such that the peer avoids using the broken path.
 An enpoints that detects a path breakage can also explicitly close the path
-by sending a PATH_ABANDON frame (see section {{path-close}}) in order to avoid
+by sending a PATH_ABANDON frame (see {{path-close}}) in order to avoid
 that its peer keeps using it and enable faster switch over to a standby path.
 If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, PING frames can potentially be used to quickly detect
@@ -670,10 +670,10 @@ is still valid as well and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.
 
 Endpoints MUST NOT issue new connection IDs with Path IDs greater than
-the Maximum Path Identifier field in MAX_PATH_ID frames (see Section {{max-paths-frame}})
+the Maximum Path Identifier field in MAX_PATH_ID frames (see {{max-paths-frame}})
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater Path ID is a connection error as specified
-in Section {{frames}}.
+in {{frames}}.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active
 path identifiers.
@@ -1252,7 +1252,7 @@ during the handshake on the initial path, Path ID 0 is used.
 Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for this path (see also {{Section 5.1 of QUIC-TRANSPORT}},
 unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
-delivered to a peer using the MP_NEW_CONNECTION_ID frame (see Section {{mp-new-conn-id-frame}}).
+delivered to a peer using the MP_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
 
 MP_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-connection-id-frame-format}}.
 
