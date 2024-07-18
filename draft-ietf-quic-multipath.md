@@ -344,7 +344,7 @@ delegate such discussion to separate documents.
 
 To open a new path, an endpoint MUST use a connection ID associated with
 a new, unused Path ID. To let the peer open a new path, an endpoint needs
-to provide its peer with connection IDs for at least one unused path identifier. 
+to provide its peer with connection IDs for at least one unused path identifier.
 Still, the receiver may observe a connection ID associated with a used Path ID
 on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
 as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
