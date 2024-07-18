@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 January 2025                           Uber Technologies Inc.
+Expires: 19 January 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 January 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             8 July 2024
+                                                            18 July 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2025.
+   This Internet-Draft will expire on 19 January 2025.
 
 Copyright Notice
 
@@ -561,10 +561,9 @@ Table of Contents
    retiring the associated connection IDs does not indicate path
    abandonment (see further Section 3.5).  This is true whether the
    decision to close the path results from implicit signals such as idle
-   time or packet losses (see {(idle-time-close}}) or for any other
-   reason, such as management of local resources.  It is also possible
-   to abandon a path for which no packet has been sent (see
-   Section 3.3.4).
+   time or packet losses (see Section 3.3.3) or for any other reason,
+   such as management of local resources.  It is also possible to
+   abandon a path for which no packet has been sent (see Section 3.3.4).
 
    When an endpoint receives a PATH_ABANDON frame, it MUST send a
    corresponding PATH_ABANDON frame if it has not already done so.  It
