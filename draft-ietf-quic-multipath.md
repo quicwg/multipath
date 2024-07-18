@@ -524,9 +524,9 @@ After a path is abandoned, the Path ID MUST NOT be reused
 for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
 
 PATH_ABANDON frames can be sent on any path,
-not only the path that is intended to be closed. Thus, a path can
-be abandoned even if connectivity on that path is already broken.
-Respectively, if there is still an active path, it is RECOMMENDED to
+not only the path that is intended to be closed. Thus,
+even if connectivity on that path is already broken
+but there is still another active path, it is RECOMMENDED to
 send the PATH_ABANDON frames on another path.
 
 If a PATH_ABANDON frame is received for the only active path of a QUIC
