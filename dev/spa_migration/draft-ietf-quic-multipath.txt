@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 5 January 2025                           Uber Technologies Inc.
+Expires: 21 January 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 5 January 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             4 July 2024
+                                                            20 July 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 January 2025.
+   This Internet-Draft will expire on 21 January 2025.
 
 Copyright Notice
 
@@ -372,7 +372,7 @@ Table of Contents
    After completing the handshake, endpoints have agreed to enable
    multipath support.  They can also start using multiple paths when
    both endpoints have issued available connection IDs for at least one
-   unused Path ID.  If endpoint receives a disable_active_migration
+   unused Path ID.  If an endpoint receives a disable_active_migration
    transport parameter provided by the peer, it is forbidden to use a
    new local address to establish new paths to the same peer address as
    used during handshake, but establishment of additional paths to other
