@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-18T00:45:49.692182+00:00",
+  "timestamp": "2024-07-21T00:51:29.436182+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7971,7 +7971,7 @@
       "id": "I_kwDOGNtpaM51oMgz",
       "title": "PATH_AVAILABLE/STANDBY vs. local API preference",
       "url": "https://github.com/quicwg/multipath/issues/286",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -7984,8 +7984,8 @@
       ],
       "body": "When implementing -06 draft, we need to find out what to do when the signal from the peer(representing by the PATH_AVAILABLE/STANDBY frames) does not match the local API preference. There are several possibilities(mentioned by @Huitema):\r\n\r\n1. Local always win. Simple, but it allows the server to bypass the client preferences.\r\n2. Remote always win.\r\n3. Client always win.\r\n4. Server always win.\r\n5. Most restrictive wins: if local says available and remote say standby, keep it as standby.\r\n\r\nAlthough the strategy is depending on the implementation, making the strategy clear about how to use PATH_AVAILABLE/STANDBY Frames is quite important in the draft. \r\n\r\nSo we track the issue here and hope to hear more voice from different people.",
       "createdAt": "2023-11-02T04:13:40Z",
-      "updatedAt": "2024-07-09T10:20:44Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-18T18:33:39Z",
+      "closedAt": "2024-07-18T18:33:38Z",
       "comments": [
         {
           "author": "mirjak",
@@ -8014,6 +8014,13 @@
           "body": "@Yanmei-Liu what kind of additional guidance do you think we should give?",
           "createdAt": "2024-07-09T10:20:38Z",
           "updatedAt": "2024-07-09T10:20:38Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this issue. Please continue discussion in issue #283",
+          "createdAt": "2024-07-18T18:33:39Z",
+          "updatedAt": "2024-07-18T18:33:39Z"
         }
       ]
     },
@@ -9590,13 +9597,16 @@
       "state": "OPEN",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
-      "assignees": [],
+      "assignees": [
+        "mirjak"
+      ],
       "labels": [
-        "editorial"
+        "editorial",
+        "needs PR"
       ],
       "body": "see https://datatracker.ietf.org/doc/html/rfc9000#name-datagram-packetization-laye and https://datatracker.ietf.org/doc/html/rfc9000#section-18.2\r\n\r\n> The maximum UDP payload size parameter is an integer value that limits the size of UDP payloads that the endpoint is willing to receive. UDP datagrams with payloads larger than this limit are not likely to be processed by the receiver.\r\n> \r\n> The default for this parameter is the maximum permitted UDP payload of 65527. Values below 1200 are invalid.\r\n> \r\n> This limit does act as an additional constraint on datagram size in the same way as the path MTU, but it is a property of the endpoint and not the path; see [Section 14](https://datatracker.ietf.org/doc/html/rfc9000#datagram-size). It is expected that this is the space an endpoint dedicates to holding incoming packets.\r\n\r\nI expect this document to say more about path MTU discovery than is written in https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-7.6. Especially that the `max_udp_payload_size` TP applies to all paths and could have unintended consequences for multipath PMTUD.",
       "createdAt": "2024-04-02T17:53:59Z",
-      "updatedAt": "2024-07-09T15:30:24Z",
+      "updatedAt": "2024-07-18T18:35:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -10924,7 +10934,7 @@
       ],
       "body": "Now that we have an explicit Path ID, it might be easier to expect that a packet with a new path ID has to also contain a path challenge. Therefore if a packet for a non-validated path ID is received that does not contain a path challenge, we could say it should be ignore. Or we could also say that the receiving peer should send a path challenge. But I think we have to same something more.",
       "createdAt": "2024-07-01T13:35:24Z",
-      "updatedAt": "2024-07-10T15:11:58Z",
+      "updatedAt": "2024-07-20T19:49:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -10933,6 +10943,13 @@
           "body": "I would note that usage of PATH_CHALLENGE is optional if the path already have been validated. See Section 3.1: \r\n\r\nWhen the multipath extension is negotiated, a client that wants to use an additional path MUST first initiate the Address Validation procedure with PATH_CHALLENGE and PATH_RESPONSE frames as described in [Section 8.2](https://rfc-editor.org/rfc/rfc9000#section-8.2) of [[QUIC-TRANSPORT](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-10.html#QUIC-TRANSPORT)], unless it has previously validated that address.\r\n\r\nThus, I think ignoring it is wrong. It is okay to send a PC to validate it in the other direction. I guess the question boils down to if the endpoint have any say in the peer considering the path validated towards itself. I would think no. Thus, an endpoint would need to create a path and send ACKs to confirm reception if the packet contain non-probing frames. \r\n",
           "createdAt": "2024-07-10T15:11:56Z",
           "updatedAt": "2024-07-10T15:11:56Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It is true that if an address was previously validated, your don't need to do it again. However, I was talking about the case where the path was not validated yet. In the multipath extension we requirement path validation by the path opening peer, so effectively receiving a packet with an new path ID (which cannot migration through NAT rebinding) on an unvalidated path is a protocol violation and we don't say what to do in this case. This is the current text:\r\n\r\n> When the multipath extension is negotiated, a client that wants to \r\n> use an additional path MUST first initiate the Address Validation procedure\r\n> with PATH_CHALLENGE and PATH_RESPONSE frames as described in [Section 8.2](https://rfc-editor.org/rfc/rfc9000#section-8.2) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)], \r\n> unless it has previously validated that address.",
+          "createdAt": "2024-07-20T19:48:59Z",
+          "updatedAt": "2024-07-20T19:48:59Z"
         }
       ]
     },
@@ -10951,7 +10968,7 @@
       ],
       "body": "With use of multipath you have a multiple path open but not use all of them concurrently (e.g. for stand-by). Therefore a path time out makes less sense. We probably need to consider if the path if actively used or not. Only you send on a path and all packets are finally marked as lost, that's probably a good indication that the path Is broken and you should close it. If a path is not used, you still might want to keep it open to use it later. Not sure if requirement to send pings on all non-used path is that useful.\r\n\r\nAnother related issue is that if you only send non-ack eliciting packets on a path (like ACKs) and the path is not used by the peer for sending, you might not be able to detect a path breakage. May it would make sense to require sending ack electing frames on all used paths from time to time?",
       "createdAt": "2024-07-01T16:59:00Z",
-      "updatedAt": "2024-07-17T21:06:28Z",
+      "updatedAt": "2024-07-20T19:41:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -10988,6 +11005,20 @@
           "body": "The point of the idle timeout was so that an endpoint need not wake its radio to send closing packets -- it can just let the connection fade away. I think that's an important property we shouldn't lose when multipath is negotiated.\r\n\r\nIf an endpoint wanted to maintain the connection despite having nothing to send, keep-alive traffic is recommended.  The idle timeout informs the peer of the minimum frequency at which it needs to send keep-alive traffic if it wishes to do so.\r\n\r\nSo the scenarios I think we care about for multipath:\r\n\r\n- If I want to keep a standby path alive, how frequently should I send keep-alive traffic?\r\n- When I go to send data, how are timed-out paths considered?\r\n- If I decide to let the entire multipath connection idle-close, at what point does that happen?\r\n\r\nThe normative text in #389 is unnecessary; endpoints don't need permission to close a path based on idle timeout, since they can explicitly close a path at any time for any reason. The existing statement that this reason still requires a PATH_ABANDON is sound.\r\n\r\nRather, I think what we need is guidance on the most productive behavior. I think that would be:\r\n\r\n- On any path you want to keep active, SHOULD send keep-alives based on the indicated timeouts.\r\n- If you don't do keep-alives, you SHOULD probe the path before using it unless it's the only remaining path.\r\n- If you are about to send traffic, you SHOULD send on a path that has not timed out.\r\n- Idle timeout is just like any other reason for closing a path; you MUST send a PATH_ABANDON on another path\r\n  - ...though perhaps not immediately, to avoid waking radios. Bundle in the next packet on any path?\r\n- The connection is closed if all paths have been idle for longer than the idle timeout.",
           "createdAt": "2024-07-17T21:06:27Z",
           "updatedAt": "2024-07-17T21:06:27Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@MikeBishop it took me a bit of time to understand what \"normative text in #389\" you were speaking about, but I believe you are speaking of:\r\n~~~\r\nWhen more than one path is available, hosts shall monitor the arrival of\r\npackets and acknowledgements for packets sent over each\r\npath. Hosts MAY consider closing a path if for at least the period of the\r\nidle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}}\r\n(a) no packet was received or (b) no packet sent over this path was acknowledged.\r\nEndpoints that desire to close a path because of the idle timer rule\r\nrule if it would disqualify all available paths.\r\nMUST do so explicitly by sending a PATH_ABANDON frame on another active path,\r\nas defined in {{path-close}}.\r\n~~~\r\nThere are two normative statements there, MAY (close a path), and MUST (send an explicit PATH ABANDON). There is also a pseudo normative one, shall monitor. I think that the paragraph does many things:\r\n\r\n* specify that endpoints shall monitor the paths. I am not sure about that. No interop issue arises if the endpoint does not.\r\n* say that endpoints MAY close a path because of timeouts, \r\n* remove the distinction between probing packets and non probing packets. \r\n* specify that if endpoints want to close a path upon timeout, they should use the same \"idle timeout\" defined for the connection, which implicitly tells endpoints \"how frequently they should send keep-alive traffic\".\r\n* specify that endpoints MUST send PATH ABANDON frames if they close because of timeout, which is kind of redundant but clearly specify that we not use the \"silent close\" process of RFC 9000.\r\n\r\nI agree that the MAY close is a bit redundant, but I think it is important to have it to introduce the discussion of the other points. I would personally suggest striking out the first sentence of the paragraph, \"shall monitor\". And maybe belabor the \"same timeout\" point a bit more, because that does have interop consequences.\r\n\r\n\r\n",
+          "createdAt": "2024-07-18T14:32:07Z",
+          "updatedAt": "2024-07-18T14:32:48Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@MikeBishop sending the PATh_ABANDON does not need to wake up the radio because you send it on another (active) path. However, sending keep-alive requires to wake up the radio everything and therefore is exactly the think I want to avoid. \r\n\r\nWithout multipath if there is only one actively path, you need to define clear point of time, so both endpoint close down if the path doesn't work anymore. that is not need with multipath because you always send an explicit signal (PATH_ABANDON) on another path. With PR #377 and some other changes we are much more clear now in the draft that's always better to send a explicit signal and there is basically no reason to do an implicit close (except for the last path and therefore the while connection).\r\n\r\nOf course if you have an open path and you don't send keep-alive the path can be broken we you try to use it again, however, I think t depends on your local knowledge if you think sending keep-alives will help or is just a waste of resources. So there is no reason to have anything in the protocol itself that requires one or the other behavior.",
+          "createdAt": "2024-07-20T19:41:09Z",
+          "updatedAt": "2024-07-20T19:41:09Z"
         }
       ]
     },
@@ -11032,11 +11063,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "has PR"
+        "has PR",
+        "editorial"
       ],
       "body": "Section 1.2:\r\n\"Further, connection IDs are issued per Path ID.\" \r\n\r\nShould this refer to MP_NEW_CONNECTION_ID to be clear that there are new frames for this.\r\n\r\n",
       "createdAt": "2024-07-10T14:22:27Z",
-      "updatedAt": "2024-07-11T08:43:18Z",
+      "updatedAt": "2024-07-18T10:14:56Z",
       "closedAt": null,
       "comments": [
         {
@@ -11058,11 +11090,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "has PR"
+        "has PR",
+        "editorial"
       ],
       "body": "Section 3:\r\n\"Endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs after a successful handshake indicating multipath support by both endpoints.\"\r\n\r\nThe SHOULD appear to point to the wrong aspect. One is required to use MP_NEW_CONNECTION_ID frame to provide new CIDs, what is SHOULD is to do it after a successful handshake. So sentence need reformulation. ",
       "createdAt": "2024-07-10T14:23:55Z",
-      "updatedAt": "2024-07-11T12:57:37Z",
+      "updatedAt": "2024-07-18T10:25:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -11071,6 +11104,13 @@
           "body": "Fixed in PR #417 ",
           "createdAt": "2024-07-11T12:57:36Z",
           "updatedAt": "2024-07-11T12:57:36Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Actually this sentence is in the wrong place and should only talk about using the MP frames for path ID 0 (because there is no other option for the other paths). I think that is a left over from the pre-path-ID version. I created a new PR #419 ",
+          "createdAt": "2024-07-18T10:24:57Z",
+          "updatedAt": "2024-07-18T10:24:57Z"
         }
       ]
     },
@@ -11079,16 +11119,24 @@
       "id": "I_kwDOGNtpaM6PGzTN",
       "title": "What happens if requirement can't be fulfilled in MUST use new CID",
       "url": "https://github.com/quicwg/multipath/issues/406",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Section 3: \r\n\" In such a case, the receiver reacts as specified in Section 9.3 of [QUIC-TRANSPORT] by initiating path validation but MUST use a new connection ID for the same Path ID.\"\r\n\r\nWhat happens if there are no new CID available for that path ID? Does the MUST statement come with an exception? \r\n",
       "createdAt": "2024-07-10T14:24:35Z",
-      "updatedAt": "2024-07-10T14:24:35Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-18T10:26:51Z",
+      "closedAt": "2024-07-18T10:26:51Z",
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This shouldn't happen because you always have to provide a new one when you retire an old one. However, this is not an issue at all for this draft. It's the same as in RFC9000. Therefore I'm closing this issue now. Please reopen or open a new issue if I missed anything!",
+          "createdAt": "2024-07-18T10:26:51Z",
+          "updatedAt": "2024-07-18T10:26:51Z"
+        }
+      ]
     },
     {
       "number": 407,
@@ -11100,11 +11148,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "has PR"
+        "has PR",
+        "editorial"
       ],
       "body": "Section 3.1:\r\n\"Opening a new path requires the use of a new connection ID (see Section 9.5 of [QUIC-TRANSPORT]).\"\r\n\r\nI think the mentioning of \"new connection ID\" here is pointing to the wrong thing. Isn't what is most important here is to use a new CID for the next path ID. And here to my understanding the next Path ID is the lowest value not yet used for any path challenge and which is not currently in use on any path challenge for another 4-tuple.\r\n",
       "createdAt": "2024-07-10T14:25:20Z",
-      "updatedAt": "2024-07-12T03:52:05Z",
+      "updatedAt": "2024-07-18T10:32:01Z",
       "closedAt": null,
       "comments": []
     },
@@ -11113,7 +11162,7 @@
       "id": "I_kwDOGNtpaM6PG0Fr",
       "title": "Editorial: Wrong parenthis to create ref",
       "url": "https://github.com/quicwg/multipath/issues/408",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -11122,8 +11171,8 @@
       ],
       "body": "Section 3.3:\r\nThis is true whether the decision to close the path results from implicit signals such as idle time or packet losses (see {(idle-time-close}}) \r\n\r\nErronous internal ref\r\n",
       "createdAt": "2024-07-10T14:25:53Z",
-      "updatedAt": "2024-07-11T06:29:44Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-18T10:32:34Z",
+      "closedAt": "2024-07-18T10:32:34Z",
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -11142,13 +11191,26 @@
       "state": "OPEN",
       "author": "gloinul",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "mirjak"
+      ],
+      "labels": [
+        "editorial",
+        "needs PR"
+      ],
       "body": " What is the definition of \"active path\". It appears to have the meaning of an established path. I wonder if active path and \"available path\" is to close, and maybe \"established path\" would make more sense for where \"active path\" is currently used?\r\n",
       "createdAt": "2024-07-10T14:26:49Z",
-      "updatedAt": "2024-07-10T14:26:49Z",
+      "updatedAt": "2024-07-18T10:56:39Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Really good point. It seems that we actually use \"active\" for both: issued path ID (no matter if they have an established path or not) and established paths. We need to check that!",
+          "createdAt": "2024-07-18T10:44:45Z",
+          "updatedAt": "2024-07-18T10:44:45Z"
+        }
+      ]
     },
     {
       "number": 410,
@@ -11159,12 +11221,30 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "Section 3.3:\r\n\"Respectively, if there is still an active path, it is RECOMMENDED to send the PATH_ABANDON frames on another path.\"\r\nThis sentence is a bit strange, why is \"respectively\" used, I don't see how the recommendation are as a result of an enumerated order of any kind. \r\n",
       "createdAt": "2024-07-10T14:27:27Z",
-      "updatedAt": "2024-07-10T14:27:27Z",
+      "updatedAt": "2024-07-18T11:48:44Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think the word \"respectively\" is okay here, however, this and the previous sentence are bit redundant, so I proposed to merge them in PR #420.",
+          "createdAt": "2024-07-18T10:51:32Z",
+          "updatedAt": "2024-07-18T10:51:32Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Use of respectively when not actually enumerating appears to not match the word use. \r\n\r\nIndependently the PR #420 looks good to solve this. ",
+          "createdAt": "2024-07-18T11:48:43Z",
+          "updatedAt": "2024-07-18T11:48:43Z"
+        }
+      ]
     },
     {
       "number": 411,
@@ -11175,35 +11255,61 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial",
+        "no-action-needed"
+      ],
       "body": "Section 3.5:\r\n\"In order to let the peer open new paths, it is RECOMMENDED to proactively issue a Connection ID for at least one unused Path ID, as long as it remains compatible with the peer's Maximum Path ID limit.\"\r\n\r\nIsn't this specific to the server role. The client can open a new path if there is known address, the server has provided CIDs for a new path ID and the client itself has declared CIDs for the next path. The server can only enable this process by providing CIDs for the next path. \r\n",
       "createdAt": "2024-07-10T14:29:04Z",
-      "updatedAt": "2024-07-10T14:29:04Z",
+      "updatedAt": "2024-07-18T11:46:40Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In this extension, only the client can open a new path. However, there sentence above it not wrong. So I actually proposed to not change anything here.",
+          "createdAt": "2024-07-18T10:54:47Z",
+          "updatedAt": "2024-07-18T10:54:47Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Even if it is the client that needs to send a path challenge, the server can block open new paths by not increasing the Maximum Path ID limit. And it is that this sentence refer to my understanding. Thus, due to the client initiating, this text is applying to the server role. The client when it want to open a path it would in case of max_path_Id limited increase it. I think this text would anyway be touched if the proposal in #342 for MAX_PATHS_BLOCKED.",
+          "createdAt": "2024-07-18T11:46:39Z",
+          "updatedAt": "2024-07-18T11:46:39Z"
+        }
+      ]
     },
     {
       "number": 412,
       "id": "I_kwDOGNtpaM6PG3Hk",
       "title": "What is sending MAX_PATH_ID really doing? ",
       "url": "https://github.com/quicwg/multipath/issues/412",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Section 3.5:\r\n\"Receipt of a frame with a greater Path ID is a connection error as specified in Section Section 7. When an endpoint finds it has not enough available unused path identifiers, it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active path identifiers.\"\r\n\r\nEven if it already have given the peer a higher limit? Is just repeating it having the meaning of a request, or is the sentence poorly formulated?\r\n\r\nAlso note that reference to Section 7 includes extra \"section\".\r\n",
       "createdAt": "2024-07-10T14:30:42Z",
-      "updatedAt": "2024-07-10T14:30:42Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-18T11:01:57Z",
+      "closedAt": "2024-07-18T11:01:56Z",
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I fixed the \"section\" issue in the main branch directly (in multiple places). Thanks!\r\n\r\nHowever, closing this issue as duplicate. Please repeat your point in issue #342 and continue discussion there. ",
+          "createdAt": "2024-07-18T11:01:56Z",
+          "updatedAt": "2024-07-18T11:01:56Z"
+        }
+      ]
     },
     {
       "number": 413,
       "id": "I_kwDOGNtpaM6PG5Di",
       "title": "Example for PATH_ABANDON does not follow spec recommendation",
       "url": "https://github.com/quicwg/multipath/issues/413",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -11212,8 +11318,8 @@
       ],
       "body": "Section 5.2:\r\nClient                                                      Server\r\n(client tells server to abandon a path with Path ID 1)\r\n1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->\r\n                           (server tells client to abandon a path)\r\n                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],\r\n                                           MP_ACK[PATH ID=1, PN=X]\r\n1-RTT[U]: DCID=S2 MP_ACK[Path ID=1, PN=Y] ->\r\n\r\nShouldn't client send the PATH_ABANDON on DCID=S0 or S2 and not over the path it closes. The same for the server. The spec receommends against sending them over the path being abandoned. \r\n\r\n",
       "createdAt": "2024-07-10T14:33:50Z",
-      "updatedAt": "2024-07-12T08:02:43Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-18T10:56:23Z",
+      "closedAt": "2024-07-18T10:56:23Z",
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -11228,22 +11334,33 @@
           "body": "Ok, in that case I think the quoted text from Section 3.3 needs to be changed. I at least interpret that the recommendation is applying in general, not only to cases where one think the path being abandon is broken or poorly functioning. So I would suggest rewording this, and use another word than \"respectively\" also. \r\n\r\n",
           "createdAt": "2024-07-12T08:02:42Z",
           "updatedAt": "2024-07-12T08:02:42Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think that should be fine now with PR #420 as discussed in issue #410. Closing this issue, respectively ;-)",
+          "createdAt": "2024-07-18T10:56:23Z",
+          "updatedAt": "2024-07-18T10:56:23Z"
         }
       ]
     },
     {
       "number": 414,
       "id": "I_kwDOGNtpaM6PG5eC",
-      "title": "Frame definition should reference Error Code definition",
+      "title": "Abandon Frame needs Error Code definition",
       "url": "https://github.com/quicwg/multipath/issues/414",
       "state": "OPEN",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design",
+        "needs-discussion",
+        "needs PR"
+      ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-07-11T17:23:43Z",
+      "updatedAt": "2024-07-18T18:42:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -43387,13 +43504,13 @@
       ],
       "body": "Solving issue #343 ",
       "createdAt": "2024-07-02T15:03:19Z",
-      "updatedAt": "2024-07-17T20:31:12Z",
+      "updatedAt": "2024-07-20T20:19:46Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8ad7d8c7bd1e0a9d90368d286260d9b075f47d41",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/spa_migration",
-      "headRefOid": "fc5f5889721bea6542254163234d8bc31a57e522",
+      "headRefOid": "753ebd65c11a11be3c39ae5fd13e09ece144c937",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -43461,24 +43578,26 @@
       "id": "PR_kwDOGNtpaM51DR44",
       "title": "Editorial: fix error internal ref",
       "url": "https://github.com/quicwg/multipath/pull/415",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fix issue #408.",
       "createdAt": "2024-07-11T06:14:48Z",
-      "updatedAt": "2024-07-11T17:06:36Z",
+      "updatedAt": "2024-07-18T10:32:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-408",
       "headRefOid": "9153f02411818fe63e6d216e20f5fdcc338c93fb",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-07-18T10:32:33Z",
+      "mergedAt": "2024-07-18T10:32:33Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "8ffcf0400d9b182044d184d7bdc9c605f3630616"
+      },
       "comments": [],
       "reviews": [
         {
@@ -43531,10 +43650,12 @@
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Solving #404 ",
       "createdAt": "2024-07-11T08:39:48Z",
-      "updatedAt": "2024-07-11T17:09:27Z",
+      "updatedAt": "2024-07-18T10:52:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
@@ -43612,6 +43733,39 @@
           "createdAt": "2024-07-11T17:09:27Z",
           "updatedAt": "2024-07-11T17:09:27Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CQc0e",
+          "commit": {
+            "abbreviatedOid": "daf95dc"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-18T10:14:41Z",
+          "updatedAt": "2024-07-18T10:14:41Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nFurther, connection IDs are issued per Path ID using the new\r\nMP_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).\r\n```",
+              "createdAt": "2024-07-18T10:14:41Z",
+              "updatedAt": "2024-07-18T10:14:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CQ7uJ",
+          "commit": {
+            "abbreviatedOid": "daf95dc"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "See proposal.",
+          "createdAt": "2024-07-18T10:52:48Z",
+          "updatedAt": "2024-07-18T10:52:48Z",
+          "comments": []
         }
       ]
     },
@@ -43624,10 +43778,12 @@
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "outdated"
+      ],
       "body": "Fix issue #405 ",
       "createdAt": "2024-07-11T12:55:10Z",
-      "updatedAt": "2024-07-11T17:11:32Z",
+      "updatedAt": "2024-07-18T10:53:08Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
@@ -43677,10 +43833,12 @@
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Fix issue #407 ",
       "createdAt": "2024-07-12T03:16:06Z",
-      "updatedAt": "2024-07-12T09:26:31Z",
+      "updatedAt": "2024-07-18T10:52:07Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
@@ -43712,6 +43870,150 @@
           "body": "I don't think this change is necessary. It is also not purely editorial. We discussed that before. We recommend that NEW_CONNECTION_ID frames be sent in order of increasing path ID, but we can never guarantee that they will be *received* in order. Suppose the server send (C1, pathID 1) and (C2, pathID 2), and that C1 is delayed, maybe by packet loss. Your new text will say that the client MUST wait until C1 is received to open a new path. That's wrong.\r\n\r\nAlso, it is better to have all the discussion of order, etc., in exactly one place. The previous text is better.",
           "createdAt": "2024-07-12T03:22:16Z",
           "updatedAt": "2024-07-12T03:22:16Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CQpYT",
+          "commit": {
+            "abbreviatedOid": "298e059"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-18T10:31:40Z",
+          "updatedAt": "2024-07-18T10:31:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 419,
+      "id": "PR_kwDOGNtpaM51wnf4",
+      "title": "SHOULD use MP frame for path ID 0",
+      "url": "https://github.com/quicwg/multipath/pull/419",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #405 ",
+      "createdAt": "2024-07-18T10:23:32Z",
+      "updatedAt": "2024-07-18T12:26:19Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-1",
+      "headRefOid": "64914ad5f65eccaeb7e6b1b1805694573654d2eb",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6CQzUE",
+          "commit": {
+            "abbreviatedOid": "5bc2162"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-18T10:42:06Z",
+          "updatedAt": "2024-07-18T10:42:06Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\r\nto provide its peer with connection IDs for at least one unused path identifier.\r\n```",
+              "createdAt": "2024-07-18T10:42:06Z",
+              "updatedAt": "2024-07-18T10:42:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CRcfn",
+          "commit": {
+            "abbreviatedOid": "8f675c4"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-18T11:59:17Z",
+          "updatedAt": "2024-07-18T11:59:17Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Another strange use of respectively. I think for this one case just short the sentence: \r\nEndpoints SHOULD also use\r\nthe MP_NEW_CONNECTION_ID frame to provide new connection IDs and,\r\nthe MP_RETIRE_CONNECTION_ID frame to retire connection IDs, respectively for Path ID 0.",
+              "createdAt": "2024-07-18T11:59:17Z",
+              "updatedAt": "2024-07-18T11:59:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6CRqT7",
+          "commit": {
+            "abbreviatedOid": "8f675c4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-18T12:26:14Z",
+          "updatedAt": "2024-07-18T12:26:15Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\nPath ID 0. Similarly after a successful handshake, endpoints SHOULD also use\r\n```",
+              "createdAt": "2024-07-18T12:26:15Z",
+              "updatedAt": "2024-07-18T12:26:15Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 420,
+      "id": "PR_kwDOGNtpaM51w0BW",
+      "title": "PATH_ABANDON on broken path",
+      "url": "https://github.com/quicwg/multipath/pull/420",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #410",
+      "createdAt": "2024-07-18T10:51:14Z",
+      "updatedAt": "2024-07-18T11:47:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8ffcf0400d9b182044d184d7bdc9c605f3630616",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-2",
+      "headRefOid": "d7a4a6ad5e247fb5c76d80aa232abf4d16730c1d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6CRXOk",
+          "commit": {
+            "abbreviatedOid": "d7a4a6a"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-18T11:47:38Z",
+          "updatedAt": "2024-07-18T11:47:38Z",
           "comments": []
         }
       ]
