@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-21T00:51:29.436182+00:00",
+  "timestamp": "2024-07-23T00:47:15.788957+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -10968,7 +10968,7 @@
       ],
       "body": "With use of multipath you have a multiple path open but not use all of them concurrently (e.g. for stand-by). Therefore a path time out makes less sense. We probably need to consider if the path if actively used or not. Only you send on a path and all packets are finally marked as lost, that's probably a good indication that the path Is broken and you should close it. If a path is not used, you still might want to keep it open to use it later. Not sure if requirement to send pings on all non-used path is that useful.\r\n\r\nAnother related issue is that if you only send non-ack eliciting packets on a path (like ACKs) and the path is not used by the peer for sending, you might not be able to detect a path breakage. May it would make sense to require sending ack electing frames on all used paths from time to time?",
       "createdAt": "2024-07-01T16:59:00Z",
-      "updatedAt": "2024-07-20T19:41:10Z",
+      "updatedAt": "2024-07-22T00:47:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -11019,6 +11019,13 @@
           "body": "@MikeBishop sending the PATh_ABANDON does not need to wake up the radio because you send it on another (active) path. However, sending keep-alive requires to wake up the radio everything and therefore is exactly the think I want to avoid. \r\n\r\nWithout multipath if there is only one actively path, you need to define clear point of time, so both endpoint close down if the path doesn't work anymore. that is not need with multipath because you always send an explicit signal (PATH_ABANDON) on another path. With PR #377 and some other changes we are much more clear now in the draft that's always better to send a explicit signal and there is basically no reason to do an implicit close (except for the last path and therefore the while connection).\r\n\r\nOf course if you have an open path and you don't send keep-alive the path can be broken we you try to use it again, however, I think t depends on your local knowledge if you think sending keep-alives will help or is just a waste of resources. So there is no reason to have anything in the protocol itself that requires one or the other behavior.",
           "createdAt": "2024-07-20T19:41:09Z",
           "updatedAt": "2024-07-20T19:41:09Z"
+        },
+        {
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think we're bringing a few different assumptions to this conversation, which is helpful. (And of course, if my assumptions are wrong, I'll happily learn better.)\r\n\r\nI'm assuming that sending the PATH_ABANDON requires waking up _some_ radio. That's why I think we should explicitly allow sending it to be deferred until you're sending a packet anyway; if the other path is actively being used, that's still immediate. If it's not, you avoid waking up any idle radios.\r\n\r\nI also think we're in agreement about keep-alives -- base QUIC recommends sending keep-alives if you actively want to maintain the connection, but leaves it to the application to decide when that is. HTTP/3 gives some recommendations about when that might be, but still leaves it as an implementation decision. Nothing needs to require keeping any specific path alive, but guidance about when it might be useful (or not) seems appropriate.\r\n\r\n> An endpoint might need to send ack-eliciting packets to avoid an idle timeout if it is expecting response data but does not have or is unable to send application data.\r\n\r\n> HTTP clients are expected to request that the transport keep connections open while there are responses outstanding for requests or server pushes",
+          "createdAt": "2024-07-22T00:47:15Z",
+          "updatedAt": "2024-07-22T00:47:15Z"
         }
       ]
     },
@@ -11378,6 +11385,24 @@
           "updatedAt": "2024-07-11T17:23:41Z"
         }
       ]
+    },
+    {
+      "number": 421,
+      "id": "I_kwDOGNtpaM6QYtLc",
+      "title": "Clarify the initial Connection ID sequence number on non-initial paths",
+      "url": "https://github.com/quicwg/multipath/issues/421",
+      "state": "OPEN",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "From some interop from IETF 120 with @Yanmei-Liu, it seems we need to clarify that the initial CID sequence number that should be used is 0, as Section 5.1.1 of RFC9000 bases its discussion on handshake CIDs to define the sequence number 0. There are no such \"handshake CIDs\" with additional paths.",
+      "createdAt": "2024-07-22T09:28:43Z",
+      "updatedAt": "2024-07-22T09:30:15Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
