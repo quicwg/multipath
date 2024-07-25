@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-23T00:47:15.788957+00:00",
+  "timestamp": "2024-07-25T00:46:49.647589+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11102,7 +11102,7 @@
       ],
       "body": "Section 3:\r\n\"Endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs after a successful handshake indicating multipath support by both endpoints.\"\r\n\r\nThe SHOULD appear to point to the wrong aspect. One is required to use MP_NEW_CONNECTION_ID frame to provide new CIDs, what is SHOULD is to do it after a successful handshake. So sentence need reformulation. ",
       "createdAt": "2024-07-10T14:23:55Z",
-      "updatedAt": "2024-07-18T10:25:03Z",
+      "updatedAt": "2024-07-24T15:34:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -11118,6 +11118,20 @@
           "body": "Actually this sentence is in the wrong place and should only talk about using the MP frames for path ID 0 (because there is no other option for the other paths). I think that is a left over from the pre-path-ID version. I created a new PR #419 ",
           "createdAt": "2024-07-18T10:24:57Z",
           "updatedAt": "2024-07-18T10:24:57Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Actually I don't agree that we SHOULD use MP frames for Path ID 0 as the initial path. The implementation could decide on their own that they could use the original NEW_CID/RETIRE_CID for the initial path. It would be better compatible with RFC9000.\r\n\r\n> Actually this sentence is in the wrong place and should only talk about using the MP frames for path ID 0 (because there is no other option for the other paths). I think that is a left over from the pre-path-ID version. I created a new PR #419\r\n\r\n",
+          "createdAt": "2024-07-24T12:05:03Z",
+          "updatedAt": "2024-07-24T12:05:03Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Yanmei-Liu this is an editorial issue. If you want to change the SHOULD, please open a new issue. Please note that this is also related to the discussion in issue #220 for MP_ACK frames. However, SHOULD allows the use of non MP frames for path 0, so I think there is no problem.",
+          "createdAt": "2024-07-24T15:34:24Z",
+          "updatedAt": "2024-07-24T15:34:24Z"
         }
       ]
     },
@@ -43804,11 +43818,11 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "outdated"
+        "editorial"
       ],
       "body": "Fix issue #405 ",
       "createdAt": "2024-07-11T12:55:10Z",
-      "updatedAt": "2024-07-18T10:53:08Z",
+      "updatedAt": "2024-07-24T12:06:46Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
@@ -43926,7 +43940,7 @@
       ],
       "body": "fixes #405 ",
       "createdAt": "2024-07-18T10:23:32Z",
-      "updatedAt": "2024-07-18T12:26:19Z",
+      "updatedAt": "2024-07-24T15:36:40Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
@@ -43937,7 +43951,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@Yanmei-Liu this PR does not change the SHOULD. The SHOULD already in the current version of the draft. It only moves the text and rephrases it slightly. If we want to change the SHOULD that would be not editorial and need to go into a separate PR. However, we need more discussion as I don't think we have agreement. See also issue #220 which is related for MP_ACK.",
+          "createdAt": "2024-07-24T15:36:39Z",
+          "updatedAt": "2024-07-24T15:36:39Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6CQzUE",
@@ -43998,6 +44020,19 @@
               "updatedAt": "2024-07-18T12:26:15Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6C7LbN",
+          "commit": {
+            "abbreviatedOid": "64914ad"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Actually I don't agree that we SHOULD use MP frames for Path ID 0 as the initial path. The implementation could decide on their own that they could use the original NEW_CID/RETIRE_CID for the initial path. It would be better compatible with RFC9000.",
+          "createdAt": "2024-07-24T12:06:16Z",
+          "updatedAt": "2024-07-24T12:06:16Z",
+          "comments": []
         }
       ]
     },
@@ -44015,7 +44050,7 @@
       ],
       "body": "fixes #410",
       "createdAt": "2024-07-18T10:51:14Z",
-      "updatedAt": "2024-07-18T11:47:38Z",
+      "updatedAt": "2024-07-24T12:08:12Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8ffcf0400d9b182044d184d7bdc9c605f3630616",
@@ -44039,6 +44074,19 @@
           "body": "",
           "createdAt": "2024-07-18T11:47:38Z",
           "updatedAt": "2024-07-18T11:47:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6C7MYj",
+          "commit": {
+            "abbreviatedOid": "d7a4a6a"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good!",
+          "createdAt": "2024-07-24T12:08:12Z",
+          "updatedAt": "2024-07-24T12:08:12Z",
           "comments": []
         }
       ]
