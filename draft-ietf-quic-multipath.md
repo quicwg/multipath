@@ -1153,7 +1153,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
   PATH_AVAILABLE Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c08),
+    Type (i) = TBD-04 (experiments use 0x15228c08),
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
@@ -1359,7 +1359,7 @@ TBD-03 (experiments use 0x15228c07)                  | PATH_STANDBY        | {{p
 TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-TBD-06 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
+TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
