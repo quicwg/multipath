@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-25T00:53:11.382840+00:00",
+  "timestamp": "2024-08-27T00:49:54.287628+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -44120,6 +44120,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 423,
+      "id": "PR_kwDOGNtpaM55aCdu",
+      "title": "Fix typo",
+      "url": "https://github.com/quicwg/multipath/pull/423",
+      "state": "OPEN",
+      "author": "nandsky",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-08-26T08:18:28Z",
+      "updatedAt": "2024-08-26T08:18:29Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "7041135f5546cba33c971ea1ce0a747d953d3405",
+      "headRepository": "nandsky/multipath",
+      "headRefName": "lishu_typo",
+      "headRefOid": "aefcef44a977d41084d06fedeef262ed0a4f699d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
