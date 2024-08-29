@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-27T00:49:54.287628+00:00",
+  "timestamp": "2024-08-29T00:50:35.344013+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11447,6 +11447,61 @@
       "updatedAt": "2024-07-25T18:08:16Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 424,
+      "id": "I_kwDOGNtpaM6UaGqp",
+      "title": "Is the path ID a variable-length integer or not?",
+      "url": "https://github.com/quicwg/multipath/issues/424",
+      "state": "CLOSED",
+      "author": "nandsky",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "As describe in [initial_max_path_id](https://github.com/quicwg/multipath/blob/7041135f5546cba33c971ea1ce0a747d953d3405/draft-ietf-quic-multipath.md?plain=1#L258)\r\n\r\n> a variable-length integer specifying the maximum path identifier an endpoint is willing to maintain at connection initiation.\r\n\r\nIf the path ID is a variable-length integer, then the range of the path ID should be from 0 to 2^30-1, because the first two bits represent the integer length.  However, the current draft specifies a range of 0 to 2^32-1.\r\n\r\n> This extension specifies a new path identifier (Path ID), which is an\r\ninteger between 0 and 2^32-1 (inclusive). ",
+      "createdAt": "2024-08-27T16:34:54Z",
+      "updatedAt": "2024-08-27T17:50:21Z",
+      "closedAt": "2024-08-27T17:50:20Z",
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, the Path ID is limited to a maximum value of 2^32-1 because of its usage in the none calculation, see https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-nonce-calculation",
+          "createdAt": "2024-08-27T17:50:20Z",
+          "updatedAt": "2024-08-27T17:50:20Z"
+        }
+      ]
+    },
+    {
+      "number": 425,
+      "id": "I_kwDOGNtpaM6Ud4Ez",
+      "title": "Can we limit the maximum value of the path ID to 2^30-1?",
+      "url": "https://github.com/quicwg/multipath/issues/425",
+      "state": "OPEN",
+      "author": "nandsky",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "@mirjak As discussed in [#424 ]  the path ID is a variable-length integer with a maximum value of 2^32-1. This means that to store the maximum value, 8 bytes of space are required.  The encoding of 2^32-1 is 0xc0000000ffffffff.\r\n\r\nIf we limit the maximum value of the path ID to 2^30-1, then we only need 4 bytes to store it. 2^30-1 should be sufficient for the path ID, and 4 bytes also meet the requirements for nonce calculation.\r\n\r\n\r\nhttps://www.rfc-editor.org/rfc/rfc9000.html#name-variable-length-integer-enc\r\n\r\n",
+      "createdAt": "2024-08-28T03:19:11Z",
+      "updatedAt": "2024-08-28T04:03:55Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "The reality is, this is going to be dealt with like every other variable length integer and handled as a u64. Then, whatever additional limits are placed on the value will come into play. \r\n\r\nI don't see much benefit in trying to save 4 bytes of program space per path ID by micro optimising the wire formats.",
+          "createdAt": "2024-08-28T03:33:24Z",
+          "updatedAt": "2024-08-28T03:33:24Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "+1 to what @LPardue wrote. We only have a hard requirement to not use path ID larger than 2^32 -1. Yes, the encoding of the values >= 2^30 will not be very efficient. But if applications do need the extra 2 bits, encoding efficiency is not a sufficient reason to prevent them.",
+          "createdAt": "2024-08-28T04:03:55Z",
+          "updatedAt": "2024-08-28T04:03:55Z"
+        }
+      ]
     }
   ],
   "pulls": [
