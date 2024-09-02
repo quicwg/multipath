@@ -280,7 +280,7 @@ MUST use non-zero length Source and Destination Connection IDs.
 If an initial_max_path_id transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
-MP_PROTOCOL_VIOLATION and close the connection.
+PROTOCOL_VIOLATION and close the connection.
 
 The initial_max_path_id parameter MUST NOT be remembered
 ({{Section 7.4.1 of QUIC-TRANSPORT}}).
@@ -1013,7 +1013,7 @@ Receipt of multipath-specific frames
 that use a Path ID that is greater than the announced Maximum Paths value
 in the MAX_PATH_ID frame or in the initial_max_path_id transport parameter,
 if no MAX_PATH_ID frame was received yet,
-MUST be treated as a connection error of type MP_PROTOCOL_VIOLATION.
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
 If an endpoint receives a multipath-specific frame
 with a path identifier that it cannot process
@@ -1313,25 +1313,11 @@ Maximum Path Identifier:
   advertised in the initial_max_path_id transport parameter.
 
 Receipt of an invalid Maximum Path Identifier value MUST be treated as a
-connection error of type MP_PROTOCOL_VIOLATION.
+connection error of type PROTOCOL_VIOLATION.
 
 Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
-
-
-# Error Codes {#error-codes}
-
-Multipath QUIC transport error codes are 62-bit unsigned integers
-following {{QUIC-TRANSPORT}}.
-
-This section lists the defined multipath QUIC transport error codes
-that can be used in a CONNECTION_CLOSE frame with a type of 0x1c.
-These errors apply to the entire connection.
-
-MP_PROTOCOL_VIOLATION (experiments use 0x1001d76d3ded42f3): An endpoint detected
-an error with protocol compliance that was not covered by
-more specific error codes.
 
 
 # IANA Considerations
@@ -1364,15 +1350,6 @@ TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | 
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
-
-The following transport error code defined in {{tab-error-code}} should
-be added to the "QUIC Transport Error Codes" registry under
-the "QUIC Protocol" heading.
-
-Value                       | Code                  | Description                   | Specification
-----------------------------|-----------------------|-------------------------------|-------------------
-TBD (experiments use 0x1001d76d3ded42f3)| MP_PROTOCOL_VIOLATION | Multipath protocol violation  | {{error-codes}}
-{: #tab-error-code title="Error Code for Multipath QUIC"}
 
 
 # Security Considerations
