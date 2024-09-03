@@ -620,23 +620,6 @@ to abandon a path for any reason, for example, removing a hole from
 the sequence of Path IDs in use. This is not an error. The endpoint that
 receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
-### Closing Duplicate Paths
-
-As noted in {{basic-design-points}}, it is possible to create paths that
-refer to the same 4-tuple. There will be cases where this is intentional,
-for example if the paths use different Differentiated Service markings.
-There may also be cases where this is not intentional, maybe as a result
-of path migration.
-
-In the non-intentional case, the endpoints
-may want to abandon one of the paths and keep the other, but
-uncoordinated Abandon from both ends of the connection may result in deleting
-two paths instead of just one. To avoid this pitfall, only the client
-SHOULD initiate the closing of duplicate paths. Applications MAY
-override this default behavior if they can coordinate path closures at part of the
-application protocol.
-
-
 ## Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
@@ -1018,6 +1001,36 @@ a peer address if that address has been seen recently. However, when the
 multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
 multiple open paths instead.
+
+### Using multiple paths on the same 4-tuple
+
+As noted in {{basic-design-points}}, it is possible to create paths that
+refer to the same 4-tuple. For example, the endpoints may want
+to create paths that use different Differentiated Service markings.
+This could be done in conjunction with scheduling algorithms
+that match streams to paths, so that for example data frame for
+low priority streams are sent over low priority paths.
+Since these paths use different path IDs, they can be managed
+independently to suit the needs of the application.
+
+There may be cases in which paths are created with different 4-tuples,
+but end up using the same four tuples as a consequence of path
+migrations. For example:
+
+* Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
+* Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
+* both paths are used for a while.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
+* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
+
+Such unintentional use of the same 4-tuple on different paths ought to
+be rare. When they happen, the two paths would be redundant, and the
+endpoint will want to close one of them. 
+Uncoordinated Abandon from both ends of the connection may result in deleting
+two paths instead of just one. To avoid this pitfall, endpoints could
+adopt a simple coordination rule, such as only letting the client
+initiate closure of duplicate paths, or perhaps relying on
+the application protocol to decide which paths should be closed.
 
 # New Frames {#frames}
 
