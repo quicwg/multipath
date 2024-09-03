@@ -1288,7 +1288,7 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 ## PATHS_BLOCKED frames {#paths-blocked-frame}
 
-A sender SHOULD send a MAX_PATH_ID_BLOCKED frame (type=0x15228c0d) when
+A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer;
 
