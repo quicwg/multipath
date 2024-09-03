@@ -357,7 +357,7 @@ This proposal adds five multipath control frames for path management:
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame}} and {{path-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-active paths, while MAX_PATH_ID_BLOCKED frame (see {{max-paths-blocked-frame}})
+active paths, while PATHS_BLOCKED frame (see {{max-paths-blocked-frame}})
 indicates that the limit of active paths set by the peer has been reached.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
