@@ -697,9 +697,9 @@ Table of Contents
    In the non-intentional case, the endpoints may want to abandon one of
    the paths and keep the other, but uncoordinated Abandon from both
    ends of the connection may result in deleting two paths instead of
-   just one.  This sort of error will be avoided if only the client
-   initiates the closing of duplicate paths.  Applications may override
-   that behavior if they can coordinate path closures at part of the
+   just one.  To avoid this pitfall, only the client SHOULD initiate the
+   closing of duplicate paths.  Applications MAY override this default
+   behavior if they can coordinate path closures at part of the
    application protocol.
 
 3.4.  Refusing a New Path
