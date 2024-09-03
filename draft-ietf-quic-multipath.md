@@ -1203,7 +1203,7 @@ MP_NEW_CONNECTION_ID frames are formatted as shown in {{fig-mp-connection-id-fra
 
 ~~~
 MP_NEW_CONNECTION_ID Frame {
-  Type (i) = 0x15228c09,
+  Type (i) = TBD-05 (experiments use 0x15228c09),
   Path Identifier (i),
   Sequence Number (i),
   Retire Prior To (i),
@@ -1258,7 +1258,7 @@ MP_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-connect
 
 ~~~
 MP_RETIRE_CONNECTION_ID Frame {
-  Type (i) = 0x15228c0a,
+  Type (i) = TBD-06 (experiments use 0x15228c0a),
   Path Identifier (i),
   Sequence Number (i),
 }
@@ -1294,7 +1294,7 @@ MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
 ~~~
 MAX_PATH_ID Frame {
-  Type (i) = 0x15228c0c,
+  Type (i) = TBD-07 (experiments use 0x15228c0c),
   Maximum Path Identifier (i),
 }
 ~~~
