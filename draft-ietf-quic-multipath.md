@@ -1295,7 +1295,7 @@ limit set by its peer;
 PATHS_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.
 
 ~~~
-MAX_PATH_ID_BLOCKED Frame {
+PATHS_BLOCKED Frame {
   Type (i) = 0x15228c0d,
   Maximum Path Identifier (i),
 }
