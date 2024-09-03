@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 March 2025                             Uber Technologies Inc.
+Expires: 7 March 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 March 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        2 September 2024
+                                                        3 September 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 March 2025.
+   This Internet-Draft will expire on 7 March 2025.
 
 Copyright Notice
 
@@ -1221,7 +1221,7 @@ Table of Contents
    are formatted as shown in Figure 6.
 
      PATH_AVAILABLE Frame {
-       Type (i) = TBD-03 (experiments use 0x15228c08),
+       Type (i) = TBD-04 (experiments use 0x15228c08),
        Path Identifier (i),
        Path Status Sequence Number (i),
      }
@@ -1268,7 +1268,7 @@ Table of Contents
    MP_NEW_CONNECTION_ID frames are formatted as shown in Figure 7.
 
    MP_NEW_CONNECTION_ID Frame {
-     Type (i) = 0x15228c09,
+     Type (i) = TBD-05 (experiments use 0x15228c09),
      Path Identifier (i),
      Sequence Number (i),
      Retire Prior To (i),
@@ -1323,7 +1323,7 @@ Table of Contents
    MP_RETIRE_CONNECTION_ID frames are formatted as shown in Figure 8.
 
    MP_RETIRE_CONNECTION_ID Frame {
-     Type (i) = 0x15228c0a,
+     Type (i) = TBD-06 (experiments use 0x15228c0a),
      Path Identifier (i),
      Sequence Number (i),
    }
@@ -1357,7 +1357,7 @@ Table of Contents
    MAX_PATH_ID frames are formatted as shown in Figure 9.
 
    MAX_PATH_ID Frame {
-     Type (i) = 0x15228c0c,
+     Type (i) = TBD-07 (experiments use 0x15228c0c),
      Maximum Path Identifier (i),
    }
 
@@ -1437,7 +1437,7 @@ Table of Contents
    | TBD-06 (experiments    | MP_RETIRE_CONNECTION_ID | Section 7.6   |
    | use 0x15228c0a)        |                         |               |
    +------------------------+-------------------------+---------------+
-   | TBD-06 (experiments    | MAX_PATH_ID             | Section 7.7   |
+   | TBD-07 (experiments    | MAX_PATH_ID             | Section 7.7   |
    | use 0x15228c0c)        |                         |               |
    +------------------------+-------------------------+---------------+
 
