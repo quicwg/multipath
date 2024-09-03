@@ -620,6 +620,23 @@ to abandon a path for any reason, for example, removing a hole from
 the sequence of Path IDs in use. This is not an error. The endpoint that
 receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
+### Closing Duplicate Paths
+
+As noted in {{basic-design-points}}, it is possible to create paths that
+refer to the same 4-tuple. There will be cases where this is intentional,
+for example if the paths use different Differentiated Service markings.
+There may also be cases where this is not intentional, maybe as a result
+of path migration. 
+
+In the non-intentional case, the endpoints
+may want to abandon one of the paths and keep the other, but
+uncoordinated Abandon from both ends of the connection may result in deleting
+two paths instead of just one. This sort of error will be avoided if only
+the client initiates the closing of duplicate paths. Applications may override
+that behavior if they can coordinate path closures at part of the
+application protocol.
+
+
 ## Refusing a New Path
 
 An endpoint may deny the establishment of a new path initiated by its
