@@ -1302,7 +1302,7 @@ MAX_PATH_ID_BLOCKED Frame {
 ~~~
 {: #fig-max-paths-blocked-frame-format title="MAX_PATH_ID_BLOCKED Frame Format"}
 
-MAX_PATH_ID frames contain the following field:
+PATHS_BLOCKED frames contain the following field:
 
 Maximum Path Identifier:
 : A variable-length integer indicating the maximum number of path identifiers
