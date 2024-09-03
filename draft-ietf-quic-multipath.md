@@ -626,7 +626,7 @@ As noted in {{basic-design-points}}, it is possible to create paths that
 refer to the same 4-tuple. There will be cases where this is intentional,
 for example if the paths use different Differentiated Service markings.
 There may also be cases where this is not intentional, maybe as a result
-of path migration. 
+of path migration.
 
 In the non-intentional case, the endpoints
 may want to abandon one of the paths and keep the other, but
