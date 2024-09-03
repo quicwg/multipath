@@ -667,7 +667,7 @@ in Section {{frames}}.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
-(see Section {{max-paths-blocked-frame}}) to inform the peer that a new path
+(see Section {{paths-blocked-frame}}) to inform the peer that a new path
 identifier was needed but the current limit set by the peer prevented the
 creation of the new path.
 
