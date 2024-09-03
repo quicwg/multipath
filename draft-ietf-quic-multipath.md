@@ -1292,7 +1292,7 @@ A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer;
 
-MAX_PATH_ID_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.
+PATHS_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.
 
 ~~~
 MAX_PATH_ID_BLOCKED Frame {
