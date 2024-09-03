@@ -1354,7 +1354,7 @@ TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{p
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
-TBD-08 (experiments use 0x15228c0d)                  | MAX_PATH_ID_BLOCKED    | {{max-paths-blocked-frame}}
+TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{max-paths-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
