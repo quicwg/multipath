@@ -255,10 +255,10 @@ Table of Contents
    The same Path ID is used in both directions to address a path in the
    new multipath control frames, such as PATH_ABANDON Section 7.2,
    PATH_STANDBY Section 7.3}, PATH_AVAILABLE Section 7.4 as well as
-   MP_ACK Section 7.1.  Further, connection IDs are issued per Path ID.
-   That means each connection ID is associated with exactly one path
-   identifier but multiple connection IDs are usually issued for each
-   path identifier.
+   MP_ACK Section 7.1.  Further, connection IDs are issued per Path ID
+   using the MP_NEW_CONNECTION_ID frame (see Section 7.5).  That means
+   each connection ID is associated with exactly one path identifier but
+   multiple connection IDs are usually issued for each path identifier.
 
    The Path ID of the initial path is 0.  Connection IDs which are
    issued by a NEW_CONNECTION_ID frame Section 19.15. of
