@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-01T00:59:14.622244+00:00",
+  "timestamp": "2024-09-03T00:50:25.562622+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -6324,13 +6324,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "design",
-        "needs-discussion",
-        "no-action-needed"
+        "editorial",
+        "needs PR"
       ],
       "body": "At the moment, [section 5.1](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.1-3) states:\r\n> As soon as the negotiation of multipath support is completed, endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application data packets, including 0-RTT packets, using the initial Connection ID with sequence number 0 after the handshake concluded.\r\n\r\nAs @qdeconinck states in https://github.com/quicwg/multipath/issues/181#issuecomment-1447937924, my understanding is that ACK frames are equivalent to ACK_MP frames carrying DCID value of zero. Omission of value zero saves one byte per ACK frame.\r\n\r\nIs the optimization worth the cost of supporting such omission?\r\n\r\nIf we think it might be valuable, I think we'd better change the text to state as such rather than discouraging the use of ACK frames (by saying \"SHOULD use ACK_MP\").\r\n\r\nIf we agree that it is not valuable, I would propose to change the specification to state that only ACK_MP frames can be used in the application data space when use of the multipath extension is negotiated.",
       "createdAt": "2023-06-16T01:22:09Z",
-      "updatedAt": "2024-07-09T09:30:53Z",
+      "updatedAt": "2024-09-02T15:05:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -6388,6 +6387,13 @@
           "body": "I believe the discussion is basically about changing the SHOULD to a MUST or a MAY. If we say MUST, we can't really enforce it because the normal ACK frame is still used during the handshake and there is no clear moment when it has to change. We could say MAY to encourage it more to actually use the normal ACK frame for path 0 packets. The use case for this is when multipath is negotiated but you are only using one path (with path ID 0). However, a SHOULD covers this use case as well and it sounds like people do actually prefer if later during the connection only one kind of ACK is used.\r\n\r\nSo in conclusion it sounds like the SHOULD is still fine. We could add one more sentence as say that the only case where not using MP_ACK makes sense is when only path 0 is used. Do we want to do that?\r\n\r\nOtherwise I propose we confirm this conclusion during the IETF-120 meeting and close this issue!",
           "createdAt": "2024-07-09T09:19:37Z",
           "updatedAt": "2024-07-09T09:19:37Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "the not very conclusive decision at IETF-120n to keep the SHOULD. So we could close this issue without further action. However, we may want write some more guidance on why/when the SHOULD is useful.",
+          "createdAt": "2024-09-02T14:46:47Z",
+          "updatedAt": "2024-09-02T14:46:47Z"
         }
       ]
     },
@@ -7030,12 +7036,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "design",
-        "needs-discussion"
+        "has PR",
+        "design"
       ],
       "body": "Currently, MP_PROTOCOL_VIOLATION is used is for a too high CID seq num in the frame as well as the handshake error case if multipath is negotiated but no CID is present.\r\n\r\nHowever, we could also decided to define more specific error codes for one or both cases. ",
       "createdAt": "2023-07-05T16:19:15Z",
-      "updatedAt": "2024-07-09T09:30:39Z",
+      "updatedAt": "2024-09-02T15:05:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -7121,6 +7127,13 @@
           "body": "Having reviewed the document now again, I also think we should drop MP_PROTOCOL_VIOLATION and use PROTOCOL_VIOLATION instead.\r\n\r\nIf we really want a more specific error code for the zero-cid case, I think we should define an error code for that specifically. Additionally, we could also define a path_id_limit error (now with the explicit path id) if people think that would be useful...?",
           "createdAt": "2024-05-27T21:33:20Z",
           "updatedAt": "2024-05-27T21:33:20Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed at IETF-120, PR #428 removes the MP_PROTOCOL_VIOLATION error code.",
+          "createdAt": "2024-09-02T15:05:01Z",
+          "updatedAt": "2024-09-02T15:05:01Z"
         }
       ]
     },
@@ -7823,12 +7836,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "editorial",
-        "needs-discussion"
+        "has PR",
+        "editorial"
       ],
       "body": "The -06 draft allows a peer to send a `PATH_STANDBY` frame for a particular connection ID (CID) before it is used:\r\n\r\n```\r\nA PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame\r\n[...] in order to indicate the preferred path usage\r\nbefore [...] path initiation.\r\n```\r\n\r\nFrom the definition of `PATH_STANDBY`:\r\n\r\n```\r\nDestination Connection ID Sequence Number:  The sequence number of\r\n   the Destination Connection ID used by the receiver of this frame\r\n   to send packets over the path the status update corresponds to.\r\n```\r\n\r\nWhen the path is set up, each endpoint freely choses a destination CID between the CIDs that the peer has issued. This means that resulting preferred path usage depends on which CID the peer happens to chose.\r\n\r\nI think that the current path identification model is very confusing, and this observation is another indication in that direction.",
       "createdAt": "2023-10-27T11:58:33Z",
-      "updatedAt": "2024-07-09T10:19:11Z",
+      "updatedAt": "2024-09-02T15:05:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -7907,6 +7920,13 @@
           "body": "It looks like the only proposed change here is now to rename \"standby\" to \"backup\". I'm labelling the issue as \"editorial\" for now. Maybe we can quickly confirm at the IETF-120 meeting if we want to rename the frame or not!",
           "createdAt": "2024-07-09T10:19:03Z",
           "updatedAt": "2024-07-09T10:19:03Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed in the IETF-120 session, we will rename the frame to PATH_BACKUP and then close this issue without further action.\r\n\r\nI created PR #427",
+          "createdAt": "2024-09-02T14:31:46Z",
+          "updatedAt": "2024-09-02T14:31:46Z"
         }
       ]
     },
@@ -8497,13 +8517,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "design",
-        "needs-discussion",
+        "editorial",
         "needs PR"
       ],
       "body": "Section 4.1:\r\n\r\n\"To alleviate such a token ambiguity issue, a server may issue a token that is capable of validating any of the previously validated addresses.\" \r\n\r\nisn't this against this normative rule in Section 8.1.1 of RFC 9000: \r\n\r\n\"A token sent in a NEW_TOKEN frame or a Retry packet MUST be constructed in a way that allows the server to identify how it was provided to a client. These tokens are carried in the same field but require different handling from servers.\"?\r\n\r\n",
       "createdAt": "2024-03-16T06:31:13Z",
-      "updatedAt": "2024-07-10T14:46:06Z",
+      "updatedAt": "2024-09-02T15:34:45Z",
       "closedAt": null,
       "comments": [
         {
@@ -8540,6 +8559,13 @@
           "body": "@huitema maybe the action here is to clarify that this paragraph talks about the long term address validation token that can be used for future connections. For such tokens, maybe the address valdidation token the server provides the client should contain all currently validated client addresses. So that the client actually can get a benefit from the address validation when establishing a new connection. ",
           "createdAt": "2024-07-10T14:46:04Z",
           "updatedAt": "2024-07-10T14:46:04Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed at IETF-120, we don't want to require normatively more but still provide some guidance that recommends that a token should be able to validate the addresses used on any of the paths.",
+          "createdAt": "2024-09-02T15:34:40Z",
+          "updatedAt": "2024-09-02T15:34:40Z"
         }
       ]
     },
@@ -8894,12 +8920,11 @@
       "assignees": [],
       "labels": [
         "has PR",
-        "design",
-        "needs-discussion"
+        "design"
       ],
       "body": "Section 8.3: \r\nA variable-length integer specifying the sequence number assigned for this PATH_STANDBY frame. The sequence number space is shared with the PATH_AVAILABLE frame and the sequence number MUST be monotonically increasing generated by the sender of the PATH_STANDBY frame in the same connection. The receiver of the PATH_STANDBY frame needs to use and compare the sequence numbers separately for each Destination Connection ID Sequence Number.\r\n\r\nSo are sequnce number spaces per CID? But shared across the PATH_STANDBY and PATH_AVAILABLE\r\n",
       "createdAt": "2024-03-16T06:48:02Z",
-      "updatedAt": "2024-07-25T17:47:29Z",
+      "updatedAt": "2024-09-02T15:31:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -8950,6 +8975,20 @@
           "body": "IIUC, the persuading argument that we heard from @MikeBishop at IETF 120 was that we could support both ways.\r\n\r\nBut assuming that that is the consensus, I would point out that we have to specify that the number space is per-path.\r\n\r\nThe point is that senders using per-path number space, would send PATH_STANDBY / PATH_AVAILABLE frames carrying the same sequence number. Such behavior would be a protocol violation if we state that the number space is per-connection, because different information would be carried using the same sequence number.",
           "createdAt": "2024-07-25T17:47:27Z",
           "updatedAt": "2024-07-25T17:47:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Decision at IETF-120 was to not change the sequence number space (and keep the per-path space). However, we could provide guidance that it would still be possible to implement a connection-global sequence number, as you can skip numbers (in the per oath space) as long as they are monotonically increasing.",
+          "createdAt": "2024-09-02T15:29:06Z",
+          "updatedAt": "2024-09-02T15:29:06Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ups... the assumption during the discussion at IETF-120 was the current sequence number space is per path. However, it is not... sorry for mixing this up. But then it sounded during the discussion actually like we wanted to have per-path spaces and merge PR #396 ...?",
+          "createdAt": "2024-09-02T15:31:34Z",
+          "updatedAt": "2024-09-02T15:31:34Z"
         }
       ]
     },
@@ -10171,12 +10210,11 @@
       "labels": [
         "has PR",
         "design",
-        "needs-discussion",
         "explicit path ID"
       ],
       "body": "In #328, we're discussing how much the path ID allocation should resemble stream ID allocation.  Along the same lines, I think the suggestion in 4.3.3 to overload MAX_PATHS to indicate that the sender would like to open more paths but is out of path IDs is not wonderful. \r\n\r\n> When endpoint finds it has not enough available unused Path Identifiers, it SHOULD send a MP_MAX_PATHS frame to inform the peer that it could use larger active Path Identifiers.\r\n\r\nFollowing the stream ID design, there should be a MP_MAX_PATHS_BLOCKED frame for that purpose instead.",
       "createdAt": "2024-05-25T02:24:28Z",
-      "updatedAt": "2024-07-10T14:59:58Z",
+      "updatedAt": "2024-09-02T15:40:45Z",
       "closedAt": null,
       "comments": [
         {
@@ -10185,6 +10223,13 @@
           "body": "This would be part of resolving #412.",
           "createdAt": "2024-07-10T14:59:56Z",
           "updatedAt": "2024-07-10T14:59:56Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "At IETF-120 it was agreed to add the PATHS_BLOCKED frame.",
+          "createdAt": "2024-09-02T15:23:56Z",
+          "updatedAt": "2024-09-02T15:23:56Z"
         }
       ]
     },
@@ -10193,7 +10238,7 @@
       "id": "I_kwDOGNtpaM6KFL0Q",
       "title": "What if SPA migration fails?",
       "url": "https://github.com/quicwg/multipath/issues/343",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -10206,8 +10251,8 @@
       ],
       "body": "The draft currently says, from #256, that:\r\n\r\n> They can also start using multiple paths, unless both server preferred addresses and a disable_active_migration transport parameter were provided by the server, in which case a client is forbidden to establish new paths until \"after a client has acted on a preferred_address transport parameter\" ([Section 18.2.](https://rfc-editor.org/rfc/rfc9000#section-18.2.) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)]).\r\n\r\nThis is nearly correct. The `disable_active_migration` transport parameter indicates that \"an endpoint ... MUST NOT use a new local address when sending to the address that the peer used during the handshake.\" This does not prohibit the client from connecting to any other server address that it might know about.\r\n\r\nThe targeted scenario for the RFC 9000 text is an Anycast IP, where attempting to connect from a different source may land on a different destination instance. The migration to the SPA will allow a direct connection to the server that performed the handshake regardless of source address.\r\n\r\nNotably, if the migration fails, the current text prohibits the client from *ever* establishing any other paths, which is probably not what we want.\r\n\r\nI would suggest that we clarify that this prohibition applies only to the handshake address, and that establishment of additional paths to other addresses (potentially including the SPA) is valid immediately.",
       "createdAt": "2024-05-25T02:45:20Z",
-      "updatedAt": "2024-07-09T10:26:16Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-02T14:35:58Z",
+      "closedAt": "2024-09-02T14:35:58Z",
       "comments": [
         {
           "author": "mirjak",
@@ -10215,6 +10260,13 @@
           "body": "With the explicit path ID PR #403 now allows to open new paths even before migration to a preferred address happened. Let's confirm this at the meeting at IETF-120 and then hopefully merge and close this issue!",
           "createdAt": "2024-07-09T10:26:10Z",
           "updatedAt": "2024-07-09T10:26:10Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was discussed and confirmed at the IETF-120 session. Will merge now.",
+          "createdAt": "2024-09-02T14:35:36Z",
+          "updatedAt": "2024-09-02T14:35:36Z"
         }
       ]
     },
@@ -10469,12 +10521,12 @@
         "qdeconinck"
       ],
       "labels": [
-        "editorial",
-        "needs-discussion"
+        "has PR",
+        "editorial"
       ],
       "body": "We should maybe review the names of the frames, e.g.:\r\n\r\n1) Should we rename ACK_MP to MP_ACK? Or PATH_ACK?\r\n\r\n2) Is it MP_NEW_CONNECTION_ID or maybe rather PATH_NEW_CONNECTION_ID or NEW_PATH_CONNECTION_ID or go shorter to PATH_NEW_CID or something?\r\n\r\n3) Depending on the final definition is could be MAX_PATHS or MAX_PATH_ID",
       "createdAt": "2024-05-27T20:49:09Z",
-      "updatedAt": "2024-07-25T16:49:01Z",
+      "updatedAt": "2024-09-02T15:16:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -10504,6 +10556,13 @@
           "body": "I like the common prefix, and the fact that each of these frames can only talk about one of the multiple paths.  However, MAX_PATH_ID better aligns with MAX_DATA, MAX_STREAMS, MAX_STREAM_DATA from RFC 9000. I'd leave that one.\r\n\r\n",
           "createdAt": "2024-07-25T16:49:00Z",
           "updatedAt": "2024-07-25T16:49:00Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed in the IETF-120 session,  we will rename to PATH_ACK, PATH_CONNECTION_ID, PATH_RETIRE_CONNECTION_ID.\r\n\r\nMAX_PATH_ID will not be renamed as proposed by Mike above and confirmed in the meeting.\r\n\r\nI created PR #426\r\n",
+          "createdAt": "2024-09-02T14:27:22Z",
+          "updatedAt": "2024-09-02T14:27:22Z"
         }
       ]
     },
@@ -10556,12 +10615,11 @@
       "labels": [
         "has PR",
         "design",
-        "needs-discussion",
         "explicit path ID"
       ],
       "body": "We have section on \"[Refusing a New Path](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-refusing-a-new-path)\" and it says this:\r\n\r\n> An endpoint may deny the establishment of a new path initiated by its\r\npeer during the address validation procedure. According to\r\n{{QUIC-TRANSPORT}}, the standard way to deny the establishment of a path\r\nis to not send a PATH_RESPONSE in response to the peer's PATH_CHALLENGE.\r\n\r\nHowever, I don't think RFC9000 talks about refusing a path anywhere. Or can someone point me at the right section?",
       "createdAt": "2024-05-28T10:49:45Z",
-      "updatedAt": "2024-07-09T10:29:11Z",
+      "updatedAt": "2024-09-02T15:40:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -10584,6 +10642,13 @@
           "body": "PR #388 now clarifies that a PATH _ABANDON should be sent instead",
           "createdAt": "2024-07-01T09:57:34Z",
           "updatedAt": "2024-07-01T09:57:34Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed at IETF-120 that this should be merged.",
+          "createdAt": "2024-09-02T15:37:27Z",
+          "updatedAt": "2024-09-02T15:37:27Z"
         }
       ]
     },
@@ -10838,13 +10903,13 @@
         "huitema"
       ],
       "labels": [
-        "design",
-        "needs-discussion",
+        "editorial",
+        "needs PR",
         "explicit path ID"
       ],
       "body": "Currently the draft says that only one path per 4-tuple is allowed. This was needed previously to better distinguish between migration and a new path. With use of the explicit path ID this is not needed anymore. Should we therefore allow for multiple paths over the same 4-tuple (using different path IDs)?\r\n\r\nNote that from a congestion control point of view that could give you a benefit as each path has an own congestion control. However, we could recommend to use coupled congestion control or even simply divide the cwnd by the number of paths. Or we do nothing here because you can really enforce a certain congestion control behavior and effectively anybody could just multiple the cwnd by some factor even with only one path.\r\n\r\nAlso note that if we want to only allow for one path per 4-tuple, we would probably need to describe a way to enforce that by either ignoring an path validation attempt or actively closing one of the two paths.",
       "createdAt": "2024-06-05T15:29:49Z",
-      "updatedAt": "2024-07-10T15:05:35Z",
+      "updatedAt": "2024-09-02T14:53:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -10874,6 +10939,13 @@
           "body": "I think one aspect of multiple paths over the same 4-tuple is that they may actually not be equal. For example one could have two paths, where the packets for one path is using a different DSCP than the other, or enable L4S. These two packets can thus see significant different forwarding behaviours. So it is not necessary true that they are equivalent.",
           "createdAt": "2024-07-10T15:05:34Z",
           "updatedAt": "2024-07-10T15:05:34Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "At IETF-120 @huitema agreed to take a first try on more guidance and use case consideration as also indicated by @gloinul above.",
+          "createdAt": "2024-09-02T14:52:51Z",
+          "updatedAt": "2024-09-02T14:52:51Z"
         }
       ]
     },
@@ -11390,12 +11462,11 @@
       "assignees": [],
       "labels": [
         "design",
-        "needs-discussion",
         "needs PR"
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-07-18T18:42:29Z",
+      "updatedAt": "2024-09-02T15:18:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -11411,6 +11482,13 @@
           "body": "Do we really want to replicate the structure of connection close, with 2 frame types, one \"abandon by application\" and the other \"abandon by transport\"? Or do we want to follow the example of \"Stream Reset\" and \"Stop Sending\", which just carry an application defined code?\r\n\r\nI am for \"application defined\", because I think there are only two cases in which the transport originates an Abandon packet \"by itself\": abandon on timer, and abandon in response to an abandon by the peer. Using error code=0 for these two cases seems like a fine simplification.",
           "createdAt": "2024-07-11T17:23:41Z",
           "updatedAt": "2024-07-11T17:23:41Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was discussion in the session at IETF-120. Decision was to remove the Reason Phrase and define a MP specific error code space, e.g. including error codes like \"closed by application\", \"out of ressources\", ...",
+          "createdAt": "2024-09-02T15:18:14Z",
+          "updatedAt": "2024-09-02T15:18:14Z"
         }
       ]
     },
@@ -11444,9 +11522,17 @@
       "labels": [],
       "body": "RFC 9000 requires that:\r\n- Datagrams carrying Initial packets be expanded to 1200+ bytes\r\n- Servers verify the client address on handshake *and* when the address changes through migration / rebinding\r\n- The server can send no more than 3x the received bytes until the client's address is validated, both during the handshake and following client migration / rebinding\r\n\r\nThis draft states in the Security Considerations that \"the anti-amplification limits as specified in [Section 8](https://rfc-editor.org/rfc/rfc9000#section-8) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)] need to be followed to limit the amplification risk.\" However, there's no text that describes how this maps into multipath behavior.\r\n\r\nMy proposal is that:\r\n- The packet on a new path SHOULD be expanded to 1200+ bytes (PADDING, etc.) for the first 1 RTT or until validation completes\r\n- When a packet is received from an unverified address, an endpoint MUST NOT send more than 3x the received bytes until address validation completes",
       "createdAt": "2024-07-25T18:08:16Z",
-      "updatedAt": "2024-07-25T18:08:16Z",
+      "updatedAt": "2024-09-02T14:13:19Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is the same as migration and already specified in RFC9000. I think we should not specify the same thing in two document that's why we decided to add a reference to section 8 of RFC9000 instead.",
+          "createdAt": "2024-09-02T14:13:18Z",
+          "updatedAt": "2024-09-02T14:13:18Z"
+        }
+      ]
     },
     {
       "number": 424,
@@ -11477,15 +11563,17 @@
       "id": "I_kwDOGNtpaM6Ud4Ez",
       "title": "Can we limit the maximum value of the path ID to 2^30-1?",
       "url": "https://github.com/quicwg/multipath/issues/425",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nandsky",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "duplicate"
+      ],
       "body": "@mirjak As discussed in [#424 ]  the path ID is a variable-length integer with a maximum value of 2^32-1. This means that to store the maximum value, 8 bytes of space are required.  The encoding of 2^32-1 is 0xc0000000ffffffff.\r\n\r\nIf we limit the maximum value of the path ID to 2^30-1, then we only need 4 bytes to store it. 2^30-1 should be sufficient for the path ID, and 4 bytes also meet the requirements for nonce calculation.\r\n\r\n\r\nhttps://www.rfc-editor.org/rfc/rfc9000.html#name-variable-length-integer-enc\r\n\r\n",
       "createdAt": "2024-08-28T03:19:11Z",
-      "updatedAt": "2024-08-28T04:03:55Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-02T14:18:10Z",
+      "closedAt": "2024-09-02T14:18:10Z",
       "comments": [
         {
           "author": "LPardue",
@@ -11500,6 +11588,13 @@
           "body": "+1 to what @LPardue wrote. We only have a hard requirement to not use path ID larger than 2^32 -1. Yes, the encoding of the values >= 2^30 will not be very efficient. But if applications do need the extra 2 bits, encoding efficiency is not a sufficient reason to prevent them.",
           "createdAt": "2024-08-28T04:03:55Z",
           "updatedAt": "2024-08-28T04:03:55Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@nandsky thanks for this proposal. This was already discussed in issue #307 and as also indicted by the answers above we concluded that this optimisation doesn't bring much benefit. Therefore I will close this issue as a duplicate.",
+          "createdAt": "2024-09-02T14:18:10Z",
+          "updatedAt": "2024-09-02T14:18:10Z"
         }
       ]
     }
@@ -43452,7 +43547,7 @@
       ],
       "body": "This is an attempt to fix issue #342. I have added the MAX_PATH_ID_BLOCKED frame and related texts. Note that the same Path ID is used in both directions to address a path so the path identifier can be either limited by the sender or its peer. We should treat the two scenario differently and MAX_PATH_ID_BLOCKED should be used when the limit is set by the peer.",
       "createdAt": "2024-07-02T08:47:29Z",
-      "updatedAt": "2024-07-10T14:59:07Z",
+      "updatedAt": "2024-09-02T15:23:19Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "cbae40aab48eacc08c7b1853d131bb7b2913675f",
@@ -43611,6 +43706,74 @@
               "updatedAt": "2024-07-10T14:59:07Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Hpz46",
+          "commit": {
+            "abbreviatedOid": "f70f04e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "These changes requests change the name to PATHS_BLOCKED as discussed at IETF-120.",
+          "createdAt": "2024-09-02T15:19:46Z",
+          "updatedAt": "2024-09-02T15:23:19Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\r\nactive paths, while PATHS_BLOCKED frame (see {{max-paths-blocked-frame}})\r\n```",
+              "createdAt": "2024-09-02T15:19:46Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\r\n(when limited by the sender) or a PATHS_BLOCKED frame\r\n```",
+              "createdAt": "2024-09-02T15:20:09Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 42,
+              "body": "```suggestion\r\nPATHS_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.\r\n```",
+              "createdAt": "2024-09-02T15:20:21Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\r\nPATHS_BLOCKED Frame {\r\n```",
+              "createdAt": "2024-09-02T15:20:35Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\n## PATHS_BLOCKED frames {#paths-blocked-frame}\r\n```",
+              "createdAt": "2024-09-02T15:20:59Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 26,
+              "body": "```suggestion\r\n(see Section {{paths-blocked-frame}}) to inform the peer that a new path\r\n```",
+              "createdAt": "2024-09-02T15:21:26Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nA sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when\r\n```",
+              "createdAt": "2024-09-02T15:21:52Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "```suggestion\r\nPATHS_BLOCKED frames contain the following field:\r\n```",
+              "createdAt": "2024-09-02T15:22:20Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            },
+            {
+              "originalPosition": 69,
+              "body": "```suggestion\r\nTBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{max-paths-blocked-frame}}\r\n```",
+              "createdAt": "2024-09-02T15:22:47Z",
+              "updatedAt": "2024-09-02T15:23:19Z"
+            }
+          ]
         }
       ]
     },
@@ -43619,7 +43782,7 @@
       "id": "PR_kwDOGNtpaM50NoFN",
       "title": "Describe the effect of disable_active_migration more accurately",
       "url": "https://github.com/quicwg/multipath/pull/403",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -43628,17 +43791,19 @@
       ],
       "body": "Solving issue #343 ",
       "createdAt": "2024-07-02T15:03:19Z",
-      "updatedAt": "2024-07-20T20:19:46Z",
+      "updatedAt": "2024-09-02T14:35:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8ad7d8c7bd1e0a9d90368d286260d9b075f47d41",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/spa_migration",
       "headRefOid": "753ebd65c11a11be3c39ae5fd13e09ece144c937",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-09-02T14:35:57Z",
+      "mergedAt": "2024-09-02T14:35:57Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "3837634e471a2e996e78e9d4422bc97bec712b61"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -44195,6 +44360,102 @@
       "headRepository": "nandsky/multipath",
       "headRefName": "lishu_typo",
       "headRefOid": "aefcef44a977d41084d06fedeef262ed0a4f699d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 426,
+      "id": "PR_kwDOGNtpaM56K6ti",
+      "title": "Rename MP_* frames to PATH_*",
+      "url": "https://github.com/quicwg/multipath/pull/426",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes issue #359",
+      "createdAt": "2024-09-02T14:26:21Z",
+      "updatedAt": "2024-09-03T00:45:37Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "7041135f5546cba33c971ea1ce0a747d953d3405",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-3",
+      "headRefOid": "51673798f21357cf18e6d376e8673e7ab5022c4b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6HrLUq",
+          "commit": {
+            "abbreviatedOid": "5167379"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I like it that way, including NEW_PATH_ID.",
+          "createdAt": "2024-09-03T00:45:37Z",
+          "updatedAt": "2024-09-03T00:45:37Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 427,
+      "id": "PR_kwDOGNtpaM56K81Z",
+      "title": "Rename PATH_STANDBY to PATH_BACKUP",
+      "url": "https://github.com/quicwg/multipath/pull/427",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes issue #283",
+      "createdAt": "2024-09-02T14:31:15Z",
+      "updatedAt": "2024-09-02T14:31:26Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "7041135f5546cba33c971ea1ce0a747d953d3405",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-4",
+      "headRefOid": "7f55fdf07c2f3f1fa1ad79471bdb99953be31a36",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 428,
+      "id": "PR_kwDOGNtpaM56LLa-",
+      "title": "Remove MP_PROTOCOL_VIOLATION",
+      "url": "https://github.com/quicwg/multipath/pull/428",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #253",
+      "createdAt": "2024-09-02T15:04:19Z",
+      "updatedAt": "2024-09-02T15:04:19Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "3837634e471a2e996e78e9d4422bc97bec712b61",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-5",
+      "headRefOid": "9e3b5bbee22e380d53669c4eca020ac6f611c899",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
