@@ -1286,7 +1286,7 @@ Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
-## MAX_PATH_ID_BLOCKED frames {#max-paths-blocked-frame}
+## PATHS_BLOCKED frames {#paths-blocked-frame}
 
 A sender SHOULD send a MAX_PATH_ID_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
