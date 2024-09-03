@@ -357,7 +357,7 @@ This proposal adds five multipath control frames for path management:
 - PATH_STANDBY and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-standby-frame}} and {{path-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-active paths, while PATHS_BLOCKED frame (see {{max-paths-blocked-frame}})
+active paths, while PATHS_BLOCKED frame (see {{paths-blocked-frame}})
 indicates that the limit of active paths set by the peer has been reached.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
@@ -1292,7 +1292,7 @@ A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer;
 
-PATHS_BLOCKED frames are formatted as shown in {{fig-max-paths-blocked-frame-format}}.
+PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
 ~~~
 PATHS_BLOCKED Frame {
@@ -1300,7 +1300,7 @@ PATHS_BLOCKED Frame {
   Maximum Path Identifier (i),
 }
 ~~~
-{: #fig-max-paths-blocked-frame-format title="MAX_PATH_ID_BLOCKED Frame Format"}
+{: #fig-paths-blocked-frame-format title="MAX_PATH_ID_BLOCKED Frame Format"}
 
 PATHS_BLOCKED frames contain the following field:
 
@@ -1354,7 +1354,7 @@ TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{p
 TBD-05 (experiments use 0x15228c09)                  | MP_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | MP_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
-TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{max-paths-blocked-frame}}
+TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} should
