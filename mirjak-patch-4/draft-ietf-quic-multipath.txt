@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 March 2025                             Uber Technologies Inc.
+Expires: 8 March 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 March 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        2 September 2024
+                                                        4 September 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 March 2025.
+   This Internet-Draft will expire on 8 March 2025.
 
 Copyright Notice
 
@@ -104,7 +104,7 @@ Table of Contents
    7.  New Frames
      7.1.  MP_ACK Frame
      7.2.  PATH_ABANDON Frame
-     7.3.  PATh_BACKUP frame
+     7.3.  PATH_BACKUP frame
      7.4.  PATH_AVAILABLE frame
      7.5.  MP_NEW_CONNECTION_ID frames
      7.6.  MP_RETIRE_CONNECTION_ID frames
@@ -254,7 +254,7 @@ Table of Contents
 
    The same Path ID is used in both directions to address a path in the
    new multipath control frames, such as PATH_ABANDON Section 7.2,
-   PATh_BACKUP Section 7.3}, PATH_AVAILABLE Section 7.4 as well as
+   PATH_BACKUP Section 7.3}, PATH_AVAILABLE Section 7.4 as well as
    MP_ACK Section 7.1.  Further, connection IDs are issued per Path ID.
    That means each connection ID is associated with exactly one path
    identifier but multiple connection IDs are usually issued for each
@@ -414,7 +414,7 @@ Table of Contents
    *  PATH_ABANDON frame for the receiver side to abandon the path (see
       Section 7.2),
 
-   *  PATh_BACKUP and PATH_AVAILABLE frames to express a preference in
+   *  PATH_BACKUP and PATH_AVAILABLE frames to express a preference in
       path usage (see Section 7.3 and Section 7.4), and
 
    *  MAX_PATH_ID frame for increasing the limit of active paths.
@@ -497,7 +497,7 @@ Table of Contents
 
 3.2.  Path Status Management
 
-   An endpoint uses the PATh_BACKUP and PATH_AVAILABLE frames to inform
+   An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform
    the peer that it should send packets with the preference expressed by
    these frames.  Note that an endpoint might not follow the peer’s
    advertisements, but these frames are still a clear signal of the
@@ -512,7 +512,7 @@ Table of Contents
    suggests to the peer to use its own logic to split traffic among
    available paths.
 
-   PATh_BACKUP marks a path as "standby", i.e., it suggests that no
+   PATH_BACKUP marks a path as "standby", i.e., it suggests that no
    traffic should be sent on that path if another path is available.  If
    all active paths are marked as "standby", no guidance is provided
    about which path should be used.
@@ -537,7 +537,7 @@ Table of Contents
    Endpoints use the Path ID in these frames to identify which path
    state is going to be changed.  Note that both frames can be sent via
    a different path and therefore might arrive in different orders.  The
-   PATH_AVAILABLE and PATh_BACKUP frames share a common sequence number
+   PATH_AVAILABLE and PATH_BACKUP frames share a common sequence number
    space to detect and ignore outdated information.
 
 3.3.  Path Close
@@ -1169,46 +1169,46 @@ Table of Contents
    After sending the PATH_ABANDON frame, the endpoint MUST NOT send
    frames that use the Path ID anymore, even on other network paths.
 
-7.3.  PATh_BACKUP frame
+7.3.  PATH_BACKUP frame
 
-   PATh_BACKUP Frames are used by endpoints to inform the peer about its
-   preference to not use the indicated path for sending.  PATh_BACKUP
+   PATH_BACKUP Frames are used by endpoints to inform the peer about its
+   preference to not use the indicated path for sending.  PATH_BACKUP
    frames are formatted as shown in Figure 5.
 
-     PATh_BACKUP Frame {
+     PATH_BACKUP Frame {
        Type (i) = TBD-03 (experiments use 0x15228c07)
        Path Identifier (i),
        Path Status Sequence Number (i),
      }
 
-                     Figure 5: PATh_BACKUP Frame Format
+                     Figure 5: PATH_BACKUP Frame Format
 
-   PATh_BACKUP Frames contain the following fields:
+   PATH_BACKUP Frames contain the following fields:
 
    Path Identifier:  The Path ID the status update corresponds to.  All
       Path IDs that have been issued MAY be specified, even if they are
       not yet in use over a path.
 
    Path Status Sequence Number:  A variable-length integer specifying
-      the sequence number assigned for this PATh_BACKUP frame.  The
+      the sequence number assigned for this PATH_BACKUP frame.  The
       sequence number space is shared with the PATH_AVAILABLE frame and
       the sequence number MUST be monotonically increasing generated by
-      the sender of the PATh_BACKUP frame in the same connection.  The
-      receiver of the PATh_BACKUP frame needs to use and compare the
+      the sender of the PATH_BACKUP frame in the same connection.  The
+      receiver of the PATH_BACKUP frame needs to use and compare the
       sequence numbers separately for each Path ID.
 
    Frames may be received out of order.  A peer MUST ignore an incoming
-   PATh_BACKUP frame if it previously received another PATh_BACKUP frame
+   PATH_BACKUP frame if it previously received another PATH_BACKUP frame
    or PATH_AVAILABLE for the same Path ID with a Path Status sequence
    number equal to or higher than the Path Status sequence number of the
    incoming frame.
 
-   PATh_BACKUP frames are ack-eliciting.  If a packet containing a
-   PATh_BACKUP frame is considered lost, the peer SHOULD resend the
+   PATH_BACKUP frames are ack-eliciting.  If a packet containing a
+   PATH_BACKUP frame is considered lost, the peer SHOULD resend the
    frame only if it contains the last status sent for that path -- as
    indicated by the sequence number.
 
-   A PATh_BACKUP frame MAY be bundled with a MP_NEW_CONNECTION_ID frame
+   A PATH_BACKUP frame MAY be bundled with a MP_NEW_CONNECTION_ID frame
    or a PATH_RESPONSE frame in order to indicate the preferred path
    usage before or during path initiation.
 
@@ -1232,7 +1232,7 @@ Table of Contents
 
    Path Status Sequence Number:  A variable-length integer specifying
       the sequence number assigned for this PATH_AVAILABLE frame.  The
-      sequence number space is shared with the PATh_BACKUP frame and the
+      sequence number space is shared with the PATH_BACKUP frame and the
       sequence number MUST be monotonically increasing generated by the
       sender of the PATH_AVAILABLE frame in the same connection.  The
       receiver of the PATH_AVAILABLE frame needs to use and compare the
@@ -1240,7 +1240,7 @@ Table of Contents
 
    Frames may be received out of order.  A peer MUST ignore an incoming
    PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE
-   frame or PATh_BACKUP frame for the same Path ID with a Path Status
+   frame or PATH_BACKUP frame for the same Path ID with a Path Status
    sequence number equal to or higher than the Path Status sequence
    number of the incoming frame.
 
@@ -1423,7 +1423,7 @@ Table of Contents
    | TBD-02 (experiments    | PATH_ABANDON            | Section 7.2   |
    | use 0x15228c05)        |                         |               |
    +------------------------+-------------------------+---------------+
-   | TBD-03 (experiments    | PATh_BACKUP             | Section 7.3   |
+   | TBD-03 (experiments    | PATH_BACKUP             | Section 7.3   |
    | use 0x15228c07)        |                         |               |
    +------------------------+-------------------------+---------------+
    | TBD-04 (experiments    | PATH_AVAILABLE          | Section 7.4   |
