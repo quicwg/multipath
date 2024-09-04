@@ -1103,7 +1103,7 @@ separately for each Path ID.
 
 Frames may be received out of order. A peer MUST ignore an incoming
 PATH_STANDBY frame if it previously received another PATH_STANDBY frame
-or PATH_AVAILABLE for the same Path ID with a Path Status sequence number
+or PATH_AVAILABLE frame for the same Path ID with a Path Status sequence number
 equal to or higher than the Path Status sequence number of the incoming frame.
 
 PATH_STANDBY frames are ack-eliciting. If a packet containing a
