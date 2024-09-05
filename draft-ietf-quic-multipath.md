@@ -377,16 +377,15 @@ When the multipath extension is negotiated, a client that wants to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames as described in
 {{Section 8.2 of QUIC-TRANSPORT}}, unless it has previously validated
-that address. After receiving packets from the
+that address.
+
+After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
-A server can also decide not to perform path validation if it wants to deny the new path,
-or not perform it immediately if, e.g., no connection ID is yet available.
-If an endpoint decides to deny the establishment of a new path,
-this should be considered as a path closure and therefore requires sending a
-PATH_ABANDON frame on another path for the associated Path ID used
-by the client as specified in {{path-close}}.
+An endpoint that receives a PATH_CHALLENGE and does not want to establish
+this path should immediately close the path by sending a PATH_ABANDON
+on another path, as specified in section {{path-close}}.
 
 MP_ACK frames (defined in {{mp-ack-frame}}) can be returned on any path.
 If the MP_ACK is preferred to be sent on the same path as the acknowledged
