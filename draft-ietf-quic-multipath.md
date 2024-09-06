@@ -318,6 +318,9 @@ Path ID 0.
 After the handshake concluded if negotiation of multipath support succeeded,
 endpoints SHOULD use MP_ACK frames instead of ACK frames,
 also for acknowledging so far unacknowledged 0-RTT packets, using
+Path ID 0. Similarly after a successful handshake, endpoints SHOULD also use
+the MP_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
+respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs for
 Path ID 0.
 
 # Path Management {#path-management}
@@ -343,13 +346,9 @@ Furthermore, this document
 does not discuss when a client decides to initiate a new path. We
 delegate such discussion to separate documents.
 
-To let the peer open a new path, an endpoint needs to provide its peer with connection IDs
-for at least one unused path identifier. Endpoints SHOULD use the MP_NEW_CONNECTION_ID
-frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to
-retire connection IDs after a successful handshake indicating multipath support by both endpoints.
-
 To open a new path, an endpoint MUST use a connection ID associated with
-a new, unused Path ID.
+a new, unused Path ID. To let the peer open a new path, an endpoint needs
+to provide its peer with connection IDs for at least one unused path identifier.
 Still, the receiver may observe a connection ID associated with a used Path ID
 on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
 as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
