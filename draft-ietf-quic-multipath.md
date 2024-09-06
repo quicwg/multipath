@@ -384,7 +384,7 @@ unless it has previously validated that address.
 PATH_ACK frames (defined in {{mp-ack-frame}}) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see {{compute-rtt}} for further guidance), it can be beneficial
-to bundle an PATH_ACK frame with the PATH_RESPONSE frame during
+to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
 path validation.
 
 If the server receives a PATH_CHALLENGE before receiving
