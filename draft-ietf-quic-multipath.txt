@@ -589,10 +589,9 @@ Table of Contents
    paths, as the Path ID is part of the nonce calculation Section 4.
 
    PATH_ABANDON frames can be sent on any path, not only the path that
-   is intended to be closed.  Thus, a path can be abandoned even if
-   connectivity on that path is already broken.  Respectively, if there
-   is still an active path, it is RECOMMENDED to send the PATH_ABANDON
-   frames on another path.
+   is intended to be closed.  Thus, even if connectivity on that path is
+   already broken but there is still another active path, it is
+   RECOMMENDED to send the PATH_ABANDON frames on another path.
 
    If a PATH_ABANDON frame is received for the only active path of a
    QUIC connection, the receiving peer SHOULD send a CONNECTION_CLOSE
