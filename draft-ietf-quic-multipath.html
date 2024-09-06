@@ -1264,7 +1264,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-path_abandon-frame" class="internal xref">PATH_ABANDON Frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-path_standby-frame" class="internal xref">PATH_STANDBY frame</a></p>
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-path_backup-frame" class="internal xref">PATH_BACKUP frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
                 <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-path_available-frame" class="internal xref">PATH_AVAILABLE frame</a></p>
@@ -1468,7 +1468,7 @@ The connection ID of a packet binds the packet to a path identifier, and therefo
 to a packet number space.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>, PATH_STANDBY <a href="#path-standby-frame" class="auto internal xref">Section 7.3</a>},
+such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>, PATH_BACKUP <a href="#path-backup-frame" class="auto internal xref">Section 7.3</a>},
 PATH_AVAILABLE <a href="#path-available-frame" class="auto internal xref">Section 7.4</a> as well as MP_ACK <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>.
 Further, connection IDs are issued per Path ID using the
 MP_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>).
@@ -1628,8 +1628,8 @@ but MUST use a new connection ID for the same Path ID.<a href="#section-3-3" cla
 (see <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>),<a href="#section-3-5.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-5.2">
-          <p id="section-3-5.2.1">PATH_STANDBY and PATH_AVAILABLE frames to express a preference
-in path usage (see <a href="#path-standby-frame" class="auto internal xref">Section 7.3</a> and <a href="#path-available-frame" class="auto internal xref">Section 7.4</a>), and<a href="#section-3-5.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-5.2.1">PATH_BACKUP and PATH_AVAILABLE frames to express a preference
+in path usage (see <a href="#path-backup-frame" class="auto internal xref">Section 7.3</a> and <a href="#path-available-frame" class="auto internal xref">Section 7.4</a>), and<a href="#section-3-5.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-5.3">
           <p id="section-3-5.3.1">MAX_PATH_ID frame for increasing the limit of active paths.<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
@@ -1710,7 +1710,7 @@ found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class=
         <h3 id="name-path-status-management">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-path-status-management" class="section-name selfRef">Path Status Management</a>
         </h3>
-<p id="section-3.2-1">An endpoint uses the PATH_STANDBY and PATH_AVAILABLE frames to inform the peer that it should
+<p id="section-3.2-1">An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform the peer that it should
 send packets with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
@@ -1720,7 +1720,7 @@ Depending on the data sender's decisions, this may lead to usage of paths that h
 indicated as "standby" by the peer or non-usage of some locally available paths.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">PATH_STANDBY marks a path as "standby", i.e., it suggests that no traffic
+<p id="section-3.2-3">PATH_BACKUP marks a path as "standby", i.e., it suggests that no traffic
 should be sent on that path if another path is available.
 If all active paths are marked as "standby", no guidance is provided about
 which path should be used.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
@@ -1740,7 +1740,7 @@ own local logic if the path should be used.<a href="#section-3.2-5" class="pilcr
 in these frames to identify which path state is going to be
 changed. Note that both frames can be sent via a different path
 and therefore might arrive in different orders.
-The PATH_AVAILABLE and PATH_STANDBY frames share a common sequence number space
+The PATH_AVAILABLE and PATH_BACKUP frames share a common sequence number space
 to detect and ignore outdated information.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2449,19 +2449,19 @@ the endpoint MUST NOT send frames that use the Path ID anymore,
 even on other network paths.<a href="#section-7.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="path-standby-frame">
+<div id="path-backup-frame">
 <section id="section-7.3">
-        <h3 id="name-path_standby-frame">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-path_standby-frame" class="section-name selfRef">PATH_STANDBY frame</a>
+        <h3 id="name-path_backup-frame">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-path_backup-frame" class="section-name selfRef">PATH_BACKUP frame</a>
         </h3>
-<p id="section-7.3-1">PATH_STANDBY Frames are used by endpoints to inform the peer
+<p id="section-7.3-1">PATH_BACKUP Frames are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
-PATH_STANDBY frames are formatted as shown in <a href="#fig-path-standby-format" class="auto internal xref">Figure 5</a>.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<span id="name-path_standby-frame-format"></span><div id="fig-path-standby-format">
+PATH_BACKUP frames are formatted as shown in <a href="#fig-path-standby-format" class="auto internal xref">Figure 5</a>.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<span id="name-path_backup-frame-format"></span><div id="fig-path-standby-format">
 <figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-7.3-2.1">
 <pre>
-  PATH_STANDBY Frame {
+  PATH_BACKUP Frame {
     Type (i) = TBD-03 (experiments use 0x15228c07)
     Path Identifier (i),
     Path Status Sequence Number (i),
@@ -2469,10 +2469,10 @@ PATH_STANDBY frames are formatted as shown in <a href="#fig-path-standby-format"
 </pre>
 </div>
 <figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
-<a href="#name-path_standby-frame-format" class="selfRef">PATH_STANDBY Frame Format</a>
+<a href="#name-path_backup-frame-format" class="selfRef">PATH_BACKUP Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-7.3-3">PATH_STANDBY Frames contain the following fields:<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+<p id="section-7.3-3">PATH_BACKUP Frames contain the following fields:<a href="#section-7.3-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-7.3-4">
           <dt id="section-7.3-4.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-7.3-4.2">
@@ -2484,26 +2484,26 @@ MAY be specified, even if they are not yet in use over a path.<a href="#section-
 <dt id="section-7.3-4.3">Path Status Sequence Number:</dt>
           <dd style="margin-left: 1.5em" id="section-7.3-4.4">
             <p id="section-7.3-4.4.1">A variable-length integer specifying the sequence number assigned for
-this PATH_STANDBY frame. The sequence number space is shared with the
+this PATH_BACKUP frame. The sequence number space is shared with the
 PATH_AVAILABLE frame and the sequence
 number MUST be monotonically increasing generated by the sender of
-the PATH_STANDBY frame in the same connection. The receiver of
-the PATH_STANDBY frame needs to use and compare the sequence numbers
+the PATH_BACKUP frame in the same connection. The receiver of
+the PATH_BACKUP frame needs to use and compare the sequence numbers
 separately for each Path ID.<a href="#section-7.3-4.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <p id="section-7.3-5">Frames may be received out of order. A peer MUST ignore an incoming
-PATH_STANDBY frame if it previously received another PATH_STANDBY frame
+PATH_BACKUP frame if it previously received another PATH_BACKUP frame
 or PATH_AVAILABLE
 for the same Path ID with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
-<p id="section-7.3-6">PATH_STANDBY frames are ack-eliciting. If a packet containing a
-PATH_STANDBY frame is considered lost, the peer SHOULD resend the frame
+<p id="section-7.3-6">PATH_BACKUP frames are ack-eliciting. If a packet containing a
+PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
-<p id="section-7.3-7">A PATH_STANDBY frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
+<p id="section-7.3-7">A PATH_BACKUP frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
 </section>
@@ -2542,7 +2542,7 @@ PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-for
           <dd style="margin-left: 1.5em" id="section-7.4-4.4">
             <p id="section-7.4-4.4.1">A variable-length integer specifying
 the sequence number assigned for this PATH_AVAILABLE frame.
-The sequence number space is shared with the PATH_STANDBY frame and the sequence
+The sequence number space is shared with the PATH_BACKUP frame and the sequence
 number MUST be monotonically increasing generated by the sender of
 the PATH_AVAILABLE frame in the same connection. The receiver of
 the PATH_AVAILABLE frame needs to use and compare the sequence numbers
@@ -2552,7 +2552,7 @@ separately for each Path ID.<a href="#section-7.4-4.4.1" class="pilcrow">¶</a><
 </dl>
 <p id="section-7.4-5">Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE frame
-or PATH_STANDBY frame for the same Path ID with a
+or PATH_BACKUP frame for the same Path ID with a
 Path Status sequence number equal to or higher than the Path Status
 sequence number of the incoming frame.<a href="#section-7.4-5" class="pilcrow">¶</a></p>
 <p id="section-7.4-6">PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
@@ -2786,9 +2786,9 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-03 (experiments use 0x15228c07)</td>
-            <td class="text-left" rowspan="1" colspan="1">PATH_STANDBY</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_BACKUP</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#path-standby-frame" class="auto internal xref">Section 7.3</a>
+              <a href="#path-backup-frame" class="auto internal xref">Section 7.3</a>
 </td>
           </tr>
           <tr>
