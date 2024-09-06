@@ -1034,7 +1034,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 7 March 2025</td>
+<td class="center">Expires 10 March 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1047,12 +1047,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-03" class="published">3 September 2024</time>
+<time datetime="2024-09-06" class="published">6 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-03-07">7 March 2025</time></dd>
+<dd class="expires"><time datetime="2025-03-10">10 March 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1123,7 +1123,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 10 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1445,7 +1445,7 @@ address as well as source and destination port.<a href="#section-1.1-2.6.1" clas
             <p id="section-1.1-2.7.1">Migration is detected without ambiguity
 when a packet arrives with a connection ID
 pointing to an existing path ID, but the connection ID and/or the
-4-tuple are different from the value current used for that path.<a href="#section-1.1-2.7.1" class="pilcrow">¶</a></p>
+4-tuple are different from the value currently used for that path.<a href="#section-1.1-2.7.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-2.8">
             <p id="section-1.1-2.8.1">Paths can be closed at any time, as specified in <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-1.1-2.8.1" class="pilcrow">¶</a></p>
@@ -1692,7 +1692,7 @@ connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
 in this draft, endpoints have to consider the receiption of
 a packet with a connection ID associated to an
-so far unused Path ID as an attempt to establish a new paths.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+so far unused Path ID as an attempt to establish a new path.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 <p id="section-3.1-8">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. In situations where multiple paths are established, the
@@ -1918,7 +1918,7 @@ can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
 this draft, endpoints MUST only rotate to another connection IDs associated
 to the same Path ID. Use of a connection ID associated with
-a another Path ID will be considered as an attempt to open new path instead.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
 <p id="section-3.5-4">Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
 for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity

@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 7 March 2025                             Uber Technologies Inc.
+Expires: 10 March 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 7 March 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        3 September 2024
+                                                        6 September 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 March 2025.
+   This Internet-Draft will expire on 10 March 2025.
 
 Copyright Notice
 
@@ -226,7 +226,7 @@ Table of Contents
    *  Migration is detected without ambiguity when a packet arrives with
       a connection ID pointing to an existing path ID, but the
       connection ID and/or the 4-tuple are different from the value
-      current used for that path.
+      currently used for that path.
 
    *  Paths can be closed at any time, as specified in Section 3.3.
 
@@ -470,7 +470,7 @@ Table of Contents
    With the successful negotiation of the extension specified in this
    draft, endpoints have to consider the receiption of a packet with a
    connection ID associated to an so far unused Path ID as an attempt to
-   establish a new paths.
+   establish a new path.
 
    As specified in Section 9.3 of [QUIC-TRANSPORT], the server is
    expected to send a new address validation token to a client following
@@ -691,8 +691,8 @@ Table of Contents
    change the connection ID it uses to another available one at any time
    during the connection.  For the extension specified in this draft,
    endpoints MUST only rotate to another connection IDs associated to
-   the same Path ID.  Use of a connection ID associated with a another
-   Path ID will be considered as an attempt to open new path instead.
+   the same Path ID.  Use of a connection ID associated with another
+   Path ID will be considered as an attempt to open a new path instead.
 
    Over a given path, both endpoints use connection IDs associated to a
    given Path ID.  To initiate a path, each endpoint needs to advertise
