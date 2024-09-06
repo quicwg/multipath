@@ -178,7 +178,7 @@ address as well as source and destination port.
   * Migration is detected without ambiguity
 when a packet arrives with a connection ID
 pointing to an existing path ID, but the connection ID and/or the
-4-tuple are different from the value current used for that path.
+4-tuple are different from the value currently used for that path.
   * Paths can be closed at any time, as specified in {{path-close}}.
   * It is possible to create multiple paths sharing the same 4-tuple.
 Each of these paths can be closed at any time, like any other path.
@@ -415,7 +415,7 @@ connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
 in this draft, endpoints have to consider the receiption of
 a packet with a connection ID associated to an
-so far unused Path ID as an attempt to establish a new paths.
+so far unused Path ID as an attempt to establish a new path.
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
@@ -629,7 +629,7 @@ can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
 this draft, endpoints MUST only rotate to another connection IDs associated
 to the same Path ID. Use of a connection ID associated with
-a another Path ID will be considered as an attempt to open new path instead.
+another Path ID will be considered as an attempt to open a new path instead.
 
 Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
