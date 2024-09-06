@@ -1252,9 +1252,6 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.7">
                 <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-keep-alive" class="internal xref">Keep Alive</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.8">
-                <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-connection-id-changes-and-n" class="internal xref">Connection ID Changes and NAT Rebindings</a></p>
-</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
@@ -1341,19 +1338,14 @@ associated with the old path. The multipath extension specified in this document
 several changes to that mechanism:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-3.1">
-          <p id="section-1-3.1.1">Simultaneous transmission of non-probing packets on multiple
-paths.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-3.1.1">Simultaneous transmission on multiple paths.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-3.2">
-          <p id="section-1-3.2.1">Continuous use of an existing path even if non-probing packets have
-been received on another path.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-3.2.1">Introduction of a path idendifier to manage connection IDs and
+packet number spaces per path.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-3.3">
-          <p id="section-1-3.3.1">Introduction of an path identifier to manage connection IDs and
-packet number spaces per path.<a href="#section-1-3.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-3.4">
-          <p id="section-1-3.4.1">Removal of paths that have been abandoned.<a href="#section-1-3.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-3.3.1">Removal of paths that have been abandoned.<a href="#section-1-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-4">As such, this extension specifies a departure from the specification of
@@ -1450,8 +1442,7 @@ address as well as source and destination port.<a href="#section-1.1-2.6.1" clas
             <p id="section-1.1-2.7.1">Migration is detected without ambiguity
 when a packet arrives with a connection ID
 pointing to an existing path ID, but the connection ID and/or the
-4-tuple are different from the value associated with that path
-(see <a href="#migration" class="auto internal xref">Section 6.8</a>).<a href="#section-1.1-2.7.1" class="pilcrow">¶</a></p>
+4-tuple are different from the value currently used for that path.<a href="#section-1.1-2.7.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-2.8">
             <p id="section-1.1-2.8.1">Paths can be closed at any time, as specified in <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-1.1-2.8.1" class="pilcrow">¶</a></p>
@@ -1689,22 +1680,19 @@ the endpoint MUST explicitly close the path as specified in
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
 is negotiated, the reception of a "non-probing"
-packet on a new path needs to be considered as a path initiation
-attempt that does not impact the path status of any existing
+packet on a new path with a new so far unused Path ID
+does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control
 limits for this path are respected.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7">Further, in contrast with the specification in
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server MUST NOT assume that
-receiving non-probing packets on a new path with a new connection ID
-indicates an attempt
-to migrate to that path.  Instead, servers SHOULD consider new paths
-over which non-probing packets have been received as available
-for transmission. Reception of QUIC packets with a path ID pointing to
-an existing path but with a different connection ID or from a different 4-tuple
-than the one previously associated with that path ID
-should be considered as a path migration as further discussed in <a href="#migration" class="auto internal xref">Section 6.8</a>.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">Connection ID changes as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and
+in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> for connection migration apply for
+connection IDs associated to the same Path ID.
+With the successful negotiation of the extension specified
+in this draft, endpoints have to consider the receiption of
+a packet with a connection ID associated to an
+so far unused Path ID as an attempt to establish a new path.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 <p id="section-3.1-8">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. In situations where multiple paths are established, the
@@ -1765,7 +1753,7 @@ to detect and ignore outdated information.<a href="#section-3.2-6" class="pilcro
 transmission. At any time in the connection, each endpoint can decide to
 abandon one of these paths, for example following changes in local
 connectivity or local preferences. After an endpoint abandons
-a path, the peer can expect to not receive any more non-probing packets on
+a path, the peer can expect to not receive any more packets on
 that path.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">Note that other explicit closing mechanisms of <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> still
 apply on the whole connection. In particular, the reception of either a
@@ -1866,12 +1854,13 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-2">When more than one path is available, hosts shall monitor the arrival of
-non-probing packets and the acknowledgements for the packets sent over each
-path. Hosts SHOULD stop sending traffic on a path if for at least the period of the
+packets and acknowledgements for packets sent over each
+path. Hosts MAY consider closing a path if for at least the period of the
 idle timeout as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1." class="relref">Section 10.1.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
-(a) no non-probing packet was received or (b) no
-non-probing packet sent over this path was acknowledged, but MAY ignore that
-rule if it would disqualify all available paths.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
+(a) no packet was received or (b) no packet sent over this path was acknowledged.
+Endpoints that desire to close a path because of the idle timer rule
+MUST do so explicitly by sending a PATH_ABANDON frame on another active path,
+as defined in <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-3">To avoid idle timeout of a path, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.  Sending
@@ -1881,9 +1870,6 @@ periodic PING frames also helps prevent middlebox timeout, as discussed in
 trade-off between keeping resources, such as connection IDs, in use
 for an excessive time or having to promptly re-establish a path
 after a spurious estimate of path abandonment by the client.<a href="#section-3.3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-5">Endpoints that desire to close a path because of the idle timer rule
-MUST do so explicitly by sending a PATH_ABANDON frame on another active path, as defined in
-<a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="abandon-early">
@@ -1936,7 +1922,13 @@ As further specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#sectio
 cannot be issued more than once on the same connection
 and therefore are unique for the scope of the connection,
 regardless of the associated Path ID.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
-<p id="section-3.5-3">Over a given path, both endpoints use connection IDs associated to a given Path
+<p id="section-3.5-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
+can change the connection ID it uses to another available one
+at any time during the connection. For the extension specified in
+this draft, endpoints MUST only rotate to another connection IDs associated
+to the same Path ID. Use of a connection ID associated with
+another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+<p id="section-3.5-4">Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
 for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
 in the issuing of Path IDs through their connection ID advertisements as path initiation
@@ -1946,8 +1938,8 @@ for only one Path ID inside range [1, 2], it should select Path ID 1 (and not Pa
 ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
 or path initiation attempts with in order use of Path IDs
-due to out-of-order delivery or path validation failure.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
-<p id="section-3.5-4"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
+due to out-of-order delivery or path validation failure.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+<p id="section-3.5-5"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
 In order to identify a connection ID correctly when the multipath extension is used,
 endpoints have to use the MP_RETIRE_CONNECTION_ID frame instead
 of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
@@ -1956,27 +1948,27 @@ Endpoints can also use MP_NEW_CONNECTION_ID and
 MP_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
 however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid as well and endpoints need to process these frames accordingly
-as corresponding to Path ID 0.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
-<p id="section-3.5-5">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
+as corresponding to Path ID 0.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
+<p id="section-3.5-6">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths-frame" class="auto internal xref">Section 7.7</a>)
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater Path ID is a connection error as specified
 in <a href="#frames" class="auto internal xref">Section 7</a>.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active
-path identifiers.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
-<p id="section-3.5-6">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
+path identifiers.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
+<p id="section-3.5-7">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
 those that are not actively used anymore, and the server is supposed to provide
 replacements for that path, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. In response, if the path is still active, the peer
-SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
-<p id="section-3.5-7">Retirement of connection IDs will not retire the Path ID
+SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
+<p id="section-3.5-8">Retirement of connection IDs will not retire the Path ID
 that corresponds to the connection ID or any other path ressources
-as the packet number space is associated with a path.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
-<p id="section-3.5-8">The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
+as the packet number space is associated with a path.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
+<p id="section-3.5-9">The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
-to use a different connection ID for the same Path ID when doing so.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
+to use a different connection ID for the same Path ID when doing so.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2328,30 +2320,6 @@ Some applications may wish to ensure that one path remains active, while others 
 two or more active paths during the connection lifetime. Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="migration">
-<section id="section-6.8">
-        <h3 id="name-connection-id-changes-and-n">
-<a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-connection-id-changes-and-n" class="section-name selfRef">Connection ID Changes and NAT Rebindings</a>
-        </h3>
-<p id="section-6.8-1"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
-can change the connection ID it uses to another available one
-at any time during the connection. As such a sole change of the Connection
-ID without any change in the address does not indicate a path change and
-the endpoint can keep the same congestion control and RTT measurement state.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
-<p id="section-6.8-2">While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. Servers observing a 4-tuple change will
-perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
-If path validation process succeeds, the endpoints set
-the path's congestion controller and round-trip time
-estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.8-2" class="pilcrow">¶</a></p>
-<p id="section-6.8-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows an endpoint to skip validation of
-a peer address if that address has been seen recently. However, when the
-multipath extension is used and an endpoint has multiple addresses that
-could lead to switching between different paths, it should rather maintain
-multiple open paths instead.<a href="#section-6.8-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
