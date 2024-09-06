@@ -109,18 +109,17 @@ Table of Contents
      7.5.  MP_NEW_CONNECTION_ID frames
      7.6.  MP_RETIRE_CONNECTION_ID frames
      7.7.  MAX_PATH_ID frames
-   8.  Error Codes
-   9.  IANA Considerations
-   10. Security Considerations
-     10.1.  Memory Allocation for Per-Path Resources
-     10.2.  Request Forgery with Spoofed Address
-     10.3.  Use of Transport Layer Security and the AEAD Encryption
-            Nonce
-   11. Contributors
-   12. Acknowledgments
-   13. References
-     13.1.  Normative References
-     13.2.  Informative References
+   8.  IANA Considerations
+   9.  Security Considerations
+     9.1.  Memory Allocation for Per-Path Resources
+     9.2.  Request Forgery with Spoofed Address
+     9.3.  Use of Transport Layer Security and the AEAD Encryption
+           Nonce
+   10. Contributors
+   11. Acknowledgments
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -336,7 +335,7 @@ Table of Contents
    IDs.  If an initial_max_path_id transport parameter is received and
    the carrying packet contains a zero-length connection ID, the
    receiver MUST treat this as a connection error of type
-   MP_PROTOCOL_VIOLATION and close the connection.
+   PROTOCOL_VIOLATION and close the connection.
 
    The initial_max_path_id parameter MUST NOT be remembered
    (Section 7.4.1 of [QUIC-TRANSPORT]).  New paths can only be used
@@ -1089,7 +1088,7 @@ Table of Contents
    greater than the announced Maximum Paths value in the MAX_PATH_ID
    frame or in the initial_max_path_id transport parameter, if no
    MAX_PATH_ID frame was received yet, MUST be treated as a connection
-   error of type MP_PROTOCOL_VIOLATION.
+   error of type PROTOCOL_VIOLATION.
 
    If an endpoint receives a multipath-specific frame with a path
    identifier that it cannot process anymore (e.g., because the path
@@ -1370,27 +1369,14 @@ Table of Contents
       advertised in the initial_max_path_id transport parameter.
 
    Receipt of an invalid Maximum Path Identifier value MUST be treated
-   as a connection error of type MP_PROTOCOL_VIOLATION.
+   as a connection error of type PROTOCOL_VIOLATION.
 
    Loss or reordering can cause an endpoint to receive a MAX_PATH_ID
    frame with a smaller Maximum Path Identifier value than was
    previously received.  MAX_PATH_ID frames that do not increase the
    path limit MUST be ignored.
 
-8.  Error Codes
-
-   Multipath QUIC transport error codes are 62-bit unsigned integers
-   following [QUIC-TRANSPORT].
-
-   This section lists the defined multipath QUIC transport error codes
-   that can be used in a CONNECTION_CLOSE frame with a type of 0x1c.
-   These errors apply to the entire connection.
-
-   MP_PROTOCOL_VIOLATION (experiments use 0x1001d76d3ded42f3): An
-   endpoint detected an error with protocol compliance that was not
-   covered by more specific error codes.
-
-9.  IANA Considerations
+8.  IANA Considerations
 
    This document defines a new transport parameter for the negotiation
    of enable multiple paths for QUIC, and three new frame types.  The
@@ -1440,21 +1426,7 @@ Table of Contents
 
               Table 3: Addition to QUIC Frame Types Entries
 
-   The following transport error code defined in Table 4 should be added
-   to the "QUIC Transport Error Codes" registry under the "QUIC
-   Protocol" heading.
-
-   +===================+=====================+===========+=============+
-   |Value              |Code                 |Description|Specification|
-   +===================+=====================+===========+=============+
-   |TBD (experiments   |MP_PROTOCOL_VIOLATION|Multipath  |Section 8    |
-   |use                |                     |protocol   |             |
-   |0x1001d76d3ded42f3)|                     |violation  |             |
-   +-------------------+---------------------+-----------+-------------+
-
-                   Table 4: Error Code for Multipath QUIC
-
-10.  Security Considerations
+9.  Security Considerations
 
    The multipath extension retains all the security features of
    [QUIC-TRANSPORT] and [QUIC-TLS] but requires some additional
@@ -1473,7 +1445,7 @@ Table of Contents
    *  the changes on encryption requirements due to the use of multiple
       packet number spaces.
 
-10.1.  Memory Allocation for Per-Path Resources
+9.1.  Memory Allocation for Per-Path Resources
 
    The initial_max_path_id transport parameter and the Max Path ID field
    in the MAX_PATH_ID frame limit the number of paths an endpoint is
@@ -1492,7 +1464,7 @@ Table of Contents
    number handling, only after path validation has successfully
    completed.
 
-10.2.  Request Forgery with Spoofed Address
+9.2.  Request Forgery with Spoofed Address
 
    The path validation mechanism as specified in Section 8.2. of
    [QUIC-TRANSPORT] for migration is used unchanged for initiation of
@@ -1513,7 +1485,7 @@ Table of Contents
    path validation processes e.g. by pacing them out or limiting the
    number of path initiation attempts over a certain time period.
 
-10.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
+9.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
 
    The multipath extension as specified in this document is only enabled
    after a successful handshake when both endpoints indicate support for
@@ -1534,7 +1506,7 @@ Table of Contents
    ensure a unique nonce, path identifiers are limited to 32 bits and
    cannot be reused for another path in the same connection.
 
-11.  Contributors
+10.  Contributors
 
    This document is a collaboration of authors that combines work from
    three proposals.  Further contributors that were also involved one of
@@ -1544,14 +1516,14 @@ Table of Contents
 
    *  Zhenyu Li
 
-12.  Acknowledgments
+11.  Acknowledgments
 
    Thanks to Marten Seemann, Kazuho Oku, and Martin Thomson for their
    thorough reviews and valuable contributions!
 
-13.  References
+12.  References
 
-13.1.  Normative References
+12.1.  Normative References
 
    [QUIC-RECOVERY]
               Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
@@ -1581,7 +1553,7 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-13.2.  Informative References
+12.2.  Informative References
 
    [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.
               Le Boudec, "MPTCP is not pareto-optimal: performance
