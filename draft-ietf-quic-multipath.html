@@ -1188,7 +1188,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                     <p id="section-toc.1-1.3.2.3.2.1.1"><a href="#section-3.3.1" class="auto internal xref">3.3.1</a>.  <a href="#name-avoiding-spurious-stateless" class="internal xref">Avoiding Spurious Stateless Resets</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.2">
-                    <p id="section-toc.1-1.3.2.3.2.2.1"><a href="#section-3.3.2" class="auto internal xref">3.3.2</a>.  <a href="#name-handling-mp_ack-for-abandon" class="internal xref">Handling MP_ACK for abandoned paths</a></p>
+                    <p id="section-toc.1-1.3.2.3.2.2.1"><a href="#section-3.3.2" class="auto internal xref">3.3.2</a>.  <a href="#name-handling-path_ack-for-aband" class="internal xref">Handling PATH_ACK for abandoned paths</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.3">
                     <p id="section-toc.1-1.3.2.3.2.3.1"><a href="#section-3.3.3" class="auto internal xref">3.3.3</a>.  <a href="#name-idle-timeout" class="internal xref">Idle Timeout</a></p>
@@ -1258,7 +1258,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-new-frames" class="internal xref">New Frames</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
-                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-mp_ack-frame" class="internal xref">MP_ACK Frame</a></p>
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-path_ack-frame" class="internal xref">PATH_ACK Frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-path_abandon-frame" class="internal xref">PATH_ABANDON Frame</a></p>
@@ -1270,10 +1270,10 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-path_available-frame" class="internal xref">PATH_AVAILABLE frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-mp_new_connection_id-frames" class="internal xref">MP_NEW_CONNECTION_ID frames</a></p>
+                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-path_new_connection_id-fram" class="internal xref">PATH_NEW_CONNECTION_ID frames</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.6">
-                <p id="section-toc.1-1.7.2.6.1"><a href="#section-7.6" class="auto internal xref">7.6</a>.  <a href="#name-mp_retire_connection_id-fra" class="internal xref">MP_RETIRE_CONNECTION_ID frames</a></p>
+                <p id="section-toc.1-1.7.2.6.1"><a href="#section-7.6" class="auto internal xref">7.6</a>.  <a href="#name-path_retire_connection_id-f" class="internal xref">PATH_RETIRE_CONNECTION_ID frames</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.7">
                 <p id="section-toc.1-1.7.2.7.1"><a href="#section-7.7" class="auto internal xref">7.7</a>.  <a href="#name-max_path_id-frames" class="internal xref">MAX_PATH_ID frames</a></p>
@@ -1468,10 +1468,10 @@ The connection ID of a packet binds the packet to a path identifier, and therefo
 to a packet number space.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>, PATH_BACKUP <a href="#path-backup-frame" class="auto internal xref">Section 7.3</a>},
-PATH_AVAILABLE <a href="#path-available-frame" class="auto internal xref">Section 7.4</a> as well as MP_ACK <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>.
+such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>, PATH_STANDBY <a href="#path-backup-frame" class="auto internal xref">Section 7.3</a>},
+PATH_AVAILABLE <a href="#path-available-frame" class="auto internal xref">Section 7.4</a> as well as PATH_ACK <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>.
 Further, connection IDs are issued per Path ID using the
-MP_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>).
+PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>).
 That means each connection ID is associated with exactly one path identifier
 but multiple connection IDs are usually issued for each path identifier.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
 <p id="section-1.2-3">The Path ID of the initial path is 0. Connection IDs
@@ -1573,9 +1573,9 @@ respond to unintentional migration events (<span><a href="https://rfc-editor.org
 the multipath extension. If such a cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
 TRANSPORT_PARAMETER error.<a href="#section-2-11" class="pilcrow">¶</a></p>
-<p id="section-2-12">The MP_ACK frame, as specified in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>, is used to
+<p id="section-2-12">The PATH_ACK frame, as specified in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>, is used to
 acknowledge 1-RTT packets.
-Compared to the ACK frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the MP_ACK frame additionally
+Compared to the ACK frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the PATH_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.<a href="#section-2-12" class="pilcrow">¶</a></p>
 <p id="section-2-13">As multipath support is unknown during the handshake, acknowledgements of
 Initial and Handshake packets are sent using ACK frames.
@@ -1583,11 +1583,11 @@ If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
 Path ID 0.<a href="#section-2-13" class="pilcrow">¶</a></p>
 <p id="section-2-14">After the handshake concluded if negotiation of multipath support succeeded,
-endpoints SHOULD use MP_ACK frames instead of ACK frames,
+endpoints SHOULD use PATH_ACK frames instead of ACK frames,
 also for acknowledging so far unacknowledged 0-RTT packets, using
 Path ID 0. Similarly after a successful handshake, endpoints SHOULD also use
-the MP_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
-respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs for
+the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
+respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
 Path ID 0.<a href="#section-2-14" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1644,7 +1644,7 @@ in path usage (see <a href="#path-backup-frame" class="auto internal xref">Secti
 <p id="section-3.1-1">Opening a new path requires the
 use of a new connection ID (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
 Instead of NEW_CONNECTION_ID frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.15" class="relref">Section 19.15</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
-each endpoint uses the MP_NEW_CONNECTION_ID frame as specified in this extension
+each endpoint uses the PATH_NEW_CONNECTION_ID frame as specified in this extension
 to issue Path ID-specific connections IDs.
 The same Path ID is used in both directions. As such to open
 a new path, both sides need at least
@@ -1659,15 +1659,15 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
 unless it has previously validated that address.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">MP_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
-If the MP_ACK is preferred to be sent on the same path as the acknowledged
+<p id="section-3.1-3">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
+If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> for further guidance), it can be beneficial
-to bundle an MP_ACK frame with the PATH_RESPONSE frame during
+to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
 path validation.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">If the server receives a PATH_CHALLENGE before receiving
-a MP_NEW_CONNECTION_ID for the specific path, it SHOULD
+a PATH_NEW_CONNECTION_ID for the specific path, it SHOULD
 ignore the PATH_CHALLENGE. Note that the
-MP_NEW_CONNECTION_ID might be sent in the same
+PATH_NEW_CONNECTION_ID might be sent in the same
 packet and in this case the PATH_CHALLENGE SHOULD
 be processed.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.1-5">If validation succeeds, the client can continue to use the path.
@@ -1782,7 +1782,7 @@ both to avoid generating spurious stateless packets as specified in
 <a href="#spurious-stateless-reset" class="auto internal xref">Section 3.3.1</a> and to be able to acknowledge the
 last packets received from the peer as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>).<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 <p id="section-3.3-5">After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
-promptly send MP_ACK frames to acknowledge all packets received on
+promptly send PATH_ACK frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>).
 When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
@@ -1828,18 +1828,18 @@ sent by the peer will not cause the closure of the QUIC connection.<a href="#sec
 </div>
 <div id="ack-after-abandon">
 <section id="section-3.3.2">
-          <h4 id="name-handling-mp_ack-for-abandon">
-<a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-handling-mp_ack-for-abandon" class="section-name selfRef">Handling MP_ACK for abandoned paths</a>
+          <h4 id="name-handling-path_ack-for-aband">
+<a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-handling-path_ack-for-aband" class="section-name selfRef">Handling PATH_ACK for abandoned paths</a>
           </h4>
 <p id="section-3.3.2-1">When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some other packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
-send MP_ACK frames promptly, to avoid unnecessary data
+send PATH_ACK frames promptly, to avoid unnecessary data
 retransmission after the peer deletes path resources.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.3.2-2">These MP_ACK frames MUST be sent on a different path than the
+<p id="section-3.3.2-2">These PATH_ACK frames MUST be sent on a different path than the
 path being abandoned.<a href="#section-3.3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.3.2-3">MP_ACK frames received after the endpoint has entirely deleted
+<p id="section-3.3.2-3">PATH_ACK frames received after the endpoint has entirely deleted
 a path MUST be silently discarded.<a href="#section-3.3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1906,11 +1906,11 @@ PATH_RESPONSE in response to the peer's PATH_CHALLENGE.<a href="#section-3.4-1" 
         </h3>
 <p id="section-3.5-1">With the multipath extension, each connection ID is associated with one path
 that is identified by the Path ID that is specified in the Path Identifier field of
-the MP_NEW_CONNECTION_ID frame <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>.
+the PATH_NEW_CONNECTION_ID frame <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>.
 The Path ID 0 indicates the initial path of the connection.
 Respectively, the connection IDs used during the handshake belong to the initial path
 with Path ID 0.
-The MP_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
+The PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
 In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue a Connection ID for at least one unused Path ID, as long as it remains
 compatible with the peer's Maximum Path ID limit.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
@@ -1941,11 +1941,11 @@ or path initiation attempts with in order use of Path IDs
 due to out-of-order delivery or path validation failure.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 <p id="section-3.5-5"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
 In order to identify a connection ID correctly when the multipath extension is used,
-endpoints have to use the MP_RETIRE_CONNECTION_ID frame instead
+endpoints have to use the PATH_RETIRE_CONNECTION_ID frame instead
 of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
 connection ID sequence number, at least for all paths with a Path ID other than 0.
-Endpoints can also use MP_NEW_CONNECTION_ID and
-MP_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
+Endpoints can also use PATH_NEW_CONNECTION_ID and
+PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
 however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid as well and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
@@ -1960,13 +1960,13 @@ path identifiers.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
 <p id="section-3.5-7">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
 those that are not actively used anymore, and the server is supposed to provide
 replacements for that path, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
-Sending a MP_RETIRE_CONNECTION_ID frame indicates that the connection ID
+Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. In response, if the path is still active, the peer
-SHOULD provide new connection IDs using MP_NEW_CONNECTION_ID frames.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
+SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
 <p id="section-3.5-8">Retirement of connection IDs will not retire the Path ID
 that corresponds to the connection ID or any other path ressources
 as the packet number space is associated with a path.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
-<p id="section-3.5-9">The peer that sends the MP_RETIRE_CONNECTION_ID frame can keep sending data
+<p id="section-3.5-9">The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
 to use a different connection ID for the same Path ID when doing so.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
 </section>
@@ -2060,18 +2060,18 @@ Path ID 0 is already used for the initial path.<a href="#section-5.1-2" class="p
    Client                                                  Server
 
    (Exchanges start on default path)
-   1-RTT[]: MP_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] --&gt;
-             &lt;-- 1-RTT[]: MP_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
-             &lt;-- 1-RTT[]: MP_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
+   1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] --&gt;
+             &lt;-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
+             &lt;-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
    ...
    (starts new path)
    1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] --&gt;
                            Checks AEAD using nonce(Path ID 1, PN 0)
         &lt;-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
-                                             MP_ACK[PathID=1, PN=0]
+                                             PATH_ACK[PathID=1, PN=0]
    Checks AEAD using nonce(Path ID 1, PN 0)
    1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
-            MP_ACK[PathID=1, PN=0], ... --&gt;
+            PATH_ACK[PathID=1, PN=0], ... --&gt;
 
 </pre>
 </div>
@@ -2113,8 +2113,8 @@ Client                                                      Server
 1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]-&gt;
                            (server tells client to abandon a path)
                     &lt;-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
-                                           MP_ACK[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S2 MP_ACK[Path ID=1, PN=Y] -&gt;
+                                           PATH_ACK[PATH ID=1, PN=X]
+1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] -&gt;
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
@@ -2220,32 +2220,32 @@ as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1<
           </tbody>
         </table>
 </div>
-<p id="section-6.3-3">The MP_ACK frames describe packets that were sent on the specified path,
+<p id="section-6.3-3">The PATH_ACK frames describe packets that were sent on the specified path,
 but they may be received through any available path. There is an
 understandable concern that if successive acknowledgements are received
 on different paths, the measured RTT samples will fluctuate widely,
 and that might result in poor performance. While this may be a concern,
 the actual behavior is complex.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
 <p id="section-6.3-4">The computed values reflect both the state of the network path and the
-scheduling decisions by the sender of the MP_ACK frames. In the example
-above, we may assume that the MP_ACK will be sent over the terrestrial
+scheduling decisions by the sender of the PATH_ACK frames. In the example
+above, we may assume that the PATH_ACK will be sent over the terrestrial
 link, because that provides the best response time. In that case, the
 computed RTT value for the satellite path will be about 350ms. This
-lower than the 600ms that would be measured if the MP_ACK came over
+lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
-for example the PTO timeout: if an MP_ACK is not received after more
-than 350ms, either the data packet or its MP_ACK were probably lost.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+for example the PTO timeout: if a PATH_ACK is not received after more
+than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
 <p id="section-6.3-5">The simplest implementation is to compute smoothedRTT and RTTvar per
-<span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which MP_ACK frames are
+<span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which PATH_ACK frames are
 received. This algorithm will provide good results,
-except if the set of paths changes and the MP_ACK sender
+except if the set of paths changes and the PATH_ACK sender
 revisits its sending preferences. This is not very
 different from what happens on a single path if the routing changes.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
 There is however an exception: some congestion
 control functions rely on estimates of the minimum RTT. It might be prudent
-for nodes to remember the path over which the MP_ACK that produced
+for nodes to remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and to restart the minimum RTT computation
 if that path is abandoned.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
 </section>
@@ -2266,15 +2266,15 @@ control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
 exceptions), can be sent and received on any active path. The scheduling
 is a local decision, based on the preferences of the application and the
 implementation.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
-<p id="section-6.4-2">Note that this implies that an endpoint may send and receive MP_ACK
+<p id="section-6.4-2">Note that this implies that an endpoint may send and receive PATH_ACK
 frames on a path different from the one that carried the acknowledged
 packets. As noted in <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> the values computed using
 the standard algorithm reflect both the characteristics of the
-path and the scheduling algorithm of MP_ACK frames. The estimates will converge
+path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
 faster if the scheduling strategy is stable, but besides that
 implementations can choose between multiple strategies such as sending
-MP_ACK frames on the path they acknowledge packets, or sending
-MP_ACK frames on the shortest path, which results in shorter control loops
+PATH_ACK frames on the path they acknowledge packets, or sending
+PATH_ACK frames on the shortest path, which results in shorter control loops
 and thus better performance.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2343,21 +2343,21 @@ anymore (e.g., because the path might have been abandoned), it
 MUST silently ignore the frame.<a href="#section-7-4" class="pilcrow">¶</a></p>
 <div id="mp-ack-frame">
 <section id="section-7.1">
-        <h3 id="name-mp_ack-frame">
-<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-mp_ack-frame" class="section-name selfRef">MP_ACK Frame</a>
+        <h3 id="name-path_ack-frame">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-path_ack-frame" class="section-name selfRef">PATH_ACK Frame</a>
         </h3>
-<p id="section-7.1-1">The MP_ACK frame (types TBD-00 and TBD-01)
+<p id="section-7.1-1">The PATH_ACK frame (types TBD-00 and TBD-01)
 is an extension of the ACK frame specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. It is
 used to acknowledge packets that were sent on different paths, as
-each path as its own packet number space. If the frame type is TBD-01, MP_ACK frames
+each path as its own packet number space. If the frame type is TBD-01, PATH_ACK frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.1-2">MP_ACK frame is formatted as shown in <a href="#fig-mp-ack-format" class="auto internal xref">Figure 3</a>.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<span id="name-mp_ack-frame-format"></span><div id="fig-mp-ack-format">
+<p id="section-7.1-2">PATH_ACK frame is formatted as shown in <a href="#fig-mp-ack-format" class="auto internal xref">Figure 3</a>.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+<span id="name-path_ack-frame-format"></span><div id="fig-mp-ack-format">
 <figure id="figure-3">
           <div class="alignLeft art-text artwork" id="section-7.1-3.1">
 <pre>
-  MP_ACK Frame {
+  PATH_ACK Frame {
     Type (i) = TBD-00..TBD-01
          (experiments use  0x15228c00-0x15228c01),
     Path Identifier (i),
@@ -2371,7 +2371,7 @@ on the acknowledged packet number space up to this point.<a href="#section-7.1-1
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-mp_ack-frame-format" class="selfRef">MP_ACK Frame Format</a>
+<a href="#name-path_ack-frame-format" class="selfRef">PATH_ACK Frame Format</a>
           </figcaption></figure>
 </div>
 <p id="section-7.1-4">Compared to the ACK frame specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the following
@@ -2380,7 +2380,7 @@ field is added.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
           <dt id="section-7.1-5.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-5.2">
             <p id="section-7.1-5.2.1">The Path ID associated with the packet number space of the 0-RTT and 1-RTT packets
-which are acknowledged by the MP_ACK frame.<a href="#section-7.1-5.2.1" class="pilcrow">¶</a></p>
+which are acknowledged by the PATH_ACK frame.<a href="#section-7.1-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2503,7 +2503,7 @@ sequence number of the incoming frame.<a href="#section-7.3-5" class="pilcrow">�
 PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
-<p id="section-7.3-7">A PATH_BACKUP frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
+<p id="section-7.3-7">A PATH_BACKUP frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
 </section>
@@ -2559,28 +2559,28 @@ sequence number of the incoming frame.<a href="#section-7.4-5" class="pilcrow">�
 PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.<a href="#section-7.4-6" class="pilcrow">¶</a></p>
-<p id="section-7.4-7">A PATH_AVAILABLE frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
+<p id="section-7.4-7">A PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.<a href="#section-7.4-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mp-new-conn-id-frame">
 <section id="section-7.5">
-        <h3 id="name-mp_new_connection_id-frames">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-mp_new_connection_id-frames" class="section-name selfRef">MP_NEW_CONNECTION_ID frames</a>
+        <h3 id="name-path_new_connection_id-fram">
+<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-path_new_connection_id-fram" class="section-name selfRef">PATH_NEW_CONNECTION_ID frames</a>
         </h3>
-<p id="section-7.5-1">The MP_NEW_CONNECTION_ID frame (type=0x15228c09)
+<p id="section-7.5-1">The PATH_NEW_CONNECTION_ID frame (type=0x15228c09)
 is an extension of the NEW_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.15" class="relref">Section 19.15</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 It is used to provide its peer with alternative connection IDs for 1-RTT packets
 for a specific path. The peer can then use a different connection ID on the same path
 to break linkability when migrating on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
-<p id="section-7.5-2">MP_NEW_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-connection-id-frame-format" class="auto internal xref">Figure 7</a>.<a href="#section-7.5-2" class="pilcrow">¶</a></p>
-<span id="name-mp_new_connection_id-frame-"></span><div id="fig-mp-connection-id-frame-format">
+<p id="section-7.5-2">PATH_NEW_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-connection-id-frame-format" class="auto internal xref">Figure 7</a>.<a href="#section-7.5-2" class="pilcrow">¶</a></p>
+<span id="name-path_new_connection_id-frame"></span><div id="fig-mp-connection-id-frame-format">
 <figure id="figure-7">
           <div class="alignLeft art-text artwork" id="section-7.5-3.1">
 <pre>
-MP_NEW_CONNECTION_ID Frame {
+PATH_NEW_CONNECTION_ID Frame {
   Type (i) = TBD-05 (experiments use 0x15228c09),
   Path Identifier (i),
   Sequence Number (i),
@@ -2592,7 +2592,7 @@ MP_NEW_CONNECTION_ID Frame {
 </pre>
 </div>
 <figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
-<a href="#name-mp_new_connection_id-frame-" class="selfRef">MP_NEW_CONNECTION_ID Frame Format</a>
+<a href="#name-path_new_connection_id-frame" class="selfRef">PATH_NEW_CONNECTION_ID Frame Format</a>
           </figcaption></figure>
 </div>
 <p id="section-7.5-4">Compared to the NEW_CONNECTION_ID frame specified in
@@ -2618,32 +2618,32 @@ connection IDs for the initial path with Path ID 0.<a href="#section-7.5-8" clas
 <p id="section-7.5-9">The last paragraph of <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies how to
 verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
 The same rule
-applies for MP_RETIRE_CONNECTION_ID frames, but it applies per path. After the
+applies for PATH_RETIRE_CONNECTION_ID frames, but it applies per path. After the
 multipath extension is negotiated successfully, the rule
 for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-7.5-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mp-retire-conn-id-frame">
 <section id="section-7.6">
-        <h3 id="name-mp_retire_connection_id-fra">
-<a href="#section-7.6" class="section-number selfRef">7.6. </a><a href="#name-mp_retire_connection_id-fra" class="section-name selfRef">MP_RETIRE_CONNECTION_ID frames</a>
+        <h3 id="name-path_retire_connection_id-f">
+<a href="#section-7.6" class="section-number selfRef">7.6. </a><a href="#name-path_retire_connection_id-f" class="section-name selfRef">PATH_RETIRE_CONNECTION_ID frames</a>
         </h3>
-<p id="section-7.6-1">The MP_RETIRE_CONNECTION_ID frame (type=0x15228c0a)
+<p id="section-7.6-1">The PATH_RETIRE_CONNECTION_ID frame (type=0x15228c0a)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. It is used
 to indicate that it will no longer use a connection ID for a specific path
 that was issued by its peer. To retire the connection ID used
 during the handshake on the initial path, Path ID 0 is used.
-Sending a MP_RETIRE_CONNECTION_ID frame also serves as a request to the peer
+Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for this path (see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
-delivered to a peer using the MP_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>).<a href="#section-7.6-1" class="pilcrow">¶</a></p>
-<p id="section-7.6-2">MP_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-7.6-2" class="pilcrow">¶</a></p>
-<span id="name-mp_retire_connection_id-fram"></span><div id="fig-mp-retire-connection-id-frame-format">
+delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>).<a href="#section-7.6-1" class="pilcrow">¶</a></p>
+<p id="section-7.6-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-7.6-2" class="pilcrow">¶</a></p>
+<span id="name-path_retire_connection_id-fr"></span><div id="fig-mp-retire-connection-id-frame-format">
 <figure id="figure-8">
           <div class="alignLeft art-text artwork" id="section-7.6-3.1">
 <pre>
-MP_RETIRE_CONNECTION_ID Frame {
+PATH_RETIRE_CONNECTION_ID Frame {
   Type (i) = TBD-06 (experiments use 0x15228c0a),
   Path Identifier (i),
   Sequence Number (i),
@@ -2651,7 +2651,7 @@ MP_RETIRE_CONNECTION_ID Frame {
 </pre>
 </div>
 <figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
-<a href="#name-mp_retire_connection_id-fram" class="selfRef">MP_RETIRE_CONNECTION_ID Frame Format</a>
+<a href="#name-path_retire_connection_id-fr" class="selfRef">PATH_RETIRE_CONNECTION_ID Frame Format</a>
           </figcaption></figure>
 </div>
 <p id="section-7.6-4">Compared to the RETIRE_CONNECTION_ID frame specified in
@@ -2666,14 +2666,14 @@ field is added:<a href="#section-7.6-4" class="pilcrow">¶</a></p>
 </dl>
 <p id="section-7.6-6">Note that the RETIRE_CONNECTION_ID frame can only be used to retire
 connection IDs for the initial path with Path ID 0.<a href="#section-7.6-6" class="pilcrow">¶</a></p>
-<p id="section-7.6-7">As the MP_NEW_CONNECTION_ID frames applies the sequence number per path,
-the sequence number in the MP_RETIRE_CONNECTION_ID frame is also per
-path. The MP_RETIRE_CONNECTION_ID frame retires the Connection ID with
+<p id="section-7.6-7">As the PATH_NEW_CONNECTION_ID frames applies the sequence number per path,
+the sequence number in the PATH_RETIRE_CONNECTION_ID frame is also per
+path. The PATH_RETIRE_CONNECTION_ID frame retires the Connection ID with
 the specified Path ID and sequence number.<a href="#section-7.6-7" class="pilcrow">¶</a></p>
 <p id="section-7.6-8">The processing of an incoming RETIRE_CONNECTION_ID frame
 is described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.17" class="relref">Section 19.17</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. The same processing
-applies for MP_RETIRE_CONNECTION_ID frames per path, while the
-processing of an RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-7.6-8" class="pilcrow">¶</a></p>
+applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
+processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-7.6-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="max-paths-frame">
@@ -2772,7 +2772,7 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
         <tbody>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01)</td>
-            <td class="text-left" rowspan="1" colspan="1">MP_ACK</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_ACK</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>
 </td>
@@ -2800,14 +2800,14 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-05 (experiments use 0x15228c09)</td>
-            <td class="text-left" rowspan="1" colspan="1">MP_NEW_CONNECTION_ID</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_NEW_CONNECTION_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.5</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-06 (experiments use 0x15228c0a)</td>
-            <td class="text-left" rowspan="1" colspan="1">MP_RETIRE_CONNECTION_ID</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_RETIRE_CONNECTION_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#mp-retire-conn-id-frame" class="auto internal xref">Section 7.6</a>
 </td>
