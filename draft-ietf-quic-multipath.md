@@ -198,7 +198,7 @@ The same Path ID is used in both directions to
 address a path in the new multipath control frames,
 such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
-Further, connection IDs are issued per Path ID ID using the
+Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
 That means each connection ID is associated with exactly one path identifier
 but multiple connection IDs are usually issued for each path identifier.
