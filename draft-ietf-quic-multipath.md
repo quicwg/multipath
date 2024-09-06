@@ -1260,7 +1260,7 @@ the specified Path ID and sequence number.
 The processing of an incoming RETIRE_CONNECTION_ID frame
 is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
-processing of an RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
+processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MAX_PATH_ID frames {#max-paths-frame}
 
