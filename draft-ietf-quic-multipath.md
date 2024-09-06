@@ -196,7 +196,7 @@ to a packet number space.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-standby-frame}}},
+such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-backup-frame}}},
 PATH_AVAILABLE {{path-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
@@ -315,8 +315,8 @@ After the handshake concluded if negotiation of multipath support succeeded,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
 also for acknowledging so far unacknowledged 0-RTT packets, using
 Path ID 0. Similarly after a successful handshake, endpoints SHOULD also use
-the MP_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
-respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs for
+the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
+respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
 Path ID 0.
 
 # Path Management {#path-management}
