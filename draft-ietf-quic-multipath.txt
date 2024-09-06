@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 7 March 2025                             Uber Technologies Inc.
+Expires: 10 March 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 7 March 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        3 September 2024
+                                                        6 September 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 March 2025.
+   This Internet-Draft will expire on 10 March 2025.
 
 Copyright Notice
 
@@ -374,7 +374,10 @@ Table of Contents
    After the handshake concluded if negotiation of multipath support
    succeeded, endpoints SHOULD use MP_ACK frames instead of ACK frames,
    also for acknowledging so far unacknowledged 0-RTT packets, using
-   Path ID 0.
+   Path ID 0.  Similarly after a successful handshake, endpoints SHOULD
+   also use the MP_NEW_CONNECTION_ID frame to provide new connection IDs
+   for Path ID 0 and, respectively, the MP_RETIRE_CONNECTION_ID frame to
+   retire connection IDs for Path ID 0.
 
 3.  Path Management
 
@@ -397,15 +400,10 @@ Table of Contents
    document does not discuss when a client decides to initiate a new
    path.  We delegate such discussion to separate documents.
 
-   To let the peer open a new path, an endpoint needs to provide its
-   peer with connection IDs for at least one unused path identifier.
-   Endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new
-   connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame
-   to retire connection IDs after a successful handshake indicating
-   multipath support by both endpoints.
-
    To open a new path, an endpoint MUST use a connection ID associated
-   with a new, unused Path ID.  Still, the receiver may observe a
+   with a new, unused Path ID.  To let the peer open a new path, an
+   endpoint needs to provide its peer with connection IDs for at least
+   one unused path identifier.  Still, the receiver may observe a
    connection ID associated with a used Path ID on different 4-tuples
    due to, e.g., NAT rebinding.  In such a case, the receiver reacts as
    specified in Section 9.3 of [QUIC-TRANSPORT] by initiating path
