@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-05T00:51:08.629637+00:00",
+  "timestamp": "2024-09-08T00:55:45.388987+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7031,7 +7031,7 @@
       "id": "I_kwDOGNtpaM5qr4Oj",
       "title": "Review error codes",
       "url": "https://github.com/quicwg/multipath/issues/253",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -7041,8 +7041,8 @@
       ],
       "body": "Currently, MP_PROTOCOL_VIOLATION is used is for a too high CID seq num in the frame as well as the handshake error case if multipath is negotiated but no CID is present.\r\n\r\nHowever, we could also decided to define more specific error codes for one or both cases. ",
       "createdAt": "2023-07-05T16:19:15Z",
-      "updatedAt": "2024-09-02T15:05:13Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-06T10:52:58Z",
+      "closedAt": "2024-09-06T10:52:58Z",
       "comments": [
         {
           "author": "kazuho",
@@ -10397,7 +10397,7 @@
       "id": "I_kwDOGNtpaM6KFX6_",
       "title": "Are MP_PATH_(AVAILABLE|STANDBY) probing frames?",
       "url": "https://github.com/quicwg/multipath/issues/347",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -10409,8 +10409,8 @@
       ],
       "body": "The draft does not modify RFC 9000's definition that \"PATH_CHALLENGE, PATH_RESPONSE, NEW_CONNECTION_ID, and PADDING frames are 'probing frames', and all other frames are 'non-probing frames'.\" However, it does say that \"A PATH_(AVAILABLE|STANDBY) frame MAY be bundled with ... a PATH_RESPONSE frame in order to indicate the preferred path usage before or during path initiation.\"\r\n\r\nThis suggests that these frames might be treated as probing frames. Either way, the draft should explicitly state that they are or are not.\r\n\r\n(Alternatively, the concept of probing packets/frames might be outmoded in a multipath world. This concept seems largely unused in this document except in Section 4.3.5.)",
       "createdAt": "2024-05-25T03:48:15Z",
-      "updatedAt": "2024-07-09T10:34:39Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-06T10:53:25Z",
+      "closedAt": "2024-09-06T10:53:25Z",
       "comments": [
         {
           "author": "mirjak",
@@ -10487,7 +10487,7 @@
       "id": "I_kwDOGNtpaM6KFY4H",
       "title": "How is \"MP_\" said?",
       "url": "https://github.com/quicwg/multipath/issues/349",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -10497,8 +10497,8 @@
       ],
       "body": "(Editorial nit.)\r\n\r\nIf it's pronounced \"em pee\", then references should be \"an MP_whatever frame\".  If it's pronounced \"multipath\", references should be \"a MP_whatever frame\".\r\n\r\nThe draft currently uses \"a\" throughout, which may be the answer, but I wanted to check.",
       "createdAt": "2024-05-25T03:56:05Z",
-      "updatedAt": "2024-09-04T15:11:12Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-06T11:58:33Z",
+      "closedAt": "2024-09-06T11:58:32Z",
       "comments": [
         {
           "author": "mirjak",
@@ -10520,6 +10520,13 @@
           "body": "Will be resolved by #426.",
           "createdAt": "2024-09-04T15:11:11Z",
           "updatedAt": "2024-09-04T15:11:11Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, that is the best part of the decision to rename frames ;-)",
+          "createdAt": "2024-09-06T11:58:33Z",
+          "updatedAt": "2024-09-06T11:58:33Z"
         }
       ]
     },
@@ -10528,7 +10535,7 @@
       "id": "I_kwDOGNtpaM6KRMf3",
       "title": "Naming consistency of frames",
       "url": "https://github.com/quicwg/multipath/issues/359",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -10540,8 +10547,8 @@
       ],
       "body": "We should maybe review the names of the frames, e.g.:\r\n\r\n1) Should we rename ACK_MP to MP_ACK? Or PATH_ACK?\r\n\r\n2) Is it MP_NEW_CONNECTION_ID or maybe rather PATH_NEW_CONNECTION_ID or NEW_PATH_CONNECTION_ID or go shorter to PATH_NEW_CID or something?\r\n\r\n3) Depending on the final definition is could be MAX_PATHS or MAX_PATH_ID",
       "createdAt": "2024-05-27T20:49:09Z",
-      "updatedAt": "2024-09-02T15:16:44Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-06T11:59:09Z",
+      "closedAt": "2024-09-06T11:59:09Z",
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -10577,6 +10584,13 @@
           "body": "As discussed in the IETF-120 session,  we will rename to PATH_ACK, PATH_CONNECTION_ID, PATH_RETIRE_CONNECTION_ID.\r\n\r\nMAX_PATH_ID will not be renamed as proposed by Mike above and confirmed in the meeting.\r\n\r\nI created PR #426\r\n",
           "createdAt": "2024-09-02T14:27:22Z",
           "updatedAt": "2024-09-02T14:27:22Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "#426 has been merged",
+          "createdAt": "2024-09-06T11:59:09Z",
+          "updatedAt": "2024-09-06T11:59:09Z"
         }
       ]
     },
@@ -11213,7 +11227,7 @@
       "id": "I_kwDOGNtpaM6PGy6X",
       "title": "Editorial: SHOULD for the wrong aspect on when to use MP_*_CONNECTION_ID frames",
       "url": "https://github.com/quicwg/multipath/issues/405",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -11223,8 +11237,8 @@
       ],
       "body": "Section 3:\r\n\"Endpoints SHOULD use the MP_NEW_CONNECTION_ID frame to provide new connection IDs and, respectively, the MP_RETIRE_CONNECTION_ID frame to retire connection IDs after a successful handshake indicating multipath support by both endpoints.\"\r\n\r\nThe SHOULD appear to point to the wrong aspect. One is required to use MP_NEW_CONNECTION_ID frame to provide new CIDs, what is SHOULD is to do it after a successful handshake. So sentence need reformulation. ",
       "createdAt": "2024-07-10T14:23:55Z",
-      "updatedAt": "2024-07-24T15:34:25Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-06T10:51:12Z",
+      "closedAt": "2024-09-06T10:51:12Z",
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -11359,7 +11373,7 @@
       "id": "I_kwDOGNtpaM6PG1GY",
       "title": "Use of Respectively without a sequence",
       "url": "https://github.com/quicwg/multipath/issues/410",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -11369,8 +11383,8 @@
       ],
       "body": "Section 3.3:\r\n\"Respectively, if there is still an active path, it is RECOMMENDED to send the PATH_ABANDON frames on another path.\"\r\nThis sentence is a bit strange, why is \"respectively\" used, I don't see how the recommendation are as a result of an enumerated order of any kind. \r\n",
       "createdAt": "2024-07-10T14:27:27Z",
-      "updatedAt": "2024-07-18T11:48:44Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-06T10:52:43Z",
+      "closedAt": "2024-09-06T10:52:43Z",
       "comments": [
         {
           "author": "mirjak",
@@ -11642,6 +11656,22 @@
           "updatedAt": "2024-09-02T14:18:10Z"
         }
       ]
+    },
+    {
+      "number": 432,
+      "id": "I_kwDOGNtpaM6VptuX",
+      "title": "When initial_max_path_id exceeds 2^32-1, which error code should be used?",
+      "url": "https://github.com/quicwg/multipath/issues/432",
+      "state": "OPEN",
+      "author": "nandsky",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "If we follow the conventions of RFC 9000, should we use TRANSPORT_PARAMETER_ERROR? If so, should we explicitly document this?\r\n\r\n[7.4. ](https://www.rfc-editor.org/rfc/rfc9000.html#section-7.4)[Transport Parameters](https://www.rfc-editor.org/rfc/rfc9000.html#name-transport-parameters)\r\n\r\n> An endpoint MUST treat receipt of a transport parameter with an invalid value as a connection error of type TRANSPORT_PARAMETER_ERROR.\r\n\r\nBy the way, would it be more appropriate to use **TRANSPORT_PARAMETER_ERROR** instead of [**TRANSPORT_PARAMETER error**](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-2-11)?\r\n\r\n> Cipher suites with a nonce shorter than 12 bytes cannot be used together with the multipath extension. If such a cipher suite is selected and the use of the multipath extension is negotiated, endpoints MUST abort the handshake with a **TRANSPORT_PARAMETER error**.\r\n",
+      "createdAt": "2024-09-06T15:54:41Z",
+      "updatedAt": "2024-09-06T15:54:41Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -41126,17 +41156,17 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "needs-review"
+        "needs PR"
       ],
       "body": "fixes #362",
       "createdAt": "2024-07-01T09:57:04Z",
-      "updatedAt": "2024-09-04T03:39:58Z",
+      "updatedAt": "2024-09-06T19:07:42Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "cbae40aab48eacc08c7b1853d131bb7b2913675f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-13",
-      "headRefOid": "73187ffb06c63565065e7bef82b1188b9b5c12ad",
+      "headRefOid": "ace598e8db24a08973a22708d684f9f70a2b6e1f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -41608,6 +41638,126 @@
               "updatedAt": "2024-09-04T03:40:25Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IGC3V",
+          "commit": {
+            "abbreviatedOid": "73187ff"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-05T14:41:15Z",
+          "updatedAt": "2024-09-05T14:41:15Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I have committed your first sentence. I will create a separate PR for you section sentence. The first part has been discussed and can be directly merged. So the second we might want to open an issue and way a bit for further feedback just to ensure transparency.",
+              "createdAt": "2024-09-05T14:41:15Z",
+              "updatedAt": "2024-09-05T14:41:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IGWkl",
+          "commit": {
+            "abbreviatedOid": "73187ff"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-05T15:08:45Z",
+          "updatedAt": "2024-09-05T15:08:45Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Two nits: \r\n\r\n1) the \"should\" in the first sentence SHOULD be capitalized.\r\n2) the second semtence is the reason it I wrote \"SHOULD\" and not \"MUST\", so the two sentences complement each other.",
+              "createdAt": "2024-09-05T15:08:45Z",
+              "updatedAt": "2024-09-05T15:08:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IHPbQ",
+          "commit": {
+            "abbreviatedOid": "73187ff"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-05T16:44:21Z",
+          "updatedAt": "2024-09-05T16:44:21Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I don't think the second sentence is the reason for a SHOULD. In the first sentence the server doesn't want to open the path. In the second sentence the server wants to open the path but can't. So I think if the server does NOT want to open the path, it MUST send the path_abandon.\r\n\r\nHowever, I don't think we should use normative language in this sentence at all because the normative part is the closing section which says:\r\n> An endpoint that wants to close a path MUST explicitly\r\n> terminate the path by sending a PATH_ABANDON frame.\r\n\r\nThis applies to all situations where an endpoint wants to close a path. We don't need to and shouldn't specify the same thing normatively twice.",
+              "createdAt": "2024-09-05T16:44:21Z",
+              "updatedAt": "2024-09-05T16:45:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6INo-G",
+          "commit": {
+            "abbreviatedOid": "ace598e"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Small non-blocking comment",
+          "createdAt": "2024-09-06T07:53:59Z",
+          "updatedAt": "2024-09-06T07:54:13Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Shouldn't be this \"should\" normative?",
+              "createdAt": "2024-09-06T07:53:59Z",
+              "updatedAt": "2024-09-06T07:54:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IQHja",
+          "commit": {
+            "abbreviatedOid": "ace598e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-06T10:48:21Z",
+          "updatedAt": "2024-09-06T10:48:21Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "@huitema and I are still discussing this. Please see discussion in the conversations. I will relabel as not not-ready-to-merge.",
+              "createdAt": "2024-09-06T10:48:21Z",
+              "updatedAt": "2024-09-06T10:48:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IUMnD",
+          "commit": {
+            "abbreviatedOid": "ace598e"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-06T19:07:42Z",
+          "updatedAt": "2024-09-06T19:07:42Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "@mirjak the conversations are marked as \"resolved\", so it is hard for @qdeconinck and others to get the arguments. (This is a side effect of carrying discussions in PR instead of in a specialized issue.)\r\n\r\n@qdeconinck I think the text is fine, but we have two items of disagreement.\r\n\r\n1. Should we use normative language (e.g., should -> SHOULD) in this specific section? \r\n\r\n2. If we do use normative language, should we say SHOULD or MUST?\r\n\r\nThe argument against normative language that we are going to make a reference to {{close}}, which itself contains normative language, so we should not duplicate it. I do not think this is a strong argument, because the paragraph just before this says _\"When the multipath extension is negotiated, a client that wants to use an\r\nadditional path MUST first initiate the Address Validation procedure\r\nwith PATH_CHALLENGE and PATH_RESPONSE frames as described in\r\n{{Section 8.2 of QUIC-TRANSPORT}}...\"_ We also know from experience that using lower case \"should\" tends to confuse the readers, who will wonder whether this is a hard requirement or not.\r\n\r\nThe argument for MUST is the classic issue: if you say \"SHOULD\" instead of \"MUST\", in which cases shall the implementation not follow your advice? If you cannot spell out a case, just say MUST. In this case, there are plausible arguments for waiting a bit in some cases, e.g., waiting until an appropriate CID becomes available. That CID may well be just following the PATH_CHALLENGE in the same packet, or it may be arriving on another path. My original proposal had text to that effect, but we split it out.\r\n\r\nSo, my preference would be for SHOULD (upper case), and some additional text explaining the alternative. I think the additional text should be as \"matter of fact\" as possible. Something like: \"The endpoint MAY delay sending a PATH_RESPONSE or a PATH_ABANDON, knowing that if neither or those is sent in a reasonable time the peer will eventually close the path as specified in section {{close}}.\"",
+              "createdAt": "2024-09-06T19:07:42Z",
+              "updatedAt": "2024-09-06T19:07:42Z"
+            }
+          ]
         }
       ]
     },
@@ -41616,7 +41766,7 @@
       "id": "PR_kwDOGNtpaM50EmHb",
       "title": "remove probing concept and text on migration",
       "url": "https://github.com/quicwg/multipath/pull/389",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -41626,17 +41776,19 @@
       ],
       "body": "fixes #347 and some left-over on migration that do not apply anymore",
       "createdAt": "2024-07-01T13:26:53Z",
-      "updatedAt": "2024-09-03T17:01:04Z",
+      "updatedAt": "2024-09-06T10:53:25Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "cbae40aab48eacc08c7b1853d131bb7b2913675f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-14",
-      "headRefOid": "b7c1f093b0e9f853fece6e8928ac26209cdbcfb0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "0f52124f7f8fe823355ccf3d11e8b76df9837465",
+      "closedAt": "2024-09-06T10:53:24Z",
+      "mergedAt": "2024-09-06T10:53:24Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "915be3020a09ba3f57c4704e22b60616b9443735"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -42069,6 +42221,38 @@
               "body": "```suggestion\r\nConnection ID changes as specified in {{Section 5.1.2 of QUIC-TRANSPORT}} and\r\n```",
               "createdAt": "2024-07-08T10:45:54Z",
               "updatedAt": "2024-07-08T10:45:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6INp_l",
+          "commit": {
+            "abbreviatedOid": "b7c1f09"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Only typos",
+          "createdAt": "2024-09-06T07:55:12Z",
+          "updatedAt": "2024-09-06T07:58:11Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\n4-tuple are different from the value currently used for that path.\r\n```",
+              "createdAt": "2024-09-06T07:55:12Z",
+              "updatedAt": "2024-09-06T07:58:12Z"
+            },
+            {
+              "originalPosition": 53,
+              "body": "```suggestion\r\nso far unused Path ID as an attempt to establish a new path.\r\n```",
+              "createdAt": "2024-09-06T07:55:52Z",
+              "updatedAt": "2024-09-06T07:58:12Z"
+            },
+            {
+              "originalPosition": 105,
+              "body": "```suggestion\r\nanother Path ID will be considered as an attempt to open a new path instead.\r\n```",
+              "createdAt": "2024-09-06T07:57:34Z",
+              "updatedAt": "2024-09-06T07:58:12Z"
             }
           ]
         }
@@ -44497,13 +44681,13 @@
       ],
       "body": "Fix issue #407 ",
       "createdAt": "2024-07-12T03:16:06Z",
-      "updatedAt": "2024-09-03T16:54:51Z",
+      "updatedAt": "2024-09-06T11:54:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-407",
-      "headRefOid": "298e059dff748926b3adeffd58e238511aae1428",
+      "headRefOid": "d7eee57e5a2adc2ffbe95d186681ab184aaf0c3c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -44584,7 +44768,7 @@
       "id": "PR_kwDOGNtpaM51wnf4",
       "title": "SHOULD use MP frame for path ID 0",
       "url": "https://github.com/quicwg/multipath/pull/419",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -44594,17 +44778,19 @@
       ],
       "body": "fixes #405 ",
       "createdAt": "2024-07-18T10:23:32Z",
-      "updatedAt": "2024-09-03T16:47:58Z",
+      "updatedAt": "2024-09-06T10:51:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-1",
       "headRefOid": "64914ad5f65eccaeb7e6b1b1805694573654d2eb",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-09-06T10:51:11Z",
+      "mergedAt": "2024-09-06T10:51:11Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "f070205645d5273432054562e551ca9b514dc37b"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -44687,6 +44873,19 @@
           "createdAt": "2024-07-24T12:06:16Z",
           "updatedAt": "2024-07-24T12:06:16Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6INtRG",
+          "commit": {
+            "abbreviatedOid": "64914ad"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-06T07:59:09Z",
+          "updatedAt": "2024-09-06T07:59:09Z",
+          "comments": []
         }
       ]
     },
@@ -44695,7 +44894,7 @@
       "id": "PR_kwDOGNtpaM51w0BW",
       "title": "PATH_ABANDON on broken path",
       "url": "https://github.com/quicwg/multipath/pull/420",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -44705,17 +44904,19 @@
       ],
       "body": "fixes #410",
       "createdAt": "2024-07-18T10:51:14Z",
-      "updatedAt": "2024-09-03T16:46:13Z",
+      "updatedAt": "2024-09-06T10:52:42Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8ffcf0400d9b182044d184d7bdc9c605f3630616",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-2",
       "headRefOid": "d7a4a6ad5e247fb5c76d80aa232abf4d16730c1d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-09-06T10:52:42Z",
+      "mergedAt": "2024-09-06T10:52:42Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "db7e8ab6e4c2cb8540a68c57948d2903222bf568"
+      },
       "comments": [],
       "reviews": [
         {
@@ -44742,6 +44943,19 @@
           "body": "Looks good!",
           "createdAt": "2024-07-24T12:08:12Z",
           "updatedAt": "2024-07-24T12:08:12Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6INtsJ",
+          "commit": {
+            "abbreviatedOid": "d7a4a6a"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-06T07:59:38Z",
+          "updatedAt": "2024-09-06T07:59:38Z",
           "comments": []
         }
       ]
@@ -44787,7 +45001,7 @@
       "id": "PR_kwDOGNtpaM56K6ti",
       "title": "Rename MP_* frames to PATH_*",
       "url": "https://github.com/quicwg/multipath/pull/426",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -44797,17 +45011,19 @@
       ],
       "body": "fixes issue #359",
       "createdAt": "2024-09-02T14:26:21Z",
-      "updatedAt": "2024-09-04T19:50:39Z",
+      "updatedAt": "2024-09-06T11:58:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "7041135f5546cba33c971ea1ce0a747d953d3405",
+      "baseRefOid": "8713cb5355b04501f548efad19c22c31aa82a74a",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-3",
-      "headRefOid": "51673798f21357cf18e6d376e8673e7ab5022c4b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6bb546eebbc426d63372f9d9b0c0e80d4c659f1c",
+      "closedAt": "2024-09-06T11:58:03Z",
+      "mergedAt": "2024-09-06T11:58:03Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "12a340ba7860de9955fd291103073a780ed335f4"
+      },
       "comments": [],
       "reviews": [
         {
@@ -44854,6 +45070,39 @@
               "updatedAt": "2024-09-04T19:50:39Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IQtuL",
+          "commit": {
+            "abbreviatedOid": "6525f38"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-06T11:50:07Z",
+          "updatedAt": "2024-09-06T11:50:08Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\nFurther, connection IDs are issued per Path ID using the\r\n```",
+              "createdAt": "2024-09-06T11:50:07Z",
+              "updatedAt": "2024-09-06T11:50:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IQupx",
+          "commit": {
+            "abbreviatedOid": "b56a1b7"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good!",
+          "createdAt": "2024-09-06T11:52:19Z",
+          "updatedAt": "2024-09-06T11:52:19Z",
+          "comments": []
         }
       ]
     },
@@ -44862,7 +45111,7 @@
       "id": "PR_kwDOGNtpaM56K81Z",
       "title": "Rename PATH_STANDBY to PATH_BACKUP",
       "url": "https://github.com/quicwg/multipath/pull/427",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -44872,17 +45121,19 @@
       ],
       "body": "fixes issue #283",
       "createdAt": "2024-09-02T14:31:15Z",
-      "updatedAt": "2024-09-04T11:20:07Z",
+      "updatedAt": "2024-09-06T10:53:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7041135f5546cba33c971ea1ce0a747d953d3405",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-4",
       "headRefOid": "4fa2f917f4b458d4d1e35b6d037e0590993f8ef0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-09-06T10:53:39Z",
+      "mergedAt": "2024-09-06T10:53:39Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "8713cb5355b04501f548efad19c22c31aa82a74a"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -44924,6 +45175,19 @@
               "updatedAt": "2024-09-03T01:04:57Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6INu1M",
+          "commit": {
+            "abbreviatedOid": "4fa2f91"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-06T08:01:00Z",
+          "updatedAt": "2024-09-06T08:01:00Z",
+          "comments": []
         }
       ]
     },
@@ -44932,7 +45196,7 @@
       "id": "PR_kwDOGNtpaM56LLa-",
       "title": "Remove MP_PROTOCOL_VIOLATION",
       "url": "https://github.com/quicwg/multipath/pull/428",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -44941,17 +45205,19 @@
       ],
       "body": "fixes #253",
       "createdAt": "2024-09-02T15:04:19Z",
-      "updatedAt": "2024-09-03T16:38:54Z",
+      "updatedAt": "2024-09-06T10:52:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "3837634e471a2e996e78e9d4422bc97bec712b61",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-5",
       "headRefOid": "9e3b5bbee22e380d53669c4eca020ac6f611c899",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-09-06T10:52:57Z",
+      "mergedAt": "2024-09-06T10:52:57Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "18d8fd85cde249c05a16e42a7282ba8372355d68"
+      },
       "comments": [],
       "reviews": [
         {
@@ -44965,6 +45231,19 @@
           "body": "",
           "createdAt": "2024-09-03T01:07:38Z",
           "updatedAt": "2024-09-03T01:07:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6INvCq",
+          "commit": {
+            "abbreviatedOid": "9e3b5bb"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-06T08:01:16Z",
+          "updatedAt": "2024-09-06T08:01:16Z",
           "comments": []
         }
       ]
@@ -45290,7 +45569,7 @@
       "labels": [],
       "body": "Fixes #422.",
       "createdAt": "2024-09-04T20:37:09Z",
-      "updatedAt": "2024-09-04T22:38:01Z",
+      "updatedAt": "2024-09-05T03:11:46Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "489adf12bcc991795d0484b35d1a42a64d4dd125",
@@ -45328,6 +45607,86 @@
               "updatedAt": "2024-09-04T22:38:01Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IAPeD",
+          "commit": {
+            "abbreviatedOid": "467113f"
+          },
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-05T03:05:52Z",
+          "updatedAt": "2024-09-05T03:05:52Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "As this is the one which is most obvious from RFC9000 that it would always apply, this is probably the one I'd be most willing to leave out. It's a property of anything carrying a PATH_CHALLENGE at any time.\r\n\r\nDo you feel the same way about what's split off into the next paragraph, to call out anti-amplification explicitly? I feel like that's less obvious and more worth emphasizing.",
+              "createdAt": "2024-09-05T03:05:52Z",
+              "updatedAt": "2024-09-05T03:05:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IAQiO",
+          "commit": {
+            "abbreviatedOid": "467113f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-05T03:11:46Z",
+          "updatedAt": "2024-09-05T03:11:46Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I don't know why it should be less obvious, and in any case you are calling in out in the security considerations.",
+              "createdAt": "2024-09-05T03:11:46Z",
+              "updatedAt": "2024-09-05T03:11:46Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 431,
+      "id": "PR_kwDOGNtpaM56ibYM",
+      "title": "Delaying of PATH_RESPONSE",
+      "url": "https://github.com/quicwg/multipath/pull/431",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This change was discussed as part of PR #388",
+      "createdAt": "2024-09-05T14:44:08Z",
+      "updatedAt": "2024-09-05T17:29:54Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "489adf12bcc991795d0484b35d1a42a64d4dd125",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-6",
+      "headRefOid": "bda47aeda894a7138bb4398b358be70ab8028dd2",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6IHk8V",
+          "commit": {
+            "abbreviatedOid": "bda47ae"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "The text is a bit hard to follow until we check in the other PR on denying path!",
+          "createdAt": "2024-09-05T17:29:54Z",
+          "updatedAt": "2024-09-05T17:29:54Z",
+          "comments": []
         }
       ]
     }
