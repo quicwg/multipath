@@ -298,7 +298,7 @@ respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}).
 Cipher suites with a nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such a cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
-TRANSPORT_PARAMETER error.
+an error of type TRANSPORT_PARAMETER_ERROR.
 
 The PATH_ACK frame, as specified in {{mp-ack-frame}}, is used to
 acknowledge 1-RTT packets.
