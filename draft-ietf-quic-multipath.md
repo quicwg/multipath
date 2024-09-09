@@ -263,6 +263,10 @@ associated with Path IDs 0 and 1 should be issued by the peer.
 If an endpoint receives an initial_max_path_id transport parameter with value 0,
 the peer aims to  enable the multipath extension without allowing extra paths immediately.
 
+If an initial_max_path_id transport parameter value that is larger than 2^32-1
+is received, the receiver MUST close the connection with an error of type
+TRANSPORT_PARAMETER_ERROR.
+
 Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
 As such to allow for the use of more paths later,
