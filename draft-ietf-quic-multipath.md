@@ -186,7 +186,7 @@ Each of these paths can be closed at any time, like any other path.
 Further the design of this extension introduces an explicit path identifier
 and use of multiple packet number spaces as further explained in the next sections.
 
-## Introduction of an Explicit Path Identifier
+## Introduction of an Explicit Path Identifier {#explicit-path-id}
 
 This extension specifies a new path identifier (Path ID), which is an
 integer between 0 and 2^32-1 (inclusive). Path identifies are generated
@@ -361,8 +361,8 @@ All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
 ## Path Initiation {#path-initiation}
 
-Opening a new path requires the
-use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}).
+Opening a new path requires the use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}})
+mapped to an unused Path ID (see {{explicit-path-id}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{Section 19.15 of QUIC-TRANSPORT}},
 each endpoint uses the PATH_NEW_CONNECTION_ID frame as specified in this extension
 to issue Path ID-specific connections IDs.
