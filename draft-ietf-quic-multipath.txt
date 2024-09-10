@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 10 March 2025                            Uber Technologies Inc.
+Expires: 14 March 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 10 March 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        6 September 2024
+                                                       10 September 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 March 2025.
+   This Internet-Draft will expire on 14 March 2025.
 
 Copyright Notice
 
@@ -419,15 +419,16 @@ Table of Contents
 3.1.  Path Initiation
 
    Opening a new path requires the use of a new connection ID (see
-   Section 9.5 of [QUIC-TRANSPORT]).  Instead of NEW_CONNECTION_ID frame
-   as specified in Section 19.15 of [QUIC-TRANSPORT], each endpoint uses
-   the PATH_NEW_CONNECTION_ID frame as specified in this extension to
-   issue Path ID-specific connections IDs.  The same Path ID is used in
-   both directions.  As such to open a new path, both sides need at
-   least one connection ID (see Section 5.1.1 of [QUIC-TRANSPORT]),
-   which is associated with the same, unused Path ID.  When the peer
-   receives the PATH_CHALLENGE, it MUST pick a Connection ID with the
-   same Path ID for sending the PATH_RESPONSE.
+   Section 9.5 of [QUIC-TRANSPORT]) mapped to an unused Path ID (see
+   Section 1.2).  Instead of NEW_CONNECTION_ID frame as specified in
+   Section 19.15 of [QUIC-TRANSPORT], each endpoint uses the
+   PATH_NEW_CONNECTION_ID frame as specified in this extension to issue
+   Path ID-specific connections IDs.  The same Path ID is used in both
+   directions.  As such to open a new path, both sides need at least one
+   connection ID (see Section 5.1.1 of [QUIC-TRANSPORT]), which is
+   associated with the same, unused Path ID.  When the peer receives the
+   PATH_CHALLENGE, it MUST pick a Connection ID with the same Path ID
+   for sending the PATH_RESPONSE.
 
    When the multipath extension is negotiated, a client that wants to
    use an additional path MUST first initiate the Address Validation
