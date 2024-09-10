@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-08T00:55:45.388987+00:00",
+  "timestamp": "2024-09-10T00:51:51.018405+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -7831,7 +7831,7 @@
       "id": "I_kwDOGNtpaM51JTTC",
       "title": "Sending PATH_STANDBY before the connection ID is used is pointless",
       "url": "https://github.com/quicwg/multipath/issues/283",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "michael-eriksson",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -7841,8 +7841,8 @@
       ],
       "body": "The -06 draft allows a peer to send a `PATH_STANDBY` frame for a particular connection ID (CID) before it is used:\r\n\r\n```\r\nA PATH_STANDBY frame MAY be bundled with a NEW_CONNECTION_ID frame\r\n[...] in order to indicate the preferred path usage\r\nbefore [...] path initiation.\r\n```\r\n\r\nFrom the definition of `PATH_STANDBY`:\r\n\r\n```\r\nDestination Connection ID Sequence Number:  The sequence number of\r\n   the Destination Connection ID used by the receiver of this frame\r\n   to send packets over the path the status update corresponds to.\r\n```\r\n\r\nWhen the path is set up, each endpoint freely choses a destination CID between the CIDs that the peer has issued. This means that resulting preferred path usage depends on which CID the peer happens to chose.\r\n\r\nI think that the current path identification model is very confusing, and this observation is another indication in that direction.",
       "createdAt": "2023-10-27T11:58:33Z",
-      "updatedAt": "2024-09-02T15:05:28Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-09T13:24:46Z",
+      "closedAt": "2024-09-09T13:24:46Z",
       "comments": [
         {
           "author": "mirjak",
@@ -7927,6 +7927,13 @@
           "body": "As discussed in the IETF-120 session, we will rename the frame to PATH_BACKUP and then close this issue without further action.\r\n\r\nI created PR #427",
           "createdAt": "2024-09-02T14:31:46Z",
           "updatedAt": "2024-09-02T14:31:46Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this issue as PR #427 was merged.",
+          "createdAt": "2024-09-09T13:24:46Z",
+          "updatedAt": "2024-09-09T13:24:46Z"
         }
       ]
     },
@@ -11666,12 +11673,23 @@
       "author": "nandsky",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "design"
+      ],
       "body": "If we follow the conventions of RFC 9000, should we use TRANSPORT_PARAMETER_ERROR? If so, should we explicitly document this?\r\n\r\n[7.4. ](https://www.rfc-editor.org/rfc/rfc9000.html#section-7.4)[Transport Parameters](https://www.rfc-editor.org/rfc/rfc9000.html#name-transport-parameters)\r\n\r\n> An endpoint MUST treat receipt of a transport parameter with an invalid value as a connection error of type TRANSPORT_PARAMETER_ERROR.\r\n\r\nBy the way, would it be more appropriate to use **TRANSPORT_PARAMETER_ERROR** instead of [**TRANSPORT_PARAMETER error**](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-2-11)?\r\n\r\n> Cipher suites with a nonce shorter than 12 bytes cannot be used together with the multipath extension. If such a cipher suite is selected and the use of the multipath extension is negotiated, endpoints MUST abort the handshake with a **TRANSPORT_PARAMETER error**.\r\n",
       "createdAt": "2024-09-06T15:54:41Z",
-      "updatedAt": "2024-09-06T15:54:41Z",
+      "updatedAt": "2024-09-09T13:10:23Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for noting this oversight! Yes we need an error here and I agree that I think TRANSPORT_PARAMETER_ERROR is the right error type. I created PR #434 ",
+          "createdAt": "2024-09-09T13:10:16Z",
+          "updatedAt": "2024-09-09T13:10:16Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -41156,11 +41174,11 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "needs PR"
+        "needs-review"
       ],
       "body": "fixes #362",
       "createdAt": "2024-07-01T09:57:04Z",
-      "updatedAt": "2024-09-06T19:07:42Z",
+      "updatedAt": "2024-09-09T16:47:08Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "cbae40aab48eacc08c7b1853d131bb7b2913675f",
@@ -41756,6 +41774,46 @@
               "body": "@mirjak the conversations are marked as \"resolved\", so it is hard for @qdeconinck and others to get the arguments. (This is a side effect of carrying discussions in PR instead of in a specialized issue.)\r\n\r\n@qdeconinck I think the text is fine, but we have two items of disagreement.\r\n\r\n1. Should we use normative language (e.g., should -> SHOULD) in this specific section? \r\n\r\n2. If we do use normative language, should we say SHOULD or MUST?\r\n\r\nThe argument against normative language that we are going to make a reference to {{close}}, which itself contains normative language, so we should not duplicate it. I do not think this is a strong argument, because the paragraph just before this says _\"When the multipath extension is negotiated, a client that wants to use an\r\nadditional path MUST first initiate the Address Validation procedure\r\nwith PATH_CHALLENGE and PATH_RESPONSE frames as described in\r\n{{Section 8.2 of QUIC-TRANSPORT}}...\"_ We also know from experience that using lower case \"should\" tends to confuse the readers, who will wonder whether this is a hard requirement or not.\r\n\r\nThe argument for MUST is the classic issue: if you say \"SHOULD\" instead of \"MUST\", in which cases shall the implementation not follow your advice? If you cannot spell out a case, just say MUST. In this case, there are plausible arguments for waiting a bit in some cases, e.g., waiting until an appropriate CID becomes available. That CID may well be just following the PATH_CHALLENGE in the same packet, or it may be arriving on another path. My original proposal had text to that effect, but we split it out.\r\n\r\nSo, my preference would be for SHOULD (upper case), and some additional text explaining the alternative. I think the additional text should be as \"matter of fact\" as possible. Something like: \"The endpoint MAY delay sending a PATH_RESPONSE or a PATH_ABANDON, knowing that if neither or those is sent in a reasonable time the peer will eventually close the path as specified in section {{close}}.\"",
               "createdAt": "2024-09-06T19:07:42Z",
               "updatedAt": "2024-09-06T19:07:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Ie-XD",
+          "commit": {
+            "abbreviatedOid": "ace598e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-09T12:51:23Z",
+          "updatedAt": "2024-09-09T12:51:23Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Just on your first point: I don't understand your argument. This section has normative language; that's fine because it's the normative language on what you need to do when you open a path. However, the normative language on closing a path should be in the section on path closure. Also what I wanted to say is that the normative requirement is already there in that section on path closure and broad enough that is already covers this case (\"An endpoint that wants to close a path MUST explicitly terminate the path by sending a PATH_ABANDON frame.\"). It's not only about saying the same things twice normatively in the document in different places (which I think is also bad) but also to make clear that this case here is actually not special. It's always the same: if you want to close a path you have to send a PATH_ABANDON no matter what.\r\n\r\nHowever, I think the point you are trying to make about the sentence here is actually slightly different because it says \"should immediately close\". So the question with the word \"immediately\" in there is: do we want to give any (normative) recommendation when exactly to close the path? First, we can't really enforce that an endpoint sends anything immediately or not anyway. However, I also don't understand your point above why there should be any benefit in waiting...? If you don't send the PATH_RESPONSE immediately because you are hoping to get more ressources, then you actually don't want to close the path (and respectively should not send an PATH_ABANDON). However, if you have decided that you don't want to establish the path (and that's what the sentence says), I don't see any reason to delay the sending of a PATH_ABANDON.\r\n\r\nIn summary I don't see a reason to delay the PATH_ABANDON and I don't think we should talk about the timing at all. So I still don't think we should use normative language here. However, I agree that lower case \"should\"s are confusing and we could consider using a different phrasing that avoids that!\r\n\r\n",
+              "createdAt": "2024-09-09T12:51:23Z",
+              "updatedAt": "2024-09-09T12:51:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IhVMB",
+          "commit": {
+            "abbreviatedOid": "ace598e"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-09T16:47:08Z",
+          "updatedAt": "2024-09-09T16:47:08Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Maybe the simplest solution is to strike \"immediately\" and just say SHOULD. And yes, you are correct about the gray area between \"decide it does not want a path\" and \"decide it wants it but cannot accept just yet\" and \"accept the path\". Maybe that's something best explained in the implementation section, not here.",
+              "createdAt": "2024-09-09T16:47:08Z",
+              "updatedAt": "2024-09-09T16:47:08Z"
             }
           ]
         }
@@ -44677,11 +44735,11 @@
       "assignees": [],
       "labels": [
         "editorial",
-        "needs-review"
+        "ready-to-merge"
       ],
       "body": "Fix issue #407 ",
       "createdAt": "2024-07-12T03:16:06Z",
-      "updatedAt": "2024-09-06T11:54:04Z",
+      "updatedAt": "2024-09-09T13:50:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "50a01ed922ab7f077666a3339fbe70f832858ba8",
@@ -44760,6 +44818,26 @@
           "createdAt": "2024-09-03T16:51:28Z",
           "updatedAt": "2024-09-03T16:51:28Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Ifm4y",
+          "commit": {
+            "abbreviatedOid": "d7eee57"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "small suggestion",
+          "createdAt": "2024-09-09T13:49:50Z",
+          "updatedAt": "2024-09-09T13:50:14Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nmapped to an unused Path ID (see {{explicit-path-id}}).\r\n```",
+              "createdAt": "2024-09-09T13:49:50Z",
+              "updatedAt": "2024-09-09T13:50:14Z"
+            }
+          ]
         }
       ]
     },
@@ -45569,7 +45647,7 @@
       "labels": [],
       "body": "Fixes #422.",
       "createdAt": "2024-09-04T20:37:09Z",
-      "updatedAt": "2024-09-05T03:11:46Z",
+      "updatedAt": "2024-09-09T14:46:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "489adf12bcc991795d0484b35d1a42a64d4dd125",
@@ -45647,6 +45725,52 @@
               "updatedAt": "2024-09-05T03:11:46Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IfTF-",
+          "commit": {
+            "abbreviatedOid": "467113f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-09T13:23:03Z",
+          "updatedAt": "2024-09-09T13:23:03Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "So I think this point (and specifically this sentences) really touched right on the more fundamental discussion we had during the IETF-120 session. There we said it is a requirement to validate a new path before you can use it. How you do that (sending path challenge, padding and amplification limits) is not specific to the multipath extension and already specified sufficiently in RFC9000.\r\n\r\nPart of the discuss was that people want to still have a MUST in this draft to be explicit on the requirement that you have to validate the path before use (also for a new path and not only migration) but we should specify less of the details. That means we have to revise this sentence in any case. I guess we could maybe still also note somehow that RFC9000 considers padding to ensure that the new paths can support size requirement and there is an limit to avoid amplification attacks but it should really more being phrased as providing pointers than actual requirements.",
+              "createdAt": "2024-09-09T13:23:03Z",
+              "updatedAt": "2024-09-09T13:23:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IgPCq",
+          "commit": {
+            "abbreviatedOid": "467113f"
+          },
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-09T14:45:58Z",
+          "updatedAt": "2024-09-09T14:46:59Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I think that gets into what it means to \"use\" a path. The anti-amplification limit might be moot if you're not allowed to send real data (\"use the path\") until it's validated, but I don't see that in RFC 9000. Regular QUIC says that clients \"MAY probe for peer reachability ... prior to migrating\" and \"an endpoint MAY send data to an unvalidated peer address\" after a potential migration, which suggests that any requirement to complete validation before \"use\" is new in this document.\r\n\r\nWe've eliminated the probing/non-probing distinction, and a requirement to complete validation before using the path seems like a return to that distinction.\r\n\r\nRegardless, my intention with these sections was to provide pointers and clarify requirements that do still apply.",
+              "createdAt": "2024-09-09T14:45:58Z",
+              "updatedAt": "2024-09-09T14:46:59Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "Perhaps, though I suspect putting it there is more likely to catch the attention of someone implementing that flow.",
+              "createdAt": "2024-09-09T14:46:54Z",
+              "updatedAt": "2024-09-09T14:46:59Z"
+            }
+          ]
         }
       ]
     },
@@ -45686,6 +45810,95 @@
           "body": "The text is a bit hard to follow until we check in the other PR on denying path!",
           "createdAt": "2024-09-05T17:29:54Z",
           "updatedAt": "2024-09-05T17:29:54Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 433,
+      "id": "PR_kwDOGNtpaM562TY5",
+      "title": "Fix: TRANSPORT_PARAMETER should be TRANSPORT_PARAMETER_ERROR",
+      "url": "https://github.com/quicwg/multipath/pull/433",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial",
+        "ready-to-merge"
+      ],
+      "body": "",
+      "createdAt": "2024-09-09T12:56:08Z",
+      "updatedAt": "2024-09-09T12:56:24Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "12a340ba7860de9955fd291103073a780ed335f4",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-7",
+      "headRefOid": "50a85b5fb1cd2638958fbe3ef0be341d531630c7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 434,
+      "id": "PR_kwDOGNtpaM562Z8I",
+      "title": "TRANSPORT_PARAMETER_ERROR when initial_max_path is too large",
+      "url": "https://github.com/quicwg/multipath/pull/434",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #432 \r\n\r\nThis PR defines an error for the case when the initial_max_path value exceeds 2^32-1. As we changes the transport parameter meaning with the introduction of the explicit path ID, it was an oversight to not define an error here. Only remaining question is if TRANSPORT_PARAMETER_ERROR is the right error type?",
+      "createdAt": "2024-09-09T13:08:39Z",
+      "updatedAt": "2024-09-09T16:48:15Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "12a340ba7860de9955fd291103073a780ed335f4",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-8",
+      "headRefOid": "f2aec0c39a609f287248bab072118b7d883e7b4e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6IfJjb",
+          "commit": {
+            "abbreviatedOid": "c3d5a36"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-09T13:09:39Z",
+          "updatedAt": "2024-09-09T13:09:40Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\nIf an initial_max_path_id transport parameter value that is higher than 2^32-1\r\n```",
+              "createdAt": "2024-09-09T13:09:39Z",
+              "updatedAt": "2024-09-09T13:09:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6IhVsz",
+          "commit": {
+            "abbreviatedOid": "f2aec0c"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-09T16:48:15Z",
+          "updatedAt": "2024-09-09T16:48:15Z",
           "comments": []
         }
       ]
