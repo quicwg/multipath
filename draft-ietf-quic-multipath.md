@@ -1365,7 +1365,7 @@ followed to limit the amplification risk.
 
 However, while {{QUIC-TRANSPORT}} only allows the use of one path simultaneously
 and therefore only one path migration at the time should be validated,
-this extension allows for multiple establihed paths, that could in theory be migrated
+this extension allows for multiple open paths, that could in theory be migrated
 all at the same time, and it allows for multiple paths that could be initialised
 simultaneously. Therefore, each path could be used to further amplify an attack.
 Respectively endpoints needs limit the number of maximum paths and might consider
