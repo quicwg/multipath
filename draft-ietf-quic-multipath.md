@@ -1106,7 +1106,7 @@ Path Identifier:
 
 Path Status Sequence Number:
 : A variable-length integer specifying the per-path sequence number assigned for
-  this frame. 
+  this frame.
 
 The sequence number space is common to the two frame types,
 and monotonically increasing values MUST be used when sending PATH_AVAILABLE or
@@ -1118,7 +1118,7 @@ PATH_STANDBY frame if it previously received another PATH_STANDBY frame
 or PATH_AVAILABLE frame for the same Path ID with a Path Status sequence number
 equal to or higher than the Path Status sequence number of the incoming frame.
 
-The requrirement of monotonically increasing sequence numbers
+The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
 same sequence number for PATH_AVAILABLE or PATH_STANDBY Frames
 on different paths. The receiver of
