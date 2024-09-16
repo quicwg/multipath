@@ -1306,11 +1306,11 @@ PATHS_BLOCKED Frame {
 PATHS_BLOCKED frames contain the following field:
 
 Maximum Path Identifier:
-: A variable-length integer indicating the maximum number of path identifiers
-  allowed at the time the frame was sent. This value MUST NOT exceed 2^32-1
-  and MUST NOT be lower than the value advertised in the initial_max_path_id
-  transport parameter. Receipt of an invalid Maximum Path Identifier value MUST
-  be treated as a connection error of type MP_PROTOCOL_VIOLATION.
+: A variable-length integer indicating the maximum path identifier that was
+  allowed at the time the frame was sent. If the received value is lower than
+  the currently allowed maximum value, this frame can be ignored.
+  Receipt of a value that is higher than the local maximum value MUST
+  be treated as a connection error of type PROTOCOL_VIOLATION.
 
 # Error Codes {#error-codes}
 
