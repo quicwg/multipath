@@ -435,12 +435,12 @@ so far unused Path ID as an attempt to establish a new path.
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
-new client address. In situations where multiple paths have been established, the
-client may have received several tokens, each tied to a different address.
-When considering using a token for subsequent connections, the client ought to
-carefully select the token to use, due to the inherent ambiguity associated
-with determining the exact address to which a token is bound. To alleviate such a
-token ambiguity issue, a server may issue a token that is capable of validating
+new client address. The client will receive several tokens. When considering using a token
+for subsequent connections, it might be difficult for the client
+to pick the "right" token among multiple tokens obtained in a previous connection.
+The client is likely to fall back to the strategy specified in {{Section 8.1.3 of QUIC-TRANSPORT}},
+i.e., pick the last received token. To avoid issues when clients make the "wrong" choice,
+a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
 found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
