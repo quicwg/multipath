@@ -1012,7 +1012,7 @@ multiple open paths instead.
 
 As noted in {{basic-design-points}}, it is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
-to create paths that use different Differentiated Service markings.
+to create paths that use different Differentiated Service {{?RFC2475}} markings.
 This could be done in conjunction with scheduling algorithms
 that match streams to paths, so that for example data frame for
 low priority streams are sent over low priority paths.
