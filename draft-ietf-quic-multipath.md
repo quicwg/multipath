@@ -1135,7 +1135,7 @@ PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
-A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a MP_NEW_CONNECTION_ID frame or
+A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
