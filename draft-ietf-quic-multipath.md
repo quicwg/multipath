@@ -140,7 +140,7 @@ address and the server can listen on one or several ports per IP
 address.
 
 In addition to these core features, an application using the multipath extension will typically
-need additional algorithms to handle the number of active paths and how they are used to
+need additional algorithms to handle multiple, simultaneously open paths and how they are used to
 send packets. As these differ depending on the application's requirements,
 this proposal only specifies a simple basic packet
 scheduling algorithm (see {{packet-scheduling}}),
@@ -212,7 +212,7 @@ that does not change the Path ID.
 
 ## Use of Multiple Packet Number Spaces
 
-This extension uses multiple packet number spaces, one for each active path.
+This extension uses multiple packet number spaces, one for each path.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in {{QUIC-TRANSPORT}}.
 Using multiple packet number spaces enables direct use of the
 loss recovery and congestion control mechanisms defined in
@@ -290,12 +290,13 @@ New paths can only be used after handshake completion.
 This extension does not change the definition of any transport parameter
 defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 
-The initial_max_path_id transport parameter limits the initial maximum number of active paths
+The initial_max_path_id transport parameter limits the initial maximum number of open paths
 that can be used during a connection.
 
 The active_connection_id_limit transport parameter
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
 initial_max_path_id parameter is negotiated successfully.
+As defined in {{Section 5.1.1 of QUIC-TRANSPORT}} connection IDs that are issued and not retired are considered active.
 Endpoints might prefer to retain spare connection IDs so that they can
 respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}).
 
@@ -360,7 +361,7 @@ This proposal adds five multipath control frames for path management:
 - PATH_BACKUP and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-backup-frame}} and {{path-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-active paths, and PATHS_BLOCKED frame (see {{paths-blocked-frame}})
+path identifiers, and PATHS_BLOCKED frame (see {{paths-blocked-frame}})
 to notify the peer of being blocked to open new paths as
 the limit of active paths set by the peer has been reached.
 
@@ -434,7 +435,7 @@ so far unused Path ID as an attempt to establish a new path.
 
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
-new client address. In situations where multiple paths are established, the
+new client address. In situations where multiple paths have been established, the
 client may have received several tokens, each tied to a different address.
 When considering using a token for subsequent connections, the client ought to
 carefully select the token to use, due to the inherent ambiguity associated
@@ -459,7 +460,7 @@ the peer to use its own logic to split traffic among available paths.
 
 PATH_BACKUP marks a path as "standby", i.e., it suggests that no traffic
 should be sent on that path if another path is available.
-If all active paths are marked as "standby", no guidance is provided about
+If all established paths are marked as "standby", no guidance is provided about
 which path should be used.
 
 If an endpoint starts using a path that was marked as "standby" by its peer
@@ -533,10 +534,10 @@ for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed. Thus,
 even if connectivity on that path is already broken
-but there is still another active path, it is RECOMMENDED to
+but there is still another usable path, it is RECOMMENDED to
 send the PATH_ABANDON frames on another path.
 
-If a PATH_ABANDON frame is received for the only active path of a QUIC
+If a PATH_ABANDON frame is received for the only open path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. If the client received a PATH_ABANDON
 frame for the last open path, it MAY instead try to open a new path, if
@@ -597,7 +598,7 @@ path. Hosts MAY consider closing a path if for at least the period of the
 idle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}}
 (a) no packet was received or (b) no packet sent over this path was acknowledged.
 Endpoints that desire to close a path because of the idle timer rule
-MUST do so explicitly by sending a PATH_ABANDON frame on another active path,
+MUST do so explicitly by sending a PATH_ABANDON frame on another path,
 as defined in {{path-close}}.
 
 To avoid idle timeout of a path, endpoints
@@ -686,10 +687,10 @@ identifier was needed but the current limit set by the peer prevented the
 creation of the new path.
 
 If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
-those that are not actively used anymore, and the server is supposed to provide
+those that are not used anymore, and the server is supposed to provide
 replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
 Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
-will not be used anymore. In response, if the path is still active, the peer
+will not be used anymore. In response, if the path is still open, the peer
 SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
 
 Retirement of connection IDs will not retire the Path ID
@@ -752,7 +753,7 @@ When this specification is used, endpoints SHOULD wait for at least three times
 the largest PTO among all the paths before initiating a new key update
 after receiving an acknowledgement that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
-which used three times the PTO of the only one active path.
+which used three times the PTO of the sole single path.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
@@ -856,7 +857,7 @@ space and as such per Path ID.
 
 When the QUIC multipath extension is used, senders manage per-path
 congestion status as required in {{Section 9.4 of QUIC-TRANSPORT}}.
-However, in {{QUIC-TRANSPORT}} only one active path is assumed and as such
+However, in {{QUIC-TRANSPORT}} only one path is assumed and as such
 the requirement is to reset the congestion control status on path migration.
 With the multipath extension, multiple paths can be used simultaneously,
 therefore separate congestion control state is maintained for each path.
@@ -935,7 +936,7 @@ Multipath QUIC implementations also need to include a packet scheduler
 that decides, among the paths whose congestion window is open, the path
 over which the next QUIC packet will be sent. Most frames, including
 control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
-exceptions), can be sent and received on any active path. The scheduling
+exceptions), can be sent and received on any open path. The scheduling
 is a local decision, based on the preferences of the application and the
 implementation.
 
@@ -979,8 +980,9 @@ on another path without further frame scheduling adaptations.
 
 The QUIC specification defines an optional keep alive process, see {{Section 5.3 of QUIC-TRANSPORT}}.
 Implementations of the multipath extension should map this keep alive process to a number of paths.
-Some applications may wish to ensure that one path remains active, while others could prefer to have
-two or more active paths during the connection lifetime. Different applications will likely require different strategies.
+Some applications may keep only one path alive, while others could prefer to maintain
+liveliness on two or more paths during the connection lifetime.
+Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
@@ -1450,7 +1452,7 @@ followed to limit the amplification risk.
 However, while {{QUIC-TRANSPORT}} only allows the use of one path simultaneously
 and therefore only one path migration at the time should be validated,
 this extension allows for multiple open paths, that could in theory be migrated
-all at the same time, and it allows for multiple active paths that could be initialised
+all at the same time, and it allows for multiple paths that could be initialised
 simultaneously. Therefore, each path could be used to further amplify an attack.
 Respectively endpoints needs limit the number of maximum paths and might consider
 additional measures to limit the number of concurrent path validation processes
