@@ -383,10 +383,15 @@ When the multipath extension is negotiated, a client that wants to use an
 additional path MUST first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames as described in
 {{Section 8.2 of QUIC-TRANSPORT}}, unless it has previously validated
-that address. After receiving packets from the
+that address.
+
+After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
+An endpoint that receives a PATH_CHALLENGE and does not want to establish
+this path is expected to close the path by sending a PATH_ABANDON
+on another path, as specified in section {{path-close}}.
 
 An endpoint that has no active connection ID for this path or
 lacks other resource to immediately configure a new path could
@@ -613,15 +618,8 @@ before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
 to abandon a path for any reason, for example, removing a hole from
-the sequence of Path IDs in use. This is not an error. The endpoint that
-receive such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
-
-## Refusing a New Path
-
-An endpoint may deny the establishment of a new path initiated by its
-peer during the address validation procedure. According to {{QUIC-TRANSPORT}},
-the standard way to deny the establishment of a path is to not send a
-PATH_RESPONSE in response to the peer's PATH_CHALLENGE.
+the sequence of path IDs in use. This is not an error. An endpoint that
+receives such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
