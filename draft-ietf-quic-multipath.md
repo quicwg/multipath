@@ -384,7 +384,7 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 An endpoint that receives a PATH_CHALLENGE and does not want to establish
-this path should immediately close the path by sending a PATH_ABANDON
+this path is expected to close the path by sending a PATH_ABANDON
 on another path, as specified in section {{path-close}}.
 
 MP_ACK frames (defined in {{mp-ack-frame}}) can be returned on any path.
