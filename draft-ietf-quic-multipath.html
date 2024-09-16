@@ -1668,17 +1668,17 @@ that address. After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST perform path validation (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
 unless it has previously validated that address.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
+<p id="section-3.1-3">An endpoint that has no active connection ID for this path or
+lacks other resource to immediately configure a new path could
+delay sending the PATH_RESPONSE until sufficient resource are available.
+Long delays may cause the peer to repeat the PATH_CHALLENGE and eventually
+send a PATH_ABANDON, in which case the procedures specified in
+Section <a href="#path-close" class="auto internal xref">Section 3.3</a> apply.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
-path validation.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">If the server receives a PATH_CHALLENGE before receiving
-a PATH_NEW_CONNECTION_ID for the specific path, it SHOULD
-ignore the PATH_CHALLENGE. Note that the
-PATH_NEW_CONNECTION_ID might be sent in the same
-packet and in this case the PATH_CHALLENGE SHOULD
-be processed.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+path validation.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.1-5">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
