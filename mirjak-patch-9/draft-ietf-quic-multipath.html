@@ -2327,7 +2327,7 @@ on another path without further frame scheduling adaptations.<a href="#section-6
         </h3>
 <p id="section-6.7-1">The QUIC specification defines an optional keep alive process, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Implementations of the multipath extension should map this keep alive process to a number of paths.
-Some applications may wish to ensure that one only path remains usable, while others could prefer to maintain
+Some applications may keep only one path alive, while others could prefer to maintain
 liveliness on two or more paths during the connection lifetime.
 Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
