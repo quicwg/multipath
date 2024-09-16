@@ -108,6 +108,7 @@ Table of Contents
      7.5.  PATH_NEW_CONNECTION_ID frames
      7.6.  PATH_RETIRE_CONNECTION_ID frames
      7.7.  MAX_PATH_ID frames
+     7.8.  PATHS_BLOCKED frames
    8.  IANA Considerations
    9.  Security Considerations
      9.1.  Memory Allocation for Per-Path Resources
@@ -409,7 +410,7 @@ Table of Contents
    specified in Section 9.3 of [QUIC-TRANSPORT] by initiating path
    validation but MUST use a new connection ID for the same Path ID.
 
-   This proposal adds four multipath control frames for path management:
+   This proposal adds five multipath control frames for path management:
 
    *  PATH_ABANDON frame for the receiver side to abandon the path (see
       Section 7.2),
@@ -417,7 +418,10 @@ Table of Contents
    *  PATH_BACKUP and PATH_AVAILABLE frames to express a preference in
       path usage (see Section 7.3 and Section 7.4), and
 
-   *  MAX_PATH_ID frame for increasing the limit of active paths.
+   *  MAX_PATH_ID frame (see Section 7.7) for increasing the limit of
+      active paths, and PATHS_BLOCKED frame (see Section 7.8) to notify
+      the peer of being blocked to open new paths as the limit of active
+      paths set by the peer has been reached.
 
    All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
@@ -747,8 +751,11 @@ Table of Contents
    if no MAX_PATH_ID frame was received yet.  Receipt of a frame with a
    greater Path ID is a connection error as specified in Section 7.
    When an endpoint finds it has not enough available unused path
-   identifiers, it SHOULD send a MAX_PATH_ID frame to inform the peer
-   that it could use new active path identifiers.
+   identifiers, it SHOULD either send a MAX_PATH_ID frame to increase
+   the active path limit (when limited by the sender) or a PATHS_BLOCKED
+   frame (see Section Section 7.8) to inform the peer that a new path
+   identifier was needed but the current limit set by the peer prevented
+   the creation of the new path.
 
    If the client has consumed all the allocated connection IDs for a
    path, it is supposed to retire those that are not actively used
@@ -1358,6 +1365,30 @@ Table of Contents
    previously received.  MAX_PATH_ID frames that do not increase the
    path limit MUST be ignored.
 
+7.8.  PATHS_BLOCKED frames
+
+   A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when it
+   wishes to open a path but is unable to do so due to the maximum path
+   identifier limit set by its peer;
+
+   PATHS_BLOCKED frames are formatted as shown in Figure 10.
+
+   PATHS_BLOCKED Frame {
+     Type (i) = 0x15228c0d,
+     Maximum Path Identifier (i),
+   }
+
+                Figure 10: MAX_PATH_ID_BLOCKED Frame Format
+
+   PATHS_BLOCKED frames contain the following field:
+
+   Maximum Path Identifier:  A variable-length integer indicating the
+      maximum path identifier that was allowed at the time the frame was
+      sent.  If the received value is lower than the currently allowed
+      maximum value, this frame can be ignored.  Receipt of a value that
+      is higher than the local maximum value MUST be treated as a
+      connection error of type PROTOCOL_VIOLATION.
+
 8.  IANA Considerations
 
    This document defines a new transport parameter for the negotiation
@@ -1404,6 +1435,9 @@ Table of Contents
    +------------------------+---------------------------+-------------+
    | TBD-07 (experiments    | MAX_PATH_ID               |Section 7.7  |
    | use 0x15228c0c)        |                           |             |
+   +------------------------+---------------------------+-------------+
+   | TBD-08 (experiments    | PATHS_BLOCKED             |Section 7.8  |
+   | use 0x15228c0d)        |                           |             |
    +------------------------+---------------------------+-------------+
 
               Table 3: Addition to QUIC Frame Types Entries
