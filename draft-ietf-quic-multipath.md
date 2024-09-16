@@ -427,7 +427,7 @@ for subsequent connections, it might be difficult for the client
 to pick the "right" token among multiple tokens obtained in a previous connection.
 The client is likely to fall back to the strategy specified in {{Section 8.1.3 of QUIC-TRANSPORT}},
 i.e., pick the last received token. To avoid issues when clients make the "wrong" choice,
-a server may issue a token that is capable of validating
+a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
 found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
