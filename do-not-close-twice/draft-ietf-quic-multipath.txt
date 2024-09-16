@@ -1092,12 +1092,12 @@ Table of Contents
 
    As noted in Section 1.1, it is possible to create paths that refer to
    the same 4-tuple.  For example, the endpoints may want to create
-   paths that use different Differentiated Service markings.  This could
-   be done in conjunction with scheduling algorithms that match streams
-   to paths, so that for example data frame for low priority streams are
-   sent over low priority paths.  Since these paths use different path
-   IDs, they can be managed independently to suit the needs of the
-   application.
+   paths that use different Differentiated Service [RFC2475] markings.
+   This could be done in conjunction with scheduling algorithms that
+   match streams to paths, so that for example data frame for low
+   priority streams are sent over low priority paths.  Since these paths
+   use different path IDs, they can be managed independently to suit the
+   needs of the application.
 
    There may be cases in which paths are created with different
    4-tuples, but end up using the same four tuples as a consequence of
@@ -1639,6 +1639,11 @@ Table of Contents
               issues and a possible solution", Proceedings of the 8th
               international conference on Emerging networking
               experiments and technologies, ACM , 2012.
+
+   [RFC2475]  Blake, S., Black, D., Carlson, M., Davies, E., Wang, Z.,
+              and W. Weiss, "An Architecture for Differentiated
+              Services", RFC 2475, DOI 10.17487/RFC2475, December 1998,
+              <https://www.rfc-editor.org/rfc/rfc2475>.
 
    [RFC6356]  Raiciu, C., Handley, M., and D. Wischik, "Coupled
               Congestion Control for Multipath Transport Protocols",
