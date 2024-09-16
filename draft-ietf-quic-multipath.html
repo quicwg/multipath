@@ -1572,7 +1572,7 @@ respond to unintentional migration events (<span><a href="https://rfc-editor.org
 <p id="section-2-11">Cipher suites with a nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such a cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
-TRANSPORT_PARAMETER error.<a href="#section-2-11" class="pilcrow">¶</a></p>
+an error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-2-11" class="pilcrow">¶</a></p>
 <p id="section-2-12">The PATH_ACK frame, as specified in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>, is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the PATH_ACK frame additionally
