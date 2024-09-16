@@ -196,8 +196,8 @@ to a packet number space.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-backup-frame}}},
-PATH_AVAILABLE {{path-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
+such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-backup-available-frame}}},
+PATH_AVAILABLE {{path-backup-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
 That means each connection ID is associated with exactly one path identifier
@@ -1137,7 +1137,7 @@ After sending the PATH_ABANDON frame,
 the endpoint MUST NOT send frames that use the Path ID anymore,
 even on other network paths.
 
-## PATH_BACKUP and PATH_AVAILABLE frames {#path-standby-available-frame}
+## PATH_BACKUP and PATH_AVAILABLE frames {#path-backup-available-frame}
 
 PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
@@ -1154,7 +1154,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 PATH_BACKUP frames are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
-PATH_BACKUP frames are formatted as shown in {{fig-path-standby-format}}.
+PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 
 ~~~
   PATH_BACKUP Frame {
@@ -1163,7 +1163,7 @@ PATH_BACKUP frames are formatted as shown in {{fig-path-standby-format}}.
     Path Status Sequence Number (i),
   }
 ~~~
-{: #fig-path-standby-format title="PATH_BACKUP Frame Format"}
+{: #fig-path-backup-format title="PATH_BACKUP Frame Format"}
 
 Both PATH_AVAILABLE and PATH_BACKUP Frames contain the following fields:
 
@@ -1377,8 +1377,8 @@ Value                                              | Frame Name          | Speci
 ---------------------------------------------------|---------------------|-----------------
 TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | PATH_ACK              | {{mp-ack-frame}}
 TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
-TBD-03 (experiments use 0x15228c07)                  | PATH_BACKUP        | {{path-backup-frame}}
-TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-available-frame}}
+TBD-03 (experiments use 0x15228c07)                  | PATH_BACKUP        | {{path-backup-available-frame}}
+TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-backup-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
