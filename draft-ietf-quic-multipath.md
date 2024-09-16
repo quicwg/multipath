@@ -986,6 +986,59 @@ two or more active paths during the connection lifetime. Different applications 
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
+## Connection ID Changes and NAT Rebindings {#migration}
+
+{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the connection ID it uses to another available one
+at any time during the connection. As such a sole change of the Connection
+ID without any change in the address does not indicate a path change and
+the endpoint can keep the same congestion control and RTT measurement state.
+
+While endpoints assign a connection ID to a specific sending 4-tuple,
+networks events such as NAT rebinding may make the packet's receiver
+observe a different 4-tuple. Servers observing a 4-tuple change will
+perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
+
+{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
+a peer address if that address has been seen recently. However, when the
+multipath extension is used and an endpoint has multiple addresses that
+could lead to switching between different paths, it should rather maintain
+multiple open paths instead.
+
+### Using multiple paths on the same 4-tuple
+
+As noted in {{basic-design-points}}, it is possible to create paths that
+refer to the same 4-tuple. For example, the endpoints may want
+to create paths that use different Differentiated Service {{?RFC2475}} markings.
+This could be done in conjunction with scheduling algorithms
+that match streams to paths, so that for example data frame for
+low priority streams are sent over low priority paths.
+Since these paths use different path IDs, they can be managed
+independently to suit the needs of the application.
+
+There may be cases in which paths are created with different 4-tuples,
+but end up using the same four tuples as a consequence of path
+migrations. For example:
+
+* Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
+* Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
+* both paths are used for a while.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
+* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
+
+Such unintentional use of the same 4-tuple on different paths ought to
+be rare. When they happen, the two paths would be redundant, and the
+endpoint will want to close one of them.
+Uncoordinated Abandon from both ends of the connection may result in deleting
+two paths instead of just one. To avoid this pitfall, endpoints could
+adopt a simple coordination rule, such as only letting the client
+initiate closure of duplicate paths, or perhaps relying on
+the application protocol to decide which paths should be closed.
+
+
 # New Frames {#frames}
 
 All frames defined in this document MUST only be sent in 1-RTT packets.
