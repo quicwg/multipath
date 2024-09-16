@@ -84,8 +84,7 @@ Table of Contents
        3.3.2.  Handling PATH_ACK for abandoned paths
        3.3.3.  Idle Timeout
        3.3.4.  Early Abandon
-     3.4.  Refusing a New Path
-     3.5.  Allocating, Consuming, and Retiring Connection IDs
+     3.4.  Allocating, Consuming, and Retiring Connection IDs
    4.  Packet Protection
      4.1.  Nonce Calculation
      4.2.  Key Update
@@ -445,10 +444,15 @@ Table of Contents
    use an additional path MUST first initiate the Address Validation
    procedure with PATH_CHALLENGE and PATH_RESPONSE frames as described
    in Section 8.2 of [QUIC-TRANSPORT], unless it has previously
-   validated that address.  After receiving packets from the client on a
-   new path, if the server decides to use the new path, the server MUST
-   perform path validation (Section 8.2 of [QUIC-TRANSPORT]) unless it
-   has previously validated that address.
+   validated that address.
+
+   After receiving packets from the client on a new path, if the server
+   decides to use the new path, the server MUST perform path validation
+   (Section 8.2 of [QUIC-TRANSPORT]) unless it has previously validated
+   that address.  An endpoint that receives a PATH_CHALLENGE and does
+   not want to establish this path is expected to close the path by
+   sending a PATH_ABANDON on another path, as specified in section
+   Section 3.3.
 
    An endpoint that has no active connection ID for this path or lacks
    other resource to immediately configure a new path could delay
@@ -564,7 +568,7 @@ Table of Contents
    path by sending a PATH_ABANDON frame.  Note that while abandoning a
    path will cause connection ID retirement, the inverse is not true:
    retiring the associated connection IDs does not indicate path
-   abandonment (see further Section 3.5).  This is true whether the
+   abandonment (see further Section 3.4).  This is true whether the
    decision to close the path results from implicit signals such as idle
    time or packet losses (see Section 3.3.3) or for any other reason,
    such as management of local resources.  It is also possible to
@@ -680,19 +684,11 @@ Table of Contents
    example, if the client tries to initiate a path and the path cannot
    be established, it will send a PATH_ABANDON frame (see Section 3.1).
    An endpoint may also decide to abandon a path for any reason, for
-   example, removing a hole from the sequence of Path IDs in use.  This
-   is not an error.  The endpoint that receive such a PATH_ABANDON frame
+   example, removing a hole from the sequence of path IDs in use.  This
+   is not an error.  An endpoint that receives such a PATH_ABANDON frame
    must treat it as specified in Section 3.3.
 
-3.4.  Refusing a New Path
-
-   An endpoint may deny the establishment of a new path initiated by its
-   peer during the address validation procedure.  According to
-   [QUIC-TRANSPORT], the standard way to deny the establishment of a
-   path is to not send a PATH_RESPONSE in response to the peer's
-   PATH_CHALLENGE.
-
-3.5.  Allocating, Consuming, and Retiring Connection IDs
+3.4.  Allocating, Consuming, and Retiring Connection IDs
 
    With the multipath extension, each connection ID is associated with
    one path that is identified by the Path ID that is specified in the
@@ -878,7 +874,7 @@ Table of Contents
    with a PATH_CHALLENGE frame, it has to check whether there is an
    unused connection IDs for the same unused Path ID available for each
    side.  In this example the Path ID 1 is used which is the smallest
-   unused Path ID available as recommended in Section 3.5.
+   unused Path ID available as recommended in Section 3.4.
    Respectively, the client chooses the connection ID S1 as the
    Destination Connection ID of the new path.
 
