@@ -104,12 +104,11 @@ Table of Contents
    7.  New Frames
      7.1.  PATH_ACK Frame
      7.2.  PATH_ABANDON Frame
-     7.3.  PATH_BACKUP frame
-     7.4.  PATH_AVAILABLE frame
-     7.5.  PATH_NEW_CONNECTION_ID frames
-     7.6.  PATH_RETIRE_CONNECTION_ID frames
-     7.7.  MAX_PATH_ID frames
-     7.8.  PATHS_BLOCKED frames
+     7.3.  PATH_BACKUP and PATH_AVAILABLE frames
+     7.4.  PATH_NEW_CONNECTION_ID frames
+     7.5.  PATH_RETIRE_CONNECTION_ID frames
+     7.6.  MAX_PATH_ID frames
+     7.7.  PATHS_BLOCKED frames
    8.  IANA Considerations
    9.  Security Considerations
      9.1.  Memory Allocation for Per-Path Resources
@@ -250,9 +249,9 @@ Table of Contents
 
    The same Path ID is used in both directions to address a path in the
    new multipath control frames, such as PATH_ABANDON Section 7.2,
-   PATH_STANDBY Section 7.3}, PATH_AVAILABLE Section 7.4 as well as
+   PATH_STANDBY Section 7.3}, PATH_AVAILABLE Section 7.3 as well as
    PATH_ACK Section 7.1.  Further, connection IDs are issued per Path ID
-   using the PATH_NEW_CONNECTION_ID frame (see Section 7.5).  That means
+   using the PATH_NEW_CONNECTION_ID frame (see Section 7.4).  That means
    each connection ID is associated with exactly one path identifier but
    multiple connection IDs are usually issued for each path identifier.
 
@@ -323,7 +322,7 @@ Table of Contents
    an error of type TRANSPORT_PARAMETER_ERROR.
 
    Setting initial_max_path_id parameter is equivalent to sending a
-   MAX_PATH_ID frame (Section 7.7) with the same value.  As such to
+   MAX_PATH_ID frame (Section 7.6) with the same value.  As such to
    allow for the use of more paths later, endpoints can send the
    MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
@@ -419,10 +418,10 @@ Table of Contents
       Section 7.2),
 
    *  PATH_BACKUP and PATH_AVAILABLE frames to express a preference in
-      path usage (see Section 7.3 and Section 7.4), and
+      path usage (see Section 7.3), and
 
-   *  MAX_PATH_ID frame (see Section 7.7) for increasing the limit of
-      path identifiers, and PATHS_BLOCKED frame (see Section 7.8) to
+   *  MAX_PATH_ID frame (see Section 7.6) for increasing the limit of
+      path identifiers, and PATHS_BLOCKED frame (see Section 7.7) to
       notify the peer of being blocked to open new paths as the limit of
       active paths set by the peer has been reached.
 
@@ -695,7 +694,7 @@ Table of Contents
    With the multipath extension, each connection ID is associated with
    one path that is identified by the Path ID that is specified in the
    Path Identifier field of the PATH_NEW_CONNECTION_ID frame
-   Section 7.5.  The Path ID 0 indicates the initial path of the
+   Section 7.4.  The Path ID 0 indicates the initial path of the
    connection.  Respectively, the connection IDs used during the
    handshake belong to the initial path with Path ID 0.  The
    PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for
@@ -748,13 +747,13 @@ Table of Contents
 
    Endpoints MUST NOT issue new connection IDs with Path IDs greater
    than the Maximum Path Identifier field in MAX_PATH_ID frames (see
-   Section 7.7) or the value of initial_max_path_id transport parameter
+   Section 7.6) or the value of initial_max_path_id transport parameter
    if no MAX_PATH_ID frame was received yet.  Receipt of a frame with a
    greater Path ID is a connection error as specified in Section 7.
    When an endpoint finds it has not enough available unused path
    identifiers, it SHOULD either send a MAX_PATH_ID frame to increase
    the active path limit (when limited by the sender) or a PATHS_BLOCKED
-   frame (see Section Section 7.8) to inform the peer that a new path
+   frame (see Section Section 7.7) to inform the peer that a new path
    identifier was needed but the current limit set by the peer prevented
    the creation of the new path.
 
@@ -1218,11 +1217,23 @@ Table of Contents
    After sending the PATH_ABANDON frame, the endpoint MUST NOT send
    frames that use the Path ID anymore, even on other network paths.
 
-7.3.  PATH_BACKUP frame
+7.3.  PATH_BACKUP and PATH_AVAILABLE frames
 
-   PATH_BACKUP Frames are used by endpoints to inform the peer about its
+   PATH_AVAILABLE frames are used by endpoints to inform the peer that
+   the indicated path is available for sending.  PATH_AVAILABLE frames
+   are formatted as shown in Figure 5.
+
+     PATH_AVAILABLE Frame {
+       Type (i) = TBD-03 (experiments use 0x15228c08),
+       Path Identifier (i),
+       Path Status Sequence Number (i),
+     }
+
+                   Figure 5: PATH_AVAILABLE Frame Format
+
+   PATH_BACKUP frames are used by endpoints to inform the peer about its
    preference to not use the indicated path for sending.  PATH_BACKUP
-   frames are formatted as shown in Figure 5.
+   frames are formatted as shown in Figure 6.
 
      PATH_BACKUP Frame {
        Type (i) = TBD-03 (experiments use 0x15228c07)
@@ -1230,79 +1241,44 @@ Table of Contents
        Path Status Sequence Number (i),
      }
 
-                     Figure 5: PATH_BACKUP Frame Format
+                     Figure 6: PATH_BACKUP Frame Format
 
-   PATH_BACKUP Frames contain the following fields:
+   Both PATH_AVAILABLE and PATH_BACKUP Frames contain the following
+   fields:
 
    Path Identifier:  The Path ID the status update corresponds to.  All
       Path IDs that have been issued MAY be specified, even if they are
       not yet in use over a path.
 
    Path Status Sequence Number:  A variable-length integer specifying
-      the sequence number assigned for this PATH_BACKUP frame.  The
-      sequence number space is shared with the PATH_AVAILABLE frame and
-      the sequence number MUST be monotonically increasing generated by
-      the sender of the PATH_BACKUP frame in the same connection.  The
-      receiver of the PATH_BACKUP frame needs to use and compare the
-      sequence numbers separately for each Path ID.
+      the per-path sequence number assigned for this frame.
+
+   The sequence number space is common to the two frame types, and
+   monotonically increasing values MUST be used when sending
+   PATH_AVAILABLE or PATH_BACKUP frames for a given Path ID.
 
    Frames may be received out of order.  A peer MUST ignore an incoming
-   PATH_BACKUP frame if it previously received another PATH_BACKUP frame
-   or PATH_AVAILABLE for the same Path ID with a Path Status sequence
-   number equal to or higher than the Path Status sequence number of the
-   incoming frame.
+   PATH_AVAILABLE or PATH_BACKUP frame if it previously received another
+   PATH_BACKUP frame or PATH_AVAILABLE frame for the same Path ID with a
+   Path Status sequence number equal to or higher than the Path Status
+   sequence number of the incoming frame.
+
+   The requirement of monotonically increasing sequence numbers is per
+   path.  Receivers could very well receive the same sequence number for
+   PATH_AVAILABLE or PATH_STANDBY Frames on different paths.  The
+   receiver of the PATH_AVAILABLE or PATH_BACKUP frame needs to use and
+   compare the sequence numbers separately for each Path ID.
 
    PATH_BACKUP frames are ack-eliciting.  If a packet containing a
    PATH_BACKUP frame is considered lost, the peer SHOULD resend the
    frame only if it contains the last status sent for that path -- as
    indicated by the sequence number.
 
-   A PATH_BACKUP frame MAY be bundled with a PATH_NEW_CONNECTION_ID
-   frame or a PATH_RESPONSE frame in order to indicate the preferred
-   path usage before or during path initiation.
+   A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a
+   PATH_NEW_CONNECTION_ID frame or a PATH_RESPONSE frame in order to
+   indicate the preferred path usage before or during path initiation.
 
-7.4.  PATH_AVAILABLE frame
-
-   PATH_AVAILABLE frames are used by endpoints to inform the peer that
-   the indicated path is available for sending.  PATH_AVAILABLE frames
-   are formatted as shown in Figure 6.
-
-     PATH_AVAILABLE Frame {
-       Type (i) = TBD-04 (experiments use 0x15228c08),
-       Path Identifier (i),
-       Path Status Sequence Number (i),
-     }
-
-                   Figure 6: PATH_AVAILABLE Frame Format
-
-   PATH_AVAILABLE frames contain the following fields:
-
-   Path Identifier:  The Path ID the status update corresponds to.
-
-   Path Status Sequence Number:  A variable-length integer specifying
-      the sequence number assigned for this PATH_AVAILABLE frame.  The
-      sequence number space is shared with the PATH_BACKUP frame and the
-      sequence number MUST be monotonically increasing generated by the
-      sender of the PATH_AVAILABLE frame in the same connection.  The
-      receiver of the PATH_AVAILABLE frame needs to use and compare the
-      sequence numbers separately for each Path ID.
-
-   Frames may be received out of order.  A peer MUST ignore an incoming
-   PATH_AVAILABLE frame if it previously received another PATH_AVAILABLE
-   frame or PATH_BACKUP frame for the same Path ID with a Path Status
-   sequence number equal to or higher than the Path Status sequence
-   number of the incoming frame.
-
-   PATH_AVAILABLE frames are ack-eliciting.  If a packet containing a
-   PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the
-   frame only if it contains the last status sent for that path -- as
-   indicated by the sequence number.
-
-   A PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID
-   frame or a PATH_RESPONSE frame in order to indicate the preferred
-   path usage before or during path initiation.
-
-7.5.  PATH_NEW_CONNECTION_ID frames
+7.4.  PATH_NEW_CONNECTION_ID frames
 
    The PATH_NEW_CONNECTION_ID frame (type=0x15228c09) is an extension of
    the NEW_CONNECTION_ID frame specified in Section 19.15 of
@@ -1353,7 +1329,7 @@ Table of Contents
    successfully, the rule for RETIRE_CONNECTION_ID frame is only applied
    for Path ID 0.
 
-7.6.  PATH_RETIRE_CONNECTION_ID frames
+7.5.  PATH_RETIRE_CONNECTION_ID frames
 
    The PATH_RETIRE_CONNECTION_ID frame (type=0x15228c0a) is an extension
    of the RETIRE_CONNECTION_ID frame specified in Section 19.16 of
@@ -1365,7 +1341,7 @@ Table of Contents
    IDs for this path (see also Section 5.1 of [QUIC-TRANSPORT], unless
    the path specified by the Path ID has been abandoned.  New path-
    specific connection IDs can be delivered to a peer using the
-   PATH_NEW_CONNECTION_ID frame (see Section 7.5).
+   PATH_NEW_CONNECTION_ID frame (see Section 7.4).
 
    PATH_RETIRE_CONNECTION_ID frames are formatted as shown in Figure 8.
 
@@ -1396,7 +1372,7 @@ Table of Contents
    for PATH_RETIRE_CONNECTION_ID frames per path, while the processing
    of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
-7.7.  MAX_PATH_ID frames
+7.6.  MAX_PATH_ID frames
 
    A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum
    path identifier it is permitted to use.
@@ -1427,7 +1403,7 @@ Table of Contents
    previously received.  MAX_PATH_ID frames that do not increase the
    path limit MUST be ignored.
 
-7.8.  PATHS_BLOCKED frames
+7.7.  PATHS_BLOCKED frames
 
    A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when it
    wishes to open a path but is unable to do so due to the maximum path
@@ -1486,19 +1462,19 @@ Table of Contents
    | TBD-03 (experiments    | PATH_BACKUP               |Section 7.3  |
    | use 0x15228c07)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-04 (experiments    | PATH_AVAILABLE            |Section 7.4  |
+   | TBD-04 (experiments    | PATH_AVAILABLE            |Section 7.3  |
    | use 0x15228c08)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-05 (experiments    | PATH_NEW_CONNECTION_ID    |Section 7.5  |
+   | TBD-05 (experiments    | PATH_NEW_CONNECTION_ID    |Section 7.4  |
    | use 0x15228c09)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-06 (experiments    | PATH_RETIRE_CONNECTION_ID |Section 7.6  |
+   | TBD-06 (experiments    | PATH_RETIRE_CONNECTION_ID |Section 7.5  |
    | use 0x15228c0a)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-07 (experiments    | MAX_PATH_ID               |Section 7.7  |
+   | TBD-07 (experiments    | MAX_PATH_ID               |Section 7.6  |
    | use 0x15228c0c)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-08 (experiments    | PATHS_BLOCKED             |Section 7.8  |
+   | TBD-08 (experiments    | PATHS_BLOCKED             |Section 7.7  |
    | use 0x15228c0d)        |                           |             |
    +------------------------+---------------------------+-------------+
 
