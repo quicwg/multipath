@@ -422,9 +422,9 @@ Table of Contents
       path usage (see Section 7.3 and Section 7.4), and
 
    *  MAX_PATH_ID frame (see Section 7.7) for increasing the limit of
-      open paths, and PATHS_BLOCKED frame (see Section 7.8) to notify
-      the peer of being blocked to open new paths as the limit of active
-      paths set by the peer has been reached.
+      path identifiers, and PATHS_BLOCKED frame (see Section 7.8) to
+      notify the peer of being blocked to open new paths as the limit of
+      active paths set by the peer has been reached.
 
    All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
