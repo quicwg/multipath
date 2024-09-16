@@ -1544,51 +1544,54 @@ restrictions on the nonce calculation (see <a href="#multipath-aead" class="auto
 associated with Path IDs 0 and 1 should be issued by the peer.
 If an endpoint receives an initial_max_path_id transport parameter with value 0,
 the peer aims to  enable the multipath extension without allowing extra paths immediately.<a href="#section-2-3" class="pilcrow">¶</a></p>
-<p id="section-2-4">Setting initial_max_path_id parameter is equivalent to sending a
+<p id="section-2-4">If an initial_max_path_id transport parameter value that is higher than 2^32-1
+is received, the receiver MUST close the connection with an error of type
+TRANSPORT_PARAMETER_ERROR.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<p id="section-2-5">Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATH_ID frame (<a href="#max-paths-frame" class="auto internal xref">Section 7.7</a>) with the same value.
 As such to allow for the use of more paths later,
-endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.<a href="#section-2-4" class="pilcrow">¶</a></p>
-<p id="section-2-5">If either of the endpoints does not advertise the initial_max_path_id transport
+endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<p id="section-2-6">If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
-mechanism defined in this document.<a href="#section-2-5" class="pilcrow">¶</a></p>
-<p id="section-2-6">When advertising the initial_max_path_id transport parameter, the endpoint
+mechanism defined in this document.<a href="#section-2-6" class="pilcrow">¶</a></p>
+<p id="section-2-7">When advertising the initial_max_path_id transport parameter, the endpoint
 MUST use non-zero length Source and Destination Connection IDs.
 If an initial_max_path_id transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
-PROTOCOL_VIOLATION and close the connection.<a href="#section-2-6" class="pilcrow">¶</a></p>
-<p id="section-2-7">The initial_max_path_id parameter MUST NOT be remembered
+PROTOCOL_VIOLATION and close the connection.<a href="#section-2-7" class="pilcrow">¶</a></p>
+<p id="section-2-8">The initial_max_path_id parameter MUST NOT be remembered
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
-New paths can only be used after handshake completion.<a href="#section-2-7" class="pilcrow">¶</a></p>
-<p id="section-2-8">This extension does not change the definition of any transport parameter
-defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-2-8" class="pilcrow">¶</a></p>
-<p id="section-2-9">The initial_max_path_id transport parameter limits the initial maximum number of active paths
-that can be used during a connection.<a href="#section-2-9" class="pilcrow">¶</a></p>
-<p id="section-2-10">The active_connection_id_limit transport parameter
+New paths can only be used after handshake completion.<a href="#section-2-8" class="pilcrow">¶</a></p>
+<p id="section-2-9">This extension does not change the definition of any transport parameter
+defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-2-9" class="pilcrow">¶</a></p>
+<p id="section-2-10">The initial_max_path_id transport parameter limits the initial maximum number of active paths
+that can be used during a connection.<a href="#section-2-10" class="pilcrow">¶</a></p>
+<p id="section-2-11">The active_connection_id_limit transport parameter
 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> limits the maximum number of active connection IDs per path when the
 initial_max_path_id parameter is negotiated successfully.
 Endpoints might prefer to retain spare connection IDs so that they can
-respond to unintentional migration events (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).<a href="#section-2-10" class="pilcrow">¶</a></p>
-<p id="section-2-11">Cipher suites with a nonce shorter than 12 bytes cannot be used together with
+respond to unintentional migration events (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).<a href="#section-2-11" class="pilcrow">¶</a></p>
+<p id="section-2-12">Cipher suites with a nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such a cipher suite is selected and the use of the
 multipath extension is negotiated, endpoints MUST abort the handshake with a
-an error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-2-11" class="pilcrow">¶</a></p>
-<p id="section-2-12">The PATH_ACK frame, as specified in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>, is used to
+an error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-2-12" class="pilcrow">¶</a></p>
+<p id="section-2-13">The PATH_ACK frame, as specified in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>, is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the PATH_ACK frame additionally
-contains the receiver's Path ID to identify the path-specific packet number space.<a href="#section-2-12" class="pilcrow">¶</a></p>
-<p id="section-2-13">As multipath support is unknown during the handshake, acknowledgements of
+contains the receiver's Path ID to identify the path-specific packet number space.<a href="#section-2-13" class="pilcrow">¶</a></p>
+<p id="section-2-14">As multipath support is unknown during the handshake, acknowledgements of
 Initial and Handshake packets are sent using ACK frames.
 If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
-Path ID 0.<a href="#section-2-13" class="pilcrow">¶</a></p>
-<p id="section-2-14">After the handshake concluded if negotiation of multipath support succeeded,
+Path ID 0.<a href="#section-2-14" class="pilcrow">¶</a></p>
+<p id="section-2-15">After the handshake concluded if negotiation of multipath support succeeded,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
 also for acknowledging so far unacknowledged 0-RTT packets, using
 Path ID 0. Similarly after a successful handshake, endpoints SHOULD also use
 the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
 respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
-Path ID 0.<a href="#section-2-14" class="pilcrow">¶</a></p>
+Path ID 0.<a href="#section-2-15" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="path-management">
