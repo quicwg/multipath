@@ -361,7 +361,7 @@ This proposal adds five multipath control frames for path management:
 - PATH_BACKUP and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-backup-frame}} and {{path-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-open paths, and PATHS_BLOCKED frame (see {{paths-blocked-frame}})
+path identifiers, and PATHS_BLOCKED frame (see {{paths-blocked-frame}})
 to notify the peer of being blocked to open new paths as
 the limit of active paths set by the peer has been reached.
 
