@@ -1139,7 +1139,7 @@ A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTIO
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
-## MP_NEW_CONNECTION_ID frames {#mp-new-conn-id-frame}
+## PATH_NEW_CONNECTION_ID frames {#mp-new-conn-id-frame}
 
 The PATH_NEW_CONNECTION_ID frame (type=0x15228c09)
 is an extension of the NEW_CONNECTION_ID frame specified in
