@@ -387,7 +387,7 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
-An endpoint that lacks resource to immediately configure a new path MAY
+An endpoint that lacks resource to immediately configure a new path could
 delay sending the PATH_RESPONSE until sufficient resource are available.
 Long delays may cause the peer to repeat the PATH_CHALLENGE and eventually
 send a PATH_ABANDON, in which case the procedures specified in
