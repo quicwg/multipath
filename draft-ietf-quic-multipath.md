@@ -388,18 +388,18 @@ client on a new path, if the server decides to use the new path,
 the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
 unless it has previously validated that address.
 
+An endpoint that has no active connection ID for this path or
+lacks other resource to immediately configure a new path could
+delay sending the PATH_RESPONSE until sufficient resource are available.
+Long delays may cause the peer to repeat the PATH_CHALLENGE and eventually
+send a PATH_ABANDON, in which case the procedures specified in
+Section {{path-close}} apply.
+
 PATH_ACK frames (defined in {{mp-ack-frame}}) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see {{compute-rtt}} for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
 path validation.
-
-If the server receives a PATH_CHALLENGE before receiving
-a PATH_NEW_CONNECTION_ID for the specific path, it SHOULD
-ignore the PATH_CHALLENGE. Note that the
-PATH_NEW_CONNECTION_ID might be sent in the same
-packet and in this case the PATH_CHALLENGE SHOULD
-be processed.
 
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
