@@ -1462,4 +1462,4 @@ one of the original proposals are:
 
 # Acknowledgments
 
-Thanks to Marten Seemann, Kazuho Oku, and Martin Thomson for their thorough reviews and valuable contributions!
+Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu for their thorough reviews and valuable contributions!
