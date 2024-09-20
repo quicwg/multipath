@@ -635,6 +635,12 @@ In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue a Connection ID for at least one unused Path ID, as long as it remains
 compatible with the peer's Maximum Path ID limit.
 
+When issuing path-specific connection IDs, an endpoint associates a sequence number
+as specified in {{Section 5.1.1 of QUIC-TRANSPORT}}. Each Path ID has its own
+connection ID sequence number space whose initial value is 0. On non-initial paths
+(i.e., Path ID different from 0), the initial path connection ID is provided by a
+PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
+
 Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
 Usually, it is desired to provide at least one additional connection ID for
