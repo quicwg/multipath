@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-19T00:52:45.277421+00:00",
+  "timestamp": "2024-09-22T00:57:53.395785+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -46735,6 +46735,66 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 439,
+      "id": "PR_kwDOGNtpaM58IfgY",
+      "title": "Connection ID sequence number space starts at 0 for all paths",
+      "url": "https://github.com/quicwg/multipath/pull/439",
+      "state": "OPEN",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix #421.",
+      "createdAt": "2024-09-20T08:01:02Z",
+      "updatedAt": "2024-09-20T12:26:15Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-421",
+      "headRefOid": "548bdedda388da0881b04b939959e86c246a2d01",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6KKw-K",
+          "commit": {
+            "abbreviatedOid": "270bb6c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-20T12:14:48Z",
+          "updatedAt": "2024-09-20T12:14:48Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nPATH_NEW_CONNECTION_ID frame with a sequence number value of 0.\r\n```",
+              "createdAt": "2024-09-20T12:14:48Z",
+              "updatedAt": "2024-09-20T12:14:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6KKxDy",
+          "commit": {
+            "abbreviatedOid": "270bb6c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-20T12:14:59Z",
+          "updatedAt": "2024-09-20T12:14:59Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
