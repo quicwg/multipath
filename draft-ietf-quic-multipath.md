@@ -593,8 +593,8 @@ When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
 This dcoument does not specify any specific per-path timeouts. An endpoint
-can decide to close a path at any time not matter if the path is in active
-use or not by sending a PATH_ABANDON frame. Particulary it is not required
+can decide to close a path at any time, whether the path is in active
+use or not, by sending a PATH_ABANDON frame. Particularly, it is not required
 to send a PATH_ABANDON frame at any specific point in time if that would be
 the only frame to send.
 
