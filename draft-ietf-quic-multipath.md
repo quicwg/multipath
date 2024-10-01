@@ -444,6 +444,18 @@ a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
 found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
+### Immediate path initiation
+
+The server may receive packets for a yet unused path-ID that do not
+contain a path challenge. Such packets are valid if the can be properly decrypted
+and if they contain a valid connection ID. ({{path-initiation}}
+specifies that the client may send data packets immediately if "it has previously
+validated that address".) The server SHOULD create a new path, accept the
+packets arriving on that path from the client, and acknowledge them.
+
+If the server decides to not accept the packet, it MUST close the path as
+specified in {{path-close}}.
+
 ## Path Status Management
 
 An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform the peer that it should
