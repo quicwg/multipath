@@ -446,7 +446,7 @@ found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
 ### Immediate path initiation
 
-The server may receive packets for a yet unused path-ID that do not
+The server may receive packets for a yet unused Path ID that do not
 contain a path challenge. Such packets are valid if the can be properly decrypted
 and if they contain a valid connection ID. ({{path-initiation}}
 specifies that the client may send data packets immediately if "it has previously
