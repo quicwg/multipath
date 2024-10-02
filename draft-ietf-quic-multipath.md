@@ -1052,7 +1052,7 @@ The choice of a 3*RTO delay is a trade-off.
 Longer delays would diminish the probability that packets will be
 lost if they arrive after
 their decryption key has been discarded, but
-keeping old keys available for longer delays reduce the security of the protocol.
+keeping old keys available for longer delays reduces the security of the protocol.
 Very few packets are expected to arrive after the delay of 3 RTO,
 and discarding those packets will have limited impact on performance.
 
