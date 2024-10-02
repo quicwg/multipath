@@ -112,7 +112,7 @@ non-zero connection IDs in order to identify the path and respective
 packet number space.
 
 To add a new path to an existing QUIC connection with multipath support,
-a client starts a path validation on or send a packet
+a client starts a path validation or sends a packet on
 the chosen path, as further described in {{path-initiation}}.
 In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
