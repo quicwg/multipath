@@ -1038,6 +1038,27 @@ adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
 the application protocol to decide which paths should be closed.
 
+## Implementing Key Updates
+
+As specified in {{key-update}}, endpoints wait at least 3 times the largest
+path RTO after a key update before initiating a new update. This is in
+line with {{Section 6.5 of {{QUIC-TLS}}, which recommends that endpoints
+do not retain old read keys for no more than three times the PTO after
+having received a packet protected using the new keys. The main difference
+is that endpoints using the multipath extensions consider the largest
+of the path RTO, instead of only considering the RTO of a single path.
+
+Deleting the encryption context after this delay of 3 RTO is a tradeoff
+between keeping keys available too long, which increases the risk
+of key compromise, and discarding the keys too soon, which may
+force discarding late arriving packets. The 3 RTO is chosen so that
+very few 
+
+Longer delays would diminish the probability that packets arrive after
+their decryption key has been discarded, and would be discarded, but
+keeping old keys available for longer delays reduce the security of the protocol.
+In theory, very few packets will arrive after the delay of 3 RTO,
+and discarding those packets will have limited impact on performance.
 
 # New Frames {#frames}
 
