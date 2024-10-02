@@ -1042,7 +1042,7 @@ the application protocol to decide which paths should be closed.
 
 As specified in {{key-update}}, endpoints wait at least 3 times the largest
 path RTO after a key update before initiating a new update. This is in
-line with {{Section 6.5 of {{QUIC-TLS}}, which recommends that endpoints
+line with {{Section 6.5 of QUIC-TLS}}, which recommends that endpoints
 do not retain old read keys for no more than three times the PTO after
 having received a packet protected using the new keys. The main difference
 is that endpoints using the multipath extensions consider the largest
