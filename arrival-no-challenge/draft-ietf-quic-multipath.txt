@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 4 April 2025                             Uber Technologies Inc.
+Expires: 5 April 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 4 April 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          1 October 2024
+                                                          2 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 April 2025.
+   This Internet-Draft will expire on 5 April 2025.
 
 Copyright Notice
 
@@ -508,7 +508,7 @@ Table of Contents
 
 3.1.1.  Immediate path initiation
 
-   The server may receive packets for a yet unused path-ID that do not
+   The server may receive packets for a yet unused Path ID that do not
    contain a path challenge.  Such packets are valid if the can be
    properly decrypted and if they contain a valid connection ID.
    (Section 3.1 specifies that the client may send data packets
