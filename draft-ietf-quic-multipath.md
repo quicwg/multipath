@@ -382,7 +382,7 @@ additional path SHOULD first initiate the Address Validation procedure
 with PATH_CHALLENGE and PATH_RESPONSE frames as described in
 {{Section 8.2 of QUIC-TRANSPORT}}. It MAY skip the validation and
 simply send packets on the paths if it has previously validated
-that address. 
+that address.
 
 After receiving packets from the
 client on a new path, if the server decides to use the new path,
