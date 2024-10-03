@@ -1341,18 +1341,18 @@ Maximum Path Identifier:
 # Error Codes {#error-codes}
 
 Multipath QUIC transport error codes are 62-bit unsigned integers
-following {{QUIC-TRANSPORT}}. 
+following {{QUIC-TRANSPORT}}.
 
 The following error codes are defined for use in the PATH_ABANDON frame.
 
-APPLICATION_ABANDON (TBD): The endpoint is abandoning the path at the 
-request of the application. The application has determined that it no 
-longer needs this path. This error is used when the application layer 
+APPLICATION_ABANDON (TBD): The endpoint is abandoning the path at the
+request of the application. The application has determined that it no
+longer needs this path. This error is used when the application layer
 decides to stop using a specific path.
 
-RESOURCE_LIMIT_REACHED (TBD): The endpoint is abandoning the path because 
-it cannot allocate sufficient resources to maintain it. This is due to 
-limitations in the transport layer's capacity. This error indicates that 
+RESOURCE_LIMIT_REACHED (TBD): The endpoint is abandoning the path because
+it cannot allocate sufficient resources to maintain it. This is due to
+limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
 
 # IANA Considerations
