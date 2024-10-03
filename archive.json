@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-01T00:59:21.234635+00:00",
+  "timestamp": "2024-10-03T00:54:19.155831+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -107,6 +107,11 @@
       "name": "needs-review",
       "description": "",
       "color": "fef2c0"
+    },
+    {
+      "name": "clarification",
+      "description": "",
+      "color": "C8B849"
     }
   ],
   "issues": [
@@ -747,7 +752,7 @@
       ],
       "body": "While discussing single packet space vs multi packet space designs, @martinduke brought up the topic of hardware offloading. The effect of any design changes on packet encryption/decryption should take HW offloads into account. As I understand it, single packet space would not modify the packet encryption/decryption logic, but the multi packet space design would because of the difference nonce length. Additionally, since multi-path would be a negotiated feature/extension, that would mean all connections that don't negotiate the feature would have the \"old\" model/logic, where as the connections that do would have the new encryption/decryption logic. IMO, this could significantly complicated HW offloads.",
       "createdAt": "2021-10-18T16:38:38Z",
-      "updatedAt": "2024-09-16T15:25:27Z",
+      "updatedAt": "2024-10-02T20:44:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -791,6 +796,13 @@
           "body": "@Yanmei-Liu and @nibanks thanks for the continued discussion! It seems that the current design is fine with respect to hardware-offload and I believe the design is stable now. So I think we could actually close this issue now?\r\n\r\nOr do you maybe want to add any notes about hardware offload in the implementation consideration section?",
           "createdAt": "2024-07-09T09:06:07Z",
           "updatedAt": "2024-07-09T09:06:07Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I struggle to understand what to do here. We do not have any \"hardware offload\" section in either RFC 9000 or RFC 9001. The last comment was related to the old \"per connection ID\" design, but it did not surface any roadblock. We moved to the \"unique path ID\" design, which is arguably simpler to implement.\r\n\r\nMy proposal is to close with no action.",
+          "createdAt": "2024-10-02T20:44:58Z",
+          "updatedAt": "2024-10-02T20:44:58Z"
         }
       ]
     },
@@ -8072,7 +8084,7 @@
       ],
       "body": "So Section 5.3 in -06 says: \r\n\r\n`When this specification is used, endpoints SHOULD wait for at least three times the largest PTO among all the paths before initiating a new key update after receiving an acknowledgement that confirms receipt of the previous key update. This interval is different from that of QUIC version 1 which used three times the PTO of the only one active path.`\r\n\r\nAfter having done some testing with key update in our implementations with different length paths some conclusions have been drawn.\r\n\r\nFirst is that it difficult for an endpoint to know when an old key can safely be dropped. With multiple path being possible to send on, and not necessarily used as well as to send ACKs on. Thus the fact that one get key phase back as a responder indicate that beyond on-path reordering things should be settled. But for multipath one can conclude for paths being used that key-phase changes have happened. But for path currently not receiving any packet one don't know if they are just being significantly delayed or may never have been sent. Also the path RTT samples one have might not be relevant for the current path delay. Thus, beyond observing that one get some key-phase change back, and starting a really long timer it is not obvious that you can generate an algorithm that enables one to know that no outstanding old keys are there. \r\n\r\nThe fact that this time needs to be longer than worst case RTT changes on each path do result that using 3*PTO is likely to short to re-enable key-update. At least unless one want to require trial decryption of the packets. This as keeping the old key while using the current key, so when one see a key-phase different one can try if it is the old key, if that fails and the next key works, then one drop the old key, and from that point assume this key-phase will be the new key. And thus initiating a key_update. \r\n\r\n",
       "createdAt": "2023-11-04T17:22:50Z",
-      "updatedAt": "2024-09-16T15:22:30Z",
+      "updatedAt": "2024-10-02T12:53:05Z",
       "closedAt": null,
       "comments": [
         {
@@ -8102,6 +8114,13 @@
           "body": "Okay, this sounds like we want to just add some more clarification about a potential risk of packet loss.\r\n\r\nAlso as a side note, based on the discussion in #397 we likely want to keep the PTO as a connection-wide time-out and probably define it to depend on the max path RTT. So this also impacts the sentence above but I think it would be editorial.",
           "createdAt": "2024-09-03T12:15:49Z",
           "updatedAt": "2024-09-03T12:15:49Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think that we may need some implementation guidance.\r\n\r\nThe \"phase\" bit is global. It is also encrypted, so it being global does not cause any privacy issue.\r\n\r\nAt any moment, there is a global value of the \"current\" phase bit. This points to a \"current\" encryption context. There is also a global \"phase status\", i.e., what to do if a packet arrives with a phase different from the current phase. There are two possibilities:\r\n\r\n* this may be a packet encrypted with an old context. This is likely to occur in the \"overlap\" period that follows a phase transition. The transition occurs on one path, but packets encrypted with the \"previous\" encryption context may still be in transit on the other paths -- or even on the same path, given the possibility of out of order delivery. \r\n\r\n* The peer may have rotated the key again, and the receiver should try to decrypt it with the next key. If that decryption succeeds, the peer knows that the key has been rotated.\r\n\r\nDeleting the encryption context after this delay of 3 RTO is a tradeoff. Longer delays would diminish the probability that packets arrive after their decryption key has been discarded, and would be discarded. Longer delays would prevent fast key rotation, force keeping old keys in memory longer, and thus reduce the security of the protocol. The value of 3*RTO is consistent with loss recovery specifications.",
+          "createdAt": "2024-10-02T12:53:04Z",
+          "updatedAt": "2024-10-02T12:53:04Z"
         }
       ]
     },
@@ -9679,7 +9698,7 @@
       ],
       "body": "see https://datatracker.ietf.org/doc/html/rfc9000#name-datagram-packetization-laye and https://datatracker.ietf.org/doc/html/rfc9000#section-18.2\r\n\r\n> The maximum UDP payload size parameter is an integer value that limits the size of UDP payloads that the endpoint is willing to receive. UDP datagrams with payloads larger than this limit are not likely to be processed by the receiver.\r\n> \r\n> The default for this parameter is the maximum permitted UDP payload of 65527. Values below 1200 are invalid.\r\n> \r\n> This limit does act as an additional constraint on datagram size in the same way as the path MTU, but it is a property of the endpoint and not the path; see [Section 14](https://datatracker.ietf.org/doc/html/rfc9000#datagram-size). It is expected that this is the space an endpoint dedicates to holding incoming packets.\r\n\r\nI expect this document to say more about path MTU discovery than is written in https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-7.6. Especially that the `max_udp_payload_size` TP applies to all paths and could have unintended consequences for multipath PMTUD.",
       "createdAt": "2024-04-02T17:53:59Z",
-      "updatedAt": "2024-07-18T18:35:21Z",
+      "updatedAt": "2024-10-01T13:11:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -9709,6 +9728,13 @@
           "body": "@LPardue do you want to propose a PR?",
           "createdAt": "2024-07-09T15:30:03Z",
           "updatedAt": "2024-07-09T15:30:03Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@LPardue please have a look at PR #441. I didn't add a reference in the intro as you proposed above, as I don't think it is necessary to discuss PMTUD directly in the intro. However I added a reference in the implementation guidance where we discuss MTU differences. Does that work for you?",
+          "createdAt": "2024-10-01T13:11:27Z",
+          "updatedAt": "2024-10-01T13:11:27Z"
         }
       ]
     },
@@ -11070,7 +11096,7 @@
       ],
       "body": "Now that we have an explicit Path ID, it might be easier to expect that a packet with a new path ID has to also contain a path challenge. Therefore if a packet for a non-validated path ID is received that does not contain a path challenge, we could say it should be ignore. Or we could also say that the receiving peer should send a path challenge. But I think we have to same something more.",
       "createdAt": "2024-07-01T13:35:24Z",
-      "updatedAt": "2024-09-16T15:20:25Z",
+      "updatedAt": "2024-10-02T08:57:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -11100,6 +11126,20 @@
           "body": "Yes, I think that's what we agreed. Each endpoint is independently obligated to perform address validation, but not to police that the peer has performed path validation. (And where things like address validation tokens were involved, you can't know what addresses the peer considers validated anyway.)\r\n\r\nTherefore, we should talk about receiving packets with a previously-unused Path ID, not receiving PATH_CHALLENGEs (unless we're specifically talking about handing the frame itself, of course).  A PATH_CHALLENGE always generates a corresponding PATH_RESPONSE, but if it's not possible to send on that path (no CID, no CC, anti-amplification, path already abandoned, whatever) then the frame gets dropped.",
           "createdAt": "2024-09-04T20:47:55Z",
           "updatedAt": "2024-09-04T20:47:55Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "There are two issues: shall the packet be accepted; and, shall the receiver then use that path?\r\n\r\nI am tempted to say that as long as a packet decrypts properly, it should be accepted. If it is accepted, it must be acknowledged. If it must be acknowledged, then the receiver needs to allocate at least the \"receive\" half of a path context.\r\n\r\nI don't think that there is a resource control issue. The sender can only send these \"out of challenge\" packets if it has a valid CID for a new group ID, and that CID has to be provided by the receiver. The sender could have sent a challenge, and the receiver would have to allocate the resource.\r\n\r\nIf the receiver cannot create the path, then it should deny it -- we have a whole discussion about that.",
+          "createdAt": "2024-10-01T15:55:42Z",
+          "updatedAt": "2024-10-01T15:56:13Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In the discussion in Vancouver we said that a valid (possible to decrypt) packet should be accepted as we don't/can't police if and how the other end validated the address. Also a sender can/must only use a path if it has validated the address somehow. If you need to send an ACK you have to wait until the path is validated on your side (or bundle it with the path challenge) or send it on another path.\r\n\r\nIf you can't send on a path for whatever reason, you should sooner or later explicitly close the path by sending a path abandon. So to Mike's point, the only case from your example list above where you receive a path challenge (or any other packet with a certain path ID) and ignore the packet instead of sending a path abandon on another path, is the case where the path ID was already abandoned. The only other case where you ignore the path challenge/packet with a certain path ID is when the path ID is larger than the max path ID. However, in those cases where you have an invalid path ID you ignore the whole packet and don't even try to decrypt it.\r\n\r\n",
+          "createdAt": "2024-10-02T08:57:43Z",
+          "updatedAt": "2024-10-02T08:57:43Z"
         }
       ]
     },
@@ -11120,7 +11160,7 @@
       ],
       "body": "With use of multipath you have a multiple path open but not use all of them concurrently (e.g. for stand-by). Therefore a path time out makes less sense. We probably need to consider if the path if actively used or not. Only you send on a path and all packets are finally marked as lost, that's probably a good indication that the path Is broken and you should close it. If a path is not used, you still might want to keep it open to use it later. Not sure if requirement to send pings on all non-used path is that useful.\r\n\r\nAnother related issue is that if you only send non-ack eliciting packets on a path (like ACKs) and the path is not used by the peer for sending, you might not be able to detect a path breakage. May it would make sense to require sending ack electing frames on all used paths from time to time?",
       "createdAt": "2024-07-01T16:59:00Z",
-      "updatedAt": "2024-09-16T15:19:51Z",
+      "updatedAt": "2024-10-01T12:26:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -11168,9 +11208,9 @@
         {
           "author": "mirjak",
           "authorAssociation": "COLLABORATOR",
-          "body": "@MikeBishop sending the PATh_ABANDON does not need to wake up the radio because you send it on another (active) path. However, sending keep-alive requires to wake up the radio everything and therefore is exactly the think I want to avoid. \r\n\r\nWithout multipath if there is only one actively path, you need to define clear point of time, so both endpoint close down if the path doesn't work anymore. that is not need with multipath because you always send an explicit signal (PATH_ABANDON) on another path. With PR #377 and some other changes we are much more clear now in the draft that's always better to send a explicit signal and there is basically no reason to do an implicit close (except for the last path and therefore the while connection).\r\n\r\nOf course if you have an open path and you don't send keep-alive the path can be broken we you try to use it again, however, I think t depends on your local knowledge if you think sending keep-alives will help or is just a waste of resources. So there is no reason to have anything in the protocol itself that requires one or the other behavior.",
+          "body": "@MikeBishop sending the PATh_ABANDON does not need to wake up the radio because you send it on another (active) path. However, sending keep-alive requires to wake up the radio every time and therefore is exactly the thing I want to avoid. \r\n\r\nWithout multipath if there is only one actively path, you need to define a clear point of time, so both endpoint close down if the path doesn't work anymore. that is not needed with multipath because you always send an explicit signal (PATH_ABANDON) on another path. With PR #377 and some other changes we are much more clear now in the draft that's always better to send a explicit signal and there is basically no reason to do an implicit close (except for the last path and therefore the whole connection).\r\n\r\nOf course if you have an open path and you don't send keep-alives the path can be broken we you try to use it again, however, I think it depends on your local knowledge if you think sending keep-alives will help or is just a waste of resources. So there is no reason to have anything in the protocol itself that requires one or the other behavior.",
           "createdAt": "2024-07-20T19:41:09Z",
-          "updatedAt": "2024-07-20T19:41:09Z"
+          "updatedAt": "2024-10-01T12:26:32Z"
         },
         {
           "author": "MikeBishop",
@@ -11612,7 +11652,7 @@
       ],
       "body": "RFC 9000 requires that:\r\n- Datagrams carrying Initial packets be expanded to 1200+ bytes\r\n- Servers verify the client address on handshake *and* when the address changes through migration / rebinding\r\n- The server can send no more than 3x the received bytes until the client's address is validated, both during the handshake and following client migration / rebinding\r\n\r\nThis draft states in the Security Considerations that \"the anti-amplification limits as specified in [Section 8](https://rfc-editor.org/rfc/rfc9000#section-8) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)] need to be followed to limit the amplification risk.\" However, there's no text that describes how this maps into multipath behavior.\r\n\r\nMy proposal is that:\r\n- The packet on a new path SHOULD be expanded to 1200+ bytes (PADDING, etc.) for the first 1 RTT or until validation completes\r\n- When a packet is received from an unverified address, an endpoint MUST NOT send more than 3x the received bytes until address validation completes",
       "createdAt": "2024-07-25T18:08:16Z",
-      "updatedAt": "2024-09-16T15:24:07Z",
+      "updatedAt": "2024-10-02T20:33:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -11628,6 +11668,13 @@
           "body": "I agree that's the goal, but I don't agree that the existing pointer is detailed enough or in the right place to help implementers make the connection.\r\n\r\nNew paths aren't migration; we explicitly talk about what happens when an existing path migrates, and say that's separate from new paths being constructed. So we should clearly state that the Section 8 requirements for migration also apply to new path creation. I think it's fine for that to live in 10.2 and just be a little more explicit.\r\n\r\nBut I think we do implementers a disservice if we don't call out those requirements in context, specifically in Section 3.1:\r\n\r\n- We already require that Path Initiation perform Address Validation by sending a PATH_CHALLENGE; RFC 9000 requires packets containing PATH_CHALLENGE to be expanded to at least 1200 bytes. Let's add a sentence highlighting that requirement and referencing Section 8.2.1 of RFC 9000. (While I think expanding more packets in that first RTT might be beneficial, I can live with not requiring anything more.)\r\n- Similarly, highlight that upon receiving a new path from an unvalidated address, the server will need to respect the anti-amplification limits from Section 8 of RFC 9000 and point there for more details.\r\n\r\nTo be clear, I think it's perfectly reasonable not to double-specify; I'd just like us to point to RFC9000 with a reminder of existing requirements to help people find them. I'm happy to write a PR; I think this would be a fairly small change.",
           "createdAt": "2024-09-04T19:46:52Z",
           "updatedAt": "2024-09-04T19:46:52Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am trying to reconcile Mike's PR with the decision to allow path creation without an explicit challenge, see PR #442. We already have text making reference to RFC 9000. My proposal is to only take the part of #430 that updates the security section.",
+          "createdAt": "2024-10-02T20:33:37Z",
+          "updatedAt": "2024-10-02T20:33:37Z"
         }
       ]
     },
@@ -46719,10 +46766,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "I roughly looked through the issues and PRs but this list might still not be complete. But good to update for now!",
       "createdAt": "2024-09-17T17:03:32Z",
-      "updatedAt": "2024-09-17T17:03:32Z",
+      "updatedAt": "2024-10-01T13:13:28Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -46745,10 +46794,12 @@
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "clarification"
+      ],
       "body": "Fix #421.",
       "createdAt": "2024-09-20T08:01:02Z",
-      "updatedAt": "2024-09-20T12:26:15Z",
+      "updatedAt": "2024-10-02T19:34:15Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -46793,8 +46844,339 @@
           "createdAt": "2024-09-20T12:14:59Z",
           "updatedAt": "2024-09-20T12:14:59Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6LtUrK",
+          "commit": {
+            "abbreviatedOid": "548bded"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-02T19:34:15Z",
+          "updatedAt": "2024-10-02T19:34:15Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 440,
+      "id": "PR_kwDOGNtpaM59QCzI",
+      "title": "new text on idle timeouts",
+      "url": "https://github.com/quicwg/multipath/pull/440",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #397",
+      "createdAt": "2024-10-01T12:54:47Z",
+      "updatedAt": "2024-10-01T14:41:33Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-11",
+      "headRefOid": "c15e95f1e99447b9ec464b8401a9e40b2ef1aea1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6LgS5L",
+          "commit": {
+            "abbreviatedOid": "3318e63"
+          },
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-01T14:12:42Z",
+          "updatedAt": "2024-10-01T14:14:48Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\ncan decide to close a path at any time, whether the path is in active\r\nuse or not, by sending a PATH_ABANDON frame. Particularly, it is not required\r\n```",
+              "createdAt": "2024-10-01T14:12:42Z",
+              "updatedAt": "2024-10-01T14:14:48Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nIf a path was not actively used for a while, an endpoint can\r\nprobe it before switching to active use if there are still other paths\r\n```",
+              "createdAt": "2024-10-01T14:14:17Z",
+              "updatedAt": "2024-10-01T14:14:48Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 441,
+      "id": "PR_kwDOGNtpaM59QMGJ",
+      "title": "add ref to DPLPMTUD",
+      "url": "https://github.com/quicwg/multipath/pull/441",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #326",
+      "createdAt": "2024-10-01T13:10:03Z",
+      "updatedAt": "2024-10-02T19:39:18Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-12",
+      "headRefOid": "d0859bf52c6d2e4470a6aba9ae14e384018d11d0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6LtWr9",
+          "commit": {
+            "abbreviatedOid": "d0859bf"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-02T19:39:18Z",
+          "updatedAt": "2024-10-02T19:39:18Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 442,
+      "id": "PR_kwDOGNtpaM59SoHy",
+      "title": "packets without challenge are valid",
+      "url": "https://github.com/quicwg/multipath/pull/442",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Close #390",
+      "createdAt": "2024-10-01T18:19:25Z",
+      "updatedAt": "2024-10-02T21:01:52Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "arrival-no-challenge",
+      "headRefOid": "67b3e61e34eb3aac06f036065afb72f711e69e22",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Not sure this need an own section. We also need to change the following sentence in the initiation section:\r\n\r\n> When the multipath extension is negotiated, a client that wants to\r\n> use an additional path MUST first initiate the Address Validation procedure\r\n> with PATH_CHALLENGE and PATH_RESPONSE frames as described in [Section 8.2](https://rfc-editor.org/rfc/rfc9000#section-8.2) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)],\r\n>unless it has previously validated that address.",
+          "createdAt": "2024-10-02T09:01:09Z",
+          "updatedAt": "2024-10-02T09:01:09Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We may want to add content to address amplification limits. There is a special issue if the client starts a new path with a small data packet. In the absence of padding, the server will not have enough anti-amplification credit to send its own path challenge. ",
+          "createdAt": "2024-10-02T20:50:00Z",
+          "updatedAt": "2024-10-02T20:50:00Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6LpZHG",
+          "commit": {
+            "abbreviatedOid": "bc23b51"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-02T13:06:17Z",
+          "updatedAt": "2024-10-02T13:06:17Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nThe server may receive packets for a yet unused Path ID that do not\r\n```",
+              "createdAt": "2024-10-02T13:06:17Z",
+              "updatedAt": "2024-10-02T13:06:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6LqJ34",
+          "commit": {
+            "abbreviatedOid": "8a11473"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-02T14:14:07Z",
+          "updatedAt": "2024-10-02T14:14:07Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "I don't think this last sentence really makes sense or actually not even sure what you mean by accepting a packet. You receive a packet from a valid (not-yet used) Path ID; you decrypt it and as we say above this valid not matter what's in there. So either we don't need this sentence at all or maybe you want to say something like if the receiver does not want to open this path, it has to abandon it explicitly. ",
+              "createdAt": "2024-10-02T14:14:07Z",
+              "updatedAt": "2024-10-02T14:14:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6LsSeK",
+          "commit": {
+            "abbreviatedOid": "8a11473"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-02T17:40:41Z",
+          "updatedAt": "2024-10-02T17:40:42Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "We have another comment about maybe not create a separate section. I can try moving the first paragraph in the main text.",
+              "createdAt": "2024-10-02T17:40:42Z",
+              "updatedAt": "2024-10-02T17:40:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Ls7Ir",
+          "commit": {
+            "abbreviatedOid": "8a11473"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-02T18:33:45Z",
+          "updatedAt": "2024-10-02T18:33:45Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "I just did a rewrite, removing the separate question, and just stating that clients MAY start a path without sending a challenge.",
+              "createdAt": "2024-10-02T18:33:45Z",
+              "updatedAt": "2024-10-02T18:33:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6LtXPi",
+          "commit": {
+            "abbreviatedOid": "9d7880c"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-02T19:40:41Z",
+          "updatedAt": "2024-10-02T19:40:41Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 443,
+      "id": "PR_kwDOGNtpaM59a_jO",
+      "title": "Add implementation comments for key rotation.",
+      "url": "https://github.com/quicwg/multipath/pull/443",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mirjak"
+      ],
+      "labels": [],
+      "body": "Close #290",
+      "createdAt": "2024-10-02T20:08:54Z",
+      "updatedAt": "2024-10-02T20:41:27Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "key-rotation-no-worry",
+      "headRefOid": "0166d3b4dbd58fabb7e36aed87663366245d8ad8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6Lt2nD",
+          "commit": {
+            "abbreviatedOid": "7b526a1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-02T20:31:32Z",
+          "updatedAt": "2024-10-02T20:31:32Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nkeeping old keys available for longer delays reduces the security of the protocol.\r\n```",
+              "createdAt": "2024-10-02T20:31:32Z",
+              "updatedAt": "2024-10-02T20:31:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Lt3JC",
+          "commit": {
+            "abbreviatedOid": "7b526a1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good! Thanks for the guidance.",
+          "createdAt": "2024-10-02T20:32:50Z",
+          "updatedAt": "2024-10-02T20:32:50Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 444,
+      "id": "PR_kwDOGNtpaM59bHac",
+      "title": "Add more guidance on when to use PATH_ACK frames",
+      "url": "https://github.com/quicwg/multipath/pull/444",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "To close #220 ",
+      "createdAt": "2024-10-02T20:25:11Z",
+      "updatedAt": "2024-10-02T20:28:20Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-220",
+      "headRefOid": "effe5633971efb7463ae35501de98996fa50ba18",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
