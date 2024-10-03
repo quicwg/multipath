@@ -1338,9 +1338,22 @@ Maximum Path Identifier:
   Receipt of a value that is higher than the local maximum value MUST
   be treated as a connection error of type PROTOCOL_VIOLATION.
 
-# Error Codes
+# Error Codes {#error-codes}
+
+Multipath QUIC transport error codes are 62-bit unsigned integers
+following {{QUIC-TRANSPORT}}. 
 
 The following error codes are defined for use in the PATH_ABANDON frame.
+
+APPLICATION_ABANDON (TBD): The endpoint is abandoning the path at the 
+request of the application. The application has determined that it no 
+longer needs this path. This error is used when the application layer 
+decides to stop using a specific path.
+
+RESOURCE_LIMIT_REACHED (TBD): The endpoint is abandoning the path because 
+it cannot allocate sufficient resources to maintain it. This is due to 
+limitations in the transport layer's capacity. This error indicates that 
+resource constraints prevent the continuation of the path.
 
 # IANA Considerations
 
@@ -1373,6 +1386,16 @@ TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
+
+The following transport error code defined in {{tab-error-code}} are to
+be added to the "QUIC Transport Error Codes" registry under
+the "QUIC Protocol" heading.
+
+Value                       | Code                  | Description                   | Specification
+----------------------------|-----------------------|-------------------------------|-------------------
+TBD | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+{: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
 # Security Considerations
