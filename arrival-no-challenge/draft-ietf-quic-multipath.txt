@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 5 April 2025                             Uber Technologies Inc.
+Expires: 6 April 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 5 April 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          2 October 2024
+                                                          3 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 April 2025.
+   This Internet-Draft will expire on 6 April 2025.
 
 Copyright Notice
 
@@ -448,10 +448,11 @@ Table of Contents
    After receiving packets from the client on a new path, if the server
    decides to use the new path, the server SHOULD perform path
    validation (Section 8.2 of [QUIC-TRANSPORT]) unless it has previously
-   validated that address.  An endpoint that receives packets on a new
-   path and does not want to establish this path is expected to close
-   the path by sending a PATH_ABANDON on another path, as specified in
-   section Section 3.3.
+   validated that address.  Until the client's address is validated, the
+   anti-amplification limit from Section 8 of [QUIC-TRANSPORT] applies.
+   An endpoint that receives packets on a new path and does not want to
+   establish this path is expected to close the path by sending a
+   PATH_ABANDON on another path, as specified in section Section 3.3.
 
    An endpoint that has no active connection ID for this path or lacks
    other resource to immediately configure a new path could delay
@@ -1520,22 +1521,22 @@ Table of Contents
 
    The path validation mechanism as specified in Section 8.2. of
    [QUIC-TRANSPORT] for migration is used unchanged for initiation of
-   new paths in this extension.  Respectively the security
-   considerations on source address spoofing as outlined in
-   Section 21.5.4 of [QUIC-TRANSPORT] equally apply.  Similarly, the
-   anti-amplification limits as specified in Section 8 of
-   [QUIC-TRANSPORT] need to be followed to limit the amplification risk.
+   new paths in this extension.  Therefore, the security considerations
+   on source address spoofing as outlined in Section 21.5.4 of
+   [QUIC-TRANSPORT] equally apply.  Similarly, the anti-amplification
+   limits as specified in Section 8 of [QUIC-TRANSPORT] need to be
+   followed to limit the amplification risk.
 
    However, while [QUIC-TRANSPORT] only allows the use of one path
    simultaneously and therefore only one path migration at the time
    should be validated, this extension allows for multiple open paths,
    that could in theory be migrated all at the same time, and it allows
-   for multiple paths that could be initialised simultaneously.
+   for multiple paths that could be initialized simultaneously.
    Therefore, each path could be used to further amplify an attack.
-   Respectively endpoints needs limit the number of maximum paths and
-   might consider additional measures to limit the number of concurrent
-   path validation processes e.g. by pacing them out or limiting the
-   number of path initiation attempts over a certain time period.
+   Endpoints needs limit the number of maximum paths and might consider
+   additional measures to limit the number of concurrent path validation
+   processes e.g. by pacing them out or limiting the number of path
+   initiation attempts over a certain time period.
 
 9.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
 
