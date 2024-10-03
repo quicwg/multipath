@@ -1101,8 +1101,6 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
     Type (i) = TBD-02 (experiments use 0x15228c05),
     Path Identifier (i),
     Error Code (i),
-    Reason Phrase Length (i),
-    Reason Phrase (..),
   }
 ~~~
 {: #fig-path-abandon-format title="PATH_ABANDON Frame Format"}
@@ -1114,21 +1112,8 @@ Path Identifier:
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
-  this path.
-
-Reason Phrase Length:
-: A variable-length integer specifying the length of the reason phrase
-  in bytes. Because an PATH_ABANDON frame cannot be split between packets,
-  any limits on packet size will also limit the space available for
-  a reason phrase.
-
-Reason Phrase:
-: Additional diagnostic information for the closure. This can be
-  zero length if the sender chooses not to give details beyond
-  the Error Code value. This SHOULD be a UTF-8 encoded string {{!RFC3629}},
-  though the frame does not carry information, such as language tags,
-  that would aid comprehension by any entity other than the one
-  that created the text.
+  this path. NO_ERROR(0x0) indicates that the path is being abandoned
+  without any error being encountered.
 
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1352,6 +1337,10 @@ Maximum Path Identifier:
   the currently allowed maximum value, this frame can be ignored.
   Receipt of a value that is higher than the local maximum value MUST
   be treated as a connection error of type PROTOCOL_VIOLATION.
+
+# Error Codes
+
+The following error codes are defined for use in the PATH_ABANDON frame.
 
 # IANA Considerations
 
