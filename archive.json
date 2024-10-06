@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-03T00:54:19.155831+00:00",
+  "timestamp": "2024-10-06T00:58:21.525615+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11588,7 +11588,7 @@
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-09-16T15:19:37Z",
+      "updatedAt": "2024-10-03T09:02:49Z",
       "closedAt": null,
       "comments": [
         {
@@ -11611,6 +11611,13 @@
           "body": "This was discussion in the session at IETF-120. Decision was to remove the Reason Phrase and define a MP specific error code space, e.g. including error codes like \"closed by application\", \"out of ressources\", ...",
           "createdAt": "2024-09-02T15:18:14Z",
           "updatedAt": "2024-09-02T15:18:14Z"
+        },
+        {
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am trying to address this issue with PR #445 ",
+          "createdAt": "2024-10-03T09:02:48Z",
+          "updatedAt": "2024-10-03T09:02:48Z"
         }
       ]
     },
@@ -11768,6 +11775,22 @@
           "updatedAt": "2024-09-09T13:10:16Z"
         }
       ]
+    },
+    {
+      "number": 446,
+      "id": "I_kwDOGNtpaM6ZE8Xq",
+      "title": "Should 0xffffffff be retained for the max_path_id variable in non-multipath scenarios?",
+      "url": "https://github.com/quicwg/multipath/issues/446",
+      "state": "OPEN",
+      "author": "nandsky",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In issue #425, we discussed the maximum value for max_path_id, but based on practical experience, can we retain 0xffffffff for non-multipath scenarios?\r\n\r\nThere are 4 scenarios for max_path_id negotiation:\r\n1. Both sides have no max_path_id configured\r\n2. Endpoint has max_path_id set, peer doesn't send it\r\n3. Endpoint has no max_path_id set, peer sends it\r\n4. Both sides have max_path_id set, and there's a confirmed value\r\n\r\nusually, we need three or four variables to complete the max_path_id negotiation:\r\n```c\r\n   uint64_t  max_path_id_remote; /* The initial value is  0xffffffffffffffff */\r\n   uint64_t  max_path_id_local;  /* The initial value is  0xffffffffffffffff */\r\n   uint64_t  max_path_id;  /* The initial value is  0xffffffffffffffff */\r\n   signed    multipath_enabled:1;  /* this variable can be replaced with the expression max_path_id == 0xffffffffffffffff */\r\n```\r\n\r\nIf we reserve 0xffffffff for uninitialized max_path_id, then we only need three uint32_t variables to express the 4 scenarios.\r\n```c\r\n   uint32_t  max_path_id_remote;  /* The initial value is  0xffffffff */\r\n   uint32_t  max_path_id_local; /* The initial value is  0xffffffff */\r\n   uint32_t  max_path_id; /* The initial value is  0xffffffff */\r\n```\r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+      "createdAt": "2024-10-05T16:36:36Z",
+      "updatedAt": "2024-10-05T16:37:55Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -46799,7 +46822,7 @@
       ],
       "body": "Fix #421.",
       "createdAt": "2024-09-20T08:01:02Z",
-      "updatedAt": "2024-10-02T19:34:15Z",
+      "updatedAt": "2024-10-03T15:49:28Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -46856,6 +46879,19 @@
           "body": "",
           "createdAt": "2024-10-02T19:34:15Z",
           "updatedAt": "2024-10-02T19:34:15Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6L1UGQ",
+          "commit": {
+            "abbreviatedOid": "548bded"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-03T15:49:28Z",
+          "updatedAt": "2024-10-03T15:49:28Z",
           "comments": []
         }
       ]
@@ -46967,13 +47003,13 @@
       "labels": [],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-02T21:01:52Z",
+      "updatedAt": "2024-10-03T15:45:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "arrival-no-challenge",
-      "headRefOid": "67b3e61e34eb3aac06f036065afb72f711e69e22",
+      "headRefOid": "9f78c5d487dba80b193f85e872e4452101f570d1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47171,6 +47207,32 @@
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-220",
       "headRefOid": "effe5633971efb7463ae35501de98996fa50ba18",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 445,
+      "id": "PR_kwDOGNtpaM59eFel",
+      "title": "Dev/add error code",
+      "url": "https://github.com/quicwg/multipath/pull/445",
+      "state": "OPEN",
+      "author": "yfmascgy",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Here is an initial attempt to remove the reason phrase from the PATH_ABANDON frame and add two error codes: APPLICATION_ABANDON and RESOURCE_LIMIT_REACHED. This follows the discussion in issue #414 and references the discussion notes from IETF-120. I have no strong opinion on the names of these two error codes and have set their values as TBD for both.",
+      "createdAt": "2024-10-03T08:46:54Z",
+      "updatedAt": "2024-10-03T09:00:00Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "yfmascgy/multipath",
+      "headRefName": "dev/add-error-code",
+      "headRefOid": "ad1108d5307b3823f505e8b131d6fc7b8e920faa",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
