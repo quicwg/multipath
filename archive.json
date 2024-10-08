@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-06T00:58:21.525615+00:00",
+  "timestamp": "2024-10-08T00:54:02.031855+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -8079,12 +8079,12 @@
         "huitema"
       ],
       "labels": [
-        "editorial",
-        "needs PR"
+        "has PR",
+        "editorial"
       ],
       "body": "So Section 5.3 in -06 says: \r\n\r\n`When this specification is used, endpoints SHOULD wait for at least three times the largest PTO among all the paths before initiating a new key update after receiving an acknowledgement that confirms receipt of the previous key update. This interval is different from that of QUIC version 1 which used three times the PTO of the only one active path.`\r\n\r\nAfter having done some testing with key update in our implementations with different length paths some conclusions have been drawn.\r\n\r\nFirst is that it difficult for an endpoint to know when an old key can safely be dropped. With multiple path being possible to send on, and not necessarily used as well as to send ACKs on. Thus the fact that one get key phase back as a responder indicate that beyond on-path reordering things should be settled. But for multipath one can conclude for paths being used that key-phase changes have happened. But for path currently not receiving any packet one don't know if they are just being significantly delayed or may never have been sent. Also the path RTT samples one have might not be relevant for the current path delay. Thus, beyond observing that one get some key-phase change back, and starting a really long timer it is not obvious that you can generate an algorithm that enables one to know that no outstanding old keys are there. \r\n\r\nThe fact that this time needs to be longer than worst case RTT changes on each path do result that using 3*PTO is likely to short to re-enable key-update. At least unless one want to require trial decryption of the packets. This as keeping the old key while using the current key, so when one see a key-phase different one can try if it is the old key, if that fails and the next key works, then one drop the old key, and from that point assume this key-phase will be the new key. And thus initiating a key_update. \r\n\r\n",
       "createdAt": "2023-11-04T17:22:50Z",
-      "updatedAt": "2024-10-02T12:53:05Z",
+      "updatedAt": "2024-10-07T13:14:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -9693,12 +9693,12 @@
         "mirjak"
       ],
       "labels": [
-        "editorial",
-        "needs PR"
+        "has PR",
+        "editorial"
       ],
       "body": "see https://datatracker.ietf.org/doc/html/rfc9000#name-datagram-packetization-laye and https://datatracker.ietf.org/doc/html/rfc9000#section-18.2\r\n\r\n> The maximum UDP payload size parameter is an integer value that limits the size of UDP payloads that the endpoint is willing to receive. UDP datagrams with payloads larger than this limit are not likely to be processed by the receiver.\r\n> \r\n> The default for this parameter is the maximum permitted UDP payload of 65527. Values below 1200 are invalid.\r\n> \r\n> This limit does act as an additional constraint on datagram size in the same way as the path MTU, but it is a property of the endpoint and not the path; see [Section 14](https://datatracker.ietf.org/doc/html/rfc9000#datagram-size). It is expected that this is the space an endpoint dedicates to holding incoming packets.\r\n\r\nI expect this document to say more about path MTU discovery than is written in https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-7.6. Especially that the `max_udp_payload_size` TP applies to all paths and could have unintended consequences for multipath PMTUD.",
       "createdAt": "2024-04-02T17:53:59Z",
-      "updatedAt": "2024-10-01T13:11:28Z",
+      "updatedAt": "2024-10-07T13:14:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -11090,13 +11090,13 @@
         "huitema"
       ],
       "labels": [
+        "has PR",
         "design",
-        "needs PR",
         "explicit path ID"
       ],
       "body": "Now that we have an explicit Path ID, it might be easier to expect that a packet with a new path ID has to also contain a path challenge. Therefore if a packet for a non-validated path ID is received that does not contain a path challenge, we could say it should be ignore. Or we could also say that the receiving peer should send a path challenge. But I think we have to same something more.",
       "createdAt": "2024-07-01T13:35:24Z",
-      "updatedAt": "2024-10-02T08:57:44Z",
+      "updatedAt": "2024-10-07T13:13:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -11155,12 +11155,12 @@
         "mirjak"
       ],
       "labels": [
-        "design",
-        "needs PR"
+        "has PR",
+        "design"
       ],
       "body": "With use of multipath you have a multiple path open but not use all of them concurrently (e.g. for stand-by). Therefore a path time out makes less sense. We probably need to consider if the path if actively used or not. Only you send on a path and all packets are finally marked as lost, that's probably a good indication that the path Is broken and you should close it. If a path is not used, you still might want to keep it open to use it later. Not sure if requirement to send pings on all non-used path is that useful.\r\n\r\nAnother related issue is that if you only send non-ack eliciting packets on a path (like ACKs) and the path is not used by the peer for sending, you might not be able to detect a path breakage. May it would make sense to require sending ack electing frames on all used paths from time to time?",
       "createdAt": "2024-07-01T16:59:00Z",
-      "updatedAt": "2024-10-01T12:26:32Z",
+      "updatedAt": "2024-10-07T13:13:41Z",
       "closedAt": null,
       "comments": [
         {
@@ -11583,12 +11583,13 @@
         "yfmascgy"
       ],
       "labels": [
+        "has PR",
         "design",
-        "needs PR"
+        "needs-discussion"
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-10-03T09:02:49Z",
+      "updatedAt": "2024-10-07T13:13:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -11618,6 +11619,20 @@
           "body": "I am trying to address this issue with PR #445 ",
           "createdAt": "2024-10-03T09:02:48Z",
           "updatedAt": "2024-10-03T09:02:48Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for starting the PR @yfmascgy. In the discussion @marten-seemann proposed to define a separate error code space rather than using the existing QUIC error code space. Do people have opinions on that?",
+          "createdAt": "2024-10-07T13:01:46Z",
+          "updatedAt": "2024-10-07T13:01:46Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Also more more question: Should the PR also add information which error code to use in each case where we require/recommend to send a path abandon frame. E.g. if close a path because of a local timeout, you should probably use \"NO_ERROR\". If you close a path that the other end tries to open, you maybe use \"NO_ERROR\" or maybe also something more specific like \"RESOURCE_LIMIT_REACHED\" which indicates to the other end that it should not try to open this path (or any other path) right now again...?",
+          "createdAt": "2024-10-07T13:06:31Z",
+          "updatedAt": "2024-10-07T13:06:31Z"
         }
       ]
     },
@@ -11633,12 +11648,12 @@
         "qdeconinck"
       ],
       "labels": [
-        "editorial",
-        "needs PR"
+        "has PR",
+        "editorial"
       ],
       "body": "From some interop from IETF 120 with @Yanmei-Liu, it seems we need to clarify that the initial CID sequence number that should be used is 0, as Section 5.1.1 of RFC9000 bases its discussion on handshake CIDs to define the sequence number 0. There are no such \"handshake CIDs\" with additional paths.",
       "createdAt": "2024-07-22T09:28:43Z",
-      "updatedAt": "2024-09-16T15:20:52Z",
+      "updatedAt": "2024-10-07T13:13:11Z",
       "closedAt": null,
       "comments": []
     },
@@ -11779,18 +11794,26 @@
     {
       "number": 446,
       "id": "I_kwDOGNtpaM6ZE8Xq",
-      "title": "Should 0xffffffff be retained for the max_path_id variable in non-multipath scenarios?",
+      "title": "Should 0xffffffff be reserved for scenarios where no \"max_path_id\" is set?",
       "url": "https://github.com/quicwg/multipath/issues/446",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nandsky",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "In issue #425, we discussed the maximum value for max_path_id, but based on practical experience, can we retain 0xffffffff for non-multipath scenarios?\r\n\r\nThere are 4 scenarios for max_path_id negotiation:\r\n1. Both sides have no max_path_id configured\r\n2. Endpoint has max_path_id set, peer doesn't send it\r\n3. Endpoint has no max_path_id set, peer sends it\r\n4. Both sides have max_path_id set, and there's a confirmed value\r\n\r\nusually, we need three or four variables to complete the max_path_id negotiation:\r\n```c\r\n   uint64_t  max_path_id_remote; /* The initial value is  0xffffffffffffffff */\r\n   uint64_t  max_path_id_local;  /* The initial value is  0xffffffffffffffff */\r\n   uint64_t  max_path_id;  /* The initial value is  0xffffffffffffffff */\r\n   signed    multipath_enabled:1;  /* this variable can be replaced with the expression max_path_id == 0xffffffffffffffff */\r\n```\r\n\r\nIf we reserve 0xffffffff for uninitialized max_path_id, then we only need three uint32_t variables to express the 4 scenarios.\r\n```c\r\n   uint32_t  max_path_id_remote;  /* The initial value is  0xffffffff */\r\n   uint32_t  max_path_id_local; /* The initial value is  0xffffffff */\r\n   uint32_t  max_path_id; /* The initial value is  0xffffffff */\r\n```\r\n \r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+      "body": "In issue #425, we discussed the maximum value for max_path_id, but based on practical experience, can we retain 0xffffffff for non-multipath scenarios?\r\n\r\nThere are 4 scenarios for max_path_id negotiation:\r\n1. Both sides have no max_path_id configured\r\n2. Endpoint has max_path_id set, peer doesn't send it\r\n3. Endpoint has no max_path_id set, peer sends it\r\n4. Both sides have max_path_id set, and there's a confirmed value\r\n\r\nas described in  [Introduction of an Explicit Path Identifier](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-introduction-of-an-explicit), [0, 2^32-1] have been used by multi-path\uff0cthere is no value in uint32_t to represent no \"max_path_id\" set (initial value), so we need a uint64_t or an extra single-bit variable. for example:\r\n```c\r\n   uint64_t  max_path_id_remote; /* The initial value is  0xffffffffffffffff */\r\n   uint64_t  max_path_id_local;  /* The initial value is  0xffffffffffffffff */\r\n   uint64_t  max_path_id;  /* The initial value is  0xffffffffffffffff */\r\n   signed    multipath_enabled:1;  /* this variable can be replaced with the expression max_path_id == 0xffffffffffffffff */\r\n```\r\nbut:\r\n1. If we use uint64_t, then 0x0000000100000000 - 0xffffffffffffffffff seems meaningless and waste some memory.\r\n2. If we use a separate signed max_path_id:1 to express it, this would introduce additional complexity and also waste a little bit of memory.\r\n\r\nIf we reserve 0xffffffff for uninitialized max_path_id, then we only need three uint32_t variables to express the 4 scenarios.\r\n```c\r\n   uint32_t  max_path_id_remote;  /* The initial value is  0xffffffff */\r\n   uint32_t  max_path_id_local; /* The initial value is  0xffffffff */\r\n   uint32_t  max_path_id; /* The initial value is  0xffffffff */\r\n```\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
       "createdAt": "2024-10-05T16:36:36Z",
-      "updatedAt": "2024-10-05T16:37:55Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-07T13:12:49Z",
+      "closedAt": "2024-10-07T13:12:49Z",
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The multipath extension is indicated by the use of the initial_max_path_id transport parameter, therefore it is not possible to use the multipath extension without setting the max_path_id. The multipath_enabled transport parameter does not exist anymore and was replaced by initial_max_path_id with the introduction of the explicit path ID. If you don't want to limit the number of path IDs, you can set the initial_max_path_id transport parameter to the maximum value. See section https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-handshake-negotiation-and-t",
+          "createdAt": "2024-10-07T13:12:49Z",
+          "updatedAt": "2024-10-07T13:12:49Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -46818,11 +46841,12 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
+        "ready-to-merge",
         "clarification"
       ],
       "body": "Fix #421.",
       "createdAt": "2024-09-20T08:01:02Z",
-      "updatedAt": "2024-10-03T15:49:28Z",
+      "updatedAt": "2024-10-07T11:32:22Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -46905,10 +46929,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "needs-review"
+      ],
       "body": "fixes #397",
       "createdAt": "2024-10-01T12:54:47Z",
-      "updatedAt": "2024-10-01T14:41:33Z",
+      "updatedAt": "2024-10-07T13:15:10Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47003,7 +47029,7 @@
       "labels": [],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-03T15:45:48Z",
+      "updatedAt": "2024-10-07T23:23:44Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47028,6 +47054,27 @@
           "body": "We may want to add content to address amplification limits. There is a special issue if the client starts a new path with a small data packet. In the absence of padding, the server will not have enough anti-amplification credit to send its own path challenge. ",
           "createdAt": "2024-10-02T20:50:00Z",
           "updatedAt": "2024-10-02T20:50:00Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> We may want to add content to address amplification limits. There is a special issue if the client starts a new path with a small data packet. In the absence of padding, the server will not have enough anti-amplification credit to send its own path challenge.\r\n\r\nI don't think this an issue that is specific for the multipath extension. If you can't validate the address because of the amplification limit, you simply can't sent on that path (or in case of RFC9000 you can't migrate to this path). In this case you can create the path and hope to receive more data such that you can sooner or later send the path challenge, or you might want to close the path by sending a path abandon frame on another path. If you don't want to close the path immediately but wait for more data, I guess it makes sense to start a timer. However, I don't think we need to specify anything here but can leave this to the implementation. Again, it's the same for RFC900 where you receive a packet that creates some migration state that you eventually want to remove at some point again.",
+          "createdAt": "2024-10-07T12:34:04Z",
+          "updatedAt": "2024-10-07T12:34:04Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema I think you initially proposed text would still be a useful remark to explicitly say that if a packet has a valid path ID and decrypts but does not contain a path challenge, it is a valid packet that should be processed and acknowledged, if needed on another path.",
+          "createdAt": "2024-10-07T12:36:48Z",
+          "updatedAt": "2024-10-07T12:36:48Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I will try to revive the previous note.",
+          "createdAt": "2024-10-07T23:23:43Z",
+          "updatedAt": "2024-10-07T23:23:43Z"
         }
       ],
       "reviews": [
@@ -47123,6 +47170,186 @@
           "createdAt": "2024-10-02T19:40:41Z",
           "updatedAt": "2024-10-02T19:40:41Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MK_sb",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T11:35:43Z",
+          "updatedAt": "2024-10-07T11:35:43Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "We discussed in the meeting that we want a MUST here but don't say that path validation would require sending a path challenge but rather just refer to RFC9000 instead. \r\n",
+              "createdAt": "2024-10-07T11:35:43Z",
+              "updatedAt": "2024-10-07T11:35:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MLAi6",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T11:37:02Z",
+          "updatedAt": "2024-10-07T11:37:02Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nadditional path MUST validate the peer's address before sending any data packets \r\nas described in\r\n```",
+              "createdAt": "2024-10-07T11:37:02Z",
+              "updatedAt": "2024-10-07T11:37:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MLBaE",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T11:38:44Z",
+          "updatedAt": "2024-10-07T11:38:45Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Similarly we should keep the MUST here or not use normative language because this is also covered by the MUST above.",
+              "createdAt": "2024-10-07T11:38:45Z",
+              "updatedAt": "2024-10-07T11:38:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MLCQR",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T11:40:16Z",
+          "updatedAt": "2024-10-07T11:40:16Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "I think this is also confusing because there is effectively not really something that explicitly initiates the path.",
+              "createdAt": "2024-10-07T11:40:16Z",
+              "updatedAt": "2024-10-07T11:40:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MLDfn",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T11:42:37Z",
+          "updatedAt": "2024-10-07T11:42:37Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Why did you remove this sentence? I think t's correct and simply part of the summary overview at the beginning. It is still true that a path/address as to be validated before using it. It's just the case that we a) can't enforce that validation by the other end and b) there can be other way to validate than sending a path challenge. However, this sentence doesn't say anything about these two points.",
+              "createdAt": "2024-10-07T11:42:37Z",
+              "updatedAt": "2024-10-07T11:42:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MQXLD",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T23:18:36Z",
+          "updatedAt": "2024-10-07T23:18:36Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "I know we discussed that. But we also agreed that packets received from the peer should be processed and acknowledged. To acknowledge, the receiving peer has to create a \"path context\". We need to thread the needle through a fine hole...\r\n\r\nThe critical issue is that the peer address could be spoofed, as stated in section 9.2 of RFC 9000. Thus, address validation is required. It is not perfect.\r\n\r\nI will try to rewrite that without any MUST/SHOULD/MAY, with simply a reference to RFC 9000.",
+              "createdAt": "2024-10-07T23:18:36Z",
+              "updatedAt": "2024-10-07T23:18:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MQXl9",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T23:20:49Z",
+          "updatedAt": "2024-10-07T23:20:49Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I am concerned that receivers will treat the \"PATH CHALLENGE\" as a trigger to create a path context, and will drop packets that do not contain a path challenge. That can easily lead to interop issues.",
+              "createdAt": "2024-10-07T23:20:49Z",
+              "updatedAt": "2024-10-07T23:20:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MQXxl",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T23:21:43Z",
+          "updatedAt": "2024-10-07T23:21:43Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "There is: using a connection ID that reference a new path. That's unambiguous, and crypto protected.",
+              "createdAt": "2024-10-07T23:21:43Z",
+              "updatedAt": "2024-10-07T23:21:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MQX9A",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T23:22:44Z",
+          "updatedAt": "2024-10-07T23:22:44Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I will try to rewrite.",
+              "createdAt": "2024-10-07T23:22:44Z",
+              "updatedAt": "2024-10-07T23:22:44Z"
+            }
+          ]
         }
       ]
     },
@@ -47140,7 +47367,7 @@
       "labels": [],
       "body": "Close #290",
       "createdAt": "2024-10-02T20:08:54Z",
-      "updatedAt": "2024-10-02T20:41:27Z",
+      "updatedAt": "2024-10-07T23:25:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47151,7 +47378,22 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You added this section in the implementation guidance. But I don't think you actually provide any additional implementation guidance, or? You rather provide some reasoning why 3x the largest RTO is specified and what the trade-off is. I think this would fit fine into existing Key Update section (section 4.2). More concretely, I think you can remove the first summary paragraph and simply more the second paragraph into the existing Key Update section. Or do I miss something on additional implementation guidance here?",
+          "createdAt": "2024-10-07T12:42:54Z",
+          "updatedAt": "2024-10-07T12:42:54Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Will try moving the text as suggested.",
+          "createdAt": "2024-10-07T23:25:17Z",
+          "updatedAt": "2024-10-07T23:25:17Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6Lt2nD",
@@ -47200,7 +47442,7 @@
       "labels": [],
       "body": "To close #220 ",
       "createdAt": "2024-10-02T20:25:11Z",
-      "updatedAt": "2024-10-02T20:28:20Z",
+      "updatedAt": "2024-10-07T14:16:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47212,7 +47454,61 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6MMesC",
+          "commit": {
+            "abbreviatedOid": "effe563"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T14:13:31Z",
+          "updatedAt": "2024-10-07T14:13:31Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "This additional sentence is not needed at this is already what the sentence above says. All packets after the handshake has concluded are 1-RTT packets.",
+              "createdAt": "2024-10-07T14:13:31Z",
+              "updatedAt": "2024-10-07T14:13:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MMgUs",
+          "commit": {
+            "abbreviatedOid": "effe563"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T14:15:59Z",
+          "updatedAt": "2024-10-07T14:15:59Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Given this is a SHOULD only, it is not only out-of-order arrivals. The peer can decide to keep using ACK frames for all Path ID 0 packets. However, we should explain when this might be useful, e.g. in order to same some bytes, especially when only one path is used.",
+              "createdAt": "2024-10-07T14:15:59Z",
+              "updatedAt": "2024-10-07T14:15:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MMg41",
+          "commit": {
+            "abbreviatedOid": "effe563"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "The new SHOULD is not needed as this is covered already by the existing first sentence in this paragraph.",
+          "createdAt": "2024-10-07T14:16:49Z",
+          "updatedAt": "2024-10-07T14:16:49Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 445,
@@ -47223,22 +47519,65 @@
       "author": "yfmascgy",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
-      "body": "Here is an initial attempt to remove the reason phrase from the PATH_ABANDON frame and add two error codes: APPLICATION_ABANDON and RESOURCE_LIMIT_REACHED. This follows the discussion in issue #414 and references the discussion notes from IETF-120. I have no strong opinion on the names of these two error codes and have set their values as TBD for both.",
+      "labels": [
+        "needs-review"
+      ],
+      "body": "Fixes #414 \r\nHere is an initial attempt to remove the reason phrase from the PATH_ABANDON frame and add two error codes: APPLICATION_ABANDON and RESOURCE_LIMIT_REACHED. This follows the discussion in issue #414 and references the discussion notes from IETF-120. I have no strong opinion on the names of these two error codes and have set their values as TBD for both.",
       "createdAt": "2024-10-03T08:46:54Z",
-      "updatedAt": "2024-10-03T09:00:00Z",
+      "updatedAt": "2024-10-07T23:50:54Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "yfmascgy/multipath",
       "headRefName": "dev/add-error-code",
-      "headRefOid": "ad1108d5307b3823f505e8b131d6fc7b8e920faa",
+      "headRefOid": "91f9939d054889d27442633e91b6d3799eeb9365",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6MLvwc",
+          "commit": {
+            "abbreviatedOid": "ad1108d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-07T13:02:56Z",
+          "updatedAt": "2024-10-07T13:02:56Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "```suggestion\r\nThe following additional QUIC error codes are defined for use in the PATH_ABANDON frame.\r\n```\r\nI assume the intention is to be able also use e.g. NO_ERROR, right? Maybe it's good to say that explicitly?",
+              "createdAt": "2024-10-07T13:02:56Z",
+              "updatedAt": "2024-10-07T13:02:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MQcq0",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "NO_ERROR (0x0) is described in the text above; explicitly mentioning NO_ERROR (0x0) again here helps to clarify.",
+          "createdAt": "2024-10-07T23:47:06Z",
+          "updatedAt": "2024-10-07T23:49:22Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "```suggestion\r\nIn addition to NO_ERROR(0x0) following {{QUIC-TRANSPORT}}, the following QUIC error codes are defined for use in the PATH_ABANDON frame.\r\n```",
+              "createdAt": "2024-10-07T23:47:07Z",
+              "updatedAt": "2024-10-07T23:49:22Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
