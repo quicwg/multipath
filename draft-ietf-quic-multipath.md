@@ -114,6 +114,9 @@ packet number space.
 To add a new path to an existing QUIC connection with multipath support,
 a client starts a path validation or sends a packet on
 the chosen path, as further described in {{path-initiation}}.
+A new path can only be used once the associated 4-tuple has been validated
+by ensuring that the peer is able to receive packets at that address
+(see {{Section 8 of QUIC-TRANSPORT}}).
 In this version of the document, a QUIC server does not initiate the creation
 of a path, but it can validate a new path created by a client.
 
@@ -378,19 +381,26 @@ with the same, unused Path ID. When the peer receives the PATH_CHALLENGE,
 it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
 
 When the multipath extension is negotiated, a client that wants to use an
-additional path SHOULD first initiate the Address Validation procedure
-with PATH_CHALLENGE and PATH_RESPONSE frames as described in
-{{Section 8.2 of QUIC-TRANSPORT}}. It MAY skip the validation and
-simply send packets on the paths if it has previously validated
-that address.
+additional path MUST validate the peer's address before sending any data packets 
+as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
+unless it has previously validated the four-tuple used for that path.
 
 After receiving packets from the
 client on a new path, if the server decides to use the new path,
-the server SHOULD perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
-unless it has previously validated that address.
+the server MUST validate the peer's address before sending any data packets 
+as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
+unless it has previously validated the four-tuple used for that path.
 Until the client's address is
 validated, the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
 applies.
+
+The server may receive packets for a yet unused Path ID that do not
+contain a path challenge. Such packets are valid if they can be properly decrypted
+and if they contain a valid connection ID. The server SHOULD accept the
+packets arriving on that path from the client, and acknowledge them.
+As stated above, the server will perform path validation before sending
+packets on this new path.
+
 An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
 on another path, as specified in section {{path-close}}.
