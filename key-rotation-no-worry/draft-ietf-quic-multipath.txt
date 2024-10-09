@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 5 April 2025                             Uber Technologies Inc.
+Expires: 12 April 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 5 April 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          2 October 2024
+                                                          9 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 April 2025.
+   This Internet-Draft will expire on 12 April 2025.
 
 Copyright Notice
 
@@ -101,7 +101,6 @@ Table of Contents
      6.7.  Keep Alive
      6.8.  Connection ID Changes and NAT Rebindings
        6.8.1.  Using multiple paths on the same 4-tuple
-     6.9.  Implementing Key Updates
    7.  New Frames
      7.1.  PATH_ACK Frame
      7.2.  PATH_ABANDON Frame
@@ -833,6 +832,14 @@ Table of Contents
    that in [QUIC-TLS] which used three times the PTO of the sole single
    path.
 
+   The choice of three times the largest PTO is a trade-off.  Longer
+   delays would diminish the probability that packets will be lost if
+   they arrive after their decryption key has been discarded, but
+   keeping old keys available for longer delays reduces the security of
+   the protocol.  Very few packets are expected to arrive after the
+   delay of 3 RTO, and discarding those packets will have limited impact
+   on performance.
+
    Following Section 5.4 of [QUIC-TLS], the Key Phase bit is protected,
    so sending multiple packets with Key Phase bit flipping at the same
    time should not cause linkability issue.
@@ -1124,24 +1131,6 @@ Table of Contents
    simple coordination rule, such as only letting the client initiate
    closure of duplicate paths, or perhaps relying on the application
    protocol to decide which paths should be closed.
-
-6.9.  Implementing Key Updates
-
-   As specified in Section 4.2, endpoints wait at least 3 times the
-   largest path RTO after a key update before initiating a new update.
-   This is in line with Section 6.5 of [QUIC-TLS], which recommends that
-   endpoints do not retain old read keys for no more than three times
-   the PTO after having received a packet protected using the new keys.
-   The main difference is that endpoints using the multipath extensions
-   consider the largest of the path RTO, instead of only considering the
-   RTO of a single path.
-
-   The choice of a 3*RTO delay is a trade-off.  Longer delays would
-   diminish the probability that packets will be lost if they arrive
-   after their decryption key has been discarded, but keeping old keys
-   available for longer delays reduces the security of the protocol.
-   Very few packets are expected to arrive after the delay of 3 RTO, and
-   discarding those packets will have limited impact on performance.
 
 7.  New Frames
 
