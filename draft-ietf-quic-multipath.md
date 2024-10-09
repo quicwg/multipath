@@ -381,13 +381,13 @@ with the same, unused Path ID. When the peer receives the PATH_CHALLENGE,
 it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
 
 When the multipath extension is negotiated, a client that wants to use an
-additional path MUST validate the peer's address before sending any data packets 
+additional path MUST validate the peer's address before sending any data packets
 as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
 unless it has previously validated the four-tuple used for that path.
 
 After receiving packets from the
 client on a new path, if the server decides to use the new path,
-the server MUST validate the peer's address before sending any data packets 
+the server MUST validate the peer's address before sending any data packets
 as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
 unless it has previously validated the four-tuple used for that path.
 Until the client's address is
