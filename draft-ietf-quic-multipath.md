@@ -755,6 +755,15 @@ after receiving an acknowledgement that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
 which used three times the PTO of the sole single path.
 
+The choice of three times
+the largest PTO is a trade-off.
+Longer delays would diminish the probability that packets will be
+lost if they arrive after
+their decryption key has been discarded, but
+keeping old keys available for longer delays reduces the security of the protocol.
+Very few packets are expected to arrive after the delay of 3 RTO,
+and discarding those packets will have limited impact on performance.
+
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
 should not cause linkability issue.
@@ -1037,24 +1046,6 @@ two paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
 the application protocol to decide which paths should be closed.
-
-## Implementing Key Updates
-
-As specified in {{multipath-key-update}}, endpoints wait at least 3 times the largest
-path RTO after a key update before initiating a new update. This is in
-line with {{Section 6.5 of QUIC-TLS}}, which recommends that endpoints
-do not retain old read keys for no more than three times the PTO after
-having received a packet protected using the new keys. The main difference
-is that endpoints using the multipath extensions consider the largest
-of the path RTO, instead of only considering the RTO of a single path.
-
-The choice of a 3*RTO delay is a trade-off.
-Longer delays would diminish the probability that packets will be
-lost if they arrive after
-their decryption key has been discarded, but
-keeping old keys available for longer delays reduces the security of the protocol.
-Very few packets are expected to arrive after the delay of 3 RTO,
-and discarding those packets will have limited impact on performance.
 
 # New Frames {#frames}
 
