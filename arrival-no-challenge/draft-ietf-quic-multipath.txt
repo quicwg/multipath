@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 12 April 2025                            Uber Technologies Inc.
+Expires: 13 April 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 12 April 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          9 October 2024
+                                                         10 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 April 2025.
+   This Internet-Draft will expire on 13 April 2025.
 
 Copyright Notice
 
@@ -152,13 +152,13 @@ Table of Contents
    respective packet number space.
 
    To add a new path to an existing QUIC connection with multipath
-   support, a client starts a path validation or sends a packet on the
-   chosen path, as further described in Section 3.1.  A new path can
-   only be used once the associated 4-tuple has been validated by
-   ensuring that the peer is able to receive packets at that address
-   (see Section 8 of [QUIC-TRANSPORT]).  In this version of the
-   document, a QUIC server does not initiate the creation of a path, but
-   it can validate a new path created by a client.
+   support, a client sends a packet with a connection ID belonging to a
+   so-far unused Path ID on the chosen path, as further described in
+   Section 3.1.  A new path can only be used once the associated 4-tuple
+   has been validated by ensuring that the peer is able to receive
+   packets at that address (see Section 8 of [QUIC-TRANSPORT]).  In this
+   version of the document, a QUIC server does not initiate the creation
+   of a path, but it can validate a new path created by a client.
 
    Each endpoint may use several IP addresses for the connection.  In
    particular, the multipath extension supports the following scenarios.
