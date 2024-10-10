@@ -1869,11 +1869,11 @@ for too long. The connection idle timeout when using the multipath extension is 
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-2">This dcoument does not specify any specific per-path timeouts. An endpoint
+<p id="section-3.3.3-2">This document does not specify any specific per-path timeouts. An endpoint
 can decide to close a path at any time, whether the path is in active
-use or not, by sending a PATH_ABANDON frame. Particularly, it is not required
-to send a PATH_ABANDON frame at any specific point in time if that would be
-the only frame to send.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
+use or not, by sending a PATH_ABANDON frame. It is not required
+to send a PATH_ABANDON frame at any specific point in time.
+For example, an endpoint may wait until it will anyway send another frame.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3.3-3">If a path is not actively used for a while, it might not be usable anymore,
 e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
