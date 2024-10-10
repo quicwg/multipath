@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 4 April 2025                             Uber Technologies Inc.
+Expires: 13 April 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 4 April 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          1 October 2024
+                                                         10 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 April 2025.
+   This Internet-Draft will expire on 13 April 2025.
 
 Copyright Notice
 
@@ -672,9 +672,9 @@ Table of Contents
    [QUIC-TRANSPORT], the keep-alive interval depends on the timeout in
    the middlebox.
 
-   If a path was not actively used for a while, an endpoint might
-   consider to probe it before switching to active use if there are
-   still other paths that are currently usable.
+   If a path was not actively used for a while, an endpoint can probe it
+   before switching to active use if there are still other paths that
+   are currently usable.
 
 3.3.4.  Early Abandon
 
