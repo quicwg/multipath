@@ -1047,6 +1047,7 @@ adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
 the application protocol to decide which paths should be closed.
 
+
 # New Frames {#frames}
 
 All frames defined in this document MUST only be sent in 1-RTT packets.
