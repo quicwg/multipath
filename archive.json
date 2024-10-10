@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-08T00:54:02.031855+00:00",
+  "timestamp": "2024-10-10T00:53:52.632562+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -47029,13 +47029,13 @@
       "labels": [],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-07T23:23:44Z",
+      "updatedAt": "2024-10-09T01:48:08Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "arrival-no-challenge",
-      "headRefOid": "9f78c5d487dba80b193f85e872e4452101f570d1",
+      "headRefOid": "2c8d8605489ed02664fef5c3de6a2797cde23e07",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47350,6 +47350,86 @@
               "updatedAt": "2024-10-07T23:22:44Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MTx_k",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-08T09:52:16Z",
+          "updatedAt": "2024-10-08T09:52:17Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Yes, address validation is required, however, if you have valid the address previously or in a different way, you don't need to the the QUIC path challenge/response mechanism. Therefore the agreement in the session was to have a MUST for address validation but not explicitly say that it has to be performed by using path challenge/response instead but just provide a point to RFC9000. See my proposed wording.",
+              "createdAt": "2024-10-08T09:52:16Z",
+              "updatedAt": "2024-10-08T09:52:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MT0kE",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-08T09:56:46Z",
+          "updatedAt": "2024-10-08T09:56:46Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "The important part here is the \"if a server decides to use the new path\". However, we can also rephrase this and say more explicitly \"before sending on a new path\" or something.\r\n\r\nBut I actually thought the whole point of this PR was to explicitly clarify that even packets without a path challenge can create a new path as the other end is obligated to perform address validation but a) it can and shouldn't be enforced and b) it can be done by other means than sending a path challenge. Therefore to re-add this text to say valid packets have to be processed is probably good to ensure this is crystal clear.",
+              "createdAt": "2024-10-08T09:56:46Z",
+              "updatedAt": "2024-10-08T09:56:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Mapi2",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-09T01:43:40Z",
+          "updatedAt": "2024-10-09T01:43:40Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "@mirjak, I think the commit [Rewrite per review feedback](https://github.com/quicwg/multipath/pull/442/commits/9f74f86bb43f5509f4f49e60e61aac40a1f6679a) incorporates the text that we agreed upon. Please review!",
+              "createdAt": "2024-10-09T01:43:40Z",
+              "updatedAt": "2024-10-09T01:43:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MapzE",
+          "commit": {
+            "abbreviatedOid": "9f78c5d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-09T01:45:10Z",
+          "updatedAt": "2024-10-09T01:45:11Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Rewritten in\r\n[Rewrite per review feedback.](https://github.com/quicwg/multipath/pull/442/commits/9f74f86bb43f5509f4f49e60e61aac40a1f6679a)",
+              "createdAt": "2024-10-09T01:45:11Z",
+              "updatedAt": "2024-10-09T01:45:11Z"
+            }
+          ]
         }
       ]
     },
@@ -47367,13 +47447,13 @@
       "labels": [],
       "body": "Close #290",
       "createdAt": "2024-10-02T20:08:54Z",
-      "updatedAt": "2024-10-07T23:25:18Z",
+      "updatedAt": "2024-10-09T00:52:13Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "key-rotation-no-worry",
-      "headRefOid": "0166d3b4dbd58fabb7e36aed87663366245d8ad8",
+      "headRefOid": "d3d4337da9dbf1613510abee703e0f17ccdeaacb",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47442,7 +47522,7 @@
       "labels": [],
       "body": "To close #220 ",
       "createdAt": "2024-10-02T20:25:11Z",
-      "updatedAt": "2024-10-07T14:16:49Z",
+      "updatedAt": "2024-10-09T01:06:42Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47507,6 +47587,32 @@
           "createdAt": "2024-10-07T14:16:49Z",
           "updatedAt": "2024-10-07T14:16:49Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Mah1R",
+          "commit": {
+            "abbreviatedOid": "effe563"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-09T00:57:06Z",
+          "updatedAt": "2024-10-09T01:06:42Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "+1 mirja. With one small twist. I would write:\r\n\r\nAfter the handshake concluded if negotiation of multipath support succeeded,\r\nendpoints SHOULD use PATH_ACK frames instead of ACK frames,\r\nincluding for acknowledging so far unacknowledged 0-RTT packets using\r\nPath ID 0.",
+              "createdAt": "2024-10-09T00:57:06Z",
+              "updatedAt": "2024-10-09T01:06:42Z"
+            },
+            {
+              "originalPosition": 12,
+              "body": "I think I agree that the added text \"Further more, endpoints SHOULD use PATH_ACK frames in all 1-RTT packets after\r\nthe successful negotiation for multipath. If endpoints receive ACK frame after a succesful negotiation resulting from packet out-of-order arrival, endpoints could consider it as used for initial PATH ID 0 without causing connection error.\" is not what we want. I would replace it by something like:\r\n\r\n\"However, even after successful negotiation, endpoints MAY use ACK frames  to acknowledge 0RTT packets or 1RTT packets received with PathID=0.\"\r\n\r\nStating the MAY implicitly states that arrival of such packets should not be treated as a connection error.",
+              "createdAt": "2024-10-09T01:06:34Z",
+              "updatedAt": "2024-10-09T01:06:42Z"
+            }
+          ]
         }
       ]
     },
