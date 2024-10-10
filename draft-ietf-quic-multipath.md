@@ -112,7 +112,7 @@ non-zero connection IDs in order to identify the path and respective
 packet number space.
 
 To add a new path to an existing QUIC connection with multipath support,
-a client starts a path validation or sends a packet on
+a client sends a packet with a connection ID belonging to a so-far unused Path ID on
 the chosen path, as further described in {{path-initiation}}.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
