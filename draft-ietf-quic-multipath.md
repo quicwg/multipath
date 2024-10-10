@@ -606,8 +606,8 @@ As discussed in
 {{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval depends
 on the timeout in the middlebox.
 
-If a path was not actively used for a while, an endpoint might consider
-to probe it before switching to active use if there are still other paths
+If a path was not actively used for a while, an endpoint can
+probe it before switching to active use if there are still other paths
 that are currently usable.
 
 ### Early Abandon {#abandon-early}
