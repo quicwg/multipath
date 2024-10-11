@@ -396,8 +396,7 @@ applies.
 
 The server may receive packets for a yet unused Path ID that do not
 contain a path challenge. Such packets are valid if they can be properly decrypted
-and if they contain a valid connection ID. The server SHOULD accept the
-packets arriving on that path from the client, and acknowledge them.
+and if they contain a valid connection ID.
 As stated above, the server independently needs to perform path validation before sending
 packets on this new path.
 
