@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-10T00:53:52.632562+00:00",
+  "timestamp": "2024-10-13T00:57:59.405496+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -6340,12 +6340,12 @@
         "Yanmei-Liu"
       ],
       "labels": [
-        "editorial",
-        "needs PR"
+        "has PR",
+        "editorial"
       ],
       "body": "At the moment, [section 5.1](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.1-3) states:\r\n> As soon as the negotiation of multipath support is completed, endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application data packets, including 0-RTT packets, using the initial Connection ID with sequence number 0 after the handshake concluded.\r\n\r\nAs @qdeconinck states in https://github.com/quicwg/multipath/issues/181#issuecomment-1447937924, my understanding is that ACK frames are equivalent to ACK_MP frames carrying DCID value of zero. Omission of value zero saves one byte per ACK frame.\r\n\r\nIs the optimization worth the cost of supporting such omission?\r\n\r\nIf we think it might be valuable, I think we'd better change the text to state as such rather than discouraging the use of ACK frames (by saying \"SHOULD use ACK_MP\").\r\n\r\nIf we agree that it is not valuable, I would propose to change the specification to state that only ACK_MP frames can be used in the application data space when use of the multipath extension is negotiated.",
       "createdAt": "2023-06-16T01:22:09Z",
-      "updatedAt": "2024-09-16T15:23:26Z",
+      "updatedAt": "2024-10-10T08:25:56Z",
       "closedAt": null,
       "comments": [
         {
@@ -46934,13 +46934,13 @@
       ],
       "body": "fixes #397",
       "createdAt": "2024-10-01T12:54:47Z",
-      "updatedAt": "2024-10-07T13:15:10Z",
+      "updatedAt": "2024-10-10T12:26:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-11",
-      "headRefOid": "c15e95f1e99447b9ec464b8401a9e40b2ef1aea1",
+      "headRefOid": "f55e665a69def8dd277c685266df10b8e99340d8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -46970,6 +46970,66 @@
               "body": "```suggestion\r\nIf a path was not actively used for a while, an endpoint can\r\nprobe it before switching to active use if there are still other paths\r\n```",
               "createdAt": "2024-10-01T14:14:17Z",
               "updatedAt": "2024-10-01T14:14:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MmWh-",
+          "commit": {
+            "abbreviatedOid": "cdb97dc"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good. Minor editorial suggestion.",
+          "createdAt": "2024-10-10T04:25:49Z",
+          "updatedAt": "2024-10-10T04:27:19Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Typo dcoument \r\n\r\nI think we could rewrite the second sentence a little bit. Maybe: \r\n\"It is not required to send a PATH_ABANDON frame at any specific point in time. For example,\r\nthe endpoint may want to wait for until it is not the only frame to send.\"\r\n",
+              "createdAt": "2024-10-10T04:25:50Z",
+              "updatedAt": "2024-10-10T04:27:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MrPPl",
+          "commit": {
+            "abbreviatedOid": "cdb97dc"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T12:22:45Z",
+          "updatedAt": "2024-10-10T12:22:45Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\nThis document does not specify any specific per-path timeouts. An endpoint\r\n```",
+              "createdAt": "2024-10-10T12:22:45Z",
+              "updatedAt": "2024-10-10T12:22:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MrQYg",
+          "commit": {
+            "abbreviatedOid": "cdb97dc"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T12:24:39Z",
+          "updatedAt": "2024-10-10T12:24:40Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nuse or not, by sending a PATH_ABANDON frame. It is not required\r\nto send a PATH_ABANDON frame at any specific point in time.\r\nFor example, an endpoint may wait until it will anyway send another frame.\r\n```",
+              "createdAt": "2024-10-10T12:24:40Z",
+              "updatedAt": "2024-10-10T12:26:24Z"
             }
           ]
         }
@@ -47029,13 +47089,13 @@
       "labels": [],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-09T01:48:08Z",
+      "updatedAt": "2024-10-11T05:09:08Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "arrival-no-challenge",
-      "headRefOid": "2c8d8605489ed02664fef5c3de6a2797cde23e07",
+      "headRefOid": "0b36fa22d6068c521e06e3b1bae2a9ad3fced858",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47430,6 +47490,86 @@
               "updatedAt": "2024-10-09T01:45:11Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MrTta",
+          "commit": {
+            "abbreviatedOid": "2c8d860"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T12:30:32Z",
+          "updatedAt": "2024-10-10T12:30:33Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Maybe be simply less concrete (as the next sentence already talks about address validation):\r\n```suggestion\r\na client sends a packet with a connection ID belonging to a so-far unused Path ID on\r\n```",
+              "createdAt": "2024-10-10T12:30:32Z",
+              "updatedAt": "2024-10-10T12:30:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MrVai",
+          "commit": {
+            "abbreviatedOid": "2c8d860"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T12:33:35Z",
+          "updatedAt": "2024-10-10T12:33:36Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "Not sure we need normative language here, or this sentence at all?",
+              "createdAt": "2024-10-10T12:33:35Z",
+              "updatedAt": "2024-10-10T12:33:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MrV0W",
+          "commit": {
+            "abbreviatedOid": "2c8d860"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T12:34:03Z",
+          "updatedAt": "2024-10-10T12:34:04Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nAs stated above, the server independently needs to perform path validation before sending\r\npackets on this new path.\r\n```",
+              "createdAt": "2024-10-10T12:34:04Z",
+              "updatedAt": "2024-10-10T12:34:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6MyLj2",
+          "commit": {
+            "abbreviatedOid": "f49422c"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-11T05:05:33Z",
+          "updatedAt": "2024-10-11T05:05:33Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "Less is more. I will just remove the sentence.",
+              "createdAt": "2024-10-11T05:05:33Z",
+              "updatedAt": "2024-10-11T05:05:33Z"
+            }
+          ]
         }
       ]
     },
@@ -47447,13 +47587,13 @@
       "labels": [],
       "body": "Close #290",
       "createdAt": "2024-10-02T20:08:54Z",
-      "updatedAt": "2024-10-09T00:52:13Z",
+      "updatedAt": "2024-10-10T12:48:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "key-rotation-no-worry",
-      "headRefOid": "d3d4337da9dbf1613510abee703e0f17ccdeaacb",
+      "headRefOid": "0e7518f9580944051de901ecabb9ebd07c7d6baa",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47472,6 +47612,13 @@
           "body": "Will try moving the text as suggested.",
           "createdAt": "2024-10-07T23:25:17Z",
           "updatedAt": "2024-10-07T23:25:17Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@mirjak Can you review again please? I think I followed your suggestion",
+          "createdAt": "2024-10-10T04:20:06Z",
+          "updatedAt": "2024-10-10T04:20:06Z"
         }
       ],
       "reviews": [
@@ -47507,6 +47654,46 @@
           "createdAt": "2024-10-02T20:32:50Z",
           "updatedAt": "2024-10-02T20:32:50Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Mp7vT",
+          "commit": {
+            "abbreviatedOid": "d3d4337"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T10:30:15Z",
+          "updatedAt": "2024-10-10T10:30:15Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\n\r\n\r\n```",
+              "createdAt": "2024-10-10T10:30:15Z",
+              "updatedAt": "2024-10-10T10:30:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Mrfgj",
+          "commit": {
+            "abbreviatedOid": "0e7518f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-10T12:48:57Z",
+          "updatedAt": "2024-10-10T12:48:57Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "Editorial suggestion:\r\n```suggestion\r\nThe choice of three times the largest PTO is a trade-off:\r\nPackets that arrive after their decryption key has been discarded will be dropped.\r\nLonger delays reduce the probability of losing packets but keeping old keys\r\nlonger can negatively impact the security of the protocol.\r\nThe use of three times the largest PTO aims to minimise packet lost for all paths\r\nand therefore limits the impact on performance.\r\n```",
+              "createdAt": "2024-10-10T12:48:57Z",
+              "updatedAt": "2024-10-10T12:49:52Z"
+            }
+          ]
         }
       ]
     },
