@@ -318,9 +318,9 @@ Path ID 0.
 
 After the handshake concluded if negotiation of multipath support succeeded,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0. 
-However, even after successful negotiation, endpoints MAY use ACK frames 
-to acknowledge 0-RTT packets or 1-RTT packets received with Path ID 0, 
+including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0.
+However, even after successful negotiation, endpoints MAY use ACK frames
+to acknowledge 0-RTT packets or 1-RTT packets received with Path ID 0,
 the peers process these ACK frames as for Path ID 0 without causing error.
 Similarly after a successful handshake, endpoints SHOULD also use
 the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
