@@ -398,7 +398,8 @@ The server may receive packets for a yet unused Path ID that do not
 contain a path challenge. Such packets are valid if they can be properly decrypted
 and if they contain a valid connection ID.
 As stated above, the server independently needs to perform path validation before sending
-packets on this new path.
+data packets on this new path, and the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
+applies.
 
 An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
