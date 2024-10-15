@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-13T00:57:59.405496+00:00",
+  "timestamp": "2024-10-15T00:55:07.914710+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -46934,7 +46934,7 @@
       ],
       "body": "fixes #397",
       "createdAt": "2024-10-01T12:54:47Z",
-      "updatedAt": "2024-10-10T12:26:38Z",
+      "updatedAt": "2024-10-14T16:52:28Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47032,6 +47032,26 @@
               "updatedAt": "2024-10-10T12:26:24Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NGEzy",
+          "commit": {
+            "abbreviatedOid": "f55e665"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-14T16:52:28Z",
+          "updatedAt": "2024-10-14T16:52:28Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "We switched here from \"might consider\" to \"can\". However, with \"can\" the sentence seems incorrect to me as we are not giving an advise anymore. So yes, the endpoint can do it but why are we talking about it...? I'm not a native speaker but I would think \"might\" would make slightly more sense...? Or do we need to re-phrase this entirely?",
+              "createdAt": "2024-10-14T16:52:28Z",
+              "updatedAt": "2024-10-14T16:52:28Z"
+            }
+          ]
         }
       ]
     },
@@ -47089,7 +47109,7 @@
       "labels": [],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-11T05:09:08Z",
+      "updatedAt": "2024-10-14T19:42:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47135,6 +47155,20 @@
           "body": "I will try to revive the previous note.",
           "createdAt": "2024-10-07T23:23:43Z",
           "updatedAt": "2024-10-07T23:23:43Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the update. The proposed change look good to me now.\r\n\r\nLooking at PR #430, do we want to note anything about padding or not?",
+          "createdAt": "2024-10-14T17:04:55Z",
+          "updatedAt": "2024-10-14T17:04:55Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have been thinking about that. It is kinda implicit from the requirement that the server follows anti amplification rule. Maybe we should add some text.",
+          "createdAt": "2024-10-14T19:42:13Z",
+          "updatedAt": "2024-10-14T19:42:13Z"
         }
       ],
       "reviews": [
@@ -47709,13 +47743,13 @@
       "labels": [],
       "body": "To close #220 ",
       "createdAt": "2024-10-02T20:25:11Z",
-      "updatedAt": "2024-10-09T01:06:42Z",
+      "updatedAt": "2024-10-14T17:03:25Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-220",
-      "headRefOid": "effe5633971efb7463ae35501de98996fa50ba18",
+      "headRefOid": "85649a44adda49a0a2d7f81f5b6dc7b662febf1e",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47798,6 +47832,26 @@
               "body": "I think I agree that the added text \"Further more, endpoints SHOULD use PATH_ACK frames in all 1-RTT packets after\r\nthe successful negotiation for multipath. If endpoints receive ACK frame after a succesful negotiation resulting from packet out-of-order arrival, endpoints could consider it as used for initial PATH ID 0 without causing connection error.\" is not what we want. I would replace it by something like:\r\n\r\n\"However, even after successful negotiation, endpoints MAY use ACK frames  to acknowledge 0RTT packets or 1RTT packets received with PathID=0.\"\r\n\r\nStating the MAY implicitly states that arrival of such packets should not be treated as a connection error.",
               "createdAt": "2024-10-09T01:06:34Z",
               "updatedAt": "2024-10-09T01:06:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NGKjQ",
+          "commit": {
+            "abbreviatedOid": "85649a4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-14T17:03:25Z",
+          "updatedAt": "2024-10-14T17:03:25Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I'm fine to add this sentence to make it explicit that those packets arrive. However, I'm not sure about the use of normative language here. Because this is not to say, you are aloof to send that (that's already included in the SHOULD above). It's to say, please be aware that they may arrive and you have to handle them. Maybe like this:\r\n\r\n> Still, even after successful negotiation, any ACK frames that acknowledge 0-RTT packets or 1-RTT packets for path ID 0 need to be processed correctly.\r\n\r\n",
+              "createdAt": "2024-10-14T17:03:25Z",
+              "updatedAt": "2024-10-14T17:03:25Z"
             }
           ]
         }
