@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 13 April 2025                            Uber Technologies Inc.
+Expires: 18 April 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 13 April 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         10 October 2024
+                                                         15 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 April 2025.
+   This Internet-Draft will expire on 18 April 2025.
 
 Copyright Notice
 
@@ -832,13 +832,13 @@ Table of Contents
    that in [QUIC-TLS] which used three times the PTO of the sole single
    path.
 
-   The choice of three times the largest PTO is a trade-off.  Longer
-   delays would diminish the probability that packets will be lost if
-   they arrive after their decryption key has been discarded, but
-   keeping old keys available for longer delays reduces the security of
-   the protocol.  Very few packets are expected to arrive after the
-   delay of 3 RTO, and discarding those packets will have limited impact
-   on performance.
+   The choice of three times the largest PTO is a trade-off: Packets
+   that arrive after their decryption key has been discarded will be
+   dropped.  Longer delays reduce the probability of losing packets but
+   keeping old keys longer can negatively impact the security of the
+   protocol.  The use of three times the largest PTO aims to minimise
+   packet lost for all paths and therefore limits the impact on
+   performance.
 
    Following Section 5.4 of [QUIC-TLS], the Key Phase bit is protected,
    so sending multiple packets with Key Phase bit flipping at the same
