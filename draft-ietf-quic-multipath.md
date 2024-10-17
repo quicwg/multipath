@@ -401,6 +401,8 @@ As stated above, the server independently needs to perform path validation befor
 data packets on this new path, and the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
 applies.
 
+Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported on the path. This can be done during initial path validation or separately later if the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.
+
 An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
 on another path, as specified in section {{path-close}}.
