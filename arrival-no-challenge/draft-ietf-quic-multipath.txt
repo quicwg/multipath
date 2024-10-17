@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 18 April 2025                            Uber Technologies Inc.
+Expires: 20 April 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 18 April 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         15 October 2024
+                                                         17 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 April 2025.
+   This Internet-Draft will expire on 20 April 2025.
 
 Copyright Notice
 
@@ -461,6 +461,11 @@ Table of Contents
    stated above, the server independently needs to perform path
    validation before sending data packets on this new path, and the
    anti-amplification limit from Section 8 of [QUIC-TRANSPORT] applies.
+
+   Each endpoint MUST also validate that a minimum MTU of 1200 bytes is
+   supported on the path.  This can be done during initial path
+   validation or separately later if the amplification limit prevents it
+   initially, as specified in Section 8.2.1 of RFC9000.
 
    An endpoint that receives packets on a new path and does not want to
    establish this path is expected to close the path by sending a

@@ -1034,7 +1034,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 18 April 2025</td>
+<td class="center">Expires 20 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1047,12 +1047,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-15" class="published">15 October 2024</time>
+<time datetime="2024-10-17" class="published">17 October 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-04-18">18 April 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-20">20 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1123,7 +1123,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1681,27 +1681,28 @@ and if they contain a valid connection ID.
 As stated above, the server independently needs to perform path validation before sending
 data packets on this new path, and the anti-amplification limit from <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 applies.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">An endpoint that receives packets on a new path and does not want to establish
+<p id="section-3.1-5">Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported on the path. This can be done during initial path validation or separately later if the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-6">An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
-on another path, as specified in section <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6">An endpoint that has no active connection ID for this path or
+on another path, as specified in section <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">An endpoint that has no active connection ID for this path or
 lacks other resource to immediately configure a new path could
 delay sending the PATH_RESPONSE until sufficient resource are available.
 Long delays may cause the peer to repeat the PATH_CHALLENGE and eventually
 send a PATH_ABANDON, in which case the procedures specified in
-Section <a href="#path-close" class="auto internal xref">Section 3.3</a> apply.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
+Section <a href="#path-close" class="auto internal xref">Section 3.3</a> apply.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-8">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
-path validation.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8">If validation succeeds, the client can continue to use the path.
+path validation.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
+<p id="section-3.1-9">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
 However, as the used Path ID is anyway consumed,
 the endpoint MUST explicitly close the path as specified in
-<a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
-<p id="section-3.1-9"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.1" class="relref">Section 9.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> introduces the concept of
+<a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+<p id="section-3.1-10"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.1" class="relref">Section 9.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> introduces the concept of
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
 is negotiated, the reception of a "non-probing"
@@ -1710,15 +1711,15 @@ does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control
-limits for this path are respected.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
-<p id="section-3.1-10">Connection ID changes as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and
+limits for this path are respected.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
+<p id="section-3.1-11">Connection ID changes as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and
 in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> for connection migration apply for
 connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
 in this draft, endpoints have to consider the receiption of
 a packet with a connection ID associated to an
-so far unused Path ID as an attempt to establish a new path.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
-<p id="section-3.1-11">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
+so far unused Path ID as an attempt to establish a new path.<a href="#section-3.1-11" class="pilcrow">¶</a></p>
+<p id="section-3.1-12">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. The client will receive several tokens. When considering using a token
 for subsequent connections, it might be difficult for the client
@@ -1727,7 +1728,7 @@ The client is likely to fall back to the strategy specified in <span><a href="ht
 i.e., pick the last received token. To avoid issues when clients make the "wrong" choice,
 a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
-found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-11" class="pilcrow">¶</a></p>
+found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="path-status-management">
