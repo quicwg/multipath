@@ -321,7 +321,7 @@ endpoints SHOULD use PATH_ACK frames instead of ACK frames,
 including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0.
 However, even after successful negotiation, endpoints MAY use ACK frames
 to acknowledge 0-RTT packets or 1-RTT packets received on initial path with Path ID 0,
-these ACK frames need to be processed correctly by peer.
+and these ACK frames need to be processed correctly by the peer.
 Similarly after a successful handshake, endpoints SHOULD also use
 the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
 respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
