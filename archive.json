@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-15T00:55:07.914710+00:00",
+  "timestamp": "2024-10-17T00:54:18.326963+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11589,7 +11589,7 @@
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-10-07T13:13:25Z",
+      "updatedAt": "2024-10-15T06:39:30Z",
       "closedAt": null,
       "comments": [
         {
@@ -11633,6 +11633,13 @@
           "body": "Also more more question: Should the PR also add information which error code to use in each case where we require/recommend to send a path abandon frame. E.g. if close a path because of a local timeout, you should probably use \"NO_ERROR\". If you close a path that the other end tries to open, you maybe use \"NO_ERROR\" or maybe also something more specific like \"RESOURCE_LIMIT_REACHED\" which indicates to the other end that it should not try to open this path (or any other path) right now again...?",
           "createdAt": "2024-10-07T13:06:31Z",
           "updatedAt": "2024-10-07T13:06:31Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think we should keep using the QUIC code space. That was pretty much the recommendation during the WG meeting. ",
+          "createdAt": "2024-10-15T06:39:29Z",
+          "updatedAt": "2024-10-15T06:39:29Z"
         }
       ]
     },
@@ -46934,7 +46941,7 @@
       ],
       "body": "fixes #397",
       "createdAt": "2024-10-01T12:54:47Z",
-      "updatedAt": "2024-10-14T16:52:28Z",
+      "updatedAt": "2024-10-16T08:13:15Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
@@ -47052,6 +47059,46 @@
               "updatedAt": "2024-10-14T16:52:28Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NKU_N",
+          "commit": {
+            "abbreviatedOid": "f55e665"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-15T06:33:46Z",
+          "updatedAt": "2024-10-15T06:33:46Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "I think this is OK. We might say \"endpoints could send\", to emphasize that this is some optional behavior. We certainly don't want to make a specific recommendation like 'send every 15 seconds', because the behavior of middleboxes is unpredictable.",
+              "createdAt": "2024-10-15T06:33:46Z",
+              "updatedAt": "2024-10-15T06:33:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NW0Tm",
+          "commit": {
+            "abbreviatedOid": "f55e665"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T08:13:07Z",
+          "updatedAt": "2024-10-16T08:13:15Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "> It is not required to send a PATH_ABANDON frame at any specific point in time.\r\n\r\nDo you mean \"An endpoint does not need to send a PATH_ABANDON frame immediately or at any particular moment\"?",
+              "createdAt": "2024-10-16T08:13:07Z",
+              "updatedAt": "2024-10-16T08:13:15Z"
+            }
+          ]
         }
       ]
     },
@@ -47109,13 +47156,13 @@
       "labels": [],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-14T19:42:14Z",
+      "updatedAt": "2024-10-16T07:57:53Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "arrival-no-challenge",
-      "headRefOid": "0b36fa22d6068c521e06e3b1bae2a9ad3fced858",
+      "headRefOid": "6f73eab31b5874a6f4944de02aacd04759d5179b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47169,6 +47216,13 @@
           "body": "I have been thinking about that. It is kinda implicit from the requirement that the server follows anti amplification rule. Maybe we should add some text.",
           "createdAt": "2024-10-14T19:42:13Z",
           "updatedAt": "2024-10-14T19:42:13Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I added a short sentence about amplification limits, but I did not write normative text about padding at the client. I am concerned that doing so would open another can of worms, e.g., should the server reject a packet on a new path if that packet was not padded? Just mentioning amplification is probably sufficient: the implementers should know that not padding will prevent the server from sending data. Plus, the text in RFC 9000 already says:\r\n\r\n_When an endpoint is unable to expand the datagram size to 1200 bytes due to the anti-amplification limit, the path MTU will not be validated. To ensure that the path MTU is large enough, the endpoint MUST perform a second path validation by sending a PATH_CHALLENGE frame in a datagram of at least 1200 bytes. This additional validation can be performed after a PATH_RESPONSE is successfully received or when enough bytes have been received on the path that sending the larger datagram will not result in exceeding the anti-amplification limit._\r\n\r\nSo I think that we are covered.",
+          "createdAt": "2024-10-15T06:18:49Z",
+          "updatedAt": "2024-10-15T06:18:49Z"
         }
       ],
       "reviews": [
@@ -47604,6 +47658,19 @@
               "updatedAt": "2024-10-11T05:05:33Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NWojw",
+          "commit": {
+            "abbreviatedOid": "6f73eab"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2024-10-16T07:57:53Z",
+          "updatedAt": "2024-10-16T07:57:53Z",
+          "comments": []
         }
       ]
     },
@@ -47621,13 +47688,13 @@
       "labels": [],
       "body": "Close #290",
       "createdAt": "2024-10-02T20:08:54Z",
-      "updatedAt": "2024-10-10T12:48:57Z",
+      "updatedAt": "2024-10-15T06:36:01Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "key-rotation-no-worry",
-      "headRefOid": "0e7518f9580944051de901ecabb9ebd07c7d6baa",
+      "headRefOid": "419e591e9939a6651f1ad7b5439e2702100730cb",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47743,13 +47810,13 @@
       "labels": [],
       "body": "To close #220 ",
       "createdAt": "2024-10-02T20:25:11Z",
-      "updatedAt": "2024-10-14T17:03:25Z",
+      "updatedAt": "2024-10-16T16:13:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-220",
-      "headRefOid": "85649a44adda49a0a2d7f81f5b6dc7b662febf1e",
+      "headRefOid": "55cb6ee0f99edf2dddee7bf2c18433442720e13d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -47852,6 +47919,86 @@
               "body": "I'm fine to add this sentence to make it explicit that those packets arrive. However, I'm not sure about the use of normative language here. Because this is not to say, you are aloof to send that (that's already included in the SHOULD above). It's to say, please be aware that they may arrive and you have to handle them. Maybe like this:\r\n\r\n> Still, even after successful negotiation, any ACK frames that acknowledge 0-RTT packets or 1-RTT packets for path ID 0 need to be processed correctly.\r\n\r\n",
               "createdAt": "2024-10-14T17:03:25Z",
               "updatedAt": "2024-10-14T17:03:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NLlCp",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-15T08:58:33Z",
+          "updatedAt": "2024-10-15T08:58:34Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nHowever, even after successful negotiation, endpoints can use ACK frames\r\nto acknowledge 0-RTT packets or 1-RTT packets received on initial path with Path ID 0,\r\nand these ACK frames need to be processed correctly by the peer.\r\n```",
+              "createdAt": "2024-10-15T08:58:33Z",
+              "updatedAt": "2024-10-15T08:58:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NPOd0",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-15T14:36:50Z",
+          "updatedAt": "2024-10-15T14:36:51Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I think that we should keep the normative MAY. You want to say something like \"MAY but we don't like it\", but there is no way to say that in a standard. Either it is a protocol violation or it isn't. If it isn't, then the peer MAY do it.",
+              "createdAt": "2024-10-15T14:36:50Z",
+              "updatedAt": "2024-10-15T14:36:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NQSul",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-15T15:50:41Z",
+          "updatedAt": "2024-10-15T15:50:41Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "This MAY is not needed because we already have the SHOULD in the sentence before. I don't think we should say the same things twice normatively.",
+              "createdAt": "2024-10-15T15:50:41Z",
+              "updatedAt": "2024-10-15T15:50:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NcTa5",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T16:13:14Z",
+          "updatedAt": "2024-10-16T16:13:14Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "That's one opinion. I have witnessed several IESG reviews asking \"why do you say SHOULD and not MUST? If you say SHOULD, you must also have a clause explaining when the implementation MAY do something else.\" \r\n\r\nThat construct is used at least once in RFC 9000, in section 11:\r\n\r\n_The most appropriate error code ([Section 20](https://www.rfc-editor.org/rfc/rfc9000.html#error-codes)) SHOULD be included in the frame that signals the error. Where this specification identifies error conditions, it also identifies the error code that is used; though these are worded as requirements, different implementation strategies might lead to different errors being reported. In particular, an endpoint MAY use any applicable error code when it detects an error condition; a generic error code (such as PROTOCOL_VIOLATION or INTERNAL_ERROR) can always be used in place of specific error codes._\r\n\r\nOn the other hand, I don't care all that much...",
+              "createdAt": "2024-10-16T16:13:14Z",
+              "updatedAt": "2024-10-16T16:13:14Z"
             }
           ]
         }
