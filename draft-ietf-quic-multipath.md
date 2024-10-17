@@ -397,9 +397,6 @@ applies.
 The server may receive packets for a yet unused Path ID that do not
 contain a path challenge. Such packets are valid if they can be properly decrypted
 and if they contain a valid connection ID.
-As stated above, the server independently needs to perform path validation before sending
-data packets on this new path, and the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
-applies.
 
 Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported on the path. This can be done during initial path validation or separately later if the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.
 
