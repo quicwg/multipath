@@ -1919,21 +1919,26 @@ The PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for all pat
 In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue a Connection ID for at least one unused Path ID, as long as it remains
 compatible with the peer's Maximum Path ID limit.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Each endpoint maintains the set of connection IDs received from its peer for each path,
+<p id="section-3.4-2">When issuing path-specific connection IDs, an endpoint associates a sequence number
+as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.1" class="relref">Section 5.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. Each Path ID has its own
+connection ID sequence number space whose initial value is 0. On non-initial paths
+(i.e., Path ID different from 0), the initial path connection ID is provided by a
+PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Usually, it is desired to provide at least one additional connection ID for
 all used paths, to allow for migration.
 As further specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> connection IDs
 cannot be issued more than once on the same connection
 and therefore are unique for the scope of the connection,
-regardless of the associated Path ID.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
+regardless of the associated Path ID.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-4"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
 this draft, endpoints MUST only rotate to another connection IDs associated
 to the same Path ID. Use of a connection ID associated with
-another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">Over a given path, both endpoints use connection IDs associated to a given Path
+another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
 for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
 in the issuing of Path IDs through their connection ID advertisements as path initiation
@@ -1943,8 +1948,8 @@ for only one Path ID inside range [1, 2], it should select Path ID 1 (and not Pa
 ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
 or path initiation attempts with in order use of Path IDs
-due to out-of-order delivery or path validation failure.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
+due to out-of-order delivery or path validation failure.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
 In order to identify a connection ID correctly when the multipath extension is used,
 endpoints have to use the PATH_RETIRE_CONNECTION_ID frame instead
 of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
@@ -1953,8 +1958,8 @@ Endpoints can also use PATH_NEW_CONNECTION_ID and
 PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
 however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid as well and endpoints need to process these frames accordingly
-as corresponding to Path ID 0.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
+as corresponding to Path ID 0.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths-frame" class="auto internal xref">Section 7.6</a>)
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater Path ID is a connection error as specified
@@ -1964,19 +1969,19 @@ it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
 (see Section <a href="#paths-blocked-frame" class="auto internal xref">Section 7.7</a>) to inform the peer that a new path
 identifier was needed but the current limit set by the peer prevented the
-creation of the new path.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<p id="section-3.4-7">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
+creation of the new path.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-8">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
 those that are not used anymore, and the server is supposed to provide
 replacements for that path, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. In response, if the path is still open, the peer
-SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
-<p id="section-3.4-8">Retirement of connection IDs will not retire the Path ID
+SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+<p id="section-3.4-9">Retirement of connection IDs will not retire the Path ID
 that corresponds to the connection ID or any other path ressources
-as the packet number space is associated with a path.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
+as the packet number space is associated with a path.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+<p id="section-3.4-10">The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
-to use a different connection ID for the same Path ID when doing so.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+to use a different connection ID for the same Path ID when doing so.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
