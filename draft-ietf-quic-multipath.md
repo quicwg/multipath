@@ -608,25 +608,23 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
-When more than one path is available, hosts shall monitor the arrival of
-packets and acknowledgements for packets sent over each
-path. Hosts MAY consider closing a path if for at least the period of the
-idle timeout as specified in {{Section 10.1. of QUIC-TRANSPORT}}
-(a) no packet was received or (b) no packet sent over this path was acknowledged.
-Endpoints that desire to close a path because of the idle timer rule
-MUST do so explicitly by sending a PATH_ABANDON frame on another path,
-as defined in {{path-close}}.
+This document does not specify any specific per-path timeouts. An endpoint
+can decide to close a path at any time, whether the path is in active
+use or not, by sending a PATH_ABANDON frame. It is not required
+to send a PATH_ABANDON frame at any specific point in time.
+For example, an endpoint may wait until it will anyway send another frame.
 
-To avoid idle timeout of a path, endpoints
+If a path is not actively used for a while, it might not be usable anymore,
+e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
-({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.  Sending
-periodic PING frames also helps prevent middlebox timeout, as discussed in
-{{Section 10.1.2 of QUIC-TRANSPORT}}.
+({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
+As discussed in
+{{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval depends
+on the timeout in the middlebox.
 
-Server implementations need to select the sub-path idle timeout as a
-trade-off between keeping resources, such as connection IDs, in use
-for an excessive time or having to promptly re-establish a path
-after a spurious estimate of path abandonment by the client.
+If a path was not actively used for a while, an endpoint can
+probe it before switching to active use if there are still other paths
+that are currently usable.
 
 ### Early Abandon {#abandon-early}
 
