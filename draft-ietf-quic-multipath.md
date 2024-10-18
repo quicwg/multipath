@@ -284,7 +284,7 @@ connection ID, the receiver MUST treat this as a connection error of type
 PROTOCOL_VIOLATION and close the connection.
 
 The initial_max_path_id parameter MUST NOT be remembered
-({{Section 7.4.1 of QUIC-TRANSPORT}}).
+for use in a subsequent connection ({{Section 7.4.1 of QUIC-TRANSPORT}}).
 New paths can only be used after handshake completion.
 
 This extension does not change the definition of any transport parameter
