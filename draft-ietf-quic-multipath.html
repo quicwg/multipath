@@ -1593,8 +1593,12 @@ negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
 Path ID 0.<a href="#section-2-14" class="pilcrow">¶</a></p>
 <p id="section-2-15">After the handshake concluded if negotiation of multipath support succeeded,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-also for acknowledging so far unacknowledged 0-RTT packets, using
-Path ID 0. Similarly after a successful handshake, endpoints SHOULD also use
+including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0.
+Endpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets
+for Path ID 0, even after successful negotiation of this extension. For example,
+ACK frames might be preferred by the sender as long as only the initial path
+with Path ID 0 is in use.
+Similarly after a successful handshake, endpoints SHOULD also use
 the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
 respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
 Path ID 0.<a href="#section-2-15" class="pilcrow">¶</a></p>
