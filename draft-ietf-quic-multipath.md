@@ -112,7 +112,7 @@ non-zero connection IDs in order to identify the path and respective
 packet number space.
 
 To add a new path to an existing QUIC connection with multipath support,
-a client starts a path validation on
+a client sends a packet with a connection ID belonging to a so-far unused Path ID on
 the chosen path, as further described in {{path-initiation}}.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
@@ -385,16 +385,28 @@ with the same, unused Path ID. When the peer receives the PATH_CHALLENGE,
 it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.
 
 When the multipath extension is negotiated, a client that wants to use an
-additional path MUST first initiate the Address Validation procedure
-with PATH_CHALLENGE and PATH_RESPONSE frames as described in
-{{Section 8.2 of QUIC-TRANSPORT}}, unless it has previously validated
-that address.
+additional path MUST validate the peer's address before sending any data packets
+as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
+unless it has previously validated the four-tuple used for that path.
 
 After receiving packets from the
 client on a new path, if the server decides to use the new path,
-the server MUST perform path validation ({{Section 8.2 of QUIC-TRANSPORT}})
-unless it has previously validated that address.
-An endpoint that receives a PATH_CHALLENGE and does not want to establish
+the server MUST validate the peer's address before sending any data packets
+as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
+unless it has previously validated the four-tuple used for that path.
+Until the client's address is
+validated, the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
+applies.
+
+The server may receive packets for a yet unused Path ID that do not
+contain a path challenge. Such packets are valid if they can be properly decrypted
+and if they contain a valid connection ID.
+
+Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported
+on the path. This can be done during initial path validation or separately later if
+the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.
+
+An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
 on another path, as specified in section {{path-close}}.
 
@@ -1435,7 +1447,7 @@ such as e.g. for packet number handling, only after path validation has successf
 ## Request Forgery with Spoofed Address
 
 The path validation mechanism as specified in {{Section 8.2. of QUIC-TRANSPORT}} for migration is used
-unchanged for initiation of new paths in this extension. Respectively the security considerations
+unchanged for initiation of new paths in this extension. Therefore, the security considerations
 on source address spoofing as outlined in {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
 Similarly, the anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}} need to be
 followed to limit the amplification risk.
@@ -1443,9 +1455,9 @@ followed to limit the amplification risk.
 However, while {{QUIC-TRANSPORT}} only allows the use of one path simultaneously
 and therefore only one path migration at the time should be validated,
 this extension allows for multiple open paths, that could in theory be migrated
-all at the same time, and it allows for multiple paths that could be initialised
+all at the same time, and it allows for multiple paths that could be initialized
 simultaneously. Therefore, each path could be used to further amplify an attack.
-Respectively endpoints needs limit the number of maximum paths and might consider
+Endpoints needs limit the number of maximum paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
