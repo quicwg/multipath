@@ -1340,7 +1340,7 @@ Maximum Path Identifier:
 
 # Error Codes {#error-codes}
 
-Multipath QUIC transport error codes are 62-bit unsigned integers
+QUIC transport error codes are 62-bit unsigned integers
 following {{QUIC-TRANSPORT}}.
 
 The following additional QUIC error codes are defined for use in the PATH_ABANDON frame.
