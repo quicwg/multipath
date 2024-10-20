@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-17T00:54:18.326963+00:00",
+  "timestamp": "2024-10-20T00:59:11.789416+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -6333,7 +6333,7 @@
       "id": "I_kwDOGNtpaM5o48RB",
       "title": "\"SHOULD\" use ACK_MP frames?",
       "url": "https://github.com/quicwg/multipath/issues/220",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kazuho",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -6345,8 +6345,8 @@
       ],
       "body": "At the moment, [section 5.1](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.1-3) states:\r\n> As soon as the negotiation of multipath support is completed, endpoints SHOULD use ACK_MP frames instead of ACK frames to acknowledge application data packets, including 0-RTT packets, using the initial Connection ID with sequence number 0 after the handshake concluded.\r\n\r\nAs @qdeconinck states in https://github.com/quicwg/multipath/issues/181#issuecomment-1447937924, my understanding is that ACK frames are equivalent to ACK_MP frames carrying DCID value of zero. Omission of value zero saves one byte per ACK frame.\r\n\r\nIs the optimization worth the cost of supporting such omission?\r\n\r\nIf we think it might be valuable, I think we'd better change the text to state as such rather than discouraging the use of ACK frames (by saying \"SHOULD use ACK_MP\").\r\n\r\nIf we agree that it is not valuable, I would propose to change the specification to state that only ACK_MP frames can be used in the application data space when use of the multipath extension is negotiated.",
       "createdAt": "2023-06-16T01:22:09Z",
-      "updatedAt": "2024-10-10T08:25:56Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:54:05Z",
+      "closedAt": "2024-10-18T14:54:05Z",
       "comments": [
         {
           "author": "marten-seemann",
@@ -8072,7 +8072,7 @@
       "id": "I_kwDOGNtpaM513UqJ",
       "title": "Key Update and time to next possible update",
       "url": "https://github.com/quicwg/multipath/issues/290",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [
@@ -8084,8 +8084,8 @@
       ],
       "body": "So Section 5.3 in -06 says: \r\n\r\n`When this specification is used, endpoints SHOULD wait for at least three times the largest PTO among all the paths before initiating a new key update after receiving an acknowledgement that confirms receipt of the previous key update. This interval is different from that of QUIC version 1 which used three times the PTO of the only one active path.`\r\n\r\nAfter having done some testing with key update in our implementations with different length paths some conclusions have been drawn.\r\n\r\nFirst is that it difficult for an endpoint to know when an old key can safely be dropped. With multiple path being possible to send on, and not necessarily used as well as to send ACKs on. Thus the fact that one get key phase back as a responder indicate that beyond on-path reordering things should be settled. But for multipath one can conclude for paths being used that key-phase changes have happened. But for path currently not receiving any packet one don't know if they are just being significantly delayed or may never have been sent. Also the path RTT samples one have might not be relevant for the current path delay. Thus, beyond observing that one get some key-phase change back, and starting a really long timer it is not obvious that you can generate an algorithm that enables one to know that no outstanding old keys are there. \r\n\r\nThe fact that this time needs to be longer than worst case RTT changes on each path do result that using 3*PTO is likely to short to re-enable key-update. At least unless one want to require trial decryption of the packets. This as keeping the old key while using the current key, so when one see a key-phase different one can try if it is the old key, if that fails and the next key works, then one drop the old key, and from that point assume this key-phase will be the new key. And thus initiating a key_update. \r\n\r\n",
       "createdAt": "2023-11-04T17:22:50Z",
-      "updatedAt": "2024-10-07T13:14:22Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:53:44Z",
+      "closedAt": "2024-10-18T14:53:44Z",
       "comments": [
         {
           "author": "kazuho",
@@ -9686,7 +9686,7 @@
       "id": "I_kwDOGNtpaM6EY1Bi",
       "title": "The spec doesn't say enough about DPLPMTUD or max_udp_payload_size",
       "url": "https://github.com/quicwg/multipath/issues/326",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -9698,8 +9698,8 @@
       ],
       "body": "see https://datatracker.ietf.org/doc/html/rfc9000#name-datagram-packetization-laye and https://datatracker.ietf.org/doc/html/rfc9000#section-18.2\r\n\r\n> The maximum UDP payload size parameter is an integer value that limits the size of UDP payloads that the endpoint is willing to receive. UDP datagrams with payloads larger than this limit are not likely to be processed by the receiver.\r\n> \r\n> The default for this parameter is the maximum permitted UDP payload of 65527. Values below 1200 are invalid.\r\n> \r\n> This limit does act as an additional constraint on datagram size in the same way as the path MTU, but it is a property of the endpoint and not the path; see [Section 14](https://datatracker.ietf.org/doc/html/rfc9000#datagram-size). It is expected that this is the space an endpoint dedicates to holding incoming packets.\r\n\r\nI expect this document to say more about path MTU discovery than is written in https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-7.6. Especially that the `max_udp_payload_size` TP applies to all paths and could have unintended consequences for multipath PMTUD.",
       "createdAt": "2024-04-02T17:53:59Z",
-      "updatedAt": "2024-10-07T13:14:12Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:52:56Z",
+      "closedAt": "2024-10-18T14:52:56Z",
       "comments": [
         {
           "author": "mirjak",
@@ -11083,7 +11083,7 @@
       "id": "I_kwDOGNtpaM6OFyRs",
       "title": "What if a packet with a CID belonging to a new Path ID without path challenge is received?",
       "url": "https://github.com/quicwg/multipath/issues/390",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -11096,8 +11096,8 @@
       ],
       "body": "Now that we have an explicit Path ID, it might be easier to expect that a packet with a new path ID has to also contain a path challenge. Therefore if a packet for a non-validated path ID is received that does not contain a path challenge, we could say it should be ignore. Or we could also say that the receiving peer should send a path challenge. But I think we have to same something more.",
       "createdAt": "2024-07-01T13:35:24Z",
-      "updatedAt": "2024-10-07T13:13:54Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:54:20Z",
+      "closedAt": "2024-10-18T14:54:20Z",
       "comments": [
         {
           "author": "gloinul",
@@ -11148,7 +11148,7 @@
       "id": "I_kwDOGNtpaM6OHeJD",
       "title": "What to do on path time-out?",
       "url": "https://github.com/quicwg/multipath/issues/397",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -11160,8 +11160,8 @@
       ],
       "body": "With use of multipath you have a multiple path open but not use all of them concurrently (e.g. for stand-by). Therefore a path time out makes less sense. We probably need to consider if the path if actively used or not. Only you send on a path and all packets are finally marked as lost, that's probably a good indication that the path Is broken and you should close it. If a path is not used, you still might want to keep it open to use it later. Not sure if requirement to send pings on all non-used path is that useful.\r\n\r\nAnother related issue is that if you only send non-ack eliciting packets on a path (like ACKs) and the path is not used by the peer for sending, you might not be able to detect a path breakage. May it would make sense to require sending ack electing frames on all used paths from time to time?",
       "createdAt": "2024-07-01T16:59:00Z",
-      "updatedAt": "2024-10-07T13:13:41Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:54:35Z",
+      "closedAt": "2024-10-18T14:54:35Z",
       "comments": [
         {
           "author": "huitema",
@@ -11589,7 +11589,7 @@
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-10-15T06:39:30Z",
+      "updatedAt": "2024-10-18T15:48:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -11640,6 +11640,27 @@
           "body": "I think we should keep using the QUIC code space. That was pretty much the recommendation during the WG meeting. ",
           "createdAt": "2024-10-15T06:39:29Z",
           "updatedAt": "2024-10-15T06:39:29Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Reposting here for the discussion what I just posted in the PR:  I think using the QUIC error code space is wrong. I think we should not call this error code at all. In case of connection close, you actually close the connection because there was an unexpected protocol behavior. In case of the multipath extension, it is the same: if there is something unexpected, you have to close the whole connection. Therefore closing a path is never an error but always an explicit decision. ",
+          "createdAt": "2024-10-17T10:58:10Z",
+          "updatedAt": "2024-10-17T10:58:10Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I rewatched part of the session and want to note a couple of points here.\r\n\r\nFirst the reason for removing the reason phrase is that processing that (variable-length) string might create quite some overhead. You can just not implement that for connection close as you'll close the connection anyway but for other frames that's probably something to avoid (and use error codes instead). However, note that if we remove the reason phrase we don't have any way anymore to communication any reason from the application why it decided to close a path.\r\n\r\nFurther, if we have an error code we could probably also add another error code for \"unstable_interface\" or something like this. Thinking more about this we could probably also add another code for \"no_CID_available\" (even thought not sure here because that might actually be a real error to close the connection?). These ones could actually be useful for the receiver to decide if it tries to re-open the path or not.\r\n\r\nFor me right now, the two possible ways forward are:\r\n1) remove the error code (and reason phrase?)\r\n2) define a new QUIC code space\r\n\r\nJust for the sake of completeness the other two options discussed in the last session were:\r\n3) add additional QUIC error codes (and restrict use in the abandon frame to a limited set?)\r\n4) add an application layer error code instead\r\n\r\n\r\n\r\n",
+          "createdAt": "2024-10-18T15:22:33Z",
+          "updatedAt": "2024-10-18T15:22:33Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "As a reference, [HTTP/3's error code space](https://www.iana.org/assignments/http3-parameters/http3-parameters.xhtml#http3-parameters-error-codes) contains codes that cover various scenarios.\r\n\r\nThis include unexpected protocol errors, such as detecting the peer closed a stream it shouldn't and responding with a CONNECTION_CLOSE of H3_CLOSED_CRITICAL_STREAM. But it also includes expected behaviours that are not errors, such as when an endpoint cancels a request (a bit like path abandon) by sending a REST_STREAM or STOP_SENDING using H3_REQUEST_CANCELLED.\r\n\r\nIn all these cases, a compliant H3 implementation abides to these requirements:\r\n\r\n> Although the reasons for closing streams and connections are called \"errors\", these actions do not necessarily indicate a problem with the connection or either implementation. For example, a stream can be reset if the requested resource is no longer needed.\r\n> \r\n> An endpoint MAY choose to treat a stream error as a connection error under certain circumstances, closing the entire connection in response to a condition on a single stream. Implementations need to consider the impact on outstanding requests before making this choice.\r\n> \r\n> Because new error codes can be defined without negotiation (see [Section 9](https://datatracker.ietf.org/doc/html/rfc9114#extensions)), use of an error code in an unexpected context or receipt of an unknown error code MUST be treated as equivalent to [H3_NO_ERROR](https://datatracker.ietf.org/doc/html/rfc9114#H3_NO_ERROR). However, closing a stream can have other effects regardless of the error code; for example, see [Section 4.1](https://datatracker.ietf.org/doc/html/rfc9114#request-response).\r\n\r\nAs a recipent, an H3 implementation has to be prepated for a peer to use \"the wrong\" error code space (send a transport error when it was an application error), or send a generic code, or send an incorrect code. I don't think any of those cause any real problems for the recipient, it's mainly for debugging. And someone investigating these should always be skeptical of the peer not telling the ground truth.\r\n\r\nOn balance, I think having some error code is useful and its fine to use the QUIC error code space. This is an example of an extension where we are building some more complexity into the transport and can expect to need to extend the shared codepoint space to suit.\r\n\r\nHaving the frame use values in a unique error code space is also a possibility. But then you'll want to create a separate registry for that. And it doesn't stop the peer sending any allowable value on the wire.\r\n\r\n> 4) add an application layer error code instead\r\n\r\nI not 100% sure what this means. If the suggestion is to use e.g. HTTP/3 application error space I don't think that works. If its more like \"allow applications to define their own means to communicate the reason a path was abandoned, such as a new application-layer message\" then maybe but it seems like a pain when we can solve a problem transport in transport. ",
+          "createdAt": "2024-10-18T15:48:07Z",
+          "updatedAt": "2024-10-18T15:48:07Z"
         }
       ]
     },
@@ -11648,7 +11669,7 @@
       "id": "I_kwDOGNtpaM6QYtLc",
       "title": "Clarify the initial Connection ID sequence number on non-initial paths",
       "url": "https://github.com/quicwg/multipath/issues/421",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -11660,8 +11681,8 @@
       ],
       "body": "From some interop from IETF 120 with @Yanmei-Liu, it seems we need to clarify that the initial CID sequence number that should be used is 0, as Section 5.1.1 of RFC9000 bases its discussion on handshake CIDs to define the sequence number 0. There are no such \"handshake CIDs\" with additional paths.",
       "createdAt": "2024-07-22T09:28:43Z",
-      "updatedAt": "2024-10-07T13:13:11Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:52:38Z",
+      "closedAt": "2024-10-18T14:52:38Z",
       "comments": []
     },
     {
@@ -11681,7 +11702,7 @@
       ],
       "body": "RFC 9000 requires that:\r\n- Datagrams carrying Initial packets be expanded to 1200+ bytes\r\n- Servers verify the client address on handshake *and* when the address changes through migration / rebinding\r\n- The server can send no more than 3x the received bytes until the client's address is validated, both during the handshake and following client migration / rebinding\r\n\r\nThis draft states in the Security Considerations that \"the anti-amplification limits as specified in [Section 8](https://rfc-editor.org/rfc/rfc9000#section-8) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)] need to be followed to limit the amplification risk.\" However, there's no text that describes how this maps into multipath behavior.\r\n\r\nMy proposal is that:\r\n- The packet on a new path SHOULD be expanded to 1200+ bytes (PADDING, etc.) for the first 1 RTT or until validation completes\r\n- When a packet is received from an unverified address, an endpoint MUST NOT send more than 3x the received bytes until address validation completes",
       "createdAt": "2024-07-25T18:08:16Z",
-      "updatedAt": "2024-10-02T20:33:38Z",
+      "updatedAt": "2024-10-18T14:55:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -11704,6 +11725,13 @@
           "body": "I am trying to reconcile Mike's PR with the decision to allow path creation without an explicit challenge, see PR #442. We already have text making reference to RFC 9000. My proposal is to only take the part of #430 that updates the security section.",
           "createdAt": "2024-10-02T20:33:37Z",
           "updatedAt": "2024-10-02T20:33:37Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@MikeBishop we merged #442. Can you confirm that this addressed the issue (and close it)? Thanks!",
+          "createdAt": "2024-10-18T14:55:35Z",
+          "updatedAt": "2024-10-18T14:55:35Z"
         }
       ]
     },
@@ -46179,25 +46207,33 @@
       "id": "PR_kwDOGNtpaM56cVxf",
       "title": "Anti-amplification guidance",
       "url": "https://github.com/quicwg/multipath/pull/430",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #422.",
       "createdAt": "2024-09-04T20:37:09Z",
-      "updatedAt": "2024-09-12T14:41:49Z",
+      "updatedAt": "2024-10-18T08:02:42Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "489adf12bcc991795d0484b35d1a42a64d4dd125",
       "headRepository": "MikeBishop/multipath",
       "headRefName": "anti-amplification",
       "headRefOid": "467113fbdab19678b1c17ad0e896d05bd296a121",
-      "closedAt": null,
+      "closedAt": "2024-10-18T08:02:42Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this PR as we are planning to merge #442 instead. Thanks anyway @MikeBishop !",
+          "createdAt": "2024-10-18T08:02:42Z",
+          "updatedAt": "2024-10-18T08:02:42Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6H_VdA",
@@ -46815,26 +46851,29 @@
       "id": "PR_kwDOGNtpaM57yiKu",
       "title": "Update Acknowledgement section",
       "url": "https://github.com/quicwg/multipath/pull/438",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "I roughly looked through the issues and PRs but this list might still not be complete. But good to update for now!",
       "createdAt": "2024-09-17T17:03:32Z",
-      "updatedAt": "2024-10-01T13:13:28Z",
+      "updatedAt": "2024-10-18T14:52:22Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-10",
       "headRefOid": "536a0d5918f4520aff54721cd62ae62af24b6a5a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-10-18T14:52:22Z",
+      "mergedAt": "2024-10-18T14:52:22Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "56d579c9e0267f3b1b88723db9974470b78b53d0"
+      },
       "comments": [],
       "reviews": []
     },
@@ -46843,7 +46882,7 @@
       "id": "PR_kwDOGNtpaM58IfgY",
       "title": "Connection ID sequence number space starts at 0 for all paths",
       "url": "https://github.com/quicwg/multipath/pull/439",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -46853,17 +46892,19 @@
       ],
       "body": "Fix #421.",
       "createdAt": "2024-09-20T08:01:02Z",
-      "updatedAt": "2024-10-07T11:32:22Z",
+      "updatedAt": "2024-10-18T14:52:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-421",
       "headRefOid": "548bdedda388da0881b04b939959e86c246a2d01",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-10-18T14:52:37Z",
+      "mergedAt": "2024-10-18T14:52:37Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "199c28f9e2158f2b2d5d0f4f573e2251162569e9"
+      },
       "comments": [],
       "reviews": [
         {
@@ -46932,26 +46973,28 @@
       "id": "PR_kwDOGNtpaM59QCzI",
       "title": "new text on idle timeouts",
       "url": "https://github.com/quicwg/multipath/pull/440",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "needs-review"
+        "ready-to-merge"
       ],
       "body": "fixes #397",
       "createdAt": "2024-10-01T12:54:47Z",
-      "updatedAt": "2024-10-16T08:13:15Z",
+      "updatedAt": "2024-10-18T14:54:34Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-11",
       "headRefOid": "f55e665a69def8dd277c685266df10b8e99340d8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-10-18T14:54:34Z",
+      "mergedAt": "2024-10-18T14:54:34Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "fd3f30ba490b906e0d01432bdd20e7a6467b4de6"
+      },
       "comments": [],
       "reviews": [
         {
@@ -47099,6 +47142,39 @@
               "updatedAt": "2024-10-16T08:13:15Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nhcey",
+          "commit": {
+            "abbreviatedOid": "f55e665"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T07:14:47Z",
+          "updatedAt": "2024-10-17T07:14:47Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjCrx",
+          "commit": {
+            "abbreviatedOid": "f55e665"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:13:17Z",
+          "updatedAt": "2024-10-17T10:13:17Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "yes, one endpoint decides to close a path and then need sto send an abandon frame, however, there is nothing in this spec that says it has to take that decision as an specific point in time, e.g. as react to a certain event. For example even if you receive a packet on a new path that you don't want to open, it doesn't necessarily mean that you have to close it immediately, because opening a path (by receiving a packet) is an independent event from closing the path, meaning as soon as you have received the packet, it is effetely an open path. And similarly as you can decide to close any path at any point of time, you simply just decide to close that path short after opening it. Sorry for using these many words but I hope that makes my mental model more clear....?",
+              "createdAt": "2024-10-17T10:13:17Z",
+              "updatedAt": "2024-10-17T10:15:00Z"
+            }
+          ]
         }
       ]
     },
@@ -47107,26 +47183,29 @@
       "id": "PR_kwDOGNtpaM59QMGJ",
       "title": "add ref to DPLPMTUD",
       "url": "https://github.com/quicwg/multipath/pull/441",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #326",
       "createdAt": "2024-10-01T13:10:03Z",
-      "updatedAt": "2024-10-02T19:39:18Z",
+      "updatedAt": "2024-10-18T14:52:55Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-12",
       "headRefOid": "d0859bf52c6d2e4470a6aba9ae14e384018d11d0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-10-18T14:52:55Z",
+      "mergedAt": "2024-10-18T14:52:55Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "08b33a4b791ff443c648180699e2378d6ab1f977"
+      },
       "comments": [],
       "reviews": [
         {
@@ -47141,6 +47220,32 @@
           "createdAt": "2024-10-02T19:39:18Z",
           "updatedAt": "2024-10-02T19:39:18Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NhfuM",
+          "commit": {
+            "abbreviatedOid": "d0859bf"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T07:21:26Z",
+          "updatedAt": "2024-10-17T07:21:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NuUY4",
+          "commit": {
+            "abbreviatedOid": "d0859bf"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-18T10:33:48Z",
+          "updatedAt": "2024-10-18T10:33:48Z",
+          "comments": []
         }
       ]
     },
@@ -47149,24 +47254,28 @@
       "id": "PR_kwDOGNtpaM59SoHy",
       "title": "packets without challenge are valid",
       "url": "https://github.com/quicwg/multipath/pull/442",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "Close #390",
       "createdAt": "2024-10-01T18:19:25Z",
-      "updatedAt": "2024-10-16T07:57:53Z",
+      "updatedAt": "2024-10-18T14:54:19Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "arrival-no-challenge",
-      "headRefOid": "6f73eab31b5874a6f4944de02aacd04759d5179b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "75783dbeb1c968d6ac2058994ee78688e601099a",
+      "closedAt": "2024-10-18T14:54:19Z",
+      "mergedAt": "2024-10-18T14:54:19Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "837a88085061d80d2121a73b2fec64a7084679d4"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -47223,6 +47332,20 @@
           "body": "I added a short sentence about amplification limits, but I did not write normative text about padding at the client. I am concerned that doing so would open another can of worms, e.g., should the server reject a packet on a new path if that packet was not padded? Just mentioning amplification is probably sufficient: the implementers should know that not padding will prevent the server from sending data. Plus, the text in RFC 9000 already says:\r\n\r\n_When an endpoint is unable to expand the datagram size to 1200 bytes due to the anti-amplification limit, the path MTU will not be validated. To ensure that the path MTU is large enough, the endpoint MUST perform a second path validation by sending a PATH_CHALLENGE frame in a datagram of at least 1200 bytes. This additional validation can be performed after a PATH_RESPONSE is successfully received or when enough bytes have been received on the path that sending the larger datagram will not result in exceeding the anti-amplification limit._\r\n\r\nSo I think that we are covered.",
           "createdAt": "2024-10-15T06:18:49Z",
           "updatedAt": "2024-10-15T06:18:49Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I added a short sentence about amplification limits, but I did not write normative text about padding at the client. I am concerned that doing so would open another can of worms, e.g., should the server reject a packet on a new path if that packet was not padded? Just mentioning amplification is probably sufficient: the implementers should know that not padding will prevent the server from sending data. Plus, the text in RFC 9000 already says:\r\n> \r\n> _When an endpoint is unable to expand the datagram size to 1200 bytes due to the anti-amplification limit, the path MTU will not be validated. To ensure that the path MTU is large enough, the endpoint MUST perform a second path validation by sending a PATH_CHALLENGE frame in a datagram of at least 1200 bytes. This additional validation can be performed after a PATH_RESPONSE is successfully received or when enough bytes have been received on the path that sending the larger datagram will not result in exceeding the anti-amplification limit._\r\n> \r\n> So I think that we are covered.\r\n\r\nMaybe similarly as we explicitly say that each IP address must be validated, we might also want to say that it must be validated for each path (and each direction) that a MTU of at least 1200 bytes is supported? I think this is really the same as the requirement on IP address validation, where each endpoint need to do it independently but can and should enforce it for the other end. So something like this:\r\n\r\n`Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported on the path. This can be done during initial path validation or separately later if the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.`",
+          "createdAt": "2024-10-17T10:32:56Z",
+          "updatedAt": "2024-10-17T10:32:56Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I applied Mirja's suggestions. I think this is ready now.",
+          "createdAt": "2024-10-17T21:10:00Z",
+          "updatedAt": "2024-10-17T21:10:00Z"
         }
       ],
       "reviews": [
@@ -47671,6 +47794,119 @@
           "createdAt": "2024-10-16T07:57:53Z",
           "updatedAt": "2024-10-16T07:57:53Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NheHn",
+          "commit": {
+            "abbreviatedOid": "6f73eab"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T07:18:08Z",
+          "updatedAt": "2024-10-17T07:18:08Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjF5e",
+          "commit": {
+            "abbreviatedOid": "6f73eab"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:19:22Z",
+          "updatedAt": "2024-10-17T10:19:23Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "Now we are stating this two points twice in two subsequence paragraphs...? I don't think this sentence is needed.",
+              "createdAt": "2024-10-17T10:19:22Z",
+              "updatedAt": "2024-10-17T10:19:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjHAP",
+          "commit": {
+            "abbreviatedOid": "6f73eab"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:21:06Z",
+          "updatedAt": "2024-10-17T10:21:07Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2024-10-17T10:21:06Z",
+              "updatedAt": "2024-10-17T10:21:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjNwR",
+          "commit": {
+            "abbreviatedOid": "6f73eab"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:33:23Z",
+          "updatedAt": "2024-10-17T10:33:23Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\napplies.\r\n\r\nEach endpoint MUST also validate that a minimum MTU of 1200 bytes is supported on the path. This can be done during initial path validation or separately later if the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.\r\n```",
+              "createdAt": "2024-10-17T10:33:23Z",
+              "updatedAt": "2024-10-17T10:33:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NsuMN",
+          "commit": {
+            "abbreviatedOid": "4980db8"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-18T07:58:00Z",
+          "updatedAt": "2024-10-18T07:58:00Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nEach endpoint MUST also validate that a minimum MTU of 1200 bytes is supported\r\non the path. This can be done during initial path validation or separately later if\r\nthe amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.\r\n```",
+              "createdAt": "2024-10-18T07:58:00Z",
+              "updatedAt": "2024-10-18T07:58:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nsu2C",
+          "commit": {
+            "abbreviatedOid": "204c7f2"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-18T07:58:41Z",
+          "updatedAt": "2024-10-18T07:58:41Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "```suggestion\r\n\r\n\r\n```",
+              "createdAt": "2024-10-18T07:58:41Z",
+              "updatedAt": "2024-10-18T07:58:42Z"
+            }
+          ]
         }
       ]
     },
@@ -47679,26 +47915,30 @@
       "id": "PR_kwDOGNtpaM59a_jO",
       "title": "Add implementation comments for key rotation.",
       "url": "https://github.com/quicwg/multipath/pull/443",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "mirjak"
       ],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "Close #290",
       "createdAt": "2024-10-02T20:08:54Z",
-      "updatedAt": "2024-10-15T06:36:01Z",
+      "updatedAt": "2024-10-18T14:53:43Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "key-rotation-no-worry",
       "headRefOid": "419e591e9939a6651f1ad7b5439e2702100730cb",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-10-18T14:53:43Z",
+      "mergedAt": "2024-10-18T14:53:43Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "b1a0bb3a1aaf95526c4d8afe133f9279700f97a9"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -47795,6 +48035,19 @@
               "updatedAt": "2024-10-10T12:49:52Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nhgb6",
+          "commit": {
+            "abbreviatedOid": "419e591"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T07:22:49Z",
+          "updatedAt": "2024-10-17T07:22:49Z",
+          "comments": []
         }
       ]
     },
@@ -47803,24 +48056,28 @@
       "id": "PR_kwDOGNtpaM59bHac",
       "title": "Add more guidance on when to use PATH_ACK frames",
       "url": "https://github.com/quicwg/multipath/pull/444",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "To close #220 ",
       "createdAt": "2024-10-02T20:25:11Z",
-      "updatedAt": "2024-10-16T16:13:14Z",
+      "updatedAt": "2024-10-18T14:54:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-220",
-      "headRefOid": "55cb6ee0f99edf2dddee7bf2c18433442720e13d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "30141e9f33fe7542b0096e218d9ea02aa2e087f6",
+      "closedAt": "2024-10-18T14:54:04Z",
+      "mergedAt": "2024-10-18T14:54:04Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "bb75a7211e8667f7f1e0cba0ed15cde31a6632a4"
+      },
       "comments": [],
       "reviews": [
         {
@@ -48001,6 +48258,179 @@
               "updatedAt": "2024-10-16T16:13:14Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nhk3h",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T07:30:12Z",
+          "updatedAt": "2024-10-17T07:31:05Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Having read the discussion, I am fine keeping the MAY. An alternative could also be to focus on receiving ACKs (indicate that they must be correctly processed) without explicitly mentioning that the endpoint can send it (I agree this is somewhat mentioned by the SHOULD).\r\n\r\nMinor typos.\r\n```suggestion\r\nand these ACK frames need to be processed correctly by the peer.\r\n```",
+              "createdAt": "2024-10-17T07:30:12Z",
+              "updatedAt": "2024-10-17T07:31:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjSkw",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:43:23Z",
+          "updatedAt": "2024-10-17T10:43:23Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "The point of adding this sentence is to make the receiver side aware and not to specify any requirements for the sender. There the sentence is rather stating a fact (like \"note, this can happen and is valid\") that setting a normative protocol requirement. If we want to phrase a requirement here, it should be on the receiver (as Quentin also says below). So basically saying something like:\r\n\r\n`Endpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets for Path ID 0, even after successful negotiation of this extension.`\r\n\r\nFurther the intention of adding something here as discussed in the issue was to give a bit of a reasoning why there is a SHOULD in the above sentence and why it could be useful to still send ACK frames. So I propose to further add a sentence like this:\r\n\r\n`For example, ACK frames might be preferred by the sender as long as only the initial path with Path ID 0 is in use.`",
+              "createdAt": "2024-10-17T10:43:23Z",
+              "updatedAt": "2024-10-17T10:43:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjS-8",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:44:16Z",
+          "updatedAt": "2024-10-17T10:44:17Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nEndpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets\r\nfor Path ID 0, even after successful negotiation of this extension. For example,\r\nACK frames might be preferred by the sender as long as only the initial path\r\nwith Path ID 0 is in use.\r\n```",
+              "createdAt": "2024-10-17T10:44:16Z",
+              "updatedAt": "2024-10-17T10:44:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjVVJ",
+          "commit": {
+            "abbreviatedOid": "55cb6ee"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:47:00Z",
+          "updatedAt": "2024-10-17T10:47:00Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nand these ACK frames need to be processed correctly by the peer.\r\n```",
+              "createdAt": "2024-10-17T10:47:00Z",
+              "updatedAt": "2024-10-17T10:47:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjXAM",
+          "commit": {
+            "abbreviatedOid": "77a217e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:50:20Z",
+          "updatedAt": "2024-10-17T10:50:20Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Sorry, I merged the nits and that made the conversation disappear here, so I'm repost my last comment and change proposal:\r\n\r\nThe point of adding this sentence is to make the receiver side aware and not to specify any requirements for the sender. There the sentence is rather stating a fact (like \"note, this can happen and is valid\") that setting a normative protocol requirement. If we want to phrase a requirement here, it should be on the receiver (as Quentin also says below). So basically saying something like:\r\n\r\n`Endpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets for Path ID 0, even after successful negotiation of this extension.`\r\n\r\nFurther the intention of adding something here as discussed in the issue was to give a bit of a reasoning why there is a SHOULD in the above sentence and why it could be useful to still send ACK frames. So I propose to further add a sentence like this:\r\n\r\n`For example, ACK frames might be preferred by the sender as long as only the initial path with Path ID 0 is in use.`",
+              "createdAt": "2024-10-17T10:50:20Z",
+              "updatedAt": "2024-10-17T10:51:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6NjXYN",
+          "commit": {
+            "abbreviatedOid": "77a217e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:50:59Z",
+          "updatedAt": "2024-10-17T10:50:59Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nEndpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets\r\nfor Path ID 0, even after successful negotiation of this extension. For example,\r\nACK frames might be preferred by the sender as long as only the initial path\r\nwith Path ID 0 is in use.\r\n```",
+              "createdAt": "2024-10-17T10:50:59Z",
+              "updatedAt": "2024-10-17T10:51:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6No5D_",
+          "commit": {
+            "abbreviatedOid": "77a217e"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T21:11:56Z",
+          "updatedAt": "2024-10-17T21:11:56Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "+1. This is a good change.",
+              "createdAt": "2024-10-17T21:11:56Z",
+              "updatedAt": "2024-10-17T21:11:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nrzxg",
+          "commit": {
+            "abbreviatedOid": "77a217e"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-18T06:00:57Z",
+          "updatedAt": "2024-10-18T06:00:57Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Agree too and committed suggestion.",
+              "createdAt": "2024-10-18T06:00:57Z",
+              "updatedAt": "2024-10-18T06:00:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nr0yi",
+          "commit": {
+            "abbreviatedOid": "30141e9"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "With the new text, looks good to me.",
+          "createdAt": "2024-10-18T06:04:38Z",
+          "updatedAt": "2024-10-18T06:04:38Z",
+          "comments": []
         }
       ]
     },
@@ -48018,13 +48448,13 @@
       ],
       "body": "Fixes #414 \r\nHere is an initial attempt to remove the reason phrase from the PATH_ABANDON frame and add two error codes: APPLICATION_ABANDON and RESOURCE_LIMIT_REACHED. This follows the discussion in issue #414 and references the discussion notes from IETF-120. I have no strong opinion on the names of these two error codes and have set their values as TBD for both.",
       "createdAt": "2024-10-03T08:46:54Z",
-      "updatedAt": "2024-10-07T23:50:54Z",
+      "updatedAt": "2024-10-19T16:37:10Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "yfmascgy/multipath",
       "headRefName": "dev/add-error-code",
-      "headRefOid": "91f9939d054889d27442633e91b6d3799eeb9365",
+      "headRefOid": "c710068bcedd1ce903e1299a84d06cdce4fbd491",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -48070,6 +48500,190 @@
               "updatedAt": "2024-10-07T23:49:22Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nhob7",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T07:37:19Z",
+          "updatedAt": "2024-10-17T07:37:19Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "While I agree that NO_ERROR is a fine error message for a PATH_ABANDON, the current text is not really clear about the other error codes defined in RFC9000. For instance, what should a receiver do if it receives a PATH_ABANDON with error code FLOW_CONTROL_ERROR? This would sound wrong to me, though it is not clear how a receiver would react.",
+              "createdAt": "2024-10-17T07:37:19Z",
+              "updatedAt": "2024-10-17T07:37:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Njalq",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-17T10:57:38Z",
+          "updatedAt": "2024-10-17T10:57:39Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "I don't think the receiver would react it all. This is only for logging. If there are concerns about this that I think we would need to define a separate code space. Thinking more about this, I think using the QUIC error code space is wrong. I think we should not call this error code at all. In case of connection close, you actually close the connection because there was an unexpected protocol behavior. In case of the multipath extension, it is the same: if there is something unexpected, you have to close the whole connection. Therefore closing a path is never an error but always an explicit decision. ",
+              "createdAt": "2024-10-17T10:57:38Z",
+              "updatedAt": "2024-10-17T10:57:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nr4bN",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-18T06:16:21Z",
+          "updatedAt": "2024-10-18T06:16:21Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "Yes, I agree with your point. If we need such logging, we may standardise a few PATH_ABANDON-specific reason code points (the three mentioned above seem sufficient).",
+              "createdAt": "2024-10-18T06:16:21Z",
+              "updatedAt": "2024-10-18T06:16:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Nw7NB",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-18T15:20:37Z",
+          "updatedAt": "2024-10-18T15:20:37Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "As a reference, [HTTP/3's error code space](https://www.iana.org/assignments/http3-parameters/http3-parameters.xhtml#http3-parameters-error-codes) contains codes that cover various scenarios.\r\n\r\nThis include unexpected protocol errors, such as detecting the peer closed a stream it shouldn't and responding with a CONNECTION_CLOSE of H3_CLOSED_CRITICAL_STREAM.\r\n\r\nBut it also includes expected behaviours that are not errors, such as when an endpoint cancels a request (a bit like path abandon) by sending a REST_STREAM or STOP_SENDING using H3_REQUEST_CANCELLED.\r\n\r\nIn all these cases, an H3 implementation has space to ignore the specific language in the spec: use the wrong error code space (send a transport error when it was an application error), or send a generic code, or send an incorrect code. I don't think any of those cause any real problems for the recipient, as Mirja put it, it's mainly for debugging. And someone investigating these should always be skeptical of the peer not telling the ground truth.\r\n\r\nOn balance, I think its fine to use the QUIC error code space here. This is an example of an extension where we are building some more complexity into the transport and can expect to need to extend the shared codepoint space to suit.",
+              "createdAt": "2024-10-18T15:20:37Z",
+              "updatedAt": "2024-10-18T15:20:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Ny7qS",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-18T20:43:52Z",
+          "updatedAt": "2024-10-18T20:43:52Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "I also think that using the QUIC error space is fine. It is fairly obvious that not all error codes defined in the QUIC error space apply to all scenarios. For example, a \"transport parameter error\" only makes sense when parsing transport parameters. The important property is that the error codes be unique.\r\n\r\nI also do not think that any implementation should react to specific error code values, unless that's explicitly mentioned in the text of the standard. The purpose is documentation for helping debugging issues, or for passing information to the application and ultimately the user. We don't need a special registry for path abandon reasons.",
+              "createdAt": "2024-10-18T20:43:52Z",
+              "updatedAt": "2024-10-18T20:43:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N0LS9",
+          "commit": {
+            "abbreviatedOid": "91f9939"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Remove the word \"multipath\" as we are using the QUIC error space.",
+          "createdAt": "2024-10-19T07:19:46Z",
+          "updatedAt": "2024-10-19T07:20:31Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": "```suggestion\r\nQUIC transport error codes are 62-bit unsigned integers\r\n```",
+              "createdAt": "2024-10-19T07:19:46Z",
+              "updatedAt": "2024-10-19T07:20:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N1ilr",
+          "commit": {
+            "abbreviatedOid": "c710068"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": " I think this is good. We could discuss whether \"application abandon\" is really different from \"no error\", but error codes are cheap and I would rather see this merged. I just have a small nit.",
+          "createdAt": "2024-10-19T16:36:16Z",
+          "updatedAt": "2024-10-19T16:37:10Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Should we add provisional values for the two error codes in the IANA section, to enable interop testing?",
+              "createdAt": "2024-10-19T16:36:16Z",
+              "updatedAt": "2024-10-19T16:37:10Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 447,
+      "id": "PR_kwDOGNtpaM5_EtRk",
+      "title": "minor clarification on remembering the transport parameter",
+      "url": "https://github.com/quicwg/multipath/pull/447",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2024-10-18T08:55:37Z",
+      "updatedAt": "2024-10-18T14:53:28Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-15",
+      "headRefOid": "fca1c9f30bf83f55421fbe4bae2a366cf0c15246",
+      "closedAt": "2024-10-18T14:53:28Z",
+      "mergedAt": "2024-10-18T14:53:28Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "8178aca00d6007c6cb0bbbc6b356593c5579ca0a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6Nwrt1",
+          "commit": {
+            "abbreviatedOid": "fca1c9f"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-18T14:51:31Z",
+          "updatedAt": "2024-10-18T14:51:31Z",
+          "comments": []
         }
       ]
     }
