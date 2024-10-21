@@ -1341,9 +1341,9 @@ Maximum Path Identifier:
 # Error Codes {#error-codes}
 
 QUIC transport error codes are 62-bit unsigned integers
-following {{QUIC-TRANSPORT}}.
-
-In addition to NO_ERROR(0x0) following {{QUIC-TRANSPORT}}, the following QUIC error codes are defined for use in the PATH_ABANDON frame.
+(see {{Section 20.1 of QUIC-TRANSPORT}}. In addition to
+NO_ERROR(0x0), the following QUIC error codes are defined
+for use in the PATH_ABANDON frame:
 
 APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the
 request of the application. The application has determined that it no
