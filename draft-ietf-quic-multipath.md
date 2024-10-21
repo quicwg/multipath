@@ -1130,8 +1130,6 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
     Type (i) = TBD-02 (experiments use 0x15228c05),
     Path Identifier (i),
     Error Code (i),
-    Reason Phrase Length (i),
-    Reason Phrase (..),
   }
 ~~~
 {: #fig-path-abandon-format title="PATH_ABANDON Frame Format"}
@@ -1143,21 +1141,8 @@ Path Identifier:
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
-  this path.
-
-Reason Phrase Length:
-: A variable-length integer specifying the length of the reason phrase
-  in bytes. Because an PATH_ABANDON frame cannot be split between packets,
-  any limits on packet size will also limit the space available for
-  a reason phrase.
-
-Reason Phrase:
-: Additional diagnostic information for the closure. This can be
-  zero length if the sender chooses not to give details beyond
-  the Error Code value. This SHOULD be a UTF-8 encoded string {{!RFC3629}},
-  though the frame does not carry information, such as language tags,
-  that would aid comprehension by any entity other than the one
-  that created the text.
+  this path. NO_ERROR(0x0) indicates that the path is being abandoned
+  without any error being encountered.
 
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1382,6 +1367,23 @@ Maximum Path Identifier:
   Receipt of a value that is higher than the local maximum value MUST
   be treated as a connection error of type PROTOCOL_VIOLATION.
 
+# Error Codes {#error-codes}
+
+QUIC transport error codes are 62-bit unsigned integers
+(see {{Section 20.1 of QUIC-TRANSPORT}}. In addition to
+NO_ERROR(0x0), the following QUIC error codes are defined
+for use in the PATH_ABANDON frame:
+
+APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the
+request of the application. The application has determined that it no
+longer needs this path. This error is used when the application layer
+decides to stop using a specific path.
+
+RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path because
+it cannot allocate sufficient resources to maintain it. This is due to
+limitations in the transport layer's capacity. This error indicates that
+resource constraints prevent the continuation of the path.
+
 # IANA Considerations
 
 This document defines a new transport parameter for the negotiation of
@@ -1413,6 +1415,16 @@ TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
+
+The following transport error code defined in {{tab-error-code}} are to
+be added to the "QUIC Transport Error Codes" registry under
+the "QUIC Protocol" heading.
+
+Value                       | Code                  | Description                   | Specification
+----------------------------|-----------------------|-------------------------------|-------------------
+TBD-09(experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD-10(experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+{: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
 # Security Considerations
