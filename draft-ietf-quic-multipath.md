@@ -99,7 +99,7 @@ associated with the old path. The multipath extension specified in this document
 several changes to that mechanism:
 
   *  Simultaneous transmission on multiple paths.
-  *  Introduction of a path idendifier to manage connection IDs and
+  *  Introduction of a path identifier to manage connection IDs and
      packet number spaces per path.
   *  Removal of paths that have been abandoned.
 
@@ -221,7 +221,7 @@ loss recovery and congestion control mechanisms defined in
 Each Path ID-specific packet number space starts at packet number 0. When following
 the packet number encoding algorithm described in {{Section A.2 of QUIC-TRANSPORT}},
 the largest packet number (largest_acked) that has been acknowledged by the
-peer in the Path ID-specfic packet number space is initially set to "None".
+peer in the Path ID-specific packet number space is initially set to "None".
 
 Using multiple packet number spaces requires changes in the way AEAD is
 applied for packet protection, as explained in {{multipath-aead}}.
@@ -310,7 +310,7 @@ acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the PATH_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.
 
-As multipath support is unknown during the handshake, acknowledgements of
+As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.
 If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
@@ -445,7 +445,7 @@ Connection ID changes as specified in {{Section 5.1.2 of QUIC-TRANSPORT}} and
 in {{Section 9 of QUIC-TRANSPORT}} for connection migration apply for
 connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
-in this draft, endpoints have to consider the receiption of
+in this draft, endpoints have to consider the reception of
 a packet with a connection ID associated to an
 so far unused Path ID as an attempt to establish a new path.
 
@@ -536,11 +536,11 @@ packets from the peer might still be in transit, i.e., for a delay of
 3 PTO after the PATH_ABANDON frame has been received from the peer,
 both to avoid generating spurious stateless packets as specified in
 {{spurious-stateless-reset}} and to be able to acknowledge the
-last packets received from the peer as specified in {{ack-after-abandon}}).
+last packets received from the peer as specified in {{ack-after-abandon}}.
 
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
 promptly send PATH_ACK frames to acknowledge all packets received on
-the path and not yet acknowledged, as specified in {{ack-after-abandon}}).
+the path and not yet acknowledged, as specified in {{ack-after-abandon}}.
 When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
 
@@ -628,13 +628,13 @@ that are currently usable.
 
 ### Early Abandon {#abandon-early}
 
-The are scenarios in which an endpoint will receive a PATH_ABANDON frame
+There are scenarios in which an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
 to abandon a path for any reason, for example, removing a hole from
 the sequence of path IDs in use. This is not an error. An endpoint that
-receives such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
+receives such a PATH_ABANDON frame MUST treat it as specified in {{path-close}}.
 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
@@ -714,7 +714,7 @@ will not be used anymore. In response, if the path is still open, the peer
 SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
 
 Retirement of connection IDs will not retire the Path ID
-that corresponds to the connection ID or any other path ressources
+that corresponds to the connection ID or any other path resources
 as the packet number space is associated with a path.
 
 The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
@@ -771,7 +771,7 @@ consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
 
 When this specification is used, endpoints SHOULD wait for at least three times
 the largest PTO among all the paths before initiating a new key update
-after receiving an acknowledgement that confirms the receipt of the previous key
+after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
 which used three times the PTO of the sole single path.
 
@@ -779,7 +779,7 @@ The choice of three times the largest PTO is a trade-off:
 Packets that arrive after their decryption key has been discarded will be dropped.
 Longer delays reduce the probability of losing packets but keeping old keys
 longer can negatively impact the security of the protocol.
-The use of three times the largest PTO aims to minimise packet lost for all paths
+The use of three times the largest PTO aims to minimize packet lost for all paths
 and therefore limits the impact on performance.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
@@ -793,7 +793,7 @@ should not cause linkability issue.
 {{fig-example-new-path}} illustrates an example of new path establishment
 using multiple packet number spaces.
 
-In this example it is assumed that both endpoint have
+In this example it is assumed that both endpoints have
 indicated an initial_max_path_id value of at least 2, which means
 both endpoints can use Path IDs 0, 1, and 2. Note that
 Path ID 0 is already used for the initial path.
@@ -854,7 +854,7 @@ Client                                                      Server
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
-Note that the last acknowledgement needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
+Note that the last acknowledgment needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
 
 
 # Implementation Considerations
@@ -904,14 +904,14 @@ control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
 ## Computing Path RTT {#compute-rtt}
 
-Acknowledgement delays are the sum of two one-way delays, the delay
+Acknowledgment delays are the sum of two one-way delays, the delay
 on the packet sending path and the delay on the return path chosen
-for the acknowledgements.  When different paths have different
-characteristics, this can cause acknowledgement delays to vary
+for the acknowledgments.  When different paths have different
+characteristics, this can cause acknowledgment delays to vary
 widely.  Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in both
-directions.  The acknowledgement delay will depend on the combination
+directions.  The acknowledgment delay will depend on the combination
 of paths used for the packet transmission and the ACK transmission,
 as shown in {{fig-example-ack-delay}}.
 
@@ -924,7 +924,7 @@ Satellite   | 350ms  | 600ms
 
 The PATH_ACK frames describe packets that were sent on the specified path,
 but they may be received through any available path. There is an
-understandable concern that if successive acknowledgements are received
+understandable concern that if successive acknowledgments are received
 on different paths, the measured RTT samples will fluctuate widely,
 and that might result in poor performance. While this may be a concern,
 the actual behavior is complex.
@@ -939,7 +939,7 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to compute smoothedRTT and RTTvar per
+The simplest implementation is to compute smoothed RTT and RTTvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This algorithm will provide good results,
 except if the set of paths changes and the PATH_ACK sender
@@ -1291,7 +1291,7 @@ to indicate that it will no longer use a connection ID for a specific path
 that was issued by its peer. To retire the connection ID used
 during the handshake on the initial path, Path ID 0 is used.
 Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
-to send additional connection IDs for this path (see also {{Section 5.1 of QUIC-TRANSPORT}},
+to send additional connection IDs for this path (see also {{Section 5.1 of QUIC-TRANSPORT}}),
 unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
 delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
 
@@ -1367,7 +1367,7 @@ PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}
 
 ~~~
 PATHS_BLOCKED Frame {
-  Type (i) = 0x15228c0d,
+  Type (i) = TBD-08 (experiments use 0x15228c0d),
   Maximum Path Identifier (i),
 }
 ~~~
@@ -1432,7 +1432,7 @@ The initial_max_path_id transport parameter and the Max Path ID field
 in the MAX_PATH_ID frame limit the number of paths an endpoint is willing
 to maintain and accordingly limit the associated path resources.
 
-Furthermore, as connection IDs have to be issued by both endpoint for the
+Furthermore, as connection IDs have to be issued by both endpoints for the
 same path ID before an endpoint can open a path, each endpoint can further
 control the per-path resource usage (beyond the connection IDs) by limiting
 the number of Path ID that it issues connection IDs for.
