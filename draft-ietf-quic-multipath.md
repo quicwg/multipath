@@ -1345,12 +1345,12 @@ following {{QUIC-TRANSPORT}}.
 
 In addition to NO_ERROR(0x0) following {{QUIC-TRANSPORT}}, the following QUIC error codes are defined for use in the PATH_ABANDON frame.
 
-APPLICATION_ABANDON (TBD): The endpoint is abandoning the path at the
+APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the
 request of the application. The application has determined that it no
 longer needs this path. This error is used when the application layer
 decides to stop using a specific path.
 
-RESOURCE_LIMIT_REACHED (TBD): The endpoint is abandoning the path because
+RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path because
 it cannot allocate sufficient resources to maintain it. This is due to
 limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
@@ -1393,8 +1393,8 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-09(experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD-10(experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
