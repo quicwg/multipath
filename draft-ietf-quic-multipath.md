@@ -634,7 +634,7 @@ tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
 to abandon a path for any reason, for example, removing a hole from
 the sequence of path IDs in use. This is not an error. An endpoint that
-receives such a PATH_ABANDON frame MUST treat it as specified in {{path-close}}.
+receives such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
 
 ## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
 
