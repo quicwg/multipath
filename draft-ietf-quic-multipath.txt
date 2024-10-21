@@ -109,17 +109,18 @@ Table of Contents
      7.5.  PATH_RETIRE_CONNECTION_ID frames
      7.6.  MAX_PATH_ID frames
      7.7.  PATHS_BLOCKED frames
-   8.  IANA Considerations
-   9.  Security Considerations
-     9.1.  Memory Allocation for Per-Path Resources
-     9.2.  Request Forgery with Spoofed Address
-     9.3.  Use of Transport Layer Security and the AEAD Encryption
-           Nonce
-   10. Contributors
-   11. Acknowledgments
-   12. References
-     12.1.  Normative References
-     12.2.  Informative References
+   8.  Error Codes
+   9.  IANA Considerations
+   10. Security Considerations
+     10.1.  Memory Allocation for Per-Path Resources
+     10.2.  Request Forgery with Spoofed Address
+     10.3.  Use of Transport Layer Security and the AEAD Encryption
+            Nonce
+   11. Contributors
+   12. Acknowledgments
+   13. References
+     13.1.  Normative References
+     13.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -1219,8 +1220,6 @@ Table of Contents
        Type (i) = TBD-02 (experiments use 0x15228c05),
        Path Identifier (i),
        Error Code (i),
-       Reason Phrase Length (i),
-       Reason Phrase (..),
      }
 
                     Figure 4: PATH_ABANDON Frame Format
@@ -1230,19 +1229,8 @@ Table of Contents
    Path Identifier:  The Path ID to abandon.
 
    Error Code:  A variable-length integer that indicates the reason for
-      abandoning this path.
-
-   Reason Phrase Length:  A variable-length integer specifying the
-      length of the reason phrase in bytes.  Because an PATH_ABANDON
-      frame cannot be split between packets, any limits on packet size
-      will also limit the space available for a reason phrase.
-
-   Reason Phrase:  Additional diagnostic information for the closure.
-      This can be zero length if the sender chooses not to give details
-      beyond the Error Code value.  This SHOULD be a UTF-8 encoded
-      string [RFC3629], though the frame does not carry information,
-      such as language tags, that would aid comprehension by any entity
-      other than the one that created the text.
+      abandoning this path.  NO_ERROR(0x0) indicates that the path is
+      being abandoned without any error being encountered.
 
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1460,7 +1448,25 @@ Table of Contents
       is higher than the local maximum value MUST be treated as a
       connection error of type PROTOCOL_VIOLATION.
 
-8.  IANA Considerations
+8.  Error Codes
+
+   QUIC transport error codes are 62-bit unsigned integers (see
+   Section 20.1 of [QUIC-TRANSPORT].  In addition to NO_ERROR(0x0), the
+   following QUIC error codes are defined for use in the PATH_ABANDON
+   frame:
+
+   APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at
+   the request of the application.  The application has determined that
+   it no longer needs this path.  This error is used when the
+   application layer decides to stop using a specific path.
+
+   RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path
+   because it cannot allocate sufficient resources to maintain it.  This
+   is due to limitations in the transport layer's capacity.  This error
+   indicates that resource constraints prevent the continuation of the
+   path.
+
+9.  IANA Considerations
 
    This document defines a new transport parameter for the negotiation
    of enable multiple paths for QUIC, and three new frame types.  The
@@ -1513,7 +1519,30 @@ Table of Contents
 
               Table 3: Addition to QUIC Frame Types Entries
 
-9.  Security Considerations
+   The following transport error code defined in Table 4 are to be added
+   to the "QUIC Transport Error Codes" registry under the "QUIC
+   Protocol" heading.
+
+   +===================+======================+=============+=============+
+   |Value              |Code                  |Description  |Specification|
+   +===================+======================+=============+=============+
+   |TBD-09(experiments |APPLICATION_ABANDON   |Path         |Section 8    |
+   |use                |                      |abandoned at |             |
+   |0x4150504C4142414E)|                      |the          |             |
+   |                   |                      |application's|             |
+   |                   |                      |request      |             |
+   +-------------------+----------------------+-------------+-------------+
+   |TBD-10(experiments |RESOURCE_LIMIT_REACHED|Path         |Section 8    |
+   |use                |                      |abandoned due|             |
+   |0x5245534C494D4954)|                      |to resource  |             |
+   |                   |                      |limitations  |             |
+   |                   |                      |in the       |             |
+   |                   |                      |transport    |             |
+   +-------------------+----------------------+-------------+-------------+
+
+                  Table 4: Error Codes for Multipath QUIC
+
+10.  Security Considerations
 
    The multipath extension retains all the security features of
    [QUIC-TRANSPORT] and [QUIC-TLS] but requires some additional
@@ -1532,7 +1561,7 @@ Table of Contents
    *  the changes on encryption requirements due to the use of multiple
       packet number spaces.
 
-9.1.  Memory Allocation for Per-Path Resources
+10.1.  Memory Allocation for Per-Path Resources
 
    The initial_max_path_id transport parameter and the Max Path ID field
    in the MAX_PATH_ID frame limit the number of paths an endpoint is
@@ -1551,7 +1580,7 @@ Table of Contents
    number handling, only after path validation has successfully
    completed.
 
-9.2.  Request Forgery with Spoofed Address
+10.2.  Request Forgery with Spoofed Address
 
    The path validation mechanism as specified in Section 8.2. of
    [QUIC-TRANSPORT] for migration is used unchanged for initiation of
@@ -1572,7 +1601,7 @@ Table of Contents
    processes e.g. by pacing them out or limiting the number of path
    initiation attempts over a certain time period.
 
-9.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
+10.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
 
    The multipath extension as specified in this document is only enabled
    after a successful handshake when both endpoints indicate support for
@@ -1593,7 +1622,7 @@ Table of Contents
    ensure a unique nonce, path identifiers are limited to 32 bits and
    cannot be reused for another path in the same connection.
 
-10.  Contributors
+11.  Contributors
 
    This document is a collaboration of authors that combines work from
    three proposals.  Further contributors that were also involved one of
@@ -1603,15 +1632,15 @@ Table of Contents
 
    *  Zhenyu Li
 
-11.  Acknowledgments
+12.  Acknowledgments
 
    Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus
    Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu
    for their thorough reviews and valuable contributions!
 
-12.  References
+13.  References
 
-12.1.  Normative References
+13.1.  Normative References
 
    [QUIC-RECOVERY]
               Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
@@ -1633,15 +1662,11 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC3629]  Yergeau, F., "UTF-8, a transformation format of ISO
-              10646", STD 63, RFC 3629, DOI 10.17487/RFC3629, November
-              2003, <https://www.rfc-editor.org/rfc/rfc3629>.
-
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-12.2.  Informative References
+13.2.  Informative References
 
    [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.
               Le Boudec, "MPTCP is not pareto-optimal: performance
