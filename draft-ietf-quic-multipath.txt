@@ -1257,7 +1257,7 @@ Table of Contents
    are formatted as shown in Figure 5.
 
      PATH_AVAILABLE Frame {
-       Type (i) = TBD-03 (experiments use 0x15228c08),
+       Type (i) = TBD-04 (experiments use 0x15228c08),
        Path Identifier (i),
        Path Status Sequence Number (i),
      }
