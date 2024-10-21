@@ -1174,7 +1174,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
   PATH_AVAILABLE Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c08),
+    Type (i) = TBD-04 (experiments use 0x15228c08),
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
