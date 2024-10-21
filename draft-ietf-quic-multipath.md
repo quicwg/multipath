@@ -1422,8 +1422,8 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD-09(experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD-10(experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-09 (experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD-10 (experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
@@ -1503,4 +1503,4 @@ one of the original proposals are:
 
 # Acknowledgments
 
-Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu for their thorough reviews and valuable contributions!
+Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu for their thorough reviews and valuable contributions.
