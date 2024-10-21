@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 24 March 2025                            Uber Technologies Inc.
+Expires: 24 April 2025                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 24 March 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                       20 September 2024
+                                                         21 October 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 March 2025.
+   This Internet-Draft will expire on 24 April 2025.
 
 Copyright Notice
 
@@ -152,13 +152,13 @@ Table of Contents
    respective packet number space.
 
    To add a new path to an existing QUIC connection with multipath
-   support, a client starts a path validation on the chosen path, as
-   further described in Section 3.1.  A new path can only be used once
-   the associated 4-tuple has been validated by ensuring that the peer
-   is able to receive packets at that address (see Section 8 of
-   [QUIC-TRANSPORT]).  In this version of the document, a QUIC server
-   does not initiate the creation of a path, but it can validate a new
-   path created by a client.
+   support, a client sends a packet with a connection ID belonging to a
+   so-far unused Path ID on the chosen path, as further described in
+   Section 3.1.  A new path can only be used once the associated 4-tuple
+   has been validated by ensuring that the peer is able to receive
+   packets at that address (see Section 8 of [QUIC-TRANSPORT]).  In this
+   version of the document, a QUIC server does not initiate the creation
+   of a path, but it can validate a new path created by a client.
 
    Each endpoint may use several IP addresses for the connection.  In
    particular, the multipath extension supports the following scenarios.
@@ -337,9 +337,9 @@ Table of Contents
    receiver MUST treat this as a connection error of type
    PROTOCOL_VIOLATION and close the connection.
 
-   The initial_max_path_id parameter MUST NOT be remembered
-   (Section 7.4.1 of [QUIC-TRANSPORT]).  New paths can only be used
-   after handshake completion.
+   The initial_max_path_id parameter MUST NOT be remembered for use in a
+   subsequent connection (Section 7.4.1 of [QUIC-TRANSPORT]).  New paths
+   can only be used after handshake completion.
 
    This extension does not change the definition of any transport
    parameter defined in Section 18.2. of [QUIC-TRANSPORT].
@@ -375,10 +375,14 @@ Table of Contents
 
    After the handshake concluded if negotiation of multipath support
    succeeded, endpoints SHOULD use PATH_ACK frames instead of ACK
-   frames, also for acknowledging so far unacknowledged 0-RTT packets,
-   using Path ID 0.  Similarly after a successful handshake, endpoints
-   SHOULD also use the PATH_NEW_CONNECTION_ID frame to provide new
-   connection IDs for Path ID 0 and, respectively, the
+   frames, including for acknowledging so far unacknowledged 0-RTT
+   packets using Path ID 0.  Endpoints MUST process ACK frames that
+   acknowledge 0-RTT packets or 1-RTT packets for Path ID 0, even after
+   successful negotiation of this extension.  For example, ACK frames
+   might be preferred by the sender as long as only the initial path
+   with Path ID 0 is in use.  Similarly after a successful handshake,
+   endpoints SHOULD also use the PATH_NEW_CONNECTION_ID frame to provide
+   new connection IDs for Path ID 0 and, respectively, the
    PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for Path ID
    0.
 
@@ -442,18 +446,31 @@ Table of Contents
    for sending the PATH_RESPONSE.
 
    When the multipath extension is negotiated, a client that wants to
-   use an additional path MUST first initiate the Address Validation
-   procedure with PATH_CHALLENGE and PATH_RESPONSE frames as described
-   in Section 8.2 of [QUIC-TRANSPORT], unless it has previously
-   validated that address.
+   use an additional path MUST validate the peer's address before
+   sending any data packets as described in (Section 8.2 of
+   [QUIC-TRANSPORT]), unless it has previously validated the four-tuple
+   used for that path.
 
    After receiving packets from the client on a new path, if the server
-   decides to use the new path, the server MUST perform path validation
-   (Section 8.2 of [QUIC-TRANSPORT]) unless it has previously validated
-   that address.  An endpoint that receives a PATH_CHALLENGE and does
-   not want to establish this path is expected to close the path by
-   sending a PATH_ABANDON on another path, as specified in section
-   Section 3.3.
+   decides to use the new path, the server MUST validate the peer's
+   address before sending any data packets as described in (Section 8.2
+   of [QUIC-TRANSPORT]), unless it has previously validated the four-
+   tuple used for that path.  Until the client's address is validated,
+   the anti-amplification limit from Section 8 of [QUIC-TRANSPORT]
+   applies.
+
+   The server may receive packets for a yet unused Path ID that do not
+   contain a path challenge.  Such packets are valid if they can be
+   properly decrypted and if they contain a valid connection ID.
+
+   Each endpoint MUST also validate that a minimum MTU of 1200 bytes is
+   supported on the path.  This can be done during initial path
+   validation or separately later if the amplification limit prevents it
+   initially, as specified in Section 8.2.1 of RFC9000.
+
+   An endpoint that receives packets on a new path and does not want to
+   establish this path is expected to close the path by sending a
+   PATH_ABANDON on another path, as specified in section Section 3.3.
 
    An endpoint that has no active connection ID for this path or lacks
    other resource to immediately configure a new path could delay
@@ -658,25 +675,24 @@ Table of Contents
    duration of the idle timeout".  When only one path is available,
    servers MUST follow the specifications in [QUIC-TRANSPORT].
 
-   When more than one path is available, hosts shall monitor the arrival
-   of packets and acknowledgements for packets sent over each path.
-   Hosts MAY consider closing a path if for at least the period of the
-   idle timeout as specified in Section 10.1. of [QUIC-TRANSPORT] (a) no
-   packet was received or (b) no packet sent over this path was
-   acknowledged.  Endpoints that desire to close a path because of the
-   idle timer rule MUST do so explicitly by sending a PATH_ABANDON frame
-   on another path, as defined in Section 3.3.
+   This document does not specify any specific per-path timeouts.  An
+   endpoint can decide to close a path at any time, whether the path is
+   in active use or not, by sending a PATH_ABANDON frame.  It is not
+   required to send a PATH_ABANDON frame at any specific point in time.
+   For example, an endpoint may wait until it will anyway send another
+   frame.
 
-   To avoid idle timeout of a path, endpoints can send ack-eliciting
-   packets such as packets containing PING frames (Section 19.2 of
-   [QUIC-TRANSPORT]) on that path to keep it alive.  Sending periodic
-   PING frames also helps prevent middlebox timeout, as discussed in
-   Section 10.1.2 of [QUIC-TRANSPORT].
+   If a path is not actively used for a while, it might not be usable
+   anymore, e.g. due to middlebox timeouts.  To avoid such path
+   breakage, endpoints can send ack-eliciting packets such as packets
+   containing PING frames (Section 19.2 of [QUIC-TRANSPORT]) on that
+   path to keep it alive.  As discussed in Section 10.1.2 of
+   [QUIC-TRANSPORT], the keep-alive interval depends on the timeout in
+   the middlebox.
 
-   Server implementations need to select the sub-path idle timeout as a
-   trade-off between keeping resources, such as connection IDs, in use
-   for an excessive time or having to promptly re-establish a path after
-   a spurious estimate of path abandonment by the client.
+   If a path was not actively used for a while, an endpoint can probe it
+   before switching to active use if there are still other paths that
+   are currently usable.
 
 3.3.4.  Early Abandon
 
@@ -838,6 +854,14 @@ Table of Contents
    receipt of the previous key update.  This interval is different from
    that in [QUIC-TLS] which used three times the PTO of the sole single
    path.
+
+   The choice of three times the largest PTO is a trade-off: Packets
+   that arrive after their decryption key has been discarded will be
+   dropped.  Longer delays reduce the probability of losing packets but
+   keeping old keys longer can negatively impact the security of the
+   protocol.  The use of three times the largest PTO aims to minimise
+   packet lost for all paths and therefore limits the impact on
+   performance.
 
    Following Section 5.4 of [QUIC-TLS], the Key Phase bit is protected,
    so sending multiple packets with Key Phase bit flipping at the same
@@ -1052,11 +1076,14 @@ Table of Contents
 6.6.  Handling different PMTU sizes
 
    An implementation should take care to handle different PMTU sizes
-   across multiple paths.  One simple option if the PMTUs are relatively
-   similar is to apply the minimum PMTU of all paths to each path.  The
-   benefit of such an approach is to simplify retransmission processing
-   as the content of lost packets initially sent on one path can be sent
-   on another path without further frame scheduling adaptations.
+   across multiple paths.  As specified in Section 14.3 of
+   [QUIC-TRANSPORT] the DPLPMTUD Maximum Packet Size (MPS) is maintained
+   for each combination of local and remote IP addresses.  One simple
+   option, if the PMTUs are relatively similar, is to apply the minimum
+   PMTU of all paths to each path.  The benefit of such an approach is
+   to simplify retransmission processing as the content of lost packets
+   initially sent on one path can be sent on another path without
+   further frame scheduling adaptations.
 
 6.7.  Keep Alive
 
@@ -1448,7 +1475,7 @@ Table of Contents
     | Value                    | Parameter Name.     | Specification |
     +==========================+=====================+===============+
     | TBD (current version     | initial_max_path_id | Section 2     |
-    | uses 0x0f739bbc1b666d09) |                     |               |
+    | uses 0x0f739bbc1b666d11) |                     |               |
     +--------------------------+---------------------+---------------+
 
           Table 2: Addition to QUIC Transport Parameters Entries
@@ -1529,22 +1556,22 @@ Table of Contents
 
    The path validation mechanism as specified in Section 8.2. of
    [QUIC-TRANSPORT] for migration is used unchanged for initiation of
-   new paths in this extension.  Respectively the security
-   considerations on source address spoofing as outlined in
-   Section 21.5.4 of [QUIC-TRANSPORT] equally apply.  Similarly, the
-   anti-amplification limits as specified in Section 8 of
-   [QUIC-TRANSPORT] need to be followed to limit the amplification risk.
+   new paths in this extension.  Therefore, the security considerations
+   on source address spoofing as outlined in Section 21.5.4 of
+   [QUIC-TRANSPORT] equally apply.  Similarly, the anti-amplification
+   limits as specified in Section 8 of [QUIC-TRANSPORT] need to be
+   followed to limit the amplification risk.
 
    However, while [QUIC-TRANSPORT] only allows the use of one path
    simultaneously and therefore only one path migration at the time
    should be validated, this extension allows for multiple open paths,
    that could in theory be migrated all at the same time, and it allows
-   for multiple paths that could be initialised simultaneously.
+   for multiple paths that could be initialized simultaneously.
    Therefore, each path could be used to further amplify an attack.
-   Respectively endpoints needs limit the number of maximum paths and
-   might consider additional measures to limit the number of concurrent
-   path validation processes e.g. by pacing them out or limiting the
-   number of path initiation attempts over a certain time period.
+   Endpoints needs limit the number of maximum paths and might consider
+   additional measures to limit the number of concurrent path validation
+   processes e.g. by pacing them out or limiting the number of path
+   initiation attempts over a certain time period.
 
 9.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
 
@@ -1579,8 +1606,9 @@ Table of Contents
 
 11.  Acknowledgments
 
-   Thanks to Marten Seemann, Kazuho Oku, and Martin Thomson for their
-   thorough reviews and valuable contributions!
+   Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus
+   Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu
+   for their thorough reviews and valuable contributions!
 
 12.  References
 
