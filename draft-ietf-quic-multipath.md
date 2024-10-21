@@ -939,7 +939,7 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to compute smoothed RTT and RTTvar per
+The simplest implementation is to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This algorithm will provide good results,
 except if the set of paths changes and the PATH_ACK sender
