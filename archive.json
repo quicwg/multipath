@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-20T00:59:11.789416+00:00",
+  "timestamp": "2024-10-22T00:55:13.537067+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -752,7 +752,7 @@
       ],
       "body": "While discussing single packet space vs multi packet space designs, @martinduke brought up the topic of hardware offloading. The effect of any design changes on packet encryption/decryption should take HW offloads into account. As I understand it, single packet space would not modify the packet encryption/decryption logic, but the multi packet space design would because of the difference nonce length. Additionally, since multi-path would be a negotiated feature/extension, that would mean all connections that don't negotiate the feature would have the \"old\" model/logic, where as the connections that do would have the new encryption/decryption logic. IMO, this could significantly complicated HW offloads.",
       "createdAt": "2021-10-18T16:38:38Z",
-      "updatedAt": "2024-10-02T20:44:59Z",
+      "updatedAt": "2024-10-21T11:13:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -803,6 +803,13 @@
           "body": "I struggle to understand what to do here. We do not have any \"hardware offload\" section in either RFC 9000 or RFC 9001. The last comment was related to the old \"per connection ID\" design, but it did not surface any roadblock. We moved to the \"unique path ID\" design, which is arguably simpler to implement.\r\n\r\nMy proposal is to close with no action.",
           "createdAt": "2024-10-02T20:44:58Z",
           "updatedAt": "2024-10-02T20:44:58Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I agree that we could close this issue with no action, so long as there's no such part for RFC 9000 and 9001. \r\nFrom the last comment discussing about \"hardware offload\" design, the core mechanism is the offloading module would need the Path ID as part of path context for packet processing. \r\n\r\n> This issue history might be useful for implementors, but I don't think the draft need to add something for it.",
+          "createdAt": "2024-10-21T11:13:35Z",
+          "updatedAt": "2024-10-21T11:13:35Z"
         }
       ]
     },
@@ -11583,13 +11590,11 @@
         "yfmascgy"
       ],
       "labels": [
-        "has PR",
-        "design",
-        "needs-discussion"
+        "design"
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-10-18T15:48:09Z",
+      "updatedAt": "2024-10-21T16:19:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -11661,6 +11666,27 @@
           "body": "As a reference, [HTTP/3's error code space](https://www.iana.org/assignments/http3-parameters/http3-parameters.xhtml#http3-parameters-error-codes) contains codes that cover various scenarios.\r\n\r\nThis include unexpected protocol errors, such as detecting the peer closed a stream it shouldn't and responding with a CONNECTION_CLOSE of H3_CLOSED_CRITICAL_STREAM. But it also includes expected behaviours that are not errors, such as when an endpoint cancels a request (a bit like path abandon) by sending a REST_STREAM or STOP_SENDING using H3_REQUEST_CANCELLED.\r\n\r\nIn all these cases, a compliant H3 implementation abides to these requirements:\r\n\r\n> Although the reasons for closing streams and connections are called \"errors\", these actions do not necessarily indicate a problem with the connection or either implementation. For example, a stream can be reset if the requested resource is no longer needed.\r\n> \r\n> An endpoint MAY choose to treat a stream error as a connection error under certain circumstances, closing the entire connection in response to a condition on a single stream. Implementations need to consider the impact on outstanding requests before making this choice.\r\n> \r\n> Because new error codes can be defined without negotiation (see [Section 9](https://datatracker.ietf.org/doc/html/rfc9114#extensions)), use of an error code in an unexpected context or receipt of an unknown error code MUST be treated as equivalent to [H3_NO_ERROR](https://datatracker.ietf.org/doc/html/rfc9114#H3_NO_ERROR). However, closing a stream can have other effects regardless of the error code; for example, see [Section 4.1](https://datatracker.ietf.org/doc/html/rfc9114#request-response).\r\n\r\nAs a recipent, an H3 implementation has to be prepated for a peer to use \"the wrong\" error code space (send a transport error when it was an application error), or send a generic code, or send an incorrect code. I don't think any of those cause any real problems for the recipient, it's mainly for debugging. And someone investigating these should always be skeptical of the peer not telling the ground truth.\r\n\r\nOn balance, I think having some error code is useful and its fine to use the QUIC error code space. This is an example of an extension where we are building some more complexity into the transport and can expect to need to extend the shared codepoint space to suit.\r\n\r\nHaving the frame use values in a unique error code space is also a possibility. But then you'll want to create a separate registry for that. And it doesn't stop the peer sending any allowable value on the wire.\r\n\r\n> 4) add an application layer error code instead\r\n\r\nI not 100% sure what this means. If the suggestion is to use e.g. HTTP/3 application error space I don't think that works. If its more like \"allow applications to define their own means to communicate the reason a path was abandoned, such as a new application-layer message\" then maybe but it seems like a pain when we can solve a problem transport in transport. ",
           "createdAt": "2024-10-18T15:48:07Z",
           "updatedAt": "2024-10-18T15:48:07Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Just for the record on my point 4 above about application error codes. This was discussed at the last meeting. The proposal was to use application error code similar as in RESET_STREAM but also to reserve code 0 for QUIC layer path abandon. Especially the last part (reserving 0) was rejected, so if we would want to do that, we would need to define two frame types instead. Further it was argued that there usually is no reason for the application to close a path (other then with stream reset). I'm not sure about this argument: I would assume opening a new path is usually trigger by the application (in case of H3, I don't think it would be the H3 layer but the application on top using H3) and as such I'd assume closing a path might also be trigger by the application. It was further made the argument that having such an application interaction means you can't use multipath without changing the application. I believe we want to support are both cases where you can have logic in the QUIC stack to manage paths but also where the application maybe wants tighter control. So at the moment, I'm still not fully convinced that an application error code would not be useful.\r\n\r\n",
+          "createdAt": "2024-10-21T12:47:28Z",
+          "updatedAt": "2024-10-21T12:47:28Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "However, if we need an application-specific abandon frame (with a different frame type anyway) a future extension could add that frame later. As such it seems that we have sufficient agreement to merge PR #445 for now.\r\n\r\nI think the only two open questions might be rather on the error codes itself:\r\n1) PR #445 proposes an error code for APPLICATION_ABANDON and it was questioned if that is really needed or if it is sufficient to use NO_ERROR instead. I guess if debugging is the main reason to have this error code at all, this could be useful? At least the argument was made that error codes are cheap and therefore it looks like we should keep it.\r\n2) During the meeting another case was proposed for problems with the interface. Should we add a separate error code for INSTABLE_INTERFACE? It was also mentioned in the session at IETF-120 that this error code could actually be useful to indicate to the peer to not retry. So I guess this goes beyond debugging then. Maybe we merge PR #445 for now as proposed without this error code but continue the discussion...?\r\n\r\nSo in summary it looks like PR #445 should be merged now but we can keep this issue open for further discussion.",
+          "createdAt": "2024-10-21T12:59:21Z",
+          "updatedAt": "2024-10-21T13:00:48Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We merged #445 but leave this issue open for further discussion. Please provide input on the needed error codes!",
+          "createdAt": "2024-10-21T16:19:33Z",
+          "updatedAt": "2024-10-21T16:19:33Z"
         }
       ]
     },
@@ -48439,26 +48465,28 @@
       "id": "PR_kwDOGNtpaM59eFel",
       "title": "Dev/add error code",
       "url": "https://github.com/quicwg/multipath/pull/445",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "yfmascgy",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "needs-review"
       ],
-      "body": "Fixes #414 \r\nHere is an initial attempt to remove the reason phrase from the PATH_ABANDON frame and add two error codes: APPLICATION_ABANDON and RESOURCE_LIMIT_REACHED. This follows the discussion in issue #414 and references the discussion notes from IETF-120. I have no strong opinion on the names of these two error codes and have set their values as TBD for both.",
+      "body": "First attempt on #414 \r\n\r\nHere is an initial attempt to remove the reason phrase from the PATH_ABANDON frame and add two error codes: APPLICATION_ABANDON and RESOURCE_LIMIT_REACHED. This follows the discussion in issue #414 and references the discussion notes from IETF-120. I have no strong opinion on the names of these two error codes and have set their values as TBD for both.",
       "createdAt": "2024-10-03T08:46:54Z",
-      "updatedAt": "2024-10-19T16:37:10Z",
+      "updatedAt": "2024-10-21T16:18:28Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "031ddd7166bba10b1f48900343f9f544e61697e8",
       "headRepository": "yfmascgy/multipath",
       "headRefName": "dev/add-error-code",
-      "headRefOid": "c710068bcedd1ce903e1299a84d06cdce4fbd491",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "4cc9fd9b96d4636f51d43f8a1b092cf128babac3",
+      "closedAt": "2024-10-21T16:18:27Z",
+      "mergedAt": "2024-10-21T16:18:27Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "23eb486949cf5f34aff34a691625c7b77b37a865"
+      },
       "comments": [],
       "reviews": [
         {
@@ -48640,6 +48668,97 @@
               "updatedAt": "2024-10-19T16:37:10Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N8AW6",
+          "commit": {
+            "abbreviatedOid": "c710068"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T08:33:45Z",
+          "updatedAt": "2024-10-21T08:33:45Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I support @huitema 's idea, we need two experimental error codes value here for interop testing.",
+              "createdAt": "2024-10-21T08:33:45Z",
+              "updatedAt": "2024-10-21T08:33:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N8IW-",
+          "commit": {
+            "abbreviatedOid": "c710068"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Support the idea. \r\nI add suggestion about using 2 experimental value for interop tests, although we'd replace them with formal value later.",
+          "createdAt": "2024-10-21T08:46:23Z",
+          "updatedAt": "2024-10-21T08:50:31Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "```suggestion\r\nTBD-09(experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}\r\n```",
+              "createdAt": "2024-10-21T08:46:24Z",
+              "updatedAt": "2024-10-21T08:50:31Z"
+            },
+            {
+              "originalPosition": 68,
+              "body": "```suggestion\r\nTBD-10(experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}\r\n```",
+              "createdAt": "2024-10-21T08:47:27Z",
+              "updatedAt": "2024-10-21T08:50:31Z"
+            },
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nAPPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the\r\n```",
+              "createdAt": "2024-10-21T08:48:08Z",
+              "updatedAt": "2024-10-21T08:50:31Z"
+            },
+            {
+              "originalPosition": 49,
+              "body": "```suggestion\r\nRESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path because\r\n```",
+              "createdAt": "2024-10-21T08:48:19Z",
+              "updatedAt": "2024-10-21T08:50:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N9X7_",
+          "commit": {
+            "abbreviatedOid": "c710068"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T11:01:53Z",
+          "updatedAt": "2024-10-21T11:01:53Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "```suggestion\r\nQUIC transport error codes are 62-bit unsigned integers\r\n(see {{Section 20.1 of QUIC-TRANSPORT}}. In addition to\r\nNO_ERROR(0x0), the following QUIC error codes are defined\r\nfor use in the PATH_ABANDON frame:\r\n```",
+              "createdAt": "2024-10-21T11:01:53Z",
+              "updatedAt": "2024-10-21T11:02:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N-9GT",
+          "commit": {
+            "abbreviatedOid": "4cc9fd9"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T13:20:06Z",
+          "updatedAt": "2024-10-21T13:20:06Z",
+          "comments": []
         }
       ]
     },
@@ -48686,6 +48805,166 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 448,
+      "id": "PR_kwDOGNtpaM5_SP21",
+      "title": "Increasing the transport parameter value",
+      "url": "https://github.com/quicwg/multipath/pull/448",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "At least #428 (remove MP error) and #402 (PATH_BLOCKED) are breaking changes and #445 will be as well.",
+      "createdAt": "2024-10-21T08:55:23Z",
+      "updatedAt": "2024-10-21T09:09:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "fd3f30ba490b906e0d01432bdd20e7a6467b4de6",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-16",
+      "headRefOid": "1128ae906e0e87856c8e6cedd228d61e1f5e3ca9",
+      "closedAt": "2024-10-21T09:09:38Z",
+      "mergedAt": "2024-10-21T09:09:38Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "1e899c91cdb2137ff605afb25eb2e8470007ddbf"
+      },
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We also have an transport parameter reference in Section {#nego}, you can replace the old value \"0x0f739bbc1b666d09\" with the new one and then find it.",
+          "createdAt": "2024-10-21T08:59:34Z",
+          "updatedAt": "2024-10-21T08:59:34Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6N8PlF",
+          "commit": {
+            "abbreviatedOid": "4f9cc41"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-21T08:58:21Z",
+          "updatedAt": "2024-10-21T08:58:21Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N8Tut",
+          "commit": {
+            "abbreviatedOid": "1128ae9"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good!",
+          "createdAt": "2024-10-21T09:05:17Z",
+          "updatedAt": "2024-10-21T09:05:17Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 449,
+      "id": "PR_kwDOGNtpaM5_TveK",
+      "title": "Fix typo",
+      "url": "https://github.com/quicwg/multipath/pull/449",
+      "state": "MERGED",
+      "author": "nandsky",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-10-21T11:50:00Z",
+      "updatedAt": "2024-10-21T12:00:48Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1e899c91cdb2137ff605afb25eb2e8470007ddbf",
+      "headRepository": "nandsky/multipath",
+      "headRefName": "spell_check",
+      "headRefOid": "fb539edc2dcbc5ba9c68d1cdfd75a5fc3aa462aa",
+      "closedAt": "2024-10-21T12:00:48Z",
+      "mergedAt": "2024-10-21T12:00:48Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "98c583eee7e2e345b1b1d448eb589fc62fe67b61"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6N9-Ed",
+          "commit": {
+            "abbreviatedOid": "5729ff9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T11:55:46Z",
+          "updatedAt": "2024-10-21T11:55:47Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "This is intentional not normative.\r\n```suggestion\r\nreceives such a PATH_ABANDON frame must treat it as specified in {{path-close}}.\r\n```",
+              "createdAt": "2024-10-21T11:55:46Z",
+              "updatedAt": "2024-10-21T11:55:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6N9_c1",
+          "commit": {
+            "abbreviatedOid": "cfe2291"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-21T11:58:28Z",
+          "updatedAt": "2024-10-21T11:58:28Z",
+          "comments": [
+            {
+              "originalPosition": 137,
+              "body": "\r\n```suggestion\r\nThe simplest implementation is to compute smoothed_rtt and rttvar per\r\n```",
+              "createdAt": "2024-10-21T11:58:28Z",
+              "updatedAt": "2024-10-21T11:58:28Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 450,
+      "id": "PR_kwDOGNtpaM5_Uo5x",
+      "title": "fix TBD-03 -> TBD-04 for PATH_AVAILABLE",
+      "url": "https://github.com/quicwg/multipath/pull/450",
+      "state": "MERGED",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Small editorial PR",
+      "createdAt": "2024-10-21T13:32:51Z",
+      "updatedAt": "2024-10-21T13:40:39Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "98c583eee7e2e345b1b1d448eb589fc62fe67b61",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-bad-tbd",
+      "headRefOid": "d74d2ef0ea638f5e9e8b0ed696c8cb96d5e4faed",
+      "closedAt": "2024-10-21T13:40:39Z",
+      "mergedAt": "2024-10-21T13:40:39Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "cd977bbbb1fb33b950f00b8bd093289fd708fe0a"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
