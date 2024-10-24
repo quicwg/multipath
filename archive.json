@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-22T00:55:13.537067+00:00",
+  "timestamp": "2024-10-24T00:54:19.628320+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11873,6 +11873,32 @@
           "body": "The multipath extension is indicated by the use of the initial_max_path_id transport parameter, therefore it is not possible to use the multipath extension without setting the max_path_id. The multipath_enabled transport parameter does not exist anymore and was replaced by initial_max_path_id with the introduction of the explicit path ID. If you don't want to limit the number of path IDs, you can set the initial_max_path_id transport parameter to the maximum value. See section https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-handshake-negotiation-and-t",
           "createdAt": "2024-10-07T13:12:49Z",
           "updatedAt": "2024-10-07T13:12:49Z"
+        }
+      ]
+    },
+    {
+      "number": 451,
+      "id": "I_kwDOGNtpaM6bcU0g",
+      "title": "Automatic closing of unintentional duplicate paths",
+      "url": "https://github.com/quicwg/multipath/issues/451",
+      "state": "OPEN",
+      "author": "tzaeschke",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "```\r\n[..]. To avoid this pitfall, endpoints could\r\nadopt a simple coordination rule, such as only letting the client\r\ninitiate closure of duplicate paths, or perhaps relying on\r\nthe application protocol to decide which paths should be closed.\r\n```\r\n\r\nI understand this as: it is okay to just implement the simple rule,\r\nand that letting the application protocol decide is an optional feature.\r\n\r\nThis should IMHO be more prescriptive and make sure that this also works for a path-aware network, where use of multiple paths for the same 4-tuple is very intentional.\u00a0\r\n\r\nI think the application should always be able to decide on the policy and only use the simple rule if no application protocol is defined or if it indicates that the simple rule is fine.\r\n\r\nI would propose to change the phrasing here to something like:\r\n\r\n```\r\n[..]. To avoid this pitfall, endpoints should allow the application\r\nprotocol to decide whether or which path to close. If the application\r\nprotocol defines no such rule, a simple default coordination rule \r\ncould be adopted, such as only letting the client initiate closure of \r\nduplicate paths.\r\n```",
+      "createdAt": "2024-10-23T09:25:22Z",
+      "updatedAt": "2024-10-23T10:15:12Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't think this change makes a real difference. However, note that is it also possible to deploy the multipath extension without application awareness.",
+          "createdAt": "2024-10-23T10:15:11Z",
+          "updatedAt": "2024-10-23T10:15:11Z"
         }
       ]
     }
@@ -48963,6 +48989,32 @@
       "mergeCommit": {
         "oid": "cd977bbbb1fb33b950f00b8bd093289fd708fe0a"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 452,
+      "id": "PR_kwDOGNtpaM5_lNm3",
+      "title": "Typo \"frames\"",
+      "url": "https://github.com/quicwg/multipath/pull/452",
+      "state": "OPEN",
+      "author": "tzaeschke",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix a typo.",
+      "createdAt": "2024-10-23T09:28:47Z",
+      "updatedAt": "2024-10-23T09:28:47Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
+      "headRepository": "tzaeschke/multipath",
+      "headRefName": "patch-1",
+      "headRefOid": "816c9ec241949cd82ac143c51a30892fc6e43cba",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
