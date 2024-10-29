@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-27T00:58:38.777371+00:00",
+  "timestamp": "2024-10-29T00:55:57.483212+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -748,11 +748,12 @@
         "huitema"
       ],
       "labels": [
-        "design"
+        "design",
+        "no-action-needed"
       ],
       "body": "While discussing single packet space vs multi packet space designs, @martinduke brought up the topic of hardware offloading. The effect of any design changes on packet encryption/decryption should take HW offloads into account. As I understand it, single packet space would not modify the packet encryption/decryption logic, but the multi packet space design would because of the difference nonce length. Additionally, since multi-path would be a negotiated feature/extension, that would mean all connections that don't negotiate the feature would have the \"old\" model/logic, where as the connections that do would have the new encryption/decryption logic. IMO, this could significantly complicated HW offloads.",
       "createdAt": "2021-10-18T16:38:38Z",
-      "updatedAt": "2024-10-21T11:13:36Z",
+      "updatedAt": "2024-10-28T09:02:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -11890,7 +11891,7 @@
       ],
       "body": "```\r\n[..]. To avoid this pitfall, endpoints could\r\nadopt a simple coordination rule, such as only letting the client\r\ninitiate closure of duplicate paths, or perhaps relying on\r\nthe application protocol to decide which paths should be closed.\r\n```\r\n\r\nI understand this as: it is okay to just implement the simple rule,\r\nand that letting the application protocol decide is an optional feature.\r\n\r\nThis should IMHO be more prescriptive and make sure that this also works for a path-aware network, where use of multiple paths for the same 4-tuple is very intentional.\u00a0\r\n\r\nI think the application should always be able to decide on the policy and only use the simple rule if no application protocol is defined or if it indicates that the simple rule is fine.\r\n\r\nI would propose to change the phrasing here to something like:\r\n\r\n```\r\n[..]. To avoid this pitfall, endpoints should allow the application\r\nprotocol to decide whether or which path to close. If the application\r\nprotocol defines no such rule, a simple default coordination rule \r\ncould be adopted, such as only letting the client initiate closure of \r\nduplicate paths.\r\n```",
       "createdAt": "2024-10-23T09:25:22Z",
-      "updatedAt": "2024-10-25T18:59:43Z",
+      "updatedAt": "2024-10-28T11:42:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -11913,6 +11914,13 @@
           "body": "I am not sure that we should get into discussions of APIs. We do not specify an API in the draft, and I don't think that we would have enough experience to do that well. For example, it is not clear that stacks will let applications manage paths *at all* -- they could have simple policy rules to handle the path creation under the hood. I don't think we should add any text there.",
           "createdAt": "2024-10-25T18:59:43Z",
           "updatedAt": "2024-10-25T18:59:43Z"
+        },
+        {
+          "author": "tzaeschke",
+          "authorAssociation": "NONE",
+          "body": "> I am not sure that we should get into discussions of APIs. \r\n\r\nI'm just a bit concerned that `or perhaps relying on the application protocol to decide which paths should be closed.` is understood as exactly that, an API suggestion. The suggestion being that even in presence of an API (application protocol), asking the application for a policy on on duplicate path closure is optional and can be dismissed.\r\n\r\nI guess my concern is really with the words \"the application protocol\" (sounding like there is an API) vs \"perhaps\" (sounding almost dismissive to my ears).\r\n\r\nHow about: \r\n\r\n```\r\n[..]. To avoid this pitfall, endpoints could\r\nadopt a simple coordination rule, such as only letting the client\r\ninitiate closure of duplicate paths, or, if available, let the\r\nthe application protocol decide which paths should be closed.\r\n```\r\nThat would actually be shorter (by four characters) than the current wording.",
+          "createdAt": "2024-10-28T09:48:17Z",
+          "updatedAt": "2024-10-28T11:42:01Z"
         }
       ]
     },
@@ -11925,10 +11933,13 @@
       "author": "tjohn327",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "separate draft",
+        "no-action-needed"
+      ],
       "body": "### Motivation\r\n\r\nWith the rise of real-time applications such as teleoperation, live video streaming, and online gaming, there's an increasing demand for transport protocols that can efficiently handle strict latency requirements. Multipath QUIC enhances performance by utilizing multiple paths simultaneously, but it currently lacks mechanisms to guarantee data delivery within specific timeframes. Introducing deadline-aware streams to Multipath QUIC could enable applications to meet stringent latency constraints, optimizing for low-latency and high-reliability scenarios.\r\nAdditionally, the ability to have multiple paths using the same 4-tuple opens up the possibility of leveraging paths from path-aware networks like SCION, source routing, and others. This expands the pool of available paths beyond traditional IPv4 and IPv6 routes, potentially increasing the effectiveness of deadline-aware mechanisms like those proposed in DMTP.\r\n\r\n#### Relevant Discussion\r\n\r\nIn a recent discussion around the Multipath Extension for QUIC ([Issue #378](https://github.com/quicwg/multipath/issues/378)), the use of multiple paths with the same 4-tuple found support. This aligns with the idea of integrating paths from path-aware networks, enabling Multipath QUIC to utilize all available paths provided by the system.\r\n\r\n### How DMTP Fits In\r\n\r\nThe Deadline-aware Multipath Transport Protocol (DMTP) is tailored for deadline-sensitive communication over multiple paths. It employs strategies like smart retransmissions and Forward Error Correction (FEC) to optimize packet delivery based on latency deadlines, ensuring retransmissions occur only when they are likely to meet these deadlines. These methods align well with Multipath QUIC's capabilities, potentially allowing for efficient and reliable deadline-aware data transmission across different network paths.\r\n\r\n### Key Concepts of DMTP\r\n\r\n- Path Optimization: DMTP dynamically selects paths based on metrics like latency, bandwidth, and packet loss. This approach complements Multipath QUIC's ability to manage multiple paths effectively.\r\n- Adaptive FEC: By integrating FEC, DMTP reduces the need for retransmissions, proactively adding redundancy when random losses are detected. This could enhance Multipath QUIC's congestion control mechanisms.\r\n- Smart Retransmissions: DMTP only retransmits packets if they are predicted to meet the deadline, which helps to avoid unnecessary retransmissions. Incorporating this into QUIC's scheduling could improve overall efficiency.\r\n\r\nFor more detailed information on DMTP, please refer to our [paper](https://doi.org/10.23919/IFIPNetworking57963.2023.10186417).\r\nWe have developed a prototype implementation of DMTP, which we plan to open-source in the near future.\r\n\r\n### How to get it integrated into Multipath QUIC\r\n\r\nTo integrate DMTP into Multipath QUIC, we propose implementing DMTP's mechanisms as a custom scheduler and congestion controller within the Multipath QUIC framework. Additionally, we suggest introducing a new transport parameter to signal support for deadline-aware streams during the handshake. For incorporating deadline information into data transmission, our proposal is to define an additional extension frame type called DEADLINE_CONTROL. The aim of this frame is to signal deadline-awareness for specific streams and indicate their associated deadlines.\r\n\r\n### Request for Feedback\r\n\r\nWe're considering integrating deadline-aware streaming concepts from DMTP into Multipath QUIC and are interested in the community's perspective. Do you see value in this exploration? Are there potential challenges or compatibility concerns we should be aware of? Your feedback will be instrumental in guiding this proposal.",
       "createdAt": "2024-10-25T15:05:27Z",
-      "updatedAt": "2024-10-25T23:59:32Z",
+      "updatedAt": "2024-10-28T08:50:44Z",
       "closedAt": null,
       "comments": [
         {
