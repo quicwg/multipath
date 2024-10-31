@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-29T00:55:57.483212+00:00",
+  "timestamp": "2024-10-31T00:55:31.957423+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11595,7 +11595,7 @@
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-10-21T16:19:35Z",
+      "updatedAt": "2024-10-30T08:13:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -11688,6 +11688,20 @@
           "body": "We merged #445 but leave this issue open for further discussion. Please provide input on the needed error codes!",
           "createdAt": "2024-10-21T16:19:33Z",
           "updatedAt": "2024-10-21T16:19:33Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "Why would the peer be interested in and need to know the reason that the path is abandoned? There is no reason/\"error\" signaled when new paths are set up.\r\n\r\nThe only piece of potentially relevant information would be if the path is closed because of resource limits, which would imply that the peer (client in practice) should not try to immediately set up a new path. But how long would it have to wait before it tries again?",
+          "createdAt": "2024-10-30T08:06:13Z",
+          "updatedAt": "2024-10-30T08:06:13Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "If the PATH_ABANDON `Error Code` field remains, the error codes should definitely be in another number space than the QUIC transport error codes, The two use cases are semantically very different and most of the error codes only make sense in one of the cases.",
+          "createdAt": "2024-10-30T08:13:41Z",
+          "updatedAt": "2024-10-30T08:13:41Z"
         }
       ]
     },
@@ -11950,6 +11964,53 @@
           "updatedAt": "2024-10-25T23:59:32Z"
         }
       ]
+    },
+    {
+      "number": 454,
+      "id": "I_kwDOGNtpaM6cWqlD",
+      "title": "Cross-path acknowledgments should be congestion controlled",
+      "url": "https://github.com/quicwg/multipath/issues/454",
+      "state": "OPEN",
+      "author": "michael-eriksson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "QUIC packets that only contain an ACK frame are not congestion controlled. [RFC 9000 states](https://www.rfc-editor.org/rfc/rfc9000.html#section-13.2.1-3) that:\r\n\r\n> _Since packets containing only ACK frames are not congestion controlled, an endpoint MUST NOT send more than one such packet in response to receiving an ack-eliciting packet._\r\n\r\nWhen ACK-only packets are sent on another path than where the ack-eliciting packets were received, this requirement is obviously violated. A receiver of a big flow of packets could easily swamp a low-latency, low-bandwidth path by sending the acknowledgments there.",
+      "createdAt": "2024-10-30T07:51:06Z",
+      "updatedAt": "2024-10-30T21:01:49Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The requirement in RFC 9000 is not about congestion control. It is about not having an infinite cycle of sending an ACK, receiving an ACK in return, ACKing that, etc.\r\n\r\nThe issue that you describe is also happening in asymmetric links, without using multipath. If the return path is too narrow, it could be congested by too many ACKs. RFC 9000 is silent about that, largely because previous attempts at congestion control of acknowledgements have been \"inconclusive\". Since ACKs are not immediately acknowledged, the congestion control loop is very loose, and thus very imprecise. You can easily reach a state where congestion control slows the sending of ACKs, which in turn slows the sending of data, etc.\r\n\r\nIn uni-path scenarios, the best protection against swamping the return path is to control ACK Frequency, which limits the number of ACKs sent per RTT. The big problem there is that the ACK Frequency draft does not mention multipath. It is probably too late to change that draft, so maybe we should write a companion draft, \"ACK Frequency for Multipath\". Basically, define a PATH_ACK_FREQUENCY frame similar to ACK Frequency but with a Path ID.",
+          "createdAt": "2024-10-30T18:24:56Z",
+          "updatedAt": "2024-10-30T18:24:56Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "Christian wrote:\r\n> The requirement in RFC 9000 is not about congestion control. It is about not having an infinite cycle of sending an ACK, receiving an ACK in return, ACKing that, etc.\r\n\r\nHmm, I think that the quote from RFC 9000 very explicitly mentions congestion control...\r\n\r\nBut I agree that congestion controlled ACKs can easily lead to infinite ack cycles.",
+          "createdAt": "2024-10-30T21:01:49Z",
+          "updatedAt": "2024-10-30T21:01:49Z"
+        }
+      ]
+    },
+    {
+      "number": 455,
+      "id": "I_kwDOGNtpaM6cXIe7",
+      "title": "Path abandonment is underspecified",
+      "url": "https://github.com/quicwg/multipath/issues/455",
+      "state": "OPEN",
+      "author": "michael-eriksson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The exact sequence of events during path abandonment is underspecified (or maybe _underexemplified_) in the document. It is, however, [specifed](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-11.html#section-7.2-7) that:\r\n\r\n> _After sending the PATH_ABANDON frame, the endpoint MUST NOT send frames that use the Path ID anymore, even on other network paths._\r\n\r\nThis requirement is a little hard to parse, but if read literally it would mean that incoming packets could not be acknowledged after a `PATH_ABANDON` frame has been sent. This would imply that a whole RTT-flight of packets in the other direction would be unacknowledged and thus needlessly retransmitted.\r\n\r\nThis is the way I think that endpoint **A** abandoning a path with endpoint **B** should be done:\r\n\r\n1. **A** stops sending new ack-eliciting packets on the path and waits for all packets in flight to be acknowledged or the tail loss probe timer to expire.\r\n2. **A** sends a `PATH_ABANDON` frame to **B**. After that, **A** continues to acknowledge incoming packets from **B**, on the same or another path.\r\n3. **B** receives and acknowledges the packet with the `PATH_ABANDON` frame. It does _not_ immediately send a reciprocal `PATH_ABANDON` frame, but first waits for acknowledgments of the packets it has in flight (just like **A** did before it sent its `PATH_ABANDON`).\r\n4. When all of **B**'s packets in flight have been acknowledged, or the tail loss probe timer has expired, it send the `PATH_ABANDON` to **A** and removes all state is has for the path.\r\n5. When **A** receives the `PATH_ABANDON` from **B**, it removes all state is has for the path and the path is completely abandoned.\r\n\r\nThis procedure also handles concurrent abandonment from both endpoints well.",
+      "createdAt": "2024-10-30T08:50:32Z",
+      "updatedAt": "2024-10-30T08:50:32Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -49053,7 +49114,7 @@
       "labels": [],
       "body": "Fix a typo.",
       "createdAt": "2024-10-23T09:28:47Z",
-      "updatedAt": "2024-10-23T09:28:47Z",
+      "updatedAt": "2024-10-30T05:08:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
@@ -49065,7 +49126,34 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6PQfse",
+          "commit": {
+            "abbreviatedOid": "816c9ec"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-30T03:03:48Z",
+          "updatedAt": "2024-10-30T03:03:48Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6PRGHS",
+          "commit": {
+            "abbreviatedOid": "816c9ec"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-30T05:08:49Z",
+          "updatedAt": "2024-10-30T05:08:49Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
