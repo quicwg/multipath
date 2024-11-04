@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 7 May 2025                               Uber Technologies Inc.
+Expires: 8 May 2025                               Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 7 May 2025                               Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         3 November 2024
+                                                         4 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 May 2025.
+   This Internet-Draft will expire on 8 May 2025.
 
 Copyright Notice
 
@@ -1534,7 +1534,7 @@ Table of Contents
    +-------------------+----------------------+-------------+-------------+
    |TBD-10 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 8    |
    |use                |                      |abandoned due|             |
-   |0x0052534C494D4954)|                      |to resource  |             |
+   |0x0052534c494d4954)|                      |to resource  |             |
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
