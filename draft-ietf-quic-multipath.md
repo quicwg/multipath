@@ -1315,6 +1315,8 @@ processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
+If the number of allocated paths has reached the local limit of max path identifier supported
+by the endpoint, it SHOULD send MAX_PATH_ID frame to increase the local limit and inform the peer.
 
 MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
@@ -1346,7 +1348,8 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
-limit set by its peer;
+limit set by its peer. Note that PATH_BLOCKED frame is informational, as it isn’t
+expected to change the state of peer.
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
