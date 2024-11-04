@@ -1423,7 +1423,7 @@ the "QUIC Protocol" heading.
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
 TBD-09 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD-10 (experiments use 0x0052534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-10 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
