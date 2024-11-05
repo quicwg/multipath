@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 4 May 2025                               Uber Technologies Inc.
+Expires: 9 May 2025                               Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 4 May 2025                               Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         31 October 2024
+                                                         5 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 May 2025.
+   This Internet-Draft will expire on 9 May 2025.
 
 Copyright Notice
 
@@ -1235,9 +1235,7 @@ Table of Contents
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-   After sending the PATH_ABANDON frame, the endpoint MUST NOT send
-   frames that use the Path ID anymore other than PATH_ACK, not even on
-   other network paths.
+   Use of the PATH_ABANDON frame is specified in section Section 3.3.
 
 7.3.  PATH_BACKUP and PATH_AVAILABLE frames
 
