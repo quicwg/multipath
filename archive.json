@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-03T00:58:44.033345+00:00",
+  "timestamp": "2024-11-05T00:53:29.722338+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12055,7 +12055,7 @@
       ],
       "body": "The exact sequence of events during path abandonment is underspecified (or maybe _underexemplified_) in the document. It is, however, [specifed](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-11.html#section-7.2-7) that:\r\n\r\n> _After sending the PATH_ABANDON frame, the endpoint MUST NOT send frames that use the Path ID anymore, even on other network paths._\r\n\r\nThis requirement is a little hard to parse, but if read literally it would mean that incoming packets could not be acknowledged after a `PATH_ABANDON` frame has been sent. This would imply that a whole RTT-flight of packets in the other direction would be unacknowledged and thus needlessly retransmitted.\r\n\r\nThis is the way I think that endpoint **A** abandoning a path with endpoint **B** should be done:\r\n\r\n1. **A** stops sending new ack-eliciting packets on the path and waits for all packets in flight to be acknowledged or the tail loss probe timer to expire.\r\n2. **A** sends a `PATH_ABANDON` frame to **B**. After that, **A** continues to acknowledge incoming packets from **B**, on the same or another path.\r\n3. **B** receives and acknowledges the packet with the `PATH_ABANDON` frame. It does _not_ immediately send a reciprocal `PATH_ABANDON` frame, but first waits for acknowledgments of the packets it has in flight (just like **A** did before it sent its `PATH_ABANDON`).\r\n4. When all of **B**'s packets in flight have been acknowledged, or the tail loss probe timer has expired, it send the `PATH_ABANDON` to **A** and removes all state is has for the path.\r\n5. When **A** receives the `PATH_ABANDON` from **B**, it removes all state is has for the path and the path is completely abandoned.\r\n\r\nThis procedure also handles concurrent abandonment from both endpoints well.",
       "createdAt": "2024-10-30T08:50:32Z",
-      "updatedAt": "2024-10-31T16:53:10Z",
+      "updatedAt": "2024-11-04T23:52:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -12064,6 +12064,13 @@
           "body": "Yes we need to correct the sentence to exclude PATH_ACKs. This was an oversight. I created PR #456.\r\n\r\nHowever, the procedure described above is not correct and not what is specified in the draft. B has to sent the PATH_ABANDON immediately and then both endpoints wait for 3PTO after receiving the PATH_ABANDON before they remove state. As usually all packets sent before the PATH_ABANDON will receive before the PATH_ABANDON and therefore will be ACKed, there is no need to wait for the ACKs first. If there is re-ordering, that's why we have the 3 PTO waiting time. Also note that when you try to wait for the ACKs first, you also need a 3 PTO timer as they might never arrive. Therefore I don't think it's really useful to wait for the ACKs first.",
           "createdAt": "2024-10-31T16:52:54Z",
           "updatedAt": "2024-10-31T16:52:54Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "There is no oversight. The handling of acknowledgements is fully specified in:\r\n\r\n_[3.3.2. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.3.2)[Handling PATH_ACK for abandoned paths](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-handling-path_ack-for-aband)_\r\n\r\n_When an endpoint decides to send a PATH_ABANDON frame, there may still be some unacknowledged packets. Some other packets may well be in transit, and could be received shortly after sending the PATH_ABANDON frame. As specified above, the endpoints SHOULD send PATH_ACK frames promptly, to avoid unnecessary data retransmission after the peer deletes path resources._\r\n_These PATH_ACK frames MUST be sent on a different path than the path being abandoned.PATH_ACK frames received after the endpoint has entirely deleted a path MUST be silently discarded._\r\n\r\nThe problem is in the sentence added at the end of section [7.2. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-7.2)[PATH_ABANDON Frame](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-path_abandon-frame). The text contradicts the more specification text in the \"path close\" section. That text should be replaced by a reference to path close.\r\n",
+          "createdAt": "2024-11-04T23:52:50Z",
+          "updatedAt": "2024-11-04T23:52:50Z"
         }
       ]
     },
@@ -12076,10 +12083,141 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "clarification"
+      ],
       "body": "Something that is not obvious how to handle in the draft is how one deals with cases when a path for a while drops all packets. \r\nThe draft says in section: \r\n\r\nData associated with the transmission and reception such RTT measurements, congestion control state, or loss recovery are maintained per packet number space and as such per Path ID.\r\n\r\nSo if one follows this one a PTO will eventually be triggered when there are no room to send more due to the congestion window. At this point from the paths perspective there are two things that can happen: \r\n1) A PTO functions and results in outstanding data being declared as lost. \r\n2) One abandon the path based on some other higher watch timer. \r\n\r\nThere appear however be one issue with the above that is multipath specific. Namely that when the PTO fires the outstanding data could also be retransmitted on another path. But, following RFC 9002 the data will not be declared lost until a Probe actually makes it through to the peer and is being acked. \r\n\r\nThink it is worth clarifying this in the draft. ",
       "createdAt": "2024-11-02T20:51:30Z",
-      "updatedAt": "2024-11-02T20:51:30Z",
+      "updatedAt": "2024-11-04T17:29:20Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\nOn 11/2/2024 1:51 PM, Magnus Westerlund wrote:\n> Something that is not obvious how to handle in the draft is how one deals with cases when a path for a while drops all packets.\n> The draft says in section:\n>\n> Data associated with the transmission and reception such RTT measurements, congestion control state, or loss recovery are maintained per packet number space and as such per Path ID.\n>\n> So if one follows this one a PTO will eventually be triggered when there are no room to send more due to the congestion window.\n\nThis is actually a common scenario with Wi-Fi paths. We observe \n\"suspension periods\" of 100 or 200ms, much larger than a typical RTT of \n10 to 20ms.\n\n>   At this point from the paths perspective there are two things that can happen:\n> 1) A PTO functions and results in outstanding data being declared as lost.\n> 2) One abandon the path based on some other higher watch timer.\nPicoquic does something a bit different. If other paths are available, \nthe packets will be declared lost, so their content can be resend \nimmediately without risking delays, but the copy of the packets will be \nkept for a while. The lossy path will be placed in a \"standby\" state, no \nmore content will be queued there. The stack will do a series of path \nchallenges on the path, to check whether it comes back. If the path \ncomes back it will be placed in available state again. If it turns out \nthat packets were merely delayed instead of lost, it the acks will be \nprocessed, and the frames that were placed in the retransmission queue \nwill be marked as received.\n\n> There appear however be one issue with the above that is multipath specific. Namely that when the PTO fires the outstanding data could also be retransmitted on another path. But, following RFC 9002 the data will not be declared lost until a Probe actually makes it through to the peer and is being acked.\n>\n> Think it is worth clarifying this in the draft.\n\nI don't know. we don't have a lot of experience, and solutions like the \none I described above are still very close to research. Consider that \nRFC 9002 is largely advisory -- it describes a plausible default \nsolution to congestion control and loss recovery, but it is not the last \nword on the issue. In fact, lots of implementations do congestion \ncontrol very differently. We do not need to specify everything.\n\n-- Christian Huitema\n\n",
+          "createdAt": "2024-11-03T04:52:54Z",
+          "updatedAt": "2024-11-03T04:52:54Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "So fine with not being overly prescriptive. However, the issue I have is that if one just point an implementor that a path shall follow RFC 9000+9002 on a per path basis the handling of transmitted data can suffer significantly. This will need a bit of warning, especially as RFC 9002 says: \r\n\r\nSection 6.2:\r\n`A PTO timer expiration event does not indicate packet loss and MUST NOT cause prior unacknowledged packets to be marked as lost. When an acknowledgment is received that newly acknowledges packets, loss detection proceeds as dictated by the packet and time threshold mechanisms; see [Section 6.1](https://www.rfc-editor.org/rfc/rfc9002.html#ack-loss-detection).`\r\n\r\nIf one follows this MUST one will not declare the outstanding data as lost. Not declaring it lost I would say is considered correct for the path congestion controller aspect, however from the data handling perspective it is significantly sub-optimal if the path is unavailable a long time, or completely broken. I think there is a point here to include an implementation consideration on that this issue exists. ",
+          "createdAt": "2024-11-03T10:43:46Z",
+          "updatedAt": "2024-11-03T10:44:29Z"
+        }
+      ]
+    },
+    {
+      "number": 458,
+      "id": "I_kwDOGNtpaM6c1X_x",
+      "title": "Clarification on Path Migration in relation to opening a new path",
+      "url": "https://github.com/quicwg/multipath/issues/458",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Path Migration for the case when the client is not aware of the change, like for NAT address rebinding case can't be avoided. Thus, this needs to be supported by server as something that can occur. However, if a client have a new address it could technically select to migrate an existing path to this new path. However, it appears more suitable to have a very strong recommendation here to actually open a new path in these cases. Combined possibly with abandoning another existing path. \r\n\r\nThis issue is based on the interop testing. ",
+      "createdAt": "2024-11-03T14:22:14Z",
+      "updatedAt": "2024-11-04T23:36:04Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The more I think about it, the more I believe that we should not try to support the \"path migration\" scenario. Currently, we have a very deterministic logic:\r\n\r\n- identify the path by the path ID of the incoming packet.\r\n- if the path ID was not seen yet, this is a new path.\r\n- if the path ID exists already:\r\n- if the 4 tuple match, and the CID match, no problem.\r\n- if the CID is new, rotate the local CID\r\n- if the 4 tuple does not match, treat that has a NAT traversal, challenge the old and the new address, retains the one for which the challenge works.\r\n\r\nThe \"path migration\" scenario breaks that logic. The CID is new, but it should not be rotated. Traffic should continue with the old CID, as in classic 9000. The server should only try to validate the new 4-tuple, not the old one. We have to reintroduce the concept of path-validating frames. We have to distinguish between NAT rebinding an migration by checking whether the CID is new, but we selected the unique-path-id architecture precisely because we know we cannot do that reliably.\r\n\r\nInstead of attempting path migration of an existing path, applications have a much better solution: just create a new path with the new 4 tuple, and then abandon the old path after validating the new one. This gives us a safe migration.\r\n\r\nDuring the interop testing, picoquic was reacting poorly to the migration attempt. I think I fixed that by simply ignoring any path challenge received on a different 4 tuple on an existing path. That means falling back to the NAT traversal code if someone attempts a \"path migration\". It will probably move the confusion to the implementation that is attempting these migrations, which I believe is fair since they should not be doing that in the first place.",
+          "createdAt": "2024-11-03T18:30:33Z",
+          "updatedAt": "2024-11-03T18:30:33Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "There is a related issue with handling of the server preferred address, see issue #460.",
+          "createdAt": "2024-11-03T19:07:56Z",
+          "updatedAt": "2024-11-03T19:07:56Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema can you explain the problem in the case where you receive a packet with a new CID on a new tuple for an in-use path ID. This case is not special and should simply work inline with path migration as specified in RFC9000. Of course we should recommend to open a new path instead but it should like you think there is an actual problem here that needs fixing and it's not clear to me what exactly the problem is...?",
+          "createdAt": "2024-11-04T17:48:49Z",
+          "updatedAt": "2024-11-04T17:48:49Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In the current draft, when endpoint receive a new packet, it decides with the packet DCID:\r\n- Different path ID, same / different 4-tuple, using a different path\r\n- Same path ID, same 4-tuple, using the same path\r\n        - New CID, CID rotation on the same path\r\n- Same path ID, different 4-tuple, NAT-rebinding or migration\r\n        - Same CID, NAT-rebinding\r\n        - New CID, Path Migration\r\n\r\nMy opinion is that whether choose to create a new path or using path migration, it depends on the endpoint want 2 paths at the same time or not. Further more, it depends on whether the endpoint want to send packets with 2 different address at the same time or not.\r\nIf it only wants to use one path at the same time, but still wants to continuesly sending packets through different address, path migration would be a good choice. \r\n",
+          "createdAt": "2024-11-04T23:36:03Z",
+          "updatedAt": "2024-11-04T23:36:03Z"
+        }
+      ]
+    },
+    {
+      "number": 459,
+      "id": "I_kwDOGNtpaM6c1ZsS",
+      "title": "Clarify interaction between PATHS_BLOCKED and PATH_NEW_CONNECTION_ID",
+      "url": "https://github.com/quicwg/multipath/issues/459",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [
+        "design"
+      ],
+      "body": "In the MP-QUIC interop testing at IETF 121 it was observed that an issue when testing PATHS_BLOCKED is that some servers where blocking path creation by not providing CIDS for some of the path IDs that it allowed. Thus, the client may desire to open more paths, there are agreed on path IDs, but lacks the CIDs. If the PATHS_BLOCKED is usable, how does one handle the situation when the server block the client by not providing CIDs? \r\n\r\nI believe some clarifications and possible requirements are needed. I think there are two roads to take here:\r\n\r\n1) Require that endpoints provide PATH_NEW_CONNECTION_ID when there are no CIDs for an unused PATH ID, as long as below MAX_PATH_IDS. \r\n2) Create an equivalent or parameter on PATHS_BLOCKED indicating what is the issue. \r\n\r\n",
+      "createdAt": "2024-11-03T14:33:59Z",
+      "updatedAt": "2024-11-04T17:37:20Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "For the record, the observation during interop was due to an off-by-1 bug in picoquic, which has since be fixed. But the situation could be repeated.\r\n\r\nThere are a couple reasons why an endpoint might delay provision of CIDs. The Path CID frames can only be sent after the max path id is negotiated, so there will always be a delay. That delay will be longer if packets are lost and need to be repeated. If the client is getting impatient, I think that something like \"PATH_CID_BLOCKED\" with a path_id parameter would make sense. If after sending that the client still does not receive the expected CID, it can escalate. Maybe abandon the path.",
+          "createdAt": "2024-11-03T19:15:11Z",
+          "updatedAt": "2024-11-03T19:15:24Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "So picoquiche had the off-by-one issue. QUICHE does not provide CIDs period up to the level of max_initial_path_ids. Thus, I think we need to think about how to deal with this situation. I agree that there are reasons for delaying provisioning CIDs for Paths, but what a peer can expect needs to be made clear. ",
+          "createdAt": "2024-11-04T13:29:38Z",
+          "updatedAt": "2024-11-04T13:29:38Z"
+        }
+      ]
+    },
+    {
+      "number": 460,
+      "id": "I_kwDOGNtpaM6c2Bj6",
+      "title": "Clarification on Preferred Address handling",
+      "url": "https://github.com/quicwg/multipath/issues/460",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The current draft (version 11) says _\"Also, the Path ID for the connection ID specified in the \"preferred address\" transport parameter is 0. Use of the \"preferred address\" is considered as a migration event that does not change the Path ID.\"_ This point is further reinforced in the path management section: _\"In particular, if the server uses the preferred_address transport parameter, clients cannot assume that the initial server address and the addresses contained in this parameter can be simultaneously used for multipath (Section 9.6.2 of [QUIC-TRANSPORT]).\"_\r\n\r\nThis is questionable, since support of RFC-9000 style \"migration\" is problematic, as explained in issue #458. With multipath negotiated, \"path migration\" uses the same code path as \"NAT Rebinding\", which is a poor fit for preferred address migration. The selected path will eventually depend on the order in which packets are received, which might bring back usage of the original address instead of the preferred address. \r\n\r\nClients will get a much more reliable result if they proceed in two steps: first establish a new path to the preferred address (typically path id 1), then abandon the initial path (path id 0). This is the \"make before break\" scenario that should generally be preferred to path migration. But this behavior is gated by two conditions: the server should allow a \"max path id\" value no lower than 1; and, the server shall provide the client with connection IDs for path 1. Otherwise, the client will have to wait until the server sends a new MAX_PATH_ID and PATH_CONNECTION_ID frames.\r\n\r\nWe may want to revise the text to explicitly authorize \"make before break\" behavior, i.e., using path creation instead of path migration for handling the preferred address. If we don't do that, stacks would probably need a special handling of the preferred address, as an exception to the normal code behavior, and that special handling should probably be discussed in the implementation section.",
+      "createdAt": "2024-11-03T19:06:23Z",
+      "updatedAt": "2024-11-03T19:06:23Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 461,
+      "id": "I_kwDOGNtpaM6c2EKc",
+      "title": "PATH BLOCKED should be clearly labelled \"informational\"",
+      "url": "https://github.com/quicwg/multipath/issues/461",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "Yanmei-Liu"
+      ],
+      "labels": [
+        "clarification"
+      ],
+      "body": "The interop tests showed mismatched expectations, with some stacks apparently expecting to promptly receive a new MAX_PATH_ID frame after sending a PATH_BLOCKED frame. Of course, that's not happening. If the number of allocated paths has reached the limit supported by the server, the MAX_PATH_ID value can only increase if some allocated paths are abandoned. We should maybe clarify that PATH_BLOCKED is purely informational, and that it is not expected to trigger changes in the state of the peer.",
+      "createdAt": "2024-11-03T19:25:08Z",
+      "updatedAt": "2024-11-04T17:46:05Z",
       "closedAt": null,
       "comments": []
     }
@@ -49238,7 +49376,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-10-31T16:45:25Z",
-      "updatedAt": "2024-10-31T16:45:25Z",
+      "updatedAt": "2024-11-05T00:07:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
@@ -49250,7 +49388,169 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6P6Jgg",
+          "commit": {
+            "abbreviatedOid": "5e623d8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "This is the wrong fix. The root cause is that the text in the last paragraph of \"PATH_ABANDON Frame\" section contradicts the specification in \"Path Close\". It should be replaced by a simple reference, e.g. \"The use of the PATH_ABANDON frame to close paths is specified in section {{path-close}}.\"",
+          "createdAt": "2024-11-05T00:07:32Z",
+          "updatedAt": "2024-11-05T00:07:32Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 462,
+      "id": "PR_kwDOGNtpaM6AvFX6",
+      "title": "Path abandon error code for experiments: fix in 62-bit variable int",
+      "url": "https://github.com/quicwg/multipath/pull/462",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "New experimental error code for path abandon error code field: \r\n\r\n- The hex value \"0x004150504142414E\" represents \"APPABAN\" (\"APPLICATION_ABANDON\" abbreviated) in UTF-8.\r\n- The hex value \"0x0052534C494D4954\" represents \"RSLIMIT\" (\"RESOURCE_LIMIT_REACHED\" abbreviated) in UTF-8.",
+      "createdAt": "2024-11-03T22:32:49Z",
+      "updatedAt": "2024-11-04T16:15:57Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-error-code",
+      "headRefOid": "918af375ea06a2d571bf142ffc5e0b5e3d33c6c7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "While this is a neat idea, following RFC9000 code point should be respected randomly.",
+          "createdAt": "2024-11-04T10:44:39Z",
+          "updatedAt": "2024-11-04T16:15:57Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6Pw7nq",
+          "commit": {
+            "abbreviatedOid": "7c75592"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-03T23:24:37Z",
+          "updatedAt": "2024-11-03T23:24:37Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 463,
+      "id": "PR_kwDOGNtpaM6A1ypV",
+      "title": "Add clarification for PATH_BLOCKED frame and MAX_PATH_ID frame.",
+      "url": "https://github.com/quicwg/multipath/pull/463",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix issue #461. \r\nGenerally the PATH_BLOCKED frame is informational and doesn't change the state of the peer.",
+      "createdAt": "2024-11-04T19:02:50Z",
+      "updatedAt": "2024-11-05T00:03:53Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-461",
+      "headRefOid": "1d1496ac60fecca422a40365792f604e84f46545",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6P4ckR",
+          "commit": {
+            "abbreviatedOid": "1b11fa2"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-04T19:30:58Z",
+          "updatedAt": "2024-11-04T19:30:58Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I don`t think we should make a normative requirement here. it's really the receiver decision what to do here.",
+              "createdAt": "2024-11-04T19:30:58Z",
+              "updatedAt": "2024-11-04T19:30:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6P4glF",
+          "commit": {
+            "abbreviatedOid": "1b11fa2"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-04T19:38:52Z",
+          "updatedAt": "2024-11-04T19:38:52Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I agree with @mirjak. We cannot have an unqualified SHOULD here. If the peer has reached its internal active path limit, it is not going to increase MAX_PATH_ID. The client endpoint has a budget. If the peer only supports N path, it is not going to increase that to N+1. If the client wants to open a new path, it has to abandon an old one.",
+              "createdAt": "2024-11-04T19:38:52Z",
+              "updatedAt": "2024-11-04T19:38:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6P5w-8",
+          "commit": {
+            "abbreviatedOid": "1b11fa2"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-04T22:45:54Z",
+          "updatedAt": "2024-11-04T22:45:54Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Okay. I removed normative language here.",
+              "createdAt": "2024-11-04T22:45:54Z",
+              "updatedAt": "2024-11-04T22:45:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6P6IxU",
+          "commit": {
+            "abbreviatedOid": "1d1496a"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-05T00:03:53Z",
+          "updatedAt": "2024-11-05T00:03:53Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
