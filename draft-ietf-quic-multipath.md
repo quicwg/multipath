@@ -1346,8 +1346,11 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
-limit set by its peer. Note that PATH_BLOCKED frame is informational, as it isn’t
-expected to change the state of peer.
+limit set by its peer.
+Note that PATH_BLOCKED frame is informational, as it isn’t expected to change
+the state of peer. Sending a PATH_BLOCKED frame does not imply a particular action
+from the peer like updating the new Max Path ID value, but informs the peer that
+the maximum path identifier limit prevented the creation of new paths.
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
