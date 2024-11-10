@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-07T00:53:45.581950+00:00",
+  "timestamp": "2024-11-10T00:57:15.406423+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12264,7 +12264,7 @@
       ],
       "body": "The current draft (version 11) says _\"Also, the Path ID for the connection ID specified in the \"preferred address\" transport parameter is 0. Use of the \"preferred address\" is considered as a migration event that does not change the Path ID.\"_ This point is further reinforced in the path management section: _\"In particular, if the server uses the preferred_address transport parameter, clients cannot assume that the initial server address and the addresses contained in this parameter can be simultaneously used for multipath (Section 9.6.2 of [QUIC-TRANSPORT]).\"_\r\n\r\nThis is questionable, since support of RFC-9000 style \"migration\" is problematic, as explained in issue #458. With multipath negotiated, \"path migration\" uses the same code path as \"NAT Rebinding\", which is a poor fit for preferred address migration. The selected path will eventually depend on the order in which packets are received, which might bring back usage of the original address instead of the preferred address. \r\n\r\nClients will get a much more reliable result if they proceed in two steps: first establish a new path to the preferred address (typically path id 1), then abandon the initial path (path id 0). This is the \"make before break\" scenario that should generally be preferred to path migration. But this behavior is gated by two conditions: the server should allow a \"max path id\" value no lower than 1; and, the server shall provide the client with connection IDs for path 1. Otherwise, the client will have to wait until the server sends a new MAX_PATH_ID and PATH_CONNECTION_ID frames.\r\n\r\nWe may want to revise the text to explicitly authorize \"make before break\" behavior, i.e., using path creation instead of path migration for handling the preferred address. If we don't do that, stacks would probably need a special handling of the preferred address, as an exception to the normal code behavior, and that special handling should probably be discussed in the implementation section.",
       "createdAt": "2024-11-03T19:06:23Z",
-      "updatedAt": "2024-11-06T14:17:03Z",
+      "updatedAt": "2024-11-07T20:57:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -12273,6 +12273,13 @@
           "body": "I don't think we need to do anything here as well also allow opening new path before/instead of the preferred address migration. If an endpoint indicated a max path id of 0, it a clear sign it effectively doesn't want to used multipath (yet) and especially for the preferred address might prefer migration. So the only thing we could/should explicitly recommend is that if the max path is larger than 0, then a new path should be used instead of migration for the preferred address.",
           "createdAt": "2024-11-06T11:45:10Z",
           "updatedAt": "2024-11-06T11:45:10Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "There is a small matter of timing. There will be some time between \"max path is larger than 0\" and \"a CID is available for path=1\".",
+          "createdAt": "2024-11-07T20:57:31Z",
+          "updatedAt": "2024-11-07T20:57:31Z"
         }
       ]
     },
