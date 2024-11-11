@@ -1384,19 +1384,19 @@ it cannot allocate sufficient resources to maintain it. This is due to
 limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
 
-UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because 
+UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because
 of unstable interfaces. This error is used when endpoints find that
 the network interfaces are unstable due to weak signal or other possible situations.
 Endpoints could also choose to use this error when detecting a black hole on the specific path.
 
-NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to 
-the lack of an available connection ID for this path. 
-This may occur when the endpoint initiates a new path 
-but have not transmited a corresponding new connection ID for the path ID 
-(or the packet containing new connection IDs is inflight), 
+NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
+the lack of an available connection ID for this path.
+This may occur when the endpoint initiates a new path
+but have not transmited a corresponding new connection ID for the path ID
+(or the packet containing new connection IDs is inflight),
 then the peer could choose to abandon the path with this error code.
-Note that if endpoints send PATH_NEW_CONNECTION_ID and PATH_CHALLENDGE 
-within a very short time period, and the packets arrived out of order, the peer 
+Note that if endpoints send PATH_NEW_CONNECTION_ID and PATH_CHALLENDGE
+within a very short time period, and the packets arrived out of order, the peer
 could choose to hold path validation frames for a while or send PATH_ABANDON immediately for the path.
 
 
