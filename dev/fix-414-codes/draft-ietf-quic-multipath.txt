@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 13 April 2025                            Uber Technologies Inc.
+Expires: 15 May 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 13 April 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         10 October 2024
+                                                        11 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 April 2025.
+   This Internet-Draft will expire on 15 May 2025.
 
 Copyright Notice
 
@@ -109,17 +109,18 @@ Table of Contents
      7.5.  PATH_RETIRE_CONNECTION_ID frames
      7.6.  MAX_PATH_ID frames
      7.7.  PATHS_BLOCKED frames
-   8.  IANA Considerations
-   9.  Security Considerations
-     9.1.  Memory Allocation for Per-Path Resources
-     9.2.  Request Forgery with Spoofed Address
-     9.3.  Use of Transport Layer Security and the AEAD Encryption
-           Nonce
-   10. Contributors
-   11. Acknowledgments
-   12. References
-     12.1.  Normative References
-     12.2.  Informative References
+   8.  Error Codes
+   9.  IANA Considerations
+   10. Security Considerations
+     10.1.  Memory Allocation for Per-Path Resources
+     10.2.  Request Forgery with Spoofed Address
+     10.3.  Use of Transport Layer Security and the AEAD Encryption
+            Nonce
+   11. Contributors
+   12. Acknowledgments
+   13. References
+     13.1.  Normative References
+     13.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -138,7 +139,7 @@ Table of Contents
 
    *  Simultaneous transmission on multiple paths.
 
-   *  Introduction of a path idendifier to manage connection IDs and
+   *  Introduction of a path identifier to manage connection IDs and
       packet number spaces per path.
 
    *  Removal of paths that have been abandoned.
@@ -152,13 +153,13 @@ Table of Contents
    respective packet number space.
 
    To add a new path to an existing QUIC connection with multipath
-   support, a client starts a path validation on the chosen path, as
-   further described in Section 3.1.  A new path can only be used once
-   the associated 4-tuple has been validated by ensuring that the peer
-   is able to receive packets at that address (see Section 8 of
-   [QUIC-TRANSPORT]).  In this version of the document, a QUIC server
-   does not initiate the creation of a path, but it can validate a new
-   path created by a client.
+   support, a client sends a packet with a connection ID belonging to a
+   so-far unused Path ID on the chosen path, as further described in
+   Section 3.1.  A new path can only be used once the associated 4-tuple
+   has been validated by ensuring that the peer is able to receive
+   packets at that address (see Section 8 of [QUIC-TRANSPORT]).  In this
+   version of the document, a QUIC server does not initiate the creation
+   of a path, but it can validate a new path created by a client.
 
    Each endpoint may use several IP addresses for the connection.  In
    particular, the multipath extension supports the following scenarios.
@@ -275,7 +276,7 @@ Table of Contents
    When following the packet number encoding algorithm described in
    Appendix A.2 of [QUIC-TRANSPORT], the largest packet number
    (largest_acked) that has been acknowledged by the peer in the Path
-   ID-specfic packet number space is initially set to "None".
+   ID-specific packet number space is initially set to "None".
 
    Using multiple packet number spaces requires changes in the way AEAD
    is applied for packet protection, as explained in Section 4.  More
@@ -304,7 +305,7 @@ Table of Contents
    as specified in [QUIC-TRANSPORT].  The new transport parameter is
    defined as follows:
 
-   *  initial_max_path_id (current version uses 0x0f739bbc1b666d09): a
+   *  initial_max_path_id (current version uses 0x0f739bbc1b666d11): a
       variable-length integer specifying the maximum path identifier an
       endpoint is willing to maintain at connection initiation.  This
       value MUST NOT exceed 2^32-1, the maximum allowed value for the
@@ -337,9 +338,9 @@ Table of Contents
    receiver MUST treat this as a connection error of type
    PROTOCOL_VIOLATION and close the connection.
 
-   The initial_max_path_id parameter MUST NOT be remembered
-   (Section 7.4.1 of [QUIC-TRANSPORT]).  New paths can only be used
-   after handshake completion.
+   The initial_max_path_id parameter MUST NOT be remembered for use in a
+   subsequent connection (Section 7.4.1 of [QUIC-TRANSPORT]).  New paths
+   can only be used after handshake completion.
 
    This extension does not change the definition of any transport
    parameter defined in Section 18.2. of [QUIC-TRANSPORT].
@@ -367,18 +368,21 @@ Table of Contents
    contains the receiver's Path ID to identify the path-specific packet
    number space.
 
-   As multipath support is unknown during the handshake,
-   acknowledgements of Initial and Handshake packets are sent using ACK
-   frames.  If the multipath extension has been successfully negotiated,
-   ACK frames in 1-RTT packets acknowledge packets for the path with
-   Path ID 0.
+   As multipath support is unknown during the handshake, acknowledgments
+   of Initial and Handshake packets are sent using ACK frames.  If the
+   multipath extension has been successfully negotiated, ACK frames in
+   1-RTT packets acknowledge packets for the path with Path ID 0.
 
    After the handshake concluded if negotiation of multipath support
    succeeded, endpoints SHOULD use PATH_ACK frames instead of ACK
-   frames, also for acknowledging so far unacknowledged 0-RTT packets,
-   using Path ID 0.  Similarly after a successful handshake, endpoints
-   SHOULD also use the PATH_NEW_CONNECTION_ID frame to provide new
-   connection IDs for Path ID 0 and, respectively, the
+   frames, including for acknowledging so far unacknowledged 0-RTT
+   packets using Path ID 0.  Endpoints MUST process ACK frames that
+   acknowledge 0-RTT packets or 1-RTT packets for Path ID 0, even after
+   successful negotiation of this extension.  For example, ACK frames
+   might be preferred by the sender as long as only the initial path
+   with Path ID 0 is in use.  Similarly after a successful handshake,
+   endpoints SHOULD also use the PATH_NEW_CONNECTION_ID frame to provide
+   new connection IDs for Path ID 0 and, respectively, the
    PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for Path ID
    0.
 
@@ -442,18 +446,31 @@ Table of Contents
    for sending the PATH_RESPONSE.
 
    When the multipath extension is negotiated, a client that wants to
-   use an additional path MUST first initiate the Address Validation
-   procedure with PATH_CHALLENGE and PATH_RESPONSE frames as described
-   in Section 8.2 of [QUIC-TRANSPORT], unless it has previously
-   validated that address.
+   use an additional path MUST validate the peer's address before
+   sending any data packets as described in (Section 8.2 of
+   [QUIC-TRANSPORT]), unless it has previously validated the four-tuple
+   used for that path.
 
    After receiving packets from the client on a new path, if the server
-   decides to use the new path, the server MUST perform path validation
-   (Section 8.2 of [QUIC-TRANSPORT]) unless it has previously validated
-   that address.  An endpoint that receives a PATH_CHALLENGE and does
-   not want to establish this path is expected to close the path by
-   sending a PATH_ABANDON on another path, as specified in section
-   Section 3.3.
+   decides to use the new path, the server MUST validate the peer's
+   address before sending any data packets as described in (Section 8.2
+   of [QUIC-TRANSPORT]), unless it has previously validated the four-
+   tuple used for that path.  Until the client's address is validated,
+   the anti-amplification limit from Section 8 of [QUIC-TRANSPORT]
+   applies.
+
+   The server may receive packets for a yet unused Path ID that do not
+   contain a path challenge.  Such packets are valid if they can be
+   properly decrypted and if they contain a valid connection ID.
+
+   Each endpoint MUST also validate that a minimum MTU of 1200 bytes is
+   supported on the path.  This can be done during initial path
+   validation or separately later if the amplification limit prevents it
+   initially, as specified in Section 8.2.1 of RFC9000.
+
+   An endpoint that receives packets on a new path and does not want to
+   establish this path is expected to close the path by sending a
+   PATH_ABANDON on another path, as specified in section Section 3.3.
 
    An endpoint that has no active connection ID for this path or lacks
    other resource to immediately configure a new path could delay
@@ -488,7 +505,7 @@ Table of Contents
    [QUIC-TRANSPORT] and in Section 9 of [QUIC-TRANSPORT] for connection
    migration apply for connection IDs associated to the same Path ID.
    With the successful negotiation of the extension specified in this
-   draft, endpoints have to consider the receiption of a packet with a
+   draft, endpoints have to consider the reception of a packet with a
    connection ID associated to an so far unused Path ID as an attempt to
    establish a new path.
 
@@ -586,11 +603,11 @@ Table of Contents
    the PATH_ABANDON frame has been received from the peer, both to avoid
    generating spurious stateless packets as specified in Section 3.3.1
    and to be able to acknowledge the last packets received from the peer
-   as specified in Section 3.3.2).
+   as specified in Section 3.3.2.
 
    After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
    promptly send PATH_ACK frames to acknowledge all packets received on
-   the path and not yet acknowledged, as specified in Section 3.3.2).
+   the path and not yet acknowledged, as specified in Section 3.3.2.
    When an endpoint finally deletes all resource associated with the
    path, the packets sent over the path and not yet acknowledged MUST be
    considered lost.
@@ -679,7 +696,7 @@ Table of Contents
 
 3.3.4.  Early Abandon
 
-   The are scenarios in which an endpoint will receive a PATH_ABANDON
+   There are scenarios in which an endpoint will receive a PATH_ABANDON
    frame before receiving or sending any traffic on a path.  For
    example, if the client tries to initiate a path and the path cannot
    be established, it will send a PATH_ABANDON frame (see Section 3.1).
@@ -701,6 +718,13 @@ Table of Contents
    RECOMMENDED to proactively issue a Connection ID for at least one
    unused Path ID, as long as it remains compatible with the peer's
    Maximum Path ID limit.
+
+   When issuing path-specific connection IDs, an endpoint associates a
+   sequence number as specified in Section 5.1.1 of [QUIC-TRANSPORT].
+   Each Path ID has its own connection ID sequence number space whose
+   initial value is 0.  On non-initial paths (i.e., Path ID different
+   from 0), the initial path connection ID is provided by a
+   PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
 
    Each endpoint maintains the set of connection IDs received from its
    peer for each path, any of which it can use when sending packets on
@@ -766,7 +790,7 @@ Table of Contents
    frames.
 
    Retirement of connection IDs will not retire the Path ID that
-   corresponds to the connection ID or any other path ressources as the
+   corresponds to the connection ID or any other path resources as the
    packet number space is associated with a path.
 
    The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep
@@ -826,10 +850,18 @@ Table of Contents
 
    When this specification is used, endpoints SHOULD wait for at least
    three times the largest PTO among all the paths before initiating a
-   new key update after receiving an acknowledgement that confirms the
+   new key update after receiving an acknowledgment that confirms the
    receipt of the previous key update.  This interval is different from
    that in [QUIC-TLS] which used three times the PTO of the sole single
    path.
+
+   The choice of three times the largest PTO is a trade-off: Packets
+   that arrive after their decryption key has been discarded will be
+   dropped.  Longer delays reduce the probability of losing packets but
+   keeping old keys longer can negatively impact the security of the
+   protocol.  The use of three times the largest PTO aims to minimize
+   packet lost for all paths and therefore limits the impact on
+   performance.
 
    Following Section 5.4 of [QUIC-TLS], the Key Phase bit is protected,
    so sending multiple packets with Key Phase bit flipping at the same
@@ -842,7 +874,7 @@ Table of Contents
    Figure 1 illustrates an example of new path establishment using
    multiple packet number spaces.
 
-   In this example it is assumed that both endpoint have indicated an
+   In this example it is assumed that both endpoints have indicated an
    initial_max_path_id value of at least 2, which means both endpoints
    can use Path IDs 0, 1, and 2.  Note that Path ID 0 is already used
    for the initial path.
@@ -898,7 +930,7 @@ Table of Contents
 
                     Figure 2: Example of closing a path.
 
-   Note that the last acknowledgement needs to be send on a different
+   Note that the last acknowledgment needs to be send on a different
    path.  This examples assumes another path which uses connection ID S2
    exists.
 
@@ -947,14 +979,14 @@ Table of Contents
 
 6.3.  Computing Path RTT
 
-   Acknowledgement delays are the sum of two one-way delays, the delay
-   on the packet sending path and the delay on the return path chosen
-   for the acknowledgements.  When different paths have different
-   characteristics, this can cause acknowledgement delays to vary
-   widely.  Consider for example a multipath transmission using both a
+   Acknowledgment delays are the sum of two one-way delays, the delay on
+   the packet sending path and the delay on the return path chosen for
+   the acknowledgments.  When different paths have different
+   characteristics, this can cause acknowledgment delays to vary widely.
+   Consider for example a multipath transmission using both a
    terrestrial path, with a latency of 50ms in each direction, and a
    geostationary satellite path, with a latency of 300ms in both
-   directions.  The acknowledgement delay will depend on the combination
+   directions.  The acknowledgment delay will depend on the combination
    of paths used for the packet transmission and the ACK transmission,
    as shown in Table 1.
 
@@ -971,7 +1003,7 @@ Table of Contents
 
    The PATH_ACK frames describe packets that were sent on the specified
    path, but they may be received through any available path.  There is
-   an understandable concern that if successive acknowledgements are
+   an understandable concern that if successive acknowledgments are
    received on different paths, the measured RTT samples will fluctuate
    widely, and that might result in poor performance.  While this may be
    a concern, the actual behavior is complex.
@@ -987,7 +1019,7 @@ Table of Contents
    received after more than 350ms, either the data packet or its
    PATH_ACK were probably lost.
 
-   The simplest implementation is to compute smoothedRTT and RTTvar per
+   The simplest implementation is to compute smoothed_rtt and rttvar per
    Section 5.3 of [QUIC-RECOVERY] regardless of the path through which
    PATH_ACK frames are received.  This algorithm will provide good
    results, except if the set of paths changes and the PATH_ACK sender
@@ -1044,11 +1076,14 @@ Table of Contents
 6.6.  Handling different PMTU sizes
 
    An implementation should take care to handle different PMTU sizes
-   across multiple paths.  One simple option if the PMTUs are relatively
-   similar is to apply the minimum PMTU of all paths to each path.  The
-   benefit of such an approach is to simplify retransmission processing
-   as the content of lost packets initially sent on one path can be sent
-   on another path without further frame scheduling adaptations.
+   across multiple paths.  As specified in Section 14.3 of
+   [QUIC-TRANSPORT] the DPLPMTUD Maximum Packet Size (MPS) is maintained
+   for each combination of local and remote IP addresses.  One simple
+   option, if the PMTUs are relatively similar, is to apply the minimum
+   PMTU of all paths to each path.  The benefit of such an approach is
+   to simplify retransmission processing as the content of lost packets
+   initially sent on one path can be sent on another path without
+   further frame scheduling adaptations.
 
 6.7.  Keep Alive
 
@@ -1185,8 +1220,6 @@ Table of Contents
        Type (i) = TBD-02 (experiments use 0x15228c05),
        Path Identifier (i),
        Error Code (i),
-       Reason Phrase Length (i),
-       Reason Phrase (..),
      }
 
                     Figure 4: PATH_ABANDON Frame Format
@@ -1196,19 +1229,9 @@ Table of Contents
    Path Identifier:  The Path ID to abandon.
 
    Error Code:  A variable-length integer that indicates the reason for
-      abandoning this path.
-
-   Reason Phrase Length:  A variable-length integer specifying the
-      length of the reason phrase in bytes.  Because an PATH_ABANDON
-      frame cannot be split between packets, any limits on packet size
-      will also limit the space available for a reason phrase.
-
-   Reason Phrase:  Additional diagnostic information for the closure.
-      This can be zero length if the sender chooses not to give details
-      beyond the Error Code value.  This SHOULD be a UTF-8 encoded
-      string [RFC3629], though the frame does not carry information,
-      such as language tags, that would aid comprehension by any entity
-      other than the one that created the text.
+      abandoning this path.  NO_ERROR(0x0) indicates that the path is
+      being abandoned without any error being encountered.  Other error
+      codes can be found in Section 8.
 
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1223,7 +1246,7 @@ Table of Contents
    are formatted as shown in Figure 5.
 
      PATH_AVAILABLE Frame {
-       Type (i) = TBD-03 (experiments use 0x15228c08),
+       Type (i) = TBD-04 (experiments use 0x15228c08),
        Path Identifier (i),
        Path Status Sequence Number (i),
      }
@@ -1337,7 +1360,7 @@ Table of Contents
    retire the connection ID used during the handshake on the initial
    path, Path ID 0 is used.  Sending a PATH_RETIRE_CONNECTION_ID frame
    also serves as a request to the peer to send additional connection
-   IDs for this path (see also Section 5.1 of [QUIC-TRANSPORT], unless
+   IDs for this path (see also Section 5.1 of [QUIC-TRANSPORT]), unless
    the path specified by the Path ID has been abandoned.  New path-
    specific connection IDs can be delivered to a peer using the
    PATH_NEW_CONNECTION_ID frame (see Section 7.4).
@@ -1411,7 +1434,7 @@ Table of Contents
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 
    PATHS_BLOCKED Frame {
-     Type (i) = 0x15228c0d,
+     Type (i) = TBD-08 (experiments use 0x15228c0d),
      Maximum Path Identifier (i),
    }
 
@@ -1426,7 +1449,42 @@ Table of Contents
       is higher than the local maximum value MUST be treated as a
       connection error of type PROTOCOL_VIOLATION.
 
-8.  IANA Considerations
+8.  Error Codes
+
+   QUIC transport error codes are 62-bit unsigned integers (see
+   Section 20.1 of [QUIC-TRANSPORT].  In addition to NO_ERROR(0x0), the
+   following QUIC error codes are defined for use in the PATH_ABANDON
+   frame:
+
+   APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at
+   the request of the application.  The application has determined that
+   it no longer needs this path.  This error is used when the
+   application layer decides to stop using a specific path.
+
+   RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path
+   because it cannot allocate sufficient resources to maintain it.  This
+   is due to limitations in the transport layer's capacity.  This error
+   indicates that resource constraints prevent the continuation of the
+   path.
+
+   UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path
+   because of unstable interfaces.  This error is used when endpoints
+   find that the network interfaces are unstable due to weak signal or
+   other possible situations.  Endpoints could also choose to use this
+   error when detecting a black hole on the specific path.
+
+   NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
+   the lack of an available connection ID for this path.  This may occur
+   when the endpoint initiates a new path but have not transmited a
+   corresponding new connection ID for the path ID (or the packet
+   containing new connection IDs is inflight), then the peer could
+   choose to abandon the path with this error code.  Note that if
+   endpoints send PATH_NEW_CONNECTION_ID and PATH_CHALLENDGE within a
+   very short time period, and the packets arrived out of order, the
+   peer could choose to hold path validation frames for a while or send
+   PATH_ABANDON immediately for the path.
+
+9.  IANA Considerations
 
    This document defines a new transport parameter for the negotiation
    of enable multiple paths for QUIC, and three new frame types.  The
@@ -1440,7 +1498,7 @@ Table of Contents
     | Value                    | Parameter Name.     | Specification |
     +==========================+=====================+===============+
     | TBD (current version     | initial_max_path_id | Section 2     |
-    | uses 0x0f739bbc1b666d09) |                     |               |
+    | uses 0x0f739bbc1b666d11) |                     |               |
     +--------------------------+---------------------+---------------+
 
           Table 2: Addition to QUIC Transport Parameters Entries
@@ -1479,7 +1537,43 @@ Table of Contents
 
               Table 3: Addition to QUIC Frame Types Entries
 
-9.  Security Considerations
+   The following transport error code defined in Table 4 are to be added
+   to the "QUIC Transport Error Codes" registry under the "QUIC
+   Protocol" heading.
+
+   +===================+======================+=============+=============+
+   |Value              |Code                  |Description  |Specification|
+   +===================+======================+=============+=============+
+   |TBD-09 (experiments|APPLICATION_ABANDON   |Path         |Section 8    |
+   |use                |                      |abandoned at |             |
+   |0x4150504C4142414E)|                      |the          |             |
+   |                   |                      |application's|             |
+   |                   |                      |request      |             |
+   +-------------------+----------------------+-------------+-------------+
+   |TBD-10 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 8    |
+   |use                |                      |abandoned due|             |
+   |0x5245534C494D4954)|                      |to resource  |             |
+   |                   |                      |limitations  |             |
+   |                   |                      |in the       |             |
+   |                   |                      |transport    |             |
+   +-------------------+----------------------+-------------+-------------+
+   |TBD-11 (experiments|UNSTABLE_INTERFACE    |Path         |Section 8    |
+   |use                |                      |abandoned due|             |
+   |0x00554e5f494e5446)|                      |to unstable  |             |
+   |                   |                      |interfaces   |             |
+   +-------------------+----------------------+-------------+-------------+
+   |TBD-12 (experiments|NO_CID_AVAILABLE      |Path         |Section 8    |
+   |use                |                      |abandoned due|             |
+   |0x004e4f5f4349445f)|                      |to no        |             |
+   |                   |                      |available    |             |
+   |                   |                      |connection   |             |
+   |                   |                      |IDs for the  |             |
+   |                   |                      |path         |             |
+   +-------------------+----------------------+-------------+-------------+
+
+                  Table 4: Error Codes for Multipath QUIC
+
+10.  Security Considerations
 
    The multipath extension retains all the security features of
    [QUIC-TRANSPORT] and [QUIC-TLS] but requires some additional
@@ -1498,16 +1592,16 @@ Table of Contents
    *  the changes on encryption requirements due to the use of multiple
       packet number spaces.
 
-9.1.  Memory Allocation for Per-Path Resources
+10.1.  Memory Allocation for Per-Path Resources
 
    The initial_max_path_id transport parameter and the Max Path ID field
    in the MAX_PATH_ID frame limit the number of paths an endpoint is
    willing to maintain and accordingly limit the associated path
    resources.
 
-   Furthermore, as connection IDs have to be issued by both endpoint for
-   the same path ID before an endpoint can open a path, each endpoint
-   can further control the per-path resource usage (beyond the
+   Furthermore, as connection IDs have to be issued by both endpoints
+   for the same path ID before an endpoint can open a path, each
+   endpoint can further control the per-path resource usage (beyond the
    connection IDs) by limiting the number of Path ID that it issues
    connection IDs for.
 
@@ -1517,28 +1611,28 @@ Table of Contents
    number handling, only after path validation has successfully
    completed.
 
-9.2.  Request Forgery with Spoofed Address
+10.2.  Request Forgery with Spoofed Address
 
    The path validation mechanism as specified in Section 8.2. of
    [QUIC-TRANSPORT] for migration is used unchanged for initiation of
-   new paths in this extension.  Respectively the security
-   considerations on source address spoofing as outlined in
-   Section 21.5.4 of [QUIC-TRANSPORT] equally apply.  Similarly, the
-   anti-amplification limits as specified in Section 8 of
-   [QUIC-TRANSPORT] need to be followed to limit the amplification risk.
+   new paths in this extension.  Therefore, the security considerations
+   on source address spoofing as outlined in Section 21.5.4 of
+   [QUIC-TRANSPORT] equally apply.  Similarly, the anti-amplification
+   limits as specified in Section 8 of [QUIC-TRANSPORT] need to be
+   followed to limit the amplification risk.
 
    However, while [QUIC-TRANSPORT] only allows the use of one path
    simultaneously and therefore only one path migration at the time
    should be validated, this extension allows for multiple open paths,
    that could in theory be migrated all at the same time, and it allows
-   for multiple paths that could be initialised simultaneously.
+   for multiple paths that could be initialized simultaneously.
    Therefore, each path could be used to further amplify an attack.
-   Respectively endpoints needs limit the number of maximum paths and
-   might consider additional measures to limit the number of concurrent
-   path validation processes e.g. by pacing them out or limiting the
-   number of path initiation attempts over a certain time period.
+   Endpoints needs limit the number of maximum paths and might consider
+   additional measures to limit the number of concurrent path validation
+   processes e.g. by pacing them out or limiting the number of path
+   initiation attempts over a certain time period.
 
-9.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
+10.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
 
    The multipath extension as specified in this document is only enabled
    after a successful handshake when both endpoints indicate support for
@@ -1559,7 +1653,7 @@ Table of Contents
    ensure a unique nonce, path identifiers are limited to 32 bits and
    cannot be reused for another path in the same connection.
 
-10.  Contributors
+11.  Contributors
 
    This document is a collaboration of authors that combines work from
    three proposals.  Further contributors that were also involved one of
@@ -1569,14 +1663,15 @@ Table of Contents
 
    *  Zhenyu Li
 
-11.  Acknowledgments
+12.  Acknowledgments
 
-   Thanks to Marten Seemann, Kazuho Oku, and Martin Thomson for their
-   thorough reviews and valuable contributions!
+   Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus
+   Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu
+   for their thorough reviews and valuable contributions.
 
-12.  References
+13.  References
 
-12.1.  Normative References
+13.1.  Normative References
 
    [QUIC-RECOVERY]
               Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
@@ -1598,15 +1693,11 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC3629]  Yergeau, F., "UTF-8, a transformation format of ISO
-              10646", STD 63, RFC 3629, DOI 10.17487/RFC3629, November
-              2003, <https://www.rfc-editor.org/rfc/rfc3629>.
-
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-12.2.  Informative References
+13.2.  Informative References
 
    [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.
               Le Boudec, "MPTCP is not pareto-optimal: performance
