@@ -1142,7 +1142,7 @@ Path Identifier:
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
   this path. NO_ERROR(0x0) indicates that the path is being abandoned
-  without any error being encountered.
+  without any error being encountered. Other error codes can be found in {{error-codes}}.
 
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1384,6 +1384,22 @@ it cannot allocate sufficient resources to maintain it. This is due to
 limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
 
+UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because 
+of unstable interfaces. This error is used when endpoints find that
+the network interfaces are unstable due to weak signal or other possible situations.
+Endpoints could also choose to use this error when detecting a black hole on the specific path.
+
+NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to 
+the lack of an available connection ID for this path. 
+This may occur when the endpoint initiates a new path 
+but have not transmited a corresponding new connection ID for the path ID 
+(or the packet containing new connection IDs is inflight), 
+then the peer could choose to abandon the path with this error code.
+Note that if endpoints send PATH_NEW_CONNECTION_ID and PATH_CHALLENDGE 
+within a very short time period, and the packets arrived out of order, the peer 
+could choose to hold path validation frames for a while or send PATH_ABANDON immediately for the path.
+
+
 # IANA Considerations
 
 This document defines a new transport parameter for the negotiation of
@@ -1424,6 +1440,8 @@ Value                       | Code                  | Description               
 ----------------------------|-----------------------|-------------------------------|-------------------
 TBD-09 (experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
 TBD-10 (experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-11 (experiments use 0x00554e5f494e5446) | UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
+TBD-12 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
