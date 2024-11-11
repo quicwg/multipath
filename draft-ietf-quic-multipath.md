@@ -994,6 +994,17 @@ expected to be preserved when data is retransmitted. Especially when STREAM
 frames have to be retransmitted over a different path with a smaller MTU limit,
 new smaller STREAM frames might need to be sent instead.
 
+## Handling PTO
+
+An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
+for detecting packet loss on each individual path.
+When an endpoint transmits a significant number of packets on a specific path,
+and the path turned into a blackhole while acknowledgements can not be received from the path,
+endpoint waits for PTO on the specific path following {{QUIC-RECOVERY}}.
+Meanwhile, as a potential advantage of multipath extension, when endpoints detect
+that one of the paths has turned into a blackhole, endpoints could choose to
+retransmit on other available paths if the congestion control window allows.
+
 
 ## Handling different PMTU sizes
 
