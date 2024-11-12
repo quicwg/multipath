@@ -997,14 +997,16 @@ new smaller STREAM frames might need to be sent instead.
 ## Handling PTO
 
 An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
-for detecting packet loss on each individual path.
-When an endpoint transmits a significant number of packets on a specific path,
-and the path turned into a blackhole while acknowledgements can not be received from the path,
-endpoint waits for PTO on the specific path following {{QUIC-RECOVERY}}.
-Meanwhile, as a potential advantage of multipath extension, when endpoints detect
-that one of the paths has turned into a blackhole, endpoints could choose to
-retransmit on other available paths if the congestion control window allows.
+for detecting packet loss on each individual path. A special case happens when
+the PTO timer expires. According to {{QUIC-RECOVERY}}, no packet will be declared
+lost until either the packet sender receives a new acknowledgement for this path,
+or the path itself is finally declared broken. This cautious process minimizes
+the risk of spurious retransmissions, but it may cause significant delivery delay
+for the frames contained in these "lost packets".
 
+Endpoints could take advantage of the multipath extension, and retransmit the content
+of the delayed packets on other available paths if the congestion control window on these
+paths allows.
 
 ## Handling different PMTU sizes
 
