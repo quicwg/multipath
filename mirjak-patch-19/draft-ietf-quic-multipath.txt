@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 10 May 2025                              Uber Technologies Inc.
+Expires: 17 May 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 10 May 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         6 November 2024
+                                                        13 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 May 2025.
+   This Internet-Draft will expire on 17 May 2025.
 
 Copyright Notice
 
@@ -675,7 +675,7 @@ Table of Contents
    duration of the idle timeout".  When only one path is available,
    servers MUST follow the specifications in [QUIC-TRANSPORT].
 
-   This document does not specify a per-path idle timeouts.  An endpoint
+   This document does not specify per-path idle timeouts.  An endpoint
    can decide to close a path at any time, whether the path is in active
    use or not, by sending a PATH_ABANDON frame.  It is not required to
    send a PATH_ABANDON frame at any specific point in time.  For
