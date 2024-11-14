@@ -15,17 +15,17 @@
        This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection. 
     " name="description">
-<meta content="xml2rfc 3.23.2" name="generator">
+<meta content="xml2rfc 3.24.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-quic-multipath-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.23.2
+  xml2rfc 3.24.0
     Python 3.12.7
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
-    lxml 4.9.4
+    lxml 5.3.0
     platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
@@ -167,31 +167,6 @@ enable the simultaneous usage of multiple paths for a single connection.
 }
 
 @font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
-}
-@font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
   font-family: 'Oxygen Mono';
   font-style: normal;
   font-weight: 400;
@@ -208,6 +183,77 @@ enable the simultaneous usage of multiple paths for a single connection.
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light dark;
   --background-color: #fff;
@@ -220,6 +266,7 @@ enable the simultaneous usage of multiple paths for a single connection.
   --pilcrow-strong: #bbb;
   --small-font-size: 14.5px;
   --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
   scrollbar-color: #bbb #eee;
 }
 body {
@@ -238,8 +285,8 @@ body {
 
 /* headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Cabin Condensed", sans-serif;
-  font-weight: 600;
+  font-family: var(--font-title);
+  font-weight: 680;
   margin: 0.8em 0 0.3em;
   font-size-adjust: 0.5;
   color: var(--title-color);
@@ -647,6 +694,12 @@ sub, sup {
   padding: 0.75em 0 2em 0;
   margin-bottom: 1em;
 }
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+  }
+}
 #toc nav ul {
   margin: 0 0.5em 0 0;
   padding: 0;
@@ -1030,11 +1083,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">October 2024</td>
+<td class="right">November 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 18 April 2025</td>
+<td class="center">Expires 18 May 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1047,12 +1100,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-15" class="published">15 October 2024</time>
+<time datetime="2024-11-14" class="published">14 November 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-04-18">18 April 2025</time></dd>
+<dd class="expires"><time datetime="2025-05-18">18 May 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1123,7 +1176,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1286,41 +1339,44 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-error-codes" class="internal xref">Error Codes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-memory-allocation-for-per-p" class="internal xref">Memory Allocation for Per-Path Resources</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-request-forgery-with-spoofe" class="internal xref">Request Forgery with Spoofed Address</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
-                <p id="section-toc.1-1.9.2.3.1"><a href="#section-9.3" class="auto internal xref">9.3</a>.  <a href="#name-use-of-transport-layer-secu" class="internal xref">Use of Transport Layer Security and the AEAD Encryption Nonce</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-contributors" class="internal xref">Contributors</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-memory-allocation-for-per-p" class="internal xref">Memory Allocation for Per-Path Resources</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-request-forgery-with-spoofe" class="internal xref">Request Forgery with Spoofed Address</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-use-of-transport-layer-secu" class="internal xref">Use of Transport Layer Security and the AEAD Encryption Nonce</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-contributors" class="internal xref">Contributors</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1346,7 +1402,7 @@ several changes to that mechanism:<a href="#section-1-2" class="pilcrow">¶</a><
           <p id="section-1-3.1.1">Simultaneous transmission on multiple paths.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-3.2">
-          <p id="section-1-3.2.1">Introduction of a path idendifier to manage connection IDs and
+          <p id="section-1-3.2.1">Introduction of a path identifier to manage connection IDs and
 packet number spaces per path.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-3.3">
@@ -1361,7 +1417,7 @@ spaces are used for each path, this specification requires the use of
 non-zero connection IDs in order to identify the path and respective
 packet number space.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">To add a new path to an existing QUIC connection with multipath support,
-a client starts a path validation on
+a client sends a packet with a connection ID belonging to a so-far unused Path ID on
 the chosen path, as further described in <a href="#path-initiation" class="auto internal xref">Section 3.1</a>.
 A new path can only be used once the associated 4-tuple has been validated
 by ensuring that the peer is able to receive packets at that address
@@ -1500,7 +1556,7 @@ loss recovery and congestion control mechanisms defined in
 <p id="section-1.3-2">Each Path ID-specific packet number space starts at packet number 0. When following
 the packet number encoding algorithm described in <span><a href="https://rfc-editor.org/rfc/rfc9000#appendix-A.2" class="relref">Appendix A.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 the largest packet number (largest_acked) that has been acknowledged by the
-peer in the Path ID-specfic packet number space is initially set to "None".<a href="#section-1.3-2" class="pilcrow">¶</a></p>
+peer in the Path ID-specific packet number space is initially set to "None".<a href="#section-1.3-2" class="pilcrow">¶</a></p>
 <p id="section-1.3-3">Using multiple packet number spaces requires changes in the way AEAD is
 applied for packet protection, as explained in <a href="#multipath-aead" class="auto internal xref">Section 4</a>.
 More concretely, the Path ID is used to construct the
@@ -1538,7 +1594,7 @@ as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPOR
 defined as follows:<a href="#section-2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2-2.1">
-          <p id="section-2-2.1.1">initial_max_path_id (current version uses 0x0f739bbc1b666d09): a
+          <p id="section-2-2.1.1">initial_max_path_id (current version uses 0x0f739bbc1b666d11): a
 variable-length integer specifying the maximum path identifier
 an endpoint is willing to maintain at connection initiation.
 This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
@@ -1566,7 +1622,7 @@ parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
 PROTOCOL_VIOLATION and close the connection.<a href="#section-2-7" class="pilcrow">¶</a></p>
 <p id="section-2-8">The initial_max_path_id parameter MUST NOT be remembered
-(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
+for use in a subsequent connection (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
 New paths can only be used after handshake completion.<a href="#section-2-8" class="pilcrow">¶</a></p>
 <p id="section-2-9">This extension does not change the definition of any transport parameter
 defined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-18.2." class="relref">Section 18.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-2-9" class="pilcrow">¶</a></p>
@@ -1586,15 +1642,19 @@ an error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-2-12" class="pilcro
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the PATH_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.<a href="#section-2-13" class="pilcrow">¶</a></p>
-<p id="section-2-14">As multipath support is unknown during the handshake, acknowledgements of
+<p id="section-2-14">As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.
 If the multipath extension has been successfully
 negotiated, ACK frames in 1-RTT packets acknowledge packets for the path with
 Path ID 0.<a href="#section-2-14" class="pilcrow">¶</a></p>
 <p id="section-2-15">After the handshake concluded if negotiation of multipath support succeeded,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-also for acknowledging so far unacknowledged 0-RTT packets, using
-Path ID 0. Similarly after a successful handshake, endpoints SHOULD also use
+including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0.
+Endpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets
+for Path ID 0, even after successful negotiation of this extension. For example,
+ACK frames might be preferred by the sender as long as only the initial path
+with Path ID 0 is in use.
+Similarly after a successful handshake, endpoints SHOULD also use
 the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
 respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
 Path ID 0.<a href="#section-2-15" class="pilcrow">¶</a></p>
@@ -1664,35 +1724,44 @@ one connection ID (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section
 with the same, unused Path ID. When the peer receives the PATH_CHALLENGE,
 it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">When the multipath extension is negotiated, a client that wants to use an
-additional path MUST first initiate the Address Validation procedure
-with PATH_CHALLENGE and PATH_RESPONSE frames as described in
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, unless it has previously validated
-that address.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+additional path MUST validate the peer's address before sending any data packets
+as described in (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
+unless it has previously validated the four-tuple used for that path.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">After receiving packets from the
 client on a new path, if the server decides to use the new path,
-the server MUST perform path validation (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
-unless it has previously validated that address.
-An endpoint that receives a PATH_CHALLENGE and does not want to establish
+the server MUST validate the peer's address before sending any data packets
+as described in (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
+unless it has previously validated the four-tuple used for that path.
+Until the client's address is
+validated, the anti-amplification limit from <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
+applies.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">The server may receive packets for a yet unused Path ID that do not
+contain a path challenge. Such packets are valid if they can be properly decrypted
+and if they contain a valid connection ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported
+on the path. This can be done during initial path validation or separately later if
+the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-6">An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
-on another path, as specified in section <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">An endpoint that has no active connection ID for this path or
+on another path, as specified in section <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">An endpoint that has no active connection ID for this path or
 lacks other resource to immediately configure a new path could
 delay sending the PATH_RESPONSE until sufficient resource are available.
 Long delays may cause the peer to repeat the PATH_CHALLENGE and eventually
 send a PATH_ABANDON, in which case the procedures specified in
-Section <a href="#path-close" class="auto internal xref">Section 3.3</a> apply.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
+Section <a href="#path-close" class="auto internal xref">Section 3.3</a> apply.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-8">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
-path validation.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6">If validation succeeds, the client can continue to use the path.
+path validation.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
+<p id="section-3.1-9">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
 However, as the used Path ID is anyway consumed,
 the endpoint MUST explicitly close the path as specified in
-<a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.1" class="relref">Section 9.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> introduces the concept of
+<a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+<p id="section-3.1-10"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.1" class="relref">Section 9.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> introduces the concept of
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
 is negotiated, the reception of a "non-probing"
@@ -1701,15 +1770,15 @@ does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control
-limits for this path are respected.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8">Connection ID changes as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and
+limits for this path are respected.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
+<p id="section-3.1-11">Connection ID changes as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and
 in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> for connection migration apply for
 connection IDs associated to the same Path ID.
 With the successful negotiation of the extension specified
-in this draft, endpoints have to consider the receiption of
+in this draft, endpoints have to consider the reception of
 a packet with a connection ID associated to an
-so far unused Path ID as an attempt to establish a new path.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
-<p id="section-3.1-9">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
+so far unused Path ID as an attempt to establish a new path.<a href="#section-3.1-11" class="pilcrow">¶</a></p>
+<p id="section-3.1-12">As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. The client will receive several tokens. When considering using a token
 for subsequent connections, it might be difficult for the client
@@ -1718,7 +1787,7 @@ The client is likely to fall back to the strategy specified in <span><a href="ht
 i.e., pick the last received token. To avoid issues when clients make the "wrong" choice,
 a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
-found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="path-status-management">
@@ -1796,10 +1865,10 @@ packets from the peer might still be in transit, i.e., for a delay of
 3 PTO after the PATH_ABANDON frame has been received from the peer,
 both to avoid generating spurious stateless packets as specified in
 <a href="#spurious-stateless-reset" class="auto internal xref">Section 3.3.1</a> and to be able to acknowledge the
-last packets received from the peer as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>).<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+last packets received from the peer as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 <p id="section-3.3-5">After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
 promptly send PATH_ACK frames to acknowledge all packets received on
-the path and not yet acknowledged, as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>).
+the path and not yet acknowledged, as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>.
 When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
 <p id="section-3.3-6">After a path is abandoned, the Path ID MUST NOT be reused
@@ -1869,23 +1938,21 @@ for too long. The connection idle timeout when using the multipath extension is 
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-2">When more than one path is available, hosts shall monitor the arrival of
-packets and acknowledgements for packets sent over each
-path. Hosts MAY consider closing a path if for at least the period of the
-idle timeout as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1." class="relref">Section 10.1.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
-(a) no packet was received or (b) no packet sent over this path was acknowledged.
-Endpoints that desire to close a path because of the idle timer rule
-MUST do so explicitly by sending a PATH_ABANDON frame on another path,
-as defined in <a href="#path-close" class="auto internal xref">Section 3.3</a>.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-3">To avoid idle timeout of a path, endpoints
+<p id="section-3.3.3-2">This document does not specify any specific per-path timeouts. An endpoint
+can decide to close a path at any time, whether the path is in active
+use or not, by sending a PATH_ABANDON frame. It is not required
+to send a PATH_ABANDON frame at any specific point in time.
+For example, an endpoint may wait until it will anyway send another frame.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-3">If a path is not actively used for a while, it might not be usable anymore,
+e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
-(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.  Sending
-periodic PING frames also helps prevent middlebox timeout, as discussed in
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3.3-4">Server implementations need to select the sub-path idle timeout as a
-trade-off between keeping resources, such as connection IDs, in use
-for an excessive time or having to promptly re-establish a path
-after a spurious estimate of path abandonment by the client.<a href="#section-3.3.3-4" class="pilcrow">¶</a></p>
+(<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.
+As discussed in
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the keep-alive interval depends
+on the timeout in the middlebox.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-4">If a path was not actively used for a while, an endpoint can
+probe it before switching to active use if there are still other paths
+that are currently usable.<a href="#section-3.3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="abandon-early">
@@ -1893,7 +1960,7 @@ after a spurious estimate of path abandonment by the client.<a href="#section-3.
           <h4 id="name-early-abandon">
 <a href="#section-3.3.4" class="section-number selfRef">3.3.4. </a><a href="#name-early-abandon" class="section-name selfRef">Early Abandon</a>
           </h4>
-<p id="section-3.3.4-1">The are scenarios in which an endpoint will receive a PATH_ABANDON frame
+<p id="section-3.3.4-1">There are scenarios in which an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
 PATH_ABANDON frame (see <a href="#path-initiation" class="auto internal xref">Section 3.1</a>). An endpoint may also decide
@@ -1919,21 +1986,26 @@ The PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for all pat
 In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue a Connection ID for at least one unused Path ID, as long as it remains
 compatible with the peer's Maximum Path ID limit.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Each endpoint maintains the set of connection IDs received from its peer for each path,
+<p id="section-3.4-2">When issuing path-specific connection IDs, an endpoint associates a sequence number
+as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.1" class="relref">Section 5.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. Each Path ID has its own
+connection ID sequence number space whose initial value is 0. On non-initial paths
+(i.e., Path ID different from 0), the initial path connection ID is provided by a
+PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Usually, it is desired to provide at least one additional connection ID for
 all used paths, to allow for migration.
 As further specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> connection IDs
 cannot be issued more than once on the same connection
 and therefore are unique for the scope of the connection,
-regardless of the associated Path ID.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
+regardless of the associated Path ID.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-4"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
 this draft, endpoints MUST only rotate to another connection IDs associated
 to the same Path ID. Use of a connection ID associated with
-another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">Over a given path, both endpoints use connection IDs associated to a given Path
+another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">Over a given path, both endpoints use connection IDs associated to a given Path
 ID. To initiate a path, each endpoint needs to advertise at least one connection ID
 for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
 in the issuing of Path IDs through their connection ID advertisements as path initiation
@@ -1943,8 +2015,8 @@ for only one Path ID inside range [1, 2], it should select Path ID 1 (and not Pa
 ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
 or path initiation attempts with in order use of Path IDs
-due to out-of-order delivery or path validation failure.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
+due to out-of-order delivery or path validation failure.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies the retirement of connection IDs.
 In order to identify a connection ID correctly when the multipath extension is used,
 endpoints have to use the PATH_RETIRE_CONNECTION_ID frame instead
 of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
@@ -1953,8 +2025,8 @@ Endpoints can also use PATH_NEW_CONNECTION_ID and
 PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
 however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid as well and endpoints need to process these frames accordingly
-as corresponding to Path ID 0.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
+as corresponding to Path ID 0.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths-frame" class="auto internal xref">Section 7.6</a>)
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater Path ID is a connection error as specified
@@ -1964,19 +2036,19 @@ it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
 (see Section <a href="#paths-blocked-frame" class="auto internal xref">Section 7.7</a>) to inform the peer that a new path
 identifier was needed but the current limit set by the peer prevented the
-creation of the new path.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<p id="section-3.4-7">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
+creation of the new path.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-8">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
 those that are not used anymore, and the server is supposed to provide
 replacements for that path, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. In response, if the path is still open, the peer
-SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
-<p id="section-3.4-8">Retirement of connection IDs will not retire the Path ID
-that corresponds to the connection ID or any other path ressources
-as the packet number space is associated with a path.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
+SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+<p id="section-3.4-9">Retirement of connection IDs will not retire the Path ID
+that corresponds to the connection ID or any other path resources
+as the packet number space is associated with a path.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+<p id="section-3.4-10">The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
-to use a different connection ID for the same Path ID when doing so.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+to use a different connection ID for the same Path ID when doing so.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2035,14 +2107,14 @@ protection key, assuming that there is sufficient interval between two
 consecutive key updates (<span><a href="https://rfc-editor.org/rfc/rfc9001#section-6.5" class="relref">Section 6.5</a> of [<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>).<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">When this specification is used, endpoints SHOULD wait for at least three times
 the largest PTO among all the paths before initiating a new key update
-after receiving an acknowledgement that confirms the receipt of the previous key
+after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
 which used three times the PTO of the sole single path.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.2-4">The choice of three times the largest PTO is a trade-off:
 Packets that arrive after their decryption key has been discarded will be dropped.
 Longer delays reduce the probability of losing packets but keeping old keys
 longer can negatively impact the security of the protocol.
-The use of three times the largest PTO aims to minimise packet lost for all paths
+The use of three times the largest PTO aims to minimize packet lost for all paths
 and therefore limits the impact on performance.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">Following <span><a href="https://rfc-editor.org/rfc/rfc9001#section-5.4" class="relref">Section 5.4</a> of [<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
@@ -2063,7 +2135,7 @@ should not cause linkability issue.<a href="#section-4.2-5" class="pilcrow">¶</
         </h3>
 <p id="section-5.1-1"><a href="#fig-example-new-path" class="auto internal xref">Figure 1</a> illustrates an example of new path establishment
 using multiple packet number spaces.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">In this example it is assumed that both endpoint have
+<p id="section-5.1-2">In this example it is assumed that both endpoints have
 indicated an initial_max_path_id value of at least 2, which means
 both endpoints can use Path IDs 0, 1, and 2. Note that
 Path ID 0 is already used for the initial path.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
@@ -2135,7 +2207,7 @@ Client                                                      Server
 <a href="#name-example-of-closing-a-path" class="selfRef">Example of closing a path.</a>
           </figcaption></figure>
 </div>
-<p id="section-5.2-4">Note that the last acknowledgement needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Note that the last acknowledgment needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2197,14 +2269,14 @@ control schemes have been proposed for Multipath TCP such as <span>[<a href="#OL
         <h3 id="name-computing-path-rtt">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-computing-path-rtt" class="section-name selfRef">Computing Path RTT</a>
         </h3>
-<p id="section-6.3-1">Acknowledgement delays are the sum of two one-way delays, the delay
+<p id="section-6.3-1">Acknowledgment delays are the sum of two one-way delays, the delay
 on the packet sending path and the delay on the return path chosen
-for the acknowledgements.  When different paths have different
-characteristics, this can cause acknowledgement delays to vary
+for the acknowledgments.  When different paths have different
+characteristics, this can cause acknowledgment delays to vary
 widely.  Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in both
-directions.  The acknowledgement delay will depend on the combination
+directions.  The acknowledgment delay will depend on the combination
 of paths used for the packet transmission and the ACK transmission,
 as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1</a>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <span id="name-example-of-ack-delays-using"></span><div id="fig-example-ack-delay">
@@ -2236,7 +2308,7 @@ as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1<
 </div>
 <p id="section-6.3-3">The PATH_ACK frames describe packets that were sent on the specified path,
 but they may be received through any available path. There is an
-understandable concern that if successive acknowledgements are received
+understandable concern that if successive acknowledgments are received
 on different paths, the measured RTT samples will fluctuate widely,
 and that might result in poor performance. While this may be a concern,
 the actual behavior is complex.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
@@ -2249,7 +2321,7 @@ lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
-<p id="section-6.3-5">The simplest implementation is to compute smoothedRTT and RTTvar per
+<p id="section-6.3-5">The simplest implementation is to compute smoothed_rtt and rttvar per
 <span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which PATH_ACK frames are
 received. This algorithm will provide good results,
 except if the set of paths changes and the PATH_ACK sender
@@ -2317,7 +2389,9 @@ new smaller STREAM frames might need to be sent instead.<a href="#section-6.5-2"
 <a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-handling-different-pmtu-siz" class="section-name selfRef">Handling different PMTU sizes</a>
         </h3>
 <p id="section-6.6-1">An implementation should take care to handle different PMTU sizes across
-multiple paths. One simple option if the PMTUs are relatively similar is to apply the minimum PMTU of all paths to
+multiple paths. As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-14.3" class="relref">Section 14.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> the
+DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
+One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to
 each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.<a href="#section-6.6-1" class="pilcrow">¶</a></p>
@@ -2368,7 +2442,7 @@ multiple open paths instead.<a href="#section-6.8-3" class="pilcrow">¶</a></p>
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service <span>[<a href="#RFC2475" class="cite xref">RFC2475</a>]</span> markings.
 This could be done in conjunction with scheduling algorithms
-that match streams to paths, so that for example data frame for
+that match streams to paths, so that for example data frames for
 low priority streams are sent over low priority paths.
 Since these paths use different path IDs, they can be managed
 independently to suit the needs of the application.<a href="#section-6.8.1-1" class="pilcrow">¶</a></p>
@@ -2483,8 +2557,6 @@ which are acknowledged by the PATH_ACK frame.<a href="#section-7.1-5.2.1" class=
     Type (i) = TBD-02 (experiments use 0x15228c05),
     Path Identifier (i),
     Error Code (i),
-    Reason Phrase Length (i),
-    Reason Phrase (..),
   }
 </pre>
 </div>
@@ -2502,25 +2574,8 @@ which are acknowledged by the PATH_ACK frame.<a href="#section-7.1-5.2.1" class=
 <dt id="section-7.2-5.3">Error Code:</dt>
           <dd style="margin-left: 1.5em" id="section-7.2-5.4">
             <p id="section-7.2-5.4.1">A variable-length integer that indicates the reason for abandoning
-this path.<a href="#section-7.2-5.4.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-7.2-5.5">Reason Phrase Length:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-5.6">
-            <p id="section-7.2-5.6.1">A variable-length integer specifying the length of the reason phrase
-in bytes. Because an PATH_ABANDON frame cannot be split between packets,
-any limits on packet size will also limit the space available for
-a reason phrase.<a href="#section-7.2-5.6.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-7.2-5.7">Reason Phrase:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-5.8">
-            <p id="section-7.2-5.8.1">Additional diagnostic information for the closure. This can be
-zero length if the sender chooses not to give details beyond
-the Error Code value. This SHOULD be a UTF-8 encoded string <span>[<a href="#RFC3629" class="cite xref">RFC3629</a>]</span>,
-though the frame does not carry information, such as language tags,
-that would aid comprehension by any entity other than the one
-that created the text.<a href="#section-7.2-5.8.1" class="pilcrow">¶</a></p>
+this path. NO_ERROR(0x0) indicates that the path is being abandoned
+without any error being encountered.<a href="#section-7.2-5.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2544,7 +2599,7 @@ PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-for
           <div class="alignLeft art-text artwork" id="section-7.3-2.1">
 <pre>
   PATH_AVAILABLE Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c08),
+    Type (i) = TBD-04 (experiments use 0x15228c08),
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
@@ -2682,7 +2737,7 @@ to indicate that it will no longer use a connection ID for a specific path
 that was issued by its peer. To retire the connection ID used
 during the handshake on the initial path, Path ID 0 is used.
 Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
-to send additional connection IDs for this path (see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
+to send additional connection IDs for this path (see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
 unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
 delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.4</a>).<a href="#section-7.5-1" class="pilcrow">¶</a></p>
 <p id="section-7.5-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-7.5-2" class="pilcrow">¶</a></p>
@@ -2778,7 +2833,7 @@ limit set by its peer;<a href="#section-7.7-1" class="pilcrow">¶</a></p>
           <div class="alignLeft art-text artwork" id="section-7.7-3.1">
 <pre>
 PATHS_BLOCKED Frame {
-  Type (i) = 0x15228c0d,
+  Type (i) = TBD-08 (experiments use 0x15228c0d),
   Maximum Path Identifier (i),
 }
 </pre>
@@ -2803,17 +2858,36 @@ be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-7.
 </div>
 </section>
 </div>
-<div id="iana-considerations">
+<div id="error-codes">
 <section id="section-8">
-      <h2 id="name-iana-considerations">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      <h2 id="name-error-codes">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-error-codes" class="section-name selfRef">Error Codes</a>
       </h2>
-<p id="section-8-1">This document defines a new transport parameter for the negotiation of
+<p id="section-8-1">QUIC transport error codes are 62-bit unsigned integers
+(see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-20.1" class="relref">Section 20.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. In addition to
+NO_ERROR(0x0), the following QUIC error codes are defined
+for use in the PATH_ABANDON frame:<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the
+request of the application. The application has determined that it no
+longer needs this path. This error is used when the application layer
+decides to stop using a specific path.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path because
+it cannot allocate sufficient resources to maintain it. This is due to
+limitations in the transport layer's capacity. This error indicates that
+resource constraints prevent the continuation of the path.<a href="#section-8-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-9">
+      <h2 id="name-iana-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-9-1">This document defines a new transport parameter for the negotiation of
 enable multiple paths for QUIC, and three new frame types. The draft defines
 provisional values for experiments, but we expect IANA to allocate
-short values if the draft is approved.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">The following entry in <a href="#transport-parameters" class="auto internal xref">Table 2</a> should be added to
-the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a href="#section-8-2" class="pilcrow">¶</a></p>
+short values if the draft is approved.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">The following entry in <a href="#transport-parameters" class="auto internal xref">Table 2</a> should be added to
+the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a href="#section-9-2" class="pilcrow">¶</a></p>
 <span id="name-addition-to-quic-transport-"></span><div id="transport-parameters">
 <table class="center" id="table-2">
         <caption>
@@ -2829,7 +2903,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a hr
         </thead>
         <tbody>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">TBD (current version uses 0x0f739bbc1b666d09)</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD (current version uses 0x0f739bbc1b666d11)</td>
             <td class="text-left" rowspan="1" colspan="1">initial_max_path_id</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#nego" class="auto internal xref">Section 2</a>
@@ -2838,8 +2912,8 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a hr
         </tbody>
       </table>
 </div>
-<p id="section-8-4">The following frame types defined in <a href="#frame-types" class="auto internal xref">Table 3</a> should be added to
-the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-9-4">The following frame types defined in <a href="#frame-types" class="auto internal xref">Table 3</a> should be added to
+the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#section-9-4" class="pilcrow">¶</a></p>
 <span id="name-addition-to-quic-frame-type"></span><div id="frame-types">
 <table class="center" id="table-3">
         <caption>
@@ -2913,124 +2987,161 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
         </tbody>
       </table>
 </div>
+<p id="section-9-6">The following transport error code defined in <a href="#tab-error-code" class="auto internal xref">Table 4</a> are to
+be added to the "QUIC Transport Error Codes" registry under
+the "QUIC Protocol" heading.<a href="#section-9-6" class="pilcrow">¶</a></p>
+<span id="name-error-codes-for-multipath-q"></span><div id="tab-error-code">
+<table class="center" id="table-4">
+        <caption>
+<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#name-error-codes-for-multipath-q" class="selfRef">Error Codes for Multipath QUIC</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Value</th>
+            <th class="text-left" rowspan="1" colspan="1">Code</th>
+            <th class="text-left" rowspan="1" colspan="1">Description</th>
+            <th class="text-left" rowspan="1" colspan="1">Specification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">TBD-09 (experiments use 0x4150504C4142414E)</td>
+            <td class="text-left" rowspan="1" colspan="1">APPLICATION_ABANDON</td>
+            <td class="text-left" rowspan="1" colspan="1">Path abandoned at the application's request</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <a href="#error-codes" class="auto internal xref">Section 8</a>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">TBD-10 (experiments use 0x5245534C494D4954)</td>
+            <td class="text-left" rowspan="1" colspan="1">RESOURCE_LIMIT_REACHED</td>
+            <td class="text-left" rowspan="1" colspan="1">Path abandoned due to resource limitations in the transport</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <a href="#error-codes" class="auto internal xref">Section 8</a>
+</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-9">
+<section id="section-10">
       <h2 id="name-security-considerations">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-9-1">The multipath extension retains all the security features of <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
-but requires some additional consideration regarding the following amendments:<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-10-1">The multipath extension retains all the security features of <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
+but requires some additional consideration regarding the following amendments:<a href="#section-10-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-9-2.1">
-          <p id="section-9-2.1.1">the need of potential additional resources as connection IDs are now maintained per-path;<a href="#section-9-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-10-2.1">
+          <p id="section-10-2.1.1">the need of potential additional resources as connection IDs are now maintained per-path;<a href="#section-10-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-9-2.2">
-          <p id="section-9-2.2.1">the provisioning of multiple concurrent path contexts and the associated resources;<a href="#section-9-2.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-2.2">
+          <p id="section-10-2.2.1">the provisioning of multiple concurrent path contexts and the associated resources;<a href="#section-10-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-9-2.3">
-          <p id="section-9-2.3.1">the possibility to create and use multiple simultaneous paths and the corresponding increased amplification risk for request forgery attacks;<a href="#section-9-2.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-2.3">
+          <p id="section-10-2.3.1">the possibility to create and use multiple simultaneous paths and the corresponding increased amplification risk for request forgery attacks;<a href="#section-10-2.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-9-2.4">
-          <p id="section-9-2.4.1">the changes on encryption requirements due to the use of multiple packet number spaces.<a href="#section-9-2.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-10-2.4">
+          <p id="section-10-2.4.1">the changes on encryption requirements due to the use of multiple packet number spaces.<a href="#section-10-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="memory-allocation-for-per-path-resources">
-<section id="section-9.1">
+<section id="section-10.1">
         <h3 id="name-memory-allocation-for-per-p">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-memory-allocation-for-per-p" class="section-name selfRef">Memory Allocation for Per-Path Resources</a>
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-memory-allocation-for-per-p" class="section-name selfRef">Memory Allocation for Per-Path Resources</a>
         </h3>
-<p id="section-9.1-1">The initial_max_path_id transport parameter and the Max Path ID field
+<p id="section-10.1-1">The initial_max_path_id transport parameter and the Max Path ID field
 in the MAX_PATH_ID frame limit the number of paths an endpoint is willing
-to maintain and accordingly limit the associated path resources.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.1-2">Furthermore, as connection IDs have to be issued by both endpoint for the
+to maintain and accordingly limit the associated path resources.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-2">Furthermore, as connection IDs have to be issued by both endpoints for the
 same path ID before an endpoint can open a path, each endpoint can further
 control the per-path resource usage (beyond the connection IDs) by limiting
-the number of Path ID that it issues connection IDs for.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3">Therefore, to avoid unnecessarily resource usage, that potentially could be exploited
+the number of Path ID that it issues connection IDs for.<a href="#section-10.1-2" class="pilcrow">¶</a></p>
+<p id="section-10.1-3">Therefore, to avoid unnecessarily resource usage, that potentially could be exploited
 in a resource exhaustion attack, endpoints should allocate those additional path resource,
-such as e.g. for packet number handling, only after path validation has successfully completed.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
+such as e.g. for packet number handling, only after path validation has successfully completed.<a href="#section-10.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="request-forgery-with-spoofed-address">
-<section id="section-9.2">
+<section id="section-10.2">
         <h3 id="name-request-forgery-with-spoofe">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-request-forgery-with-spoofe" class="section-name selfRef">Request Forgery with Spoofed Address</a>
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-request-forgery-with-spoofe" class="section-name selfRef">Request Forgery with Spoofed Address</a>
         </h3>
-<p id="section-9.2-1">The path validation mechanism as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2." class="relref">Section 8.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> for migration is used
-unchanged for initiation of new paths in this extension. Respectively the security considerations
+<p id="section-10.2-1">The path validation mechanism as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2." class="relref">Section 8.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> for migration is used
+unchanged for initiation of new paths in this extension. Therefore, the security considerations
 on source address spoofing as outlined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.5.4" class="relref">Section 21.5.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> equally apply.
 Similarly, the anti-amplification limits as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> need to be
-followed to limit the amplification risk.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<p id="section-9.2-2">However, while <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path simultaneously
+followed to limit the amplification risk.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.2-2">However, while <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path simultaneously
 and therefore only one path migration at the time should be validated,
 this extension allows for multiple open paths, that could in theory be migrated
-all at the same time, and it allows for multiple paths that could be initialised
+all at the same time, and it allows for multiple paths that could be initialized
 simultaneously. Therefore, each path could be used to further amplify an attack.
-Respectively endpoints needs limit the number of maximum paths and might consider
+Endpoints needs limit the number of maximum paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
-over a certain time period.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+over a certain time period.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="use-of-transport-layer-security-and-the-aead-encryption-nonce">
-<section id="section-9.3">
+<section id="section-10.3">
         <h3 id="name-use-of-transport-layer-secu">
-<a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-use-of-transport-layer-secu" class="section-name selfRef">Use of Transport Layer Security and the AEAD Encryption Nonce</a>
+<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-use-of-transport-layer-secu" class="section-name selfRef">Use of Transport Layer Security and the AEAD Encryption Nonce</a>
         </h3>
-<p id="section-9.3-1">The multipath extension as specified in this document is only enabled after a
+<p id="section-10.3-1">The multipath extension as specified in this document is only enabled after a
 successful handshake when both endpoints indicate support for this extension.
 Respectively, all new frames defined in this extension are only used in 1-RTT packets.
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, such as encryption key exchange and peer authentication,
 remain unchanged as well and the respective security considerations in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span> applied unaltered.
 Note that with the use of this extension, multiple nonces can be in use simultaneously
-for the same AEAD key.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
-<p id="section-9.3-2">Further note, that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
-apply to the total number of packets sent on all paths.<a href="#section-9.3-2" class="pilcrow">¶</a></p>
-<p id="section-9.3-3">This specification changes the AEAD calculation by using the path identifier as part of
+for the same AEAD key.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
+<p id="section-10.3-2">Further note, that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
+apply to the total number of packets sent on all paths.<a href="#section-10.3-2" class="pilcrow">¶</a></p>
+<p id="section-10.3-3">This specification changes the AEAD calculation by using the path identifier as part of
 AEAD encryption nonce (see <a href="#multipath-aead" class="auto internal xref">Section 4</a>). To ensure a unique nonce, path identifiers
-are limited to 32 bits and cannot be reused for another path in the same connection.<a href="#section-9.3-3" class="pilcrow">¶</a></p>
+are limited to 32 bits and cannot be reused for another path in the same connection.<a href="#section-10.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="contributors">
-<section id="section-10">
+<section id="section-11">
       <h2 id="name-contributors">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-contributors" class="section-name selfRef">Contributors</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-contributors" class="section-name selfRef">Contributors</a>
       </h2>
-<p id="section-10-1">This document is a collaboration of authors that combines work from
+<p id="section-11-1">This document is a collaboration of authors that combines work from
 three proposals. Further contributors that were also involved
-one of the original proposals are:<a href="#section-10-1" class="pilcrow">¶</a></p>
+one of the original proposals are:<a href="#section-11-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-10-2.1">
-          <p id="section-10-2.1.1">Qing An<a href="#section-10-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-11-2.1">
+          <p id="section-11-2.1.1">Qing An<a href="#section-11-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-10-2.2">
-          <p id="section-10-2.2.1">Zhenyu Li<a href="#section-10-2.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-11-2.2">
+          <p id="section-11-2.2.1">Zhenyu Li<a href="#section-11-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
 </div>
 <div id="acknowledgments">
-<section id="section-11">
+<section id="section-12">
       <h2 id="name-acknowledgments">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="section-11-1">Thanks to Marten Seemann, Kazuho Oku, and Martin Thomson for their thorough reviews and valuable contributions!<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-12-1">Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu for their thorough reviews and valuable contributions.<a href="#section-12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-12">
+<section id="section-13">
       <h2 id="name-references">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-12.1">
+<section id="section-13.1">
         <h3 id="name-normative-references">
-<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="QUIC-RECOVERY">[QUIC-RECOVERY]</dt>
@@ -3049,10 +3160,6 @@ one of the original proposals are:<a href="#section-10-1" class="pilcrow">¶</a>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC3629">[RFC3629]</dt>
-        <dd>
-<span class="refAuthor">Yergeau, F.</span>, <span class="refTitle">"UTF-8, a transformation format of ISO 10646"</span>, <span class="seriesInfo">STD 63</span>, <span class="seriesInfo">RFC 3629</span>, <span class="seriesInfo">DOI 10.17487/RFC3629</span>, <time datetime="2003-11" class="refDate">November 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3629">https://www.rfc-editor.org/rfc/rfc3629</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
       <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
@@ -3061,9 +3168,9 @@ one of the original proposals are:<a href="#section-10-1" class="pilcrow">¶</a>
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-12.2">
+<section id="section-13.2">
         <h3 id="name-informative-references">
-<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="OLIA">[OLIA]</dt>
