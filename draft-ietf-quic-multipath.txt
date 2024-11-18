@@ -1549,13 +1549,13 @@ Table of Contents
    +===================+======================+=============+=============+
    |TBD-09 (experiments|APPLICATION_ABANDON   |Path         |Section 8    |
    |use                |                      |abandoned at |             |
-   |0x4150504C4142414E)|                      |the          |             |
+   |0x004150504142414e)|                      |the          |             |
    |                   |                      |application's|             |
    |                   |                      |request      |             |
    +-------------------+----------------------+-------------+-------------+
    |TBD-10 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 8    |
    |use                |                      |abandoned due|             |
-   |0x5245534C494D4954)|                      |to resource  |             |
+   |0x0052534c494d4954)|                      |to resource  |             |
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
