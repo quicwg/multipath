@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 18 May 2025                              Uber Technologies Inc.
+Expires: 22 May 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 18 May 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        14 November 2024
+                                                        18 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 May 2025.
+   This Internet-Draft will expire on 22 May 2025.
 
 Copyright Notice
 
@@ -1445,7 +1445,11 @@ Table of Contents
 
    A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when it
    wishes to open a path but is unable to do so due to the maximum path
-   identifier limit set by its peer;
+   identifier limit set by its peer.  Note that PATHS_BLOCKED frame is
+   informational.  Sending a PATHS_BLOCKED frame does not imply a
+   particular action from the peer like updating the new Max Path ID
+   value, but informs the peer that the maximum path identifier limit
+   prevented the creation of new paths.
 
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 
