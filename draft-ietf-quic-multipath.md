@@ -994,6 +994,19 @@ expected to be preserved when data is retransmitted. Especially when STREAM
 frames have to be retransmitted over a different path with a smaller MTU limit,
 new smaller STREAM frames might need to be sent instead.
 
+## Handling PTO
+
+An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
+for detecting packet loss on each individual path. A special case happens when
+the PTO timer expires. According to {{QUIC-RECOVERY}}, no packet will be declared
+lost until either the packet sender receives a new acknowledgement for this path,
+or the path itself is finally declared broken. This cautious process minimizes
+the risk of spurious retransmissions, but it may cause significant delivery delay
+for the frames contained in these "lost packets".
+
+Endpoints could take advantage of the multipath extension, and retransmit the content
+of the delayed packets on other available paths if the congestion control window on these
+paths allows.
 
 ## Handling different PMTU sizes
 
@@ -1043,7 +1056,7 @@ As noted in {{basic-design-points}}, it is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service {{?RFC2475}} markings.
 This could be done in conjunction with scheduling algorithms
-that match streams to paths, so that for example data frame for
+that match streams to paths, so that for example data frames for
 low priority streams are sent over low priority paths.
 Since these paths use different path IDs, they can be managed
 independently to suit the needs of the application.
@@ -1147,9 +1160,7 @@ Error Code:
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-After sending the PATH_ABANDON frame,
-the endpoint MUST NOT send frames that use the Path ID anymore,
-even on other network paths.
+Use of the PATH_ABANDON frame is specified in section {{path-close}}.
 
 ## PATH_BACKUP and PATH_AVAILABLE frames {#path-backup-available-frame}
 
@@ -1346,7 +1357,11 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
-limit set by its peer;
+limit set by its peer.
+Note that PATHS_BLOCKED frame is informational. Sending a PATHS_BLOCKED frame does not
+imply a particular action from the peer like updating the new Max Path ID value,
+but informs the peer that the maximum path identifier limit prevented the creation of new paths.
+
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
@@ -1438,8 +1453,8 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD-09 (experiments use 0x4150504C4142414E) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD-10 (experiments use 0x5245534C494D4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-09 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD-10 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
 TBD-11 (experiments use 0x00554e5f494e5446) | UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
 TBD-12 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
