@@ -2845,13 +2845,13 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.<a href="
 <p id="section-7.7-1">A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer.
-If the Type field in the PATHS_BLOCKED frame is TBD-09(experiments use 0x15228c0e),
-it indicates that new paths are blocked because of lacking unused Connection IDs
-for the corresponding Path ID.<a href="#section-7.7-1" class="pilcrow">¶</a></p>
+If the Type field within the PATHS_BLOCKED frame is TBD-09 (used in experiments as 0x15228c0e),
+this signifies that new paths are blocked because there are no unused Connection IDs available
+for the corresponding Path IDs.<a href="#section-7.7-1" class="pilcrow">¶</a></p>
 <p id="section-7.7-2">Note that PATHS_BLOCKED frame is informational. Sending a PATHS_BLOCKED frame does not
 imply a particular action from the peer like updating the new Max Path ID value,
-but informs the peer that the maximum path identifier limit prevented the creation of new paths
-or the lacking of new Connection IDs.<a href="#section-7.7-2" class="pilcrow">¶</a></p>
+but informs the peer that the maximum path identifier limit prevented the creation of new paths,
+or there are no available Connection IDs for the path.<a href="#section-7.7-2" class="pilcrow">¶</a></p>
 <p id="section-7.7-3">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-7.7-3" class="pilcrow">¶</a></p>
 <span id="name-max_path_id_blocked-frame-f"></span><div id="fig-paths-blocked-frame-format">
 <figure id="figure-10">
@@ -2876,9 +2876,9 @@ allowed at the time the frame was sent. If the received value is lower than
 the currently allowed maximum value, this frame can be ignored.
 Receipt of a value that is higher than the local maximum value MUST
 be treated as a connection error of type PROTOCOL_VIOLATION.
-If the type field is TBD-09(experiments use 0x15228c0e), the value indicating
-that the path identifier can not be used in creating new path
-because of lacking unused Connection ID for this path.<a href="#section-7.7-6.2.1" class="pilcrow">¶</a></p>
+If the type field is TBD-09(experiments use 0x15228c0e), this indicates
+that the path identifier cannot be used to create new paths because
+there are no unused connection IDs available for this path.<a href="#section-7.7-6.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
