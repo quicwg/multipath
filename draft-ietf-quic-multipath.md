@@ -1160,9 +1160,7 @@ Error Code:
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-After sending the PATH_ABANDON frame,
-the endpoint MUST NOT send frames that use the Path ID anymore,
-even on other network paths.
+Use of the PATH_ABANDON frame is specified in section {{path-close}}.
 
 ## PATH_BACKUP and PATH_AVAILABLE frames {#path-backup-available-frame}
 
