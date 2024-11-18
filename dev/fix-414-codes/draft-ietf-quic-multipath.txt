@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 May 2025                              Uber Technologies Inc.
+Expires: 22 May 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 May 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        11 November 2024
+                                                        18 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 May 2025.
+   This Internet-Draft will expire on 22 May 2025.
 
 Copyright Notice
 
@@ -97,10 +97,11 @@ Table of Contents
      6.3.  Computing Path RTT
      6.4.  Packet Scheduling
      6.5.  Retransmissions
-     6.6.  Handling different PMTU sizes
-     6.7.  Keep Alive
-     6.8.  Connection ID Changes and NAT Rebindings
-       6.8.1.  Using multiple paths on the same 4-tuple
+     6.6.  Handling PTO
+     6.7.  Handling different PMTU sizes
+     6.8.  Keep Alive
+     6.9.  Connection ID Changes and NAT Rebindings
+       6.9.1.  Using multiple paths on the same 4-tuple
    7.  New Frames
      7.1.  PATH_ACK Frame
      7.2.  PATH_ABANDON Frame
@@ -1073,7 +1074,23 @@ Table of Contents
    different path with a smaller MTU limit, new smaller STREAM frames
    might need to be sent instead.
 
-6.6.  Handling different PMTU sizes
+6.6.  Handling PTO
+
+   An implementation should follow the mechanism specified in
+   [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
+   special case happens when the PTO timer expires.  According to
+   [QUIC-RECOVERY], no packet will be declared lost until either the
+   packet sender receives a new acknowledgement for this path, or the
+   path itself is finally declared broken.  This cautious process
+   minimizes the risk of spurious retransmissions, but it may cause
+   significant delivery delay for the frames contained in these "lost
+   packets".
+
+   Endpoints could take advantage of the multipath extension, and
+   retransmit the content of the delayed packets on other available
+   paths if the congestion control window on these paths allows.
+
+6.7.  Handling different PMTU sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
@@ -1085,7 +1102,7 @@ Table of Contents
    initially sent on one path can be sent on another path without
    further frame scheduling adaptations.
 
-6.7.  Keep Alive
+6.8.  Keep Alive
 
    The QUIC specification defines an optional keep alive process, see
    Section 5.3 of [QUIC-TRANSPORT].  Implementations of the multipath
@@ -1097,7 +1114,7 @@ Table of Contents
    paths to keep alive, it can do so by sending Ping frames on each of
    these paths before the idle timeout expires.
 
-6.8.  Connection ID Changes and NAT Rebindings
+6.9.  Connection ID Changes and NAT Rebindings
 
    Section 5.1.2 of [QUIC-TRANSPORT] indicates that an endpoint can
    change the connection ID it uses to another available one at any time
@@ -1120,13 +1137,13 @@ Table of Contents
    addresses that could lead to switching between different paths, it
    should rather maintain multiple open paths instead.
 
-6.8.1.  Using multiple paths on the same 4-tuple
+6.9.1.  Using multiple paths on the same 4-tuple
 
    As noted in Section 1.1, it is possible to create paths that refer to
    the same 4-tuple.  For example, the endpoints may want to create
    paths that use different Differentiated Service [RFC2475] markings.
    This could be done in conjunction with scheduling algorithms that
-   match streams to paths, so that for example data frame for low
+   match streams to paths, so that for example data frames for low
    priority streams are sent over low priority paths.  Since these paths
    use different path IDs, they can be managed independently to suit the
    needs of the application.
@@ -1236,8 +1253,7 @@ Table of Contents
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-   After sending the PATH_ABANDON frame, the endpoint MUST NOT send
-   frames that use the Path ID anymore, even on other network paths.
+   Use of the PATH_ABANDON frame is specified in section Section 3.3.
 
 7.3.  PATH_BACKUP and PATH_AVAILABLE frames
 
@@ -1429,7 +1445,11 @@ Table of Contents
 
    A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when it
    wishes to open a path but is unable to do so due to the maximum path
-   identifier limit set by its peer;
+   identifier limit set by its peer.  Note that PATHS_BLOCKED frame is
+   informational.  Sending a PATHS_BLOCKED frame does not imply a
+   particular action from the peer like updating the new Max Path ID
+   value, but informs the peer that the maximum path identifier limit
+   prevented the creation of new paths.
 
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 
@@ -1546,13 +1566,13 @@ Table of Contents
    +===================+======================+=============+=============+
    |TBD-09 (experiments|APPLICATION_ABANDON   |Path         |Section 8    |
    |use                |                      |abandoned at |             |
-   |0x4150504C4142414E)|                      |the          |             |
+   |0x004150504142414e)|                      |the          |             |
    |                   |                      |application's|             |
    |                   |                      |request      |             |
    +-------------------+----------------------+-------------+-------------+
    |TBD-10 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 8    |
    |use                |                      |abandoned due|             |
-   |0x5245534C494D4954)|                      |to resource  |             |
+   |0x0052534c494d4954)|                      |to resource  |             |
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
