@@ -1358,16 +1358,20 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer.
+If the Type field in the PATHS_BLOCKED frame is TBD-09(experiments use 0x15228c0e),
+it indicates that new paths are blocked because of lacking unused Connection IDs
+for the corresponding Path ID.
+
 Note that PATHS_BLOCKED frame is informational. Sending a PATHS_BLOCKED frame does not
 imply a particular action from the peer like updating the new Max Path ID value,
-but informs the peer that the maximum path identifier limit prevented the creation of new paths.
-
+but informs the peer that the maximum path identifier limit prevented the creation of new paths
+or the lacking of new Connection IDs.
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
 ~~~
 PATHS_BLOCKED Frame {
-  Type (i) = TBD-08 (experiments use 0x15228c0d),
+  Type (i) = TBD-08..TBD-09 (experiments use 0x15228c0d.. 0x15228c0e),
   Maximum Path Identifier (i),
 }
 ~~~
@@ -1381,6 +1385,9 @@ Maximum Path Identifier:
   the currently allowed maximum value, this frame can be ignored.
   Receipt of a value that is higher than the local maximum value MUST
   be treated as a connection error of type PROTOCOL_VIOLATION.
+  If the type field is TBD-09(experiments use 0x15228c0e), the value indicating
+  that the path identifier can not be used in creating new path
+  because of lacking unused Connection ID for this path.
 
 # Error Codes {#error-codes}
 
@@ -1429,6 +1436,7 @@ TBD-05 (experiments use 0x15228c09)                  | PATH_NEW_CONNECTION_ID   
 TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
+TBD-09 (experiments use 0x15228c0e)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
@@ -1437,8 +1445,8 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD-09 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD-10 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-10 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD-11 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
