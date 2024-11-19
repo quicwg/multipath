@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-17T01:00:37.384864+00:00",
+  "timestamp": "2024-11-19T00:57:20.126958+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12053,7 +12053,7 @@
       "id": "I_kwDOGNtpaM6cXIe7",
       "title": "Path abandonment is underspecified",
       "url": "https://github.com/quicwg/multipath/issues/455",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "michael-eriksson",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -12063,8 +12063,8 @@
       ],
       "body": "The exact sequence of events during path abandonment is underspecified (or maybe _underexemplified_) in the document. It is, however, [specifed](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-11.html#section-7.2-7) that:\r\n\r\n> _After sending the PATH_ABANDON frame, the endpoint MUST NOT send frames that use the Path ID anymore, even on other network paths._\r\n\r\nThis requirement is a little hard to parse, but if read literally it would mean that incoming packets could not be acknowledged after a `PATH_ABANDON` frame has been sent. This would imply that a whole RTT-flight of packets in the other direction would be unacknowledged and thus needlessly retransmitted.\r\n\r\nThis is the way I think that endpoint **A** abandoning a path with endpoint **B** should be done:\r\n\r\n1. **A** stops sending new ack-eliciting packets on the path and waits for all packets in flight to be acknowledged or the tail loss probe timer to expire.\r\n2. **A** sends a `PATH_ABANDON` frame to **B**. After that, **A** continues to acknowledge incoming packets from **B**, on the same or another path.\r\n3. **B** receives and acknowledges the packet with the `PATH_ABANDON` frame. It does _not_ immediately send a reciprocal `PATH_ABANDON` frame, but first waits for acknowledgments of the packets it has in flight (just like **A** did before it sent its `PATH_ABANDON`).\r\n4. When all of **B**'s packets in flight have been acknowledged, or the tail loss probe timer has expired, it send the `PATH_ABANDON` to **A** and removes all state is has for the path.\r\n5. When **A** receives the `PATH_ABANDON` from **B**, it removes all state is has for the path and the path is completely abandoned.\r\n\r\nThis procedure also handles concurrent abandonment from both endpoints well.",
       "createdAt": "2024-10-30T08:50:32Z",
-      "updatedAt": "2024-11-05T15:58:59Z",
-      "closedAt": null,
+      "updatedAt": "2024-11-18T04:46:40Z",
+      "closedAt": "2024-11-18T04:46:40Z",
       "comments": [
         {
           "author": "mirjak",
@@ -12299,7 +12299,7 @@
       "id": "I_kwDOGNtpaM6c2EKc",
       "title": "PATHS_ BLOCKED should be clearly labelled \"informational\"",
       "url": "https://github.com/quicwg/multipath/issues/461",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -12310,8 +12310,8 @@
       ],
       "body": "The interop tests showed mismatched expectations, with some stacks apparently expecting to promptly receive a new MAX_PATH_ID frame after sending a PATH_BLOCKED frame. Of course, that's not happening. If the number of allocated paths has reached the limit supported by the server, the MAX_PATH_ID value can only increase if some allocated paths are abandoned. We should maybe clarify that PATH_BLOCKED is purely informational, and that it is not expected to trigger changes in the state of the peer.",
       "createdAt": "2024-11-03T19:25:08Z",
-      "updatedAt": "2024-11-06T16:19:31Z",
-      "closedAt": null,
+      "updatedAt": "2024-11-18T04:43:51Z",
+      "closedAt": "2024-11-18T04:43:50Z",
       "comments": []
     }
   ],
@@ -49480,7 +49480,7 @@
       "id": "PR_kwDOGNtpaM6AjD3D",
       "title": "PATH_ACK can still be sent after PATH_ABANDON",
       "url": "https://github.com/quicwg/multipath/pull/456",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -49489,17 +49489,19 @@
       ],
       "body": "",
       "createdAt": "2024-10-31T16:45:25Z",
-      "updatedAt": "2024-11-13T13:25:29Z",
+      "updatedAt": "2024-11-18T04:46:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-17",
       "headRefOid": "c53c1893fe2fb169b957b3cc58eaefdd5802ed50",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-18T04:46:39Z",
+      "mergedAt": "2024-11-18T04:46:39Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "a56f65bb31f897906e53a58a99835179875a208d"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -49574,6 +49576,19 @@
           "createdAt": "2024-11-13T13:25:29Z",
           "updatedAt": "2024-11-13T13:25:29Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6RhrbS",
+          "commit": {
+            "abbreviatedOid": "c53c189"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-18T04:46:28Z",
+          "updatedAt": "2024-11-18T04:46:28Z",
+          "comments": []
         }
       ]
     },
@@ -49582,7 +49597,7 @@
       "id": "PR_kwDOGNtpaM6AvFX6",
       "title": "Path abandon error code for experiments: fix in 62-bit variable int",
       "url": "https://github.com/quicwg/multipath/pull/462",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -49591,17 +49606,19 @@
       ],
       "body": "New experimental error code for path abandon error code field: \r\n\r\n- The hex value \"0x004150504142414E\" represents \"APPABAN\" (\"APPLICATION_ABANDON\" abbreviated) in UTF-8.\r\n- The hex value \"0x0052534C494D4954\" represents \"RSLIMIT\" (\"RESOURCE_LIMIT_REACHED\" abbreviated) in UTF-8.",
       "createdAt": "2024-11-03T22:32:49Z",
-      "updatedAt": "2024-11-06T16:18:33Z",
+      "updatedAt": "2024-11-18T04:44:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-error-code",
       "headRefOid": "918af375ea06a2d571bf142ffc5e0b5e3d33c6c7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-18T04:44:33Z",
+      "mergedAt": "2024-11-18T04:44:32Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "493560a7157fc37f0c9048690288a725087c7801"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -49632,7 +49649,7 @@
       "id": "PR_kwDOGNtpaM6A1ypV",
       "title": "Add clarification for PATHS_BLOCKED frame.",
       "url": "https://github.com/quicwg/multipath/pull/463",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -49641,17 +49658,19 @@
       ],
       "body": "Fix issue #461. \r\nGenerally the PATH_BLOCKED frame is informational and doesn't change the state of the peer.",
       "createdAt": "2024-11-04T19:02:50Z",
-      "updatedAt": "2024-11-13T13:27:35Z",
+      "updatedAt": "2024-11-18T04:43:50Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-461",
       "headRefOid": "de543f4d3d9202bb7c3da6c6f31334bc272971f7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-18T04:43:50Z",
+      "mergedAt": "2024-11-18T04:43:50Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "c490fd54108ecfb9d029fcb263448854ffe27fc8"
+      },
       "comments": [
         {
           "author": "JonathanLennox",
@@ -49929,11 +49948,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2024-11-06T11:37:54Z",
-      "updatedAt": "2024-11-13T14:04:37Z",
+      "updatedAt": "2024-11-18T12:04:50Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
@@ -49986,6 +50006,32 @@
               "updatedAt": "2024-11-13T14:04:09Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6RhWAW",
+          "commit": {
+            "abbreviatedOid": "4c56103"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-18T03:40:50Z",
+          "updatedAt": "2024-11-18T03:40:50Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6RlJfd",
+          "commit": {
+            "abbreviatedOid": "4c56103"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-18T12:04:50Z",
+          "updatedAt": "2024-11-18T12:04:50Z",
+          "comments": []
         }
       ]
     },
@@ -50001,13 +50047,13 @@
       "labels": [],
       "body": "To fix issue #414, according to the discussion during IETF 121.",
       "createdAt": "2024-11-11T12:03:45Z",
-      "updatedAt": "2024-11-13T13:34:44Z",
+      "updatedAt": "2024-11-18T04:52:44Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
+      "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-414-codes",
-      "headRefOid": "6231ad82eda85a6d797ab31b68a0f5773de71cb0",
+      "headRefOid": "61700d6550e3ce24f1dccd9669623bb66ce7eed4",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -50186,6 +50232,79 @@
           "createdAt": "2024-11-13T12:00:25Z",
           "updatedAt": "2024-11-13T12:00:25Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 468,
+      "id": "PR_kwDOGNtpaM6CPBbP",
+      "title": "Add new type for lacking of CID in PATHS_BLOCKED frame",
+      "url": "https://github.com/quicwg/multipath/pull/468",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "To solve issue #459 according to comments in IETF-121",
+      "createdAt": "2024-11-18T11:40:36Z",
+      "updatedAt": "2024-11-18T12:27:18Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/fix-459",
+      "headRefOid": "72ccaa190166cf6ef73374cc33ed1ec8a1e91d1d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6RlEtm",
+          "commit": {
+            "abbreviatedOid": "0af05a0"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Some language adjustments needed, but otherwise fine. ",
+          "createdAt": "2024-11-18T11:55:30Z",
+          "updatedAt": "2024-11-18T12:01:03Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I think \"lacking unused Connection IDs for the corresponding Path ID\" needs reformulation. The sending endpoint want to open a path, but no CID have been assigned by the peer for any of the available but unused path IDs. So maybe: \"... because of no CIDs have been assigned to any unused available Path ID.\"",
+              "createdAt": "2024-11-18T11:55:30Z",
+              "updatedAt": "2024-11-18T12:01:03Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "I don't think \"lacking\" works here grammatically, either use \"lack of Connection IDs for any unused path ID\".",
+              "createdAt": "2024-11-18T12:00:16Z",
+              "updatedAt": "2024-11-18T12:01:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6RlU2B",
+          "commit": {
+            "abbreviatedOid": "0af05a0"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-18T12:27:18Z",
+          "updatedAt": "2024-11-18T12:27:18Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Thanks for the comments! Updated, please check the newest version.",
+              "createdAt": "2024-11-18T12:27:18Z",
+              "updatedAt": "2024-11-18T12:27:18Z"
+            }
+          ]
         }
       ]
     }
