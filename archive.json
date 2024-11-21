@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-19T00:57:20.126958+00:00",
+  "timestamp": "2024-11-21T00:56:48.527713+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -50238,7 +50238,7 @@
     {
       "number": 468,
       "id": "PR_kwDOGNtpaM6CPBbP",
-      "title": "Add new type for lacking of CID in PATHS_BLOCKED frame",
+      "title": "Add new type for no unused CID in PATHS_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/pull/468",
       "state": "OPEN",
       "author": "Yanmei-Liu",
@@ -50247,7 +50247,7 @@
       "labels": [],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-11-18T12:27:18Z",
+      "updatedAt": "2024-11-19T11:29:30Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
