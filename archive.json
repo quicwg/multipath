@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-24T01:01:13.165141+00:00",
+  "timestamp": "2024-11-26T00:57:55.365939+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -50247,7 +50247,7 @@
       "labels": [],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-11-19T11:29:30Z",
+      "updatedAt": "2024-11-25T15:36:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
@@ -50305,6 +50305,32 @@
               "updatedAt": "2024-11-18T12:27:18Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6SbZDf",
+          "commit": {
+            "abbreviatedOid": "72ccaa1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I think the text could be a bit simpler, but this is what we want to do.",
+          "createdAt": "2024-11-24T08:37:07Z",
+          "updatedAt": "2024-11-24T08:37:07Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Sjk-f",
+          "commit": {
+            "abbreviatedOid": "72ccaa1"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-25T15:36:37Z",
+          "updatedAt": "2024-11-25T15:36:37Z",
+          "comments": []
         }
       ]
     }
