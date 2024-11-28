@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-26T00:57:55.365939+00:00",
+  "timestamp": "2024-11-28T00:58:26.487201+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12139,7 +12139,7 @@
       ],
       "body": "Path Migration for the case when the client is not aware of the change, like for NAT address rebinding case can't be avoided. Thus, this needs to be supported by server as something that can occur. However, if a client have a new address it could technically select to migrate an existing path to this new path. However, it appears more suitable to have a very strong recommendation here to actually open a new path in these cases. Combined possibly with abandoning another existing path. \r\n\r\nThis issue is based on the interop testing. ",
       "createdAt": "2024-11-03T14:22:14Z",
-      "updatedAt": "2024-11-06T11:40:22Z",
+      "updatedAt": "2024-11-26T15:57:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -12218,6 +12218,13 @@
           "body": "Based on a discussion with @mirjak, @gloinul and @Yanmei-Liu, I think we could have the following resolution:\r\n\r\n1) Add a strong recommendation to use multipath mechanisms for the migration scenarios, because they are much more controlled and deterministic than the basic migration in 9000. The multipath mechanisms allow \"make before break\", using PATH_AVAILABLE and PATH_BACKUP frames to control where to send traffic, and PATH_ABANDON to cleanly \"break\" one path after other paths are available.\r\n\r\n2) Add some text explaining that we do have some ambiguity in RFC 9000 between the \"uncontrolled\" NAT Rebinding scenario and the \"controlled\" migration scenarios. This ambiguity can be resolved using heuristics, but the heuristics will get confused some time. Implementations that do not want to rely on these heuristics can simplify their code by only supporting the NAT Rebinding scenario. This will drop support for scenarios like \"prepare a migration, validate the continuity of the 4-tuple, then keep the 4-tuple in standby until the app decides to use it\" -- NAT Rebinding only does immediate migration, if the old path is still available, the new attempt is discarded.",
           "createdAt": "2024-11-05T18:33:27Z",
           "updatedAt": "2024-11-05T18:33:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema on your point 2 above: I think this is, if at all, an issue for RFC9000 and not for this draft. Therefore I don't think we should  add any discussion in this draft. Actually I disagree about this problem. I don't think there is ambiguity but instead it was on purpose a decision in RFC9000 to treat these two cases the same. If you decide to not implement migration as specified in RFC9000 for both cases then that's your local decision and migration will fail in some cases. That's okay but has nothing to do with the multipath extension.",
+          "createdAt": "2024-11-26T15:57:28Z",
+          "updatedAt": "2024-11-26T15:57:28Z"
         }
       ]
     },
@@ -50247,7 +50254,7 @@
       "labels": [],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-11-25T15:36:37Z",
+      "updatedAt": "2024-11-26T20:29:58Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
@@ -50258,7 +50265,22 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't think it is useful to make this new frame a variant of the PATHS_BLOCKD frame because for the this signal the max_path_id value is not useful. I would prefer for clarity to have a new PATHS_CID_BLOCK frames which either has no fields or a path ID field that indicates an unused path ID that you would like to get CIDs for or something like that if people think such information would be useful...?",
+          "createdAt": "2024-11-26T18:09:14Z",
+          "updatedAt": "2024-11-26T18:09:14Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "There is no technical difference between what @mirjak suggests and the current PR. In both cases, we get two frame types, with two different parameters, and a path_id values. The big difference is having two frame names (@mirjak) instead of one (current). The \"two frame name\" variant is easier to document, and probably easier to understand by implementers. For the PR, that would mean:\r\n\r\n* remove the proposed changes to PATHS_BLOCKED frames \r\n* add the description of a PATH_CID_BLOCKED frame\r\n\r\nThat description could be:\r\n```\r\n## PATH_CID_BLOCKED frames {#path-cid-blocked-frame}\r\nA sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when\r\nit wishes to open a path but is unable to do so because there are no unused Connection IDs available\r\nfor the corresponding Path IDs.\r\n\r\nNote that PATH_CID_BLOCKED frame is informational. Sending a PATH_CID_BLOCKED frame does not\r\nimply a particular action from the peer like updating the new Max Path ID value,\r\nbut informs the peer that the absence of unused Connection IDs prevented the creation of this path.\r\n\r\nPATH_CID_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-format}}.\r\n~~~\r\nPATHS_BLOCKED Frame {\r\n  Type (i) = TBD-09 (experiments use 0x15228c0e),\r\n  Path Identifier (i),\r\n}\r\n~~~\r\n{: #fig-path-cid-blocked-frame-format title=\"PATH_CID_BLOCKED Frame Format\"}\r\n\r\nPath Identifier:\r\n  : Identifier of the path for which unused Connection IDs are not available.\r\n```\r\n\r\nNote that there is a difference between PATHS_BLOCKED and PATH_CID_BLOCKED frame formats: in one case the parameter is a number of paths, in the other case a path identifier.\r\n\r\n ",
+          "createdAt": "2024-11-26T20:29:57Z",
+          "updatedAt": "2024-11-26T20:29:57Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6RlEtm",
