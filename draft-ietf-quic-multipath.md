@@ -1394,6 +1394,7 @@ imply a particular action from the peer, but informs the peer that the absence o
 prevented the creation of this path.
 
 PATH_CID_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-format}}.
+
 ~~~
 PATHS_CID_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
