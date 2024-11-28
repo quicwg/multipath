@@ -1050,7 +1050,7 @@ multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
 multiple open paths instead.
 
-### Using multiple paths on the same 4-tuple
+## Using multiple paths on the same 4-tuple
 
 As noted in {{basic-design-points}}, it is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
