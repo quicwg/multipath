@@ -1403,7 +1403,7 @@ PATHS_CID_BLOCKED Frame {
 {: #fig-path-cid-blocked-frame-format title="PATH_CID_BLOCKED Frame Format"}
 
 Path Identifier:
-  : Identifier of the path for which unused Connection IDs are not available.
+: Identifier of the path for which unused Connection IDs are not available.
 
 
 # Error Codes {#error-codes}
