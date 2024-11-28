@@ -1028,7 +1028,7 @@ Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
-## Connection ID Changes 
+## Connection ID Changes
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses to another available one
