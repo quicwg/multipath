@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 22 May 2025                              Uber Technologies Inc.
+Expires: 1 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 22 May 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        18 November 2024
+                                                        28 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 May 2025.
+   This Internet-Draft will expire on 1 June 2025.
 
 Copyright Notice
 
@@ -110,6 +110,7 @@ Table of Contents
      7.5.  PATH_RETIRE_CONNECTION_ID frames
      7.6.  MAX_PATH_ID frames
      7.7.  PATHS_BLOCKED frames
+     7.8.  PATH_CID_BLOCKED frames
    8.  Error Codes
    9.  IANA Considerations
    10. Security Considerations
@@ -1444,25 +1445,22 @@ Table of Contents
 
    A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when it
    wishes to open a path but is unable to do so due to the maximum path
-   identifier limit set by its peer.  If the Type field within the
-   PATHS_BLOCKED frame is TBD-09 (used in experiments as 0x15228c0e),
-   this signifies that new paths are blocked because there are no unused
-   Connection IDs available for the corresponding Path IDs.
+   identifier limit set by its peer.
 
    Note that PATHS_BLOCKED frame is informational.  Sending a
    PATHS_BLOCKED frame does not imply a particular action from the peer
    like updating the new Max Path ID value, but informs the peer that
    the maximum path identifier limit prevented the creation of new
-   paths, or there are no available Connection IDs for the path.
+   paths.
 
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 
-  PATHS_BLOCKED Frame {
-    Type (i) = TBD-08..TBD-09 (experiments use 0x15228c0d.. 0x15228c0e),
-    Maximum Path Identifier (i),
-  }
+   PATHS_BLOCKED Frame {
+     Type (i) = TBD-08 (experiments use 0x15228c0d),
+     Maximum Path Identifier (i),
+   }
 
-               Figure 10: MAX_PATH_ID_BLOCKED Frame Format
+                Figure 10: MAX_PATH_ID_BLOCKED Frame Format
 
    PATHS_BLOCKED frames contain the following field:
 
@@ -1471,10 +1469,30 @@ Table of Contents
       sent.  If the received value is lower than the currently allowed
       maximum value, this frame can be ignored.  Receipt of a value that
       is higher than the local maximum value MUST be treated as a
-      connection error of type PROTOCOL_VIOLATION.  If the type field is
-      TBD-09(experiments use 0x15228c0e), this indicates that the path
-      identifier cannot be used to create new paths because there are no
-      unused connection IDs available for this path.
+      connection error of type PROTOCOL_VIOLATION.
+
+7.8.  PATH_CID_BLOCKED frames
+
+   A sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when
+   it wishes to open a path but is unable to do so because there are no
+   unused Connection IDs available for the corresponding Path IDs.
+
+   Note that PATH_CID_BLOCKED frame is informational.  Sending a
+   PATH_CID_BLOCKED frame does not imply a particular action from the
+   peer, but informs the peer that the absence of unused Connection IDs
+   prevented the creation of this path.
+
+   PATH_CID_BLOCKED frames are formatted as shown in Figure 11.
+
+   PATHS_CID_BLOCKED Frame {
+     Type (i) = TBD-09 (experiments use 0x15228c0e),
+     Path Identifier (i),
+   }
+
+                  Figure 11: PATH_CID_BLOCKED Frame Format
+
+   Path Identifier:  Identifier of the path for which unused Connection
+      IDs are not available.
 
 8.  Error Codes
 
@@ -1544,7 +1562,7 @@ Table of Contents
    | TBD-08 (experiments    | PATHS_BLOCKED             |Section 7.7  |
    | use 0x15228c0d)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-09 (experiments    | PATHS_BLOCKED             |Section 7.7  |
+   | TBD-09 (experiments    | PATH_CID_BLOCKED          |Section 7.8  |
    | use 0x15228c0e)        |                           |             |
    +------------------------+---------------------------+-------------+
 
