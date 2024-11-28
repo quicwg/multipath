@@ -1358,20 +1358,16 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer.
-If the Type field within the PATHS_BLOCKED frame is TBD-09 (used in experiments as 0x15228c0e),
-this signifies that new paths are blocked because there are no unused Connection IDs available
-for the corresponding Path IDs.
 
 Note that PATHS_BLOCKED frame is informational. Sending a PATHS_BLOCKED frame does not
 imply a particular action from the peer like updating the new Max Path ID value,
-but informs the peer that the maximum path identifier limit prevented the creation of new paths,
-or there are no available Connection IDs for the path.
+but informs the peer that the maximum path identifier limit prevented the creation of new paths.
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
 ~~~
 PATHS_BLOCKED Frame {
-  Type (i) = TBD-08..TBD-09 (experiments use 0x15228c0d.. 0x15228c0e),
+  Type (i) = TBD-08 (experiments use 0x15228c0d),
   Maximum Path Identifier (i),
 }
 ~~~
@@ -1385,9 +1381,30 @@ Maximum Path Identifier:
   the currently allowed maximum value, this frame can be ignored.
   Receipt of a value that is higher than the local maximum value MUST
   be treated as a connection error of type PROTOCOL_VIOLATION.
-  If the type field is TBD-09(experiments use 0x15228c0e), this indicates
-  that the path identifier cannot be used to create new paths because
-  there are no unused connection IDs available for this path.
+
+
+## PATH_CID_BLOCKED frames {#path-cid-blocked-frame}
+
+A sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when
+it wishes to open a path but is unable to do so because there are no unused Connection IDs available
+for the corresponding Path IDs.
+
+Note that PATH_CID_BLOCKED frame is informational. Sending a PATH_CID_BLOCKED frame does not
+imply a particular action from the peer, but informs the peer that the absence of unused Connection IDs
+prevented the creation of this path.
+
+PATH_CID_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-format}}.
+~~~
+PATHS_BLOCKED Frame {
+  Type (i) = TBD-09 (experiments use 0x15228c0e),
+  Path Identifier (i),
+}
+~~~
+{: #fig-path-cid-blocked-frame-format title="PATH_CID_BLOCKED Frame Format"}
+
+Path Identifier:
+  : Identifier of the path for which unused Connection IDs are not available.
+
 
 # Error Codes {#error-codes}
 
@@ -1436,7 +1453,7 @@ TBD-05 (experiments use 0x15228c09)                  | PATH_NEW_CONNECTION_ID   
 TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
 TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
-TBD-09 (experiments use 0x15228c0e)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
+TBD-09 (experiments use 0x15228c0e)                  | PATH_CID_BLOCKED | {{path-cid-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
