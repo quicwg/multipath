@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 22 May 2025                              Uber Technologies Inc.
+Expires: 1 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 22 May 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        18 November 2024
+                                                        28 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 May 2025.
+   This Internet-Draft will expire on 1 June 2025.
 
 Copyright Notice
 
@@ -101,7 +101,7 @@ Table of Contents
      6.7.  Handling different PMTU sizes
      6.8.  Keep Alive
      6.9.  Connection ID Changes and NAT Rebindings
-       6.9.1.  Using multiple paths on the same 4-tuple
+     6.10. Using multiple paths on the same 4-tuple
    7.  New Frames
      7.1.  PATH_ACK Frame
      7.2.  PATH_ABANDON Frame
@@ -1137,7 +1137,7 @@ Table of Contents
    addresses that could lead to switching between different paths, it
    should rather maintain multiple open paths instead.
 
-6.9.1.  Using multiple paths on the same 4-tuple
+6.10.  Using multiple paths on the same 4-tuple
 
    As noted in Section 1.1, it is possible to create paths that refer to
    the same 4-tuple.  For example, the endpoints may want to create
