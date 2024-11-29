@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 1 June 2025                              Uber Technologies Inc.
+Expires: 2 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 1 June 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        28 November 2024
+                                                        29 November 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 June 2025.
+   This Internet-Draft will expire on 2 June 2025.
 
 Copyright Notice
 
@@ -1142,7 +1142,7 @@ Table of Contents
 
    More generally, while migration cannot be avoided in case of network-
    based NAT rebindings, opening a new path instead of active client
-   migration should be strongly perferened when the multipath extension
+   migration should be strongly preferred when the multipath extension
    is supported.  This enables a smoother handover and allows a
    simplified migration handling at the server as NAT rebindings imply
    immediate loss of the old address.
