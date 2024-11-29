@@ -1404,14 +1404,10 @@ the used interface is considered to be unstable. This conition can occur, e.g.,
 due to a weak wireless signal or frequent mobility events.
 
 NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
-the lack of an available connection ID for this path.
-This may occur when the endpoint initiates a new path
-but have not transmited a corresponding new connection ID for the path ID
-(or the packet containing new connection IDs is inflight),
-then the peer could choose to abandon the path with this error code.
-Note that if endpoints send PATH_NEW_CONNECTION_ID and PATH_CHALLENDGE
-within a very short time period, and the packets arrived out of order, the peer
-could choose to hold path validation frames for a while or send PATH_ABANDON immediately for the path.
+the lack of a connection ID for this path.
+This may occur when the peer initiates a new path
+but has not provided a corresponding connection ID for the path ID
+(or the packet containing the connection IDs has not arrived yet).
 
 
 # IANA Considerations
