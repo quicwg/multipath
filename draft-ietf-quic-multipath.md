@@ -1054,7 +1054,7 @@ multiple open paths instead.
 
 More generally, while migration cannot be avoided in case of network-based
 NAT rebindings, opening a new path instead of active client migration
-should be strongly perferened when the multipath extension is supported.
+should be strongly preferred when the multipath extension is supported.
 This enables a smoother handover and allows a simplified migration
 handling at the server as NAT rebindings imply immediate loss of the old
 address.
