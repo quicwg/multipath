@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-28T00:58:26.487201+00:00",
+  "timestamp": "2024-12-01T01:08:26.100820+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12135,11 +12135,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
+        "has PR",
         "design"
       ],
       "body": "Path Migration for the case when the client is not aware of the change, like for NAT address rebinding case can't be avoided. Thus, this needs to be supported by server as something that can occur. However, if a client have a new address it could technically select to migrate an existing path to this new path. However, it appears more suitable to have a very strong recommendation here to actually open a new path in these cases. Combined possibly with abandoning another existing path. \r\n\r\nThis issue is based on the interop testing. ",
       "createdAt": "2024-11-03T14:22:14Z",
-      "updatedAt": "2024-11-26T15:57:29Z",
+      "updatedAt": "2024-11-28T17:17:37Z",
       "closedAt": null,
       "comments": [
         {
@@ -12238,11 +12239,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
+        "has PR",
         "design"
       ],
       "body": "In the MP-QUIC interop testing at IETF 121 it was observed that an issue when testing PATHS_BLOCKED is that some servers where blocking path creation by not providing CIDS for some of the path IDs that it allowed. Thus, the client may desire to open more paths, there are agreed on path IDs, but lacks the CIDs. If the PATHS_BLOCKED is usable, how does one handle the situation when the server block the client by not providing CIDs? \r\n\r\nI believe some clarifications and possible requirements are needed. I think there are two roads to take here:\r\n\r\n1) Require that endpoints provide PATH_NEW_CONNECTION_ID when there are no CIDs for an unused PATH ID, as long as below MAX_PATH_IDS. \r\n2) Create an equivalent or parameter on PATHS_BLOCKED indicating what is the issue. \r\n\r\n",
       "createdAt": "2024-11-03T14:33:59Z",
-      "updatedAt": "2024-11-06T11:40:39Z",
+      "updatedAt": "2024-11-28T05:19:07Z",
       "closedAt": null,
       "comments": [
         {
@@ -12282,7 +12284,7 @@
       ],
       "body": "The current draft (version 11) says _\"Also, the Path ID for the connection ID specified in the \"preferred address\" transport parameter is 0. Use of the \"preferred address\" is considered as a migration event that does not change the Path ID.\"_ This point is further reinforced in the path management section: _\"In particular, if the server uses the preferred_address transport parameter, clients cannot assume that the initial server address and the addresses contained in this parameter can be simultaneously used for multipath (Section 9.6.2 of [QUIC-TRANSPORT]).\"_\r\n\r\nThis is questionable, since support of RFC-9000 style \"migration\" is problematic, as explained in issue #458. With multipath negotiated, \"path migration\" uses the same code path as \"NAT Rebinding\", which is a poor fit for preferred address migration. The selected path will eventually depend on the order in which packets are received, which might bring back usage of the original address instead of the preferred address. \r\n\r\nClients will get a much more reliable result if they proceed in two steps: first establish a new path to the preferred address (typically path id 1), then abandon the initial path (path id 0). This is the \"make before break\" scenario that should generally be preferred to path migration. But this behavior is gated by two conditions: the server should allow a \"max path id\" value no lower than 1; and, the server shall provide the client with connection IDs for path 1. Otherwise, the client will have to wait until the server sends a new MAX_PATH_ID and PATH_CONNECTION_ID frames.\r\n\r\nWe may want to revise the text to explicitly authorize \"make before break\" behavior, i.e., using path creation instead of path migration for handling the preferred address. If we don't do that, stacks would probably need a special handling of the preferred address, as an exception to the normal code behavior, and that special handling should probably be discussed in the implementation section.",
       "createdAt": "2024-11-03T19:06:23Z",
-      "updatedAt": "2024-11-07T20:57:33Z",
+      "updatedAt": "2024-11-29T05:35:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -12298,6 +12300,20 @@
           "body": "There is a small matter of timing. There will be some time between \"max path is larger than 0\" and \"a CID is available for path=1\".",
           "createdAt": "2024-11-07T20:57:31Z",
           "updatedAt": "2024-11-07T20:57:31Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema but that means it's better to treat this as migration and keep using path ID 0, no? Are any chances needed here or can we close the issue?",
+          "createdAt": "2024-11-28T17:20:10Z",
+          "updatedAt": "2024-11-28T17:20:10Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Migration is never better than creation of a new path followed by deletion of the old path -- the path creation allows proper make before break, which RFC 9000 style migration does not. And yes, in that case that means deleting path 0. But given what we have written, we can have server implementations that delay providing CID for path 1 until migration of path 0 to the preferred address is complete. Combine that with a stubborn client that does not do migration, and we have an interop problem.\r\n\r\nI guess part of the issue is that I treated the old \"migration\" code as \"creating a path\". It does something else, merely validating a 4 tuple. The path creation only happens in RFC 9000 when the client actually migrates a path to a new tuple -- a different concept than what we do with path creation. I don't have time to fix that immediately, but should be able to review it in December.\r\n\r\nBut then, RFC 9000 migration relies on the concept of \"path validating frames\". I hoped I could get rid of that.\r\n\r\nLooking at it that way opens interesting possibilities. For example, I could do an address validation exchange using a CID allocated for path X, then use the validated address to immediately send data on a new path Y, then close the unrelated path Z. I kind of like that approach.",
+          "createdAt": "2024-11-29T05:33:37Z",
+          "updatedAt": "2024-11-29T05:35:57Z"
         }
       ]
     },
@@ -12319,6 +12335,74 @@
       "createdAt": "2024-11-03T19:25:08Z",
       "updatedAt": "2024-11-18T04:43:51Z",
       "closedAt": "2024-11-18T04:43:50Z",
+      "comments": []
+    },
+    {
+      "number": 470,
+      "id": "I_kwDOGNtpaM6hGcfQ",
+      "title": "Recommend that PATH_ABANDON should be retransmitted on another path",
+      "url": "https://github.com/quicwg/multipath/issues/470",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "Maybe this is obvious but if a path_abandon frame gets lost, this will usually lead to a PTO. In this case the path is highly likely to be already broken and I probably should retransmit the path_abandon frame on another path to actually be able to close the path. We already say in the new \"handling PTO\" section that it makes sense to generally retransmit on another path. However, maybe we should actually say this using normative language (SHOULD or MUST?) in the path closure section in case of the path_abandon frame?",
+      "createdAt": "2024-11-28T17:32:18Z",
+      "updatedAt": "2024-11-29T05:39:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The feedback from Dublin was quite clear: a bunch of these strategies are still research issues. We should generally not try to solve them as part of the draft, because it makes the whole draft look like a research project. And we should certainly not make normative statements that implementation SHOULD or MUST implement a variant of an algorithm for which research is still ongoing.",
+          "createdAt": "2024-11-29T05:39:30Z",
+          "updatedAt": "2024-11-29T05:39:30Z"
+        }
+      ]
+    },
+    {
+      "number": 471,
+      "id": "I_kwDOGNtpaM6hGpaA",
+      "title": "If the peer does not reply with a path_abandon frame, state can never be removed",
+      "url": "https://github.com/quicwg/multipath/issues/471",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "Currently the draft only says:\r\n\r\n\"knowledge of the connection identifiers received from the peer and of the state of the number space associated to the path SHOULD be retained while packets from the peer might still be in transit, i.e., for a delay of 3 PTO after the PATH_ABANDON frame has been received from the peer\"\r\n\r\nTherefore state removal is triggered by reception of the path abandon frame. There is MUST in the text that my peer must send me a path_abandon frame if it has received mine. What if it doesn't send a path_abandon frame ever?\r\n\r\nThe sentence above is only a SHOULD, so I guess you could remove state any reasonable time after sending the path_abandon frame, however, maybe we should say more explicitly that it makes sense to also start a timer after the ACK for the path_abandon frame was received, or stop retransmitting the path_abandon frame after X tries and then just remove state?",
+      "createdAt": "2024-11-28T17:40:59Z",
+      "updatedAt": "2024-11-29T05:41:35Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If a peer misbehaves, as in \"doesn't send a path_abandon frame ever\", you should treat that as an attack. Very much a variant of the Slow loris attack described in the security section of RFC 9000. Closing the connection would be appropriate.",
+          "createdAt": "2024-11-29T05:41:35Z",
+          "updatedAt": "2024-11-29T05:41:35Z"
+        }
+      ]
+    },
+    {
+      "number": 472,
+      "id": "I_kwDOGNtpaM6hMOQh",
+      "title": "Rename PATHS_BLOCKED to PATH_BLOCKED",
+      "url": "https://github.com/quicwg/multipath/issues/472",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently all the other multipath frame types are PATH_ except PATHS_BLOCKED. And really the description for PATHS_BLOCKED really just indicates that one path was blocked from being established. There might be more, but we anyway don't have any field in the frame to indicate how many paths the endpoint would like to establish. So I propose that we rename it PATH_BLOCKED for consistency reason. ",
+      "createdAt": "2024-11-29T08:34:16Z",
+      "updatedAt": "2024-11-29T08:34:16Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -49894,7 +49978,7 @@
       "id": "PR_kwDOGNtpaM6BCfJf",
       "title": "Wrong subsection alignment",
       "url": "https://github.com/quicwg/multipath/pull/464",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -49904,17 +49988,19 @@
       ],
       "body": "",
       "createdAt": "2024-11-06T10:53:14Z",
-      "updatedAt": "2024-11-13T13:28:21Z",
+      "updatedAt": "2024-11-28T03:32:22Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-18",
       "headRefOid": "8feafa1cf9bdece6d765455427007cb088556631",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-28T03:32:22Z",
+      "mergedAt": "2024-11-28T03:32:22Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "7edf58bc898a1bda85d1a3eef7a706b56990048d"
+      },
       "comments": [],
       "reviews": [
         {
@@ -49950,7 +50036,7 @@
       "id": "PR_kwDOGNtpaM6BCy-v",
       "title": "minor wording clarification for idle time",
       "url": "https://github.com/quicwg/multipath/pull/465",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -49960,17 +50046,19 @@
       ],
       "body": "",
       "createdAt": "2024-11-06T11:37:54Z",
-      "updatedAt": "2024-11-18T12:04:50Z",
+      "updatedAt": "2024-11-28T03:32:46Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "7d53206766a39647933b11e5b7d36df00d493aa3",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-19",
       "headRefOid": "4c5610382cdce490d7c7875edeeadc023069b82d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-11-28T03:32:46Z",
+      "mergedAt": "2024-11-28T03:32:46Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "bf656740863c73c418f089bedfc50448f56c8cf9"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -50054,13 +50142,13 @@
       "labels": [],
       "body": "To fix issue #414, according to the discussion during IETF 121.",
       "createdAt": "2024-11-11T12:03:45Z",
-      "updatedAt": "2024-11-18T04:52:44Z",
+      "updatedAt": "2024-11-29T08:27:13Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-414-codes",
-      "headRefOid": "61700d6550e3ce24f1dccd9669623bb66ce7eed4",
+      "headRefOid": "21a50760961bdef26f42a6523c4e93fb233daca4",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -50090,6 +50178,66 @@
               "body": "I think black hole can be replace by very high degrees of persistent packet loss, rather than using jargon. ",
               "createdAt": "2024-11-13T13:33:59Z",
               "updatedAt": "2024-11-13T13:34:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TI4Q5",
+          "commit": {
+            "abbreviatedOid": "61700d6"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-28T16:44:49Z",
+          "updatedAt": "2024-11-28T16:44:50Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nUNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because\r\nthe used interface is considered to be unstable. This conition can occur, e.g., \r\ndue to a weak wireless signal or frequent mobility events.\r\n```",
+              "createdAt": "2024-11-28T16:44:49Z",
+              "updatedAt": "2024-11-28T16:44:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TI5KS",
+          "commit": {
+            "abbreviatedOid": "61700d6"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-28T16:47:29Z",
+          "updatedAt": "2024-11-28T16:47:29Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "```suggestion\r\nNO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to\r\nthe lack of a connection ID for this path.\r\nThis may occur when the peer initiates a new path\r\nbut has not provided a corresponding connection ID for the path ID\r\n(or the packet containing the connection IDs has not arrived yet).\r\n```",
+              "createdAt": "2024-11-28T16:47:29Z",
+              "updatedAt": "2024-11-28T16:47:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TLzZH",
+          "commit": {
+            "abbreviatedOid": "21a5076"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-29T08:27:13Z",
+          "updatedAt": "2024-11-29T08:27:13Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "Should this error position itself in relation to the PATH_CID_BLOCKED in #468. Commonly a endpoint would first send PATH_CID_BLOCKED to indicate the lack of CID, and eventually it might decide to close the path using PATH_ABANDON with the NO_CID_AVAILABLE error code. ",
+              "createdAt": "2024-11-29T08:27:13Z",
+              "updatedAt": "2024-11-29T08:27:13Z"
             }
           ]
         }
@@ -50245,22 +50393,24 @@
     {
       "number": 468,
       "id": "PR_kwDOGNtpaM6CPBbP",
-      "title": "Add new type for no unused CID in PATHS_BLOCKED frame",
+      "title": "Add new frame type: PATH_CID_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/pull/468",
       "state": "OPEN",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-11-26T20:29:58Z",
+      "updatedAt": "2024-11-29T06:59:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-459",
-      "headRefOid": "72ccaa190166cf6ef73374cc33ed1ec8a1e91d1d",
+      "headRefOid": "aac0f6d3237600df1ba816b54776db661e5ad3bc",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -50352,6 +50502,152 @@
           "body": "",
           "createdAt": "2024-11-25T15:36:37Z",
           "updatedAt": "2024-11-25T15:36:37Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TEBQb",
+          "commit": {
+            "abbreviatedOid": "0d485cf"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-28T09:20:07Z",
+          "updatedAt": "2024-11-28T09:20:07Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "```suggestion\r\nPATHS_CID_BLOCKED Frame {\r\n```",
+              "createdAt": "2024-11-28T09:20:07Z",
+              "updatedAt": "2024-11-28T09:20:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TI9mh",
+          "commit": {
+            "abbreviatedOid": "0cc5d33"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-28T17:01:16Z",
+          "updatedAt": "2024-11-28T17:01:16Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\nPATH_CID_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-format}}.\r\n\r\n```",
+              "createdAt": "2024-11-28T17:01:16Z",
+              "updatedAt": "2024-11-28T17:01:17Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 469,
+      "id": "PR_kwDOGNtpaM6Dfx8_",
+      "title": "recommend use of new paths instead of migration",
+      "url": "https://github.com/quicwg/multipath/pull/469",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #458 ",
+      "createdAt": "2024-11-28T17:16:04Z",
+      "updatedAt": "2024-11-29T08:20:46Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-20",
+      "headRefOid": "7f7d4b123021f938321e08ece0b30cdeec94d70c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6TJEOn",
+          "commit": {
+            "abbreviatedOid": "1a180c5"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-28T17:23:57Z",
+          "updatedAt": "2024-11-28T17:23:57Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\n## Connection ID Changes\r\n```",
+              "createdAt": "2024-11-28T17:23:57Z",
+              "updatedAt": "2024-11-28T17:23:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TJY_-",
+          "commit": {
+            "abbreviatedOid": "8b320d4"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-11-28T18:40:48Z",
+          "updatedAt": "2024-11-28T18:40:48Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "typo: perferened -> preferred.",
+              "createdAt": "2024-11-28T18:40:48Z",
+              "updatedAt": "2024-11-28T18:40:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TK5yG",
+          "commit": {
+            "abbreviatedOid": "7f7d4b1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks fine.",
+          "createdAt": "2024-11-29T05:20:04Z",
+          "updatedAt": "2024-11-29T05:20:04Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TK64G",
+          "commit": {
+            "abbreviatedOid": "7f7d4b1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-29T05:25:17Z",
+          "updatedAt": "2024-11-29T05:25:17Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6TLwdU",
+          "commit": {
+            "abbreviatedOid": "7f7d4b1"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-11-29T08:20:46Z",
+          "updatedAt": "2024-11-29T08:20:46Z",
           "comments": []
         }
       ]
