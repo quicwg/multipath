@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 22 May 2025                              Uber Technologies Inc.
+Expires: 6 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 22 May 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        18 November 2024
+                                                         3 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 May 2025.
+   This Internet-Draft will expire on 6 June 2025.
 
 Copyright Notice
 
@@ -1488,21 +1488,15 @@ Table of Contents
    path.
 
    UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path
-   because of unstable interfaces.  This error is used when endpoints
-   find that the network interfaces are unstable due to weak signal or
-   other possible situations.  Endpoints could also choose to use this
-   error when detecting a black hole on the specific path.
+   because the used interface is considered to be unstable.  This
+   conition can occur, e.g., due to a weak wireless signal or frequent
+   mobility events.
 
    NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
-   the lack of an available connection ID for this path.  This may occur
-   when the endpoint initiates a new path but have not transmited a
-   corresponding new connection ID for the path ID (or the packet
-   containing new connection IDs is inflight), then the peer could
-   choose to abandon the path with this error code.  Note that if
-   endpoints send PATH_NEW_CONNECTION_ID and PATH_CHALLENDGE within a
-   very short time period, and the packets arrived out of order, the
-   peer could choose to hold path validation frames for a while or send
-   PATH_ABANDON immediately for the path.
+   the lack of a connection ID for this path.  This may occur when the
+   peer initiates a new path but has not provided a corresponding
+   connection ID for the path ID (or the packet containing the
+   connection IDs has not arrived yet).
 
 9.  IANA Considerations
 
