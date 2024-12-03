@@ -1386,11 +1386,11 @@ Maximum Path Identifier:
 ## PATH_CID_BLOCKED frames {#path-cid-blocked-frame}
 
 A sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when
-it wishes to open a path but is unable to do so because there are no unused Connection IDs available
+it wishes to open a path but is unable to do so because there are no unused connection IDs available
 for the corresponding Path IDs.
 
 Note that PATH_CID_BLOCKED frame is informational. Sending a PATH_CID_BLOCKED frame does not
-imply a particular action from the peer, but informs the peer that the absence of unused Connection IDs
+imply a particular action from the peer, but informs the peer that the absence of unused connection IDs
 prevented the creation of this path.
 
 PATH_CID_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-format}}.
@@ -1404,7 +1404,7 @@ PATHS_CID_BLOCKED Frame {
 {: #fig-path-cid-blocked-frame-format title="PATH_CID_BLOCKED Frame Format"}
 
 Path Identifier:
-: Identifier of the path for which unused Connection IDs are not available.
+: Identifier of the path for which unused connection IDs are not available.
 
 
 # Error Codes {#error-codes}
