@@ -1400,7 +1400,7 @@ limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
 
 UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because
-the used interface is considered to be unstable. This conition can occur, e.g.,
+the used interface is considered to be unstable. This condition can occur, e.g.,
 due to a weak wireless signal or frequent mobility events.
 
 NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
