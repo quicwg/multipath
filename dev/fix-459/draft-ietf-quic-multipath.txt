@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 June 2025                              Uber Technologies Inc.
+Expires: 7 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 June 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         3 December 2024
+                                                         4 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 June 2025.
+   This Internet-Draft will expire on 7 June 2025.
 
 Copyright Notice
 
@@ -1474,8 +1474,9 @@ Table of Contents
 7.8.  PATH_CID_BLOCKED frames
 
    A sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when
-   it wishes to open a path but is unable to do so because there are no
-   unused connection IDs available for the corresponding Path IDs.
+   it wishes to open a path or change the CID on an established path but
+   is unable to do so because there are no unused connection IDs
+   available for the corresponding Path IDs.
 
    Note that PATH_CID_BLOCKED frame is informational.  Sending a
    PATH_CID_BLOCKED frame does not imply a particular action from the
