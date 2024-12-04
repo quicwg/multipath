@@ -1386,7 +1386,8 @@ Maximum Path Identifier:
 ## PATH_CID_BLOCKED frames {#path-cid-blocked-frame}
 
 A sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when
-it wishes to open a path but is unable to do so because there are no unused connection IDs available
+it wishes to open a path or change the CID on an established path
+but is unable to do so because there are no unused connection IDs available
 for the corresponding Path IDs.
 
 Note that PATH_CID_BLOCKED frame is informational. Sending a PATH_CID_BLOCKED frame does not
