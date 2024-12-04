@@ -1453,16 +1453,16 @@ Table of Contents
    identifier limit set by its peer.
 
    A sender SHOULD send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
-   it wishes to open a path or change the CID on an established path but
-   is unable to do so because there are no unused connection IDs
-   available for the corresponding Path IDs.
+   it wishes to open a path with a valid Path ID or change the CID on an
+   established path but is unable to do so because there are no unused
+   connection IDs available for the corresponding Path IDs.
 
    Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are
    informational.  Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame
    does not imply a particular action from the peer like updating the
    new Max Path ID value, but informs the peer that the maximum path
    identifier limit or the absence of unused connection IDs prevented
-   the creation of new paths.
+   the creation or the usage of paths.
 
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 
