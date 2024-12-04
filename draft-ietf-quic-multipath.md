@@ -1366,7 +1366,7 @@ limit set by its peer.
 A sender SHOULD send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
 it wishes to open a path with a valid Path ID or change the CID on an established path
 but is unable to do so because there are no unused connection IDs available
-for the corresponding Path IDs.
+for the corresponding Path ID.
 
 Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
