@@ -1300,10 +1300,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.7.2.6.1"><a href="#section-7.6" class="auto internal xref">7.6</a>.  <a href="#name-max_path_id-frames" class="internal xref">MAX_PATH_ID frames</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.7">
-                <p id="section-toc.1-1.7.2.7.1"><a href="#section-7.7" class="auto internal xref">7.7</a>.  <a href="#name-paths_blocked-frames" class="internal xref">PATHS_BLOCKED frames</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.8">
-                <p id="section-toc.1-1.7.2.8.1"><a href="#section-7.8" class="auto internal xref">7.8</a>.  <a href="#name-path_cid_blocked-frames" class="internal xref">PATH_CID_BLOCKED frames</a></p>
+                <p id="section-toc.1-1.7.2.7.1"><a href="#section-7.7" class="auto internal xref">7.7</a>.  <a href="#name-paths_blocked-and-path_cids" class="internal xref">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a></p>
 </li>
             </ul>
 </li>
@@ -1659,7 +1656,7 @@ Still, the receiver may observe a connection ID associated with a used Path ID
 on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
 as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> by initiating path validation
 but MUST use a new connection ID for the same Path ID.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4">This proposal adds five multipath control frames for path management:<a href="#section-3-4" class="pilcrow">¶</a></p>
+<p id="section-3-4">This proposal adds six multipath control frames for path management:<a href="#section-3-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-5.1">
           <p id="section-3-5.1.1">PATH_ABANDON frame for the receiver side to abandon the path
@@ -1671,9 +1668,17 @@ in path usage (see <a href="#path-backup-available-frame" class="auto internal x
 </li>
         <li class="normal" id="section-3-5.3">
           <p id="section-3-5.3.1">MAX_PATH_ID frame (see <a href="#max-paths-frame" class="auto internal xref">Section 7.6</a>) for increasing the limit of
-path identifiers, and PATHS_BLOCKED frame (see <a href="#paths-blocked-frame" class="auto internal xref">Section 7.7</a>)
+path identifiers,<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-5.4">
+          <p id="section-3-5.4.1">PATHS_BLOCKED frame (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 7.7</a>)
 to notify the peer of being blocked to open new paths as
-the limit of active paths set by the peer has been reached.<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
+the limit of active paths set by the peer has been reached<a href="#section-3-5.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-5.5">
+          <p id="section-3-5.5.1">PATH_CIDS_BLOCKED frame (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 7.7</a>)
+to notify the peer there are no unused connection IDs available
+for the corresponding Path IDs.<a href="#section-3-5.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-6">All new frames are sent in 1-RTT packets <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3-6" class="pilcrow">¶</a></p>
@@ -2003,7 +2008,7 @@ in <a href="#frames" class="auto internal xref">Section 7</a>.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
-(see Section <a href="#paths-blocked-frame" class="auto internal xref">Section 7.7</a>) to inform the peer that a new path
+(see Section <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 7.7</a>) to inform the peer that a new path
 identifier was needed but the current limit set by the peer prevented the
 creation of the new path.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
 <p id="section-3.4-8">If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
@@ -2803,21 +2808,26 @@ a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.<a href="#section-7.6-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="paths-blocked-frame">
+<div id="paths-and-cids-blocked-frame">
 <section id="section-7.7">
-        <h3 id="name-paths_blocked-frames">
-<a href="#section-7.7" class="section-number selfRef">7.7. </a><a href="#name-paths_blocked-frames" class="section-name selfRef">PATHS_BLOCKED frames</a>
+        <h3 id="name-paths_blocked-and-path_cids">
+<a href="#section-7.7" class="section-number selfRef">7.7. </a><a href="#name-paths_blocked-and-path_cids" class="section-name selfRef">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a>
         </h3>
 <p id="section-7.7-1">A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer.<a href="#section-7.7-1" class="pilcrow">¶</a></p>
-<p id="section-7.7-2">Note that PATHS_BLOCKED frame is informational. Sending a PATHS_BLOCKED frame does not
-imply a particular action from the peer like updating the new Max Path ID value,
-but informs the peer that the maximum path identifier limit prevented the creation of new paths.<a href="#section-7.7-2" class="pilcrow">¶</a></p>
-<p id="section-7.7-3">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-7.7-3" class="pilcrow">¶</a></p>
+<p id="section-7.7-2">A sender SHOULD send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
+it wishes to open a path or change the CID on an established path
+but is unable to do so because there are no unused connection IDs available
+for the corresponding Path IDs.<a href="#section-7.7-2" class="pilcrow">¶</a></p>
+<p id="section-7.7-3">Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
+Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
+like updating the new Max Path ID value, but informs the peer that the maximum path identifier limit
+or the absence of unused connection IDs prevented the creation of new paths.<a href="#section-7.7-3" class="pilcrow">¶</a></p>
+<p id="section-7.7-4">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-7.7-4" class="pilcrow">¶</a></p>
 <span id="name-max_path_id_blocked-frame-f"></span><div id="fig-paths-blocked-frame-format">
 <figure id="figure-10">
-          <div class="alignLeft art-text artwork" id="section-7.7-4.1">
+          <div class="alignLeft art-text artwork" id="section-7.7-5.1">
 <pre>
 PATHS_BLOCKED Frame {
   Type (i) = TBD-08 (experiments use 0x15228c0d),
@@ -2829,54 +2839,40 @@ PATHS_BLOCKED Frame {
 <a href="#name-max_path_id_blocked-frame-f" class="selfRef">MAX_PATH_ID_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-7.7-5">PATHS_BLOCKED frames contain the following field:<a href="#section-7.7-5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-7.7-6">
-          <dt id="section-7.7-6.1">Maximum Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.7-6.2">
-            <p id="section-7.7-6.2.1">A variable-length integer indicating the maximum path identifier that was
+<p id="section-7.7-6">PATHS_BLOCKED frames contain the following field:<a href="#section-7.7-6" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-7.7-7">
+          <dt id="section-7.7-7.1">Maximum Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-7.7-7.2">
+            <p id="section-7.7-7.2.1">A variable-length integer indicating the maximum path identifier that was
 allowed at the time the frame was sent. If the received value is lower than
-the currently allowed maximum value, this frame can be ignored.
-Receipt of a value that is higher than the local maximum value MUST
-be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-7.7-6.2.1" class="pilcrow">¶</a></p>
+the currently allowed maximum value, this frame can be ignored.<a href="#section-7.7-7.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-</section>
-</div>
-<div id="path-cid-blocked-frame">
-<section id="section-7.8">
-        <h3 id="name-path_cid_blocked-frames">
-<a href="#section-7.8" class="section-number selfRef">7.8. </a><a href="#name-path_cid_blocked-frames" class="section-name selfRef">PATH_CID_BLOCKED frames</a>
-        </h3>
-<p id="section-7.8-1">A sender SHOULD send a PATH_CID_BLOCKED frame (type=0x15228c0e) when
-it wishes to open a path or change the CID on an established path
-but is unable to do so because there are no unused connection IDs available
-for the corresponding Path IDs.<a href="#section-7.8-1" class="pilcrow">¶</a></p>
-<p id="section-7.8-2">Note that PATH_CID_BLOCKED frame is informational. Sending a PATH_CID_BLOCKED frame does not
-imply a particular action from the peer, but informs the peer that the absence of unused connection IDs
-prevented the creation of this path.<a href="#section-7.8-2" class="pilcrow">¶</a></p>
-<p id="section-7.8-3">PATH_CID_BLOCKED frames are formatted as shown in <a href="#fig-path-cid-blocked-frame-format" class="auto internal xref">Figure 11</a>.<a href="#section-7.8-3" class="pilcrow">¶</a></p>
-<span id="name-path_cid_blocked-frame-form"></span><div id="fig-path-cid-blocked-frame-format">
+<p id="section-7.7-8">PATH_CIDS_BLOCKED frames are formatted as shown in <a href="#fig-path-cid-blocked-frame-format" class="auto internal xref">Figure 11</a>.<a href="#section-7.7-8" class="pilcrow">¶</a></p>
+<span id="name-path_cids_blocked-frame-for"></span><div id="fig-path-cid-blocked-frame-format">
 <figure id="figure-11">
-          <div class="alignLeft art-text artwork" id="section-7.8-4.1">
+          <div class="alignLeft art-text artwork" id="section-7.7-9.1">
 <pre>
-PATHS_CID_BLOCKED Frame {
+PATH_CIDS_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
   Path Identifier (i),
 }
 </pre>
 </div>
 <figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
-<a href="#name-path_cid_blocked-frame-form" class="selfRef">PATH_CID_BLOCKED Frame Format</a>
+<a href="#name-path_cids_blocked-frame-for" class="selfRef">PATH_CIDS_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
-<span class="break"></span><dl class="dlParallel" id="section-7.8-5">
-          <dt id="section-7.8-5.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.8-5.2">
-            <p id="section-7.8-5.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-7.8-5.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-7.7-10">
+          <dt id="section-7.7-10.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-7.7-10.2">
+            <p id="section-7.7-10.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-7.7-10.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
+<p id="section-7.7-11">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
+the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-7.7-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3004,14 +3000,14 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
             <td class="text-left" rowspan="1" colspan="1">TBD-08 (experiments use 0x15228c0d)</td>
             <td class="text-left" rowspan="1" colspan="1">PATHS_BLOCKED</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#paths-blocked-frame" class="auto internal xref">Section 7.7</a>
+              <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 7.7</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-09 (experiments use 0x15228c0e)</td>
-            <td class="text-left" rowspan="1" colspan="1">PATH_CID_BLOCKED</td>
+            <td class="text-left" rowspan="1" colspan="1">PATH_CIDS_BLOCKED</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#path-cid-blocked-frame" class="auto internal xref">Section 7.8</a>
+              <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 7.7</a>
 </td>
           </tr>
         </tbody>
