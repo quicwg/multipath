@@ -552,9 +552,9 @@ not only the path that is intended to be closed. Thus,
 even if connectivity on that path is already broken
 but there is still another usable path, it is RECOMMENDED to
 send the PATH_ABANDON frames on another path.
-For example if the PATH_ABANDON frame itself got lost on the to be abandoned path,
+For example, if the PATH_ABANDON frame itself got lost on the to-be-abandoned path,
 this might be a sign that the path is not usable anymore and
-retransmission on another path would address this concern.
+retransmitting the frame on another path would address this concern.
 
 If a PATH_ABANDON frame is received for the only open path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
