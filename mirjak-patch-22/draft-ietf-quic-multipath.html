@@ -1050,7 +1050,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 6 June 2025</td>
+<td class="center">Expires 7 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-12-03" class="published">3 December 2024</time>
+<time datetime="2024-12-04" class="published">4 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-06">6 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-07">7 June 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1842,9 +1842,9 @@ not only the path that is intended to be closed. Thus,
 even if connectivity on that path is already broken
 but there is still another usable path, it is RECOMMENDED to
 send the PATH_ABANDON frames on another path.
-For example if the PATH_ABANDON frame itself got lost on the to be abandoned path,
+For example, if the PATH_ABANDON frame itself got lost on the to-be-abandoned path,
 this might be a sign that the path is not usable anymore and
-retransmission on another path would address this concern.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+retransmitting the frame on another path would address this concern.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
 <p id="section-3.3-8">If a PATH_ABANDON frame is received for the only open path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. If the client received a PATH_ABANDON

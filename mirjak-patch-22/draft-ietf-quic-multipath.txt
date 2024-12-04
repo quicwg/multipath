@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 June 2025                              Uber Technologies Inc.
+Expires: 7 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 June 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         3 December 2024
+                                                         4 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 June 2025.
+   This Internet-Draft will expire on 7 June 2025.
 
 Copyright Notice
 
@@ -620,10 +620,10 @@ Table of Contents
    is intended to be closed.  Thus, even if connectivity on that path is
    already broken but there is still another usable path, it is
    RECOMMENDED to send the PATH_ABANDON frames on another path.  For
-   example if the PATH_ABANDON frame itself got lost on the to be
+   example, if the PATH_ABANDON frame itself got lost on the to-be-
    abandoned path, this might be a sign that the path is not usable
-   anymore and retransmission on another path would address this
-   concern.
+   anymore and retransmitting the frame on another path would address
+   this concern.
 
    If a PATH_ABANDON frame is received for the only open path of a QUIC
    connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
