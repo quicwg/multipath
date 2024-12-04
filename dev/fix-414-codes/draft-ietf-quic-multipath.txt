@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 June 2025                              Uber Technologies Inc.
+Expires: 7 June 2025                              Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 June 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         3 December 2024
+                                                         4 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 June 2025.
+   This Internet-Draft will expire on 7 June 2025.
 
 Copyright Notice
 
@@ -1489,7 +1489,7 @@ Table of Contents
 
    UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path
    because the used interface is considered to be unstable.  This
-   conition can occur, e.g., due to a weak wireless signal or frequent
+   condition can occur, e.g., due to a weak wireless signal or frequent
    mobility events.
 
    NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
