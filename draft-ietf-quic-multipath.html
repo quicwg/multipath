@@ -15,11 +15,11 @@
        This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection. 
     " name="description">
-<meta content="xml2rfc 3.24.0" name="generator">
+<meta content="xml2rfc 3.25.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-quic-multipath-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.24.0
+  xml2rfc 3.25.0
     Python 3.12.7
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
@@ -1046,11 +1046,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">November 2024</td>
+<td class="right">December 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 1 June 2025</td>
+<td class="center">Expires 9 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-28" class="published">28 November 2024</time>
+<time datetime="2024-12-06" class="published">6 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-01">1 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-09">9 June 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1269,10 +1269,13 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-keep-alive" class="internal xref">Keep Alive</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.9">
-                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-connection-id-changes-and-n" class="internal xref">Connection ID Changes and NAT Rebindings</a></p>
+                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-connection-id-changes" class="internal xref">Connection ID Changes</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.10">
-                <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-using-multiple-paths-on-the" class="internal xref">Using multiple paths on the same 4-tuple</a></p>
+                <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-migration-and-nat-rebinding" class="internal xref">Migration and NAT Rebindings</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.11">
+                <p id="section-toc.1-1.6.2.11.1"><a href="#section-6.11" class="auto internal xref">6.11</a>. <a href="#name-using-multiple-paths-on-the" class="internal xref">Using multiple paths on the same 4-tuple</a></p>
 </li>
             </ul>
 </li>
@@ -2392,71 +2395,84 @@ Once the implementation has decided which paths to keep alive, it can do so by s
 on each of these paths before the idle timeout expires.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="migration">
+<div id="connection-id-changes">
 <section id="section-6.9">
-        <h3 id="name-connection-id-changes-and-n">
-<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-connection-id-changes-and-n" class="section-name selfRef">Connection ID Changes and NAT Rebindings</a>
+        <h3 id="name-connection-id-changes">
+<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-connection-id-changes" class="section-name selfRef">Connection ID Changes</a>
         </h3>
 <p id="section-6.9-1"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.<a href="#section-6.9-1" class="pilcrow">¶</a></p>
-<p id="section-6.9-2">While endpoints assign a connection ID to a specific sending 4-tuple,
+</section>
+</div>
+<div id="migration">
+<section id="section-6.10">
+        <h3 id="name-migration-and-nat-rebinding">
+<a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-migration-and-nat-rebinding" class="section-name selfRef">Migration and NAT Rebindings</a>
+        </h3>
+<p id="section-6.10-1">While endpoints assign a connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Servers observing a 4-tuple change will
 perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
 If path validation process succeeds, the endpoints set
 the path's congestion controller and round-trip time
-estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.9-2" class="pilcrow">¶</a></p>
-<p id="section-6.9-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows an endpoint to skip validation of
+estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
+<p id="section-6.10-2"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows an endpoint to skip validation of
 a peer address if that address has been seen recently. However, when the
 multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
-multiple open paths instead.<a href="#section-6.9-3" class="pilcrow">¶</a></p>
+multiple open paths instead.<a href="#section-6.10-2" class="pilcrow">¶</a></p>
+<p id="section-6.10-3">More generally, while migration cannot be avoided in case of network-based
+NAT rebindings, opening a new path instead of active client migration
+should be strongly preferred when the multipath extension is supported.
+This enables a smoother handover and allows a simplified migration
+handling at the server as NAT rebindings imply immediate loss of the old
+address.<a href="#section-6.10-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="using-multiple-paths-on-the-same-4-tuple">
-<section id="section-6.10">
+<section id="section-6.11">
         <h3 id="name-using-multiple-paths-on-the">
-<a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using multiple paths on the same 4-tuple</a>
+<a href="#section-6.11" class="section-number selfRef">6.11. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using multiple paths on the same 4-tuple</a>
         </h3>
-<p id="section-6.10-1">As noted in <a href="#basic-design-points" class="auto internal xref">Section 1.1</a>, it is possible to create paths that
+<p id="section-6.11-1">As noted in <a href="#basic-design-points" class="auto internal xref">Section 1.1</a>, it is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service <span>[<a href="#RFC2475" class="cite xref">RFC2475</a>]</span> markings.
 This could be done in conjunction with scheduling algorithms
 that match streams to paths, so that for example data frames for
 low priority streams are sent over low priority paths.
 Since these paths use different path IDs, they can be managed
-independently to suit the needs of the application.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
-<p id="section-6.10-2">There may be cases in which paths are created with different 4-tuples,
+independently to suit the needs of the application.<a href="#section-6.11-1" class="pilcrow">¶</a></p>
+<p id="section-6.11-2">There may be cases in which paths are created with different 4-tuples,
 but end up using the same four tuples as a consequence of path
-migrations. For example:<a href="#section-6.10-2" class="pilcrow">¶</a></p>
+migrations. For example:<a href="#section-6.11-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.10-3.1">
-            <p id="section-6.10-3.1.1">Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1<a href="#section-6.10-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.11-3.1">
+            <p id="section-6.11-3.1.1">Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1<a href="#section-6.11-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.10-3.2">
-            <p id="section-6.10-3.2.1">Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1<a href="#section-6.10-3.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.11-3.2">
+            <p id="section-6.11-3.2.1">Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1<a href="#section-6.11-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.10-3.3">
-            <p id="section-6.10-3.3.1">both paths are used for a while.<a href="#section-6.10-3.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.11-3.3">
+            <p id="section-6.11-3.3.1">both paths are used for a while.<a href="#section-6.11-3.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.10-3.4">
-            <p id="section-6.10-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.<a href="#section-6.10-3.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.11-3.4">
+            <p id="section-6.11-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.<a href="#section-6.11-3.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.10-3.5">
-            <p id="section-6.10-3.5.1">Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.<a href="#section-6.10-3.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.11-3.5">
+            <p id="section-6.11-3.5.1">Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.<a href="#section-6.11-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-6.10-4">Such unintentional use of the same 4-tuple on different paths ought to
+<p id="section-6.11-4">Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint will want to close one of them.
 Uncoordinated Abandon from both ends of the connection may result in deleting
 two paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
-the application protocol to decide which paths should be closed.<a href="#section-6.10-4" class="pilcrow">¶</a></p>
+the application protocol to decide which paths should be closed.<a href="#section-6.11-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
