@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-05T00:59:54.947934+00:00",
+  "timestamp": "2024-12-08T01:04:05.276776+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12130,7 +12130,7 @@
       "id": "I_kwDOGNtpaM6c1X_x",
       "title": "Clarification on Path Migration in relation to opening a new path",
       "url": "https://github.com/quicwg/multipath/issues/458",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -12140,8 +12140,8 @@
       ],
       "body": "Path Migration for the case when the client is not aware of the change, like for NAT address rebinding case can't be avoided. Thus, this needs to be supported by server as something that can occur. However, if a client have a new address it could technically select to migrate an existing path to this new path. However, it appears more suitable to have a very strong recommendation here to actually open a new path in these cases. Combined possibly with abandoning another existing path. \r\n\r\nThis issue is based on the interop testing. ",
       "createdAt": "2024-11-03T14:22:14Z",
-      "updatedAt": "2024-12-04T14:28:14Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-06T08:33:58Z",
+      "closedAt": "2024-12-06T08:33:58Z",
       "comments": [
         {
           "author": "huitema",
@@ -12405,7 +12405,7 @@
       ],
       "body": "Currently the draft only says:\r\n\r\n\"knowledge of the connection identifiers received from the peer and of the state of the number space associated to the path SHOULD be retained while packets from the peer might still be in transit, i.e., for a delay of 3 PTO after the PATH_ABANDON frame has been received from the peer\"\r\n\r\nTherefore state removal is triggered by reception of the path abandon frame. There is MUST in the text that my peer must send me a path_abandon frame if it has received mine. What if it doesn't send a path_abandon frame ever?\r\n\r\nThe sentence above is only a SHOULD, so I guess you could remove state any reasonable time after sending the path_abandon frame, however, maybe we should say more explicitly that it makes sense to also start a timer after the ACK for the path_abandon frame was received, or stop retransmitting the path_abandon frame after X tries and then just remove state?",
       "createdAt": "2024-11-28T17:40:59Z",
-      "updatedAt": "2024-12-04T12:48:00Z",
+      "updatedAt": "2024-12-06T08:49:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -12428,6 +12428,13 @@
           "body": "While a peer may indeed misbehave, there may be specific pattern losses making the PATH_ABANDON frame never reach the peer. While the reception of the PATH_ABANDON frame will lead to removal of path state after some delay, it would make sense to me to apply this 3 PTO delay when the PATH_ABANDON is sent. At some point, the peer that has sent the PATH_ABANDON will abandon the path anyway, and dropping state related to the path will just, in the case the PATH_ABANDON does not reach the peer, make the host ignore all incoming packets mapping to that path, such that the peer would interpret this as a completely lossy path that it can eventually abandon. Note that if a PATH_ABANDON is deemed lost, the sender should always resend it, even if the related path state is no more present.",
           "createdAt": "2024-12-04T12:47:58Z",
           "updatedAt": "2024-12-04T12:47:58Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "You have start a start a timer after sending the PATH_ABANDON frame anyway because you may have to retransmit it. I think what we need is to also start a timer after the ACK for the PATH_ABANDON has been received and also specify that the PATH_ABANDON should not be retransmitted more than X time and when you stop retransmitting you also remove all path state.\r\n\r\nI guess we could also say that you can remove most path state after the first PTO and then only keep information about the PATH_ABANDON in order to retransmit it. But not sure if that makes a big difference.",
+          "createdAt": "2024-12-06T08:49:22Z",
+          "updatedAt": "2024-12-06T08:49:22Z"
         }
       ]
     },
@@ -50189,10 +50196,12 @@
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "To fix issue #414, according to the discussion during IETF 121.",
       "createdAt": "2024-11-11T12:03:45Z",
-      "updatedAt": "2024-12-04T14:28:57Z",
+      "updatedAt": "2024-12-06T09:56:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
@@ -50383,6 +50392,79 @@
           "createdAt": "2024-12-04T14:28:57Z",
           "updatedAt": "2024-12-04T14:28:57Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UAzAP",
+          "commit": {
+            "abbreviatedOid": "0601c1c"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-05T23:44:11Z",
+          "updatedAt": "2024-12-05T23:44:17Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "What does \"frequent mobility events\" mean here? Maybe consider making this more clear. ",
+              "createdAt": "2024-12-05T23:44:11Z",
+              "updatedAt": "2024-12-05T23:44:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UDtaT",
+          "commit": {
+            "abbreviatedOid": "0601c1c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-06T08:30:42Z",
+          "updatedAt": "2024-12-06T08:30:42Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "This is e.g. when you walk constantly in and out of coverage. However, these are really just supposed to be examples, so I don't think we need to go too much into detail. Which part is not clear? Do you have an alternative wording that you think would be more clear?",
+              "createdAt": "2024-12-06T08:30:42Z",
+              "updatedAt": "2024-12-06T08:30:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UEauE",
+          "commit": {
+            "abbreviatedOid": "0601c1c"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-12-06T09:34:53Z",
+          "updatedAt": "2024-12-06T09:34:53Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UEmnz",
+          "commit": {
+            "abbreviatedOid": "21a5076"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-06T09:56:04Z",
+          "updatedAt": "2024-12-06T09:56:04Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "After some additional thought I think this is fine. Implementers will likely figure out what I wrote, or if not even that will be clear for the ones receiving PATH_ABANDON with this error code. ",
+              "createdAt": "2024-12-06T09:56:04Z",
+              "updatedAt": "2024-12-06T09:56:04Z"
+            }
+          ]
         }
       ]
     },
@@ -50536,16 +50618,18 @@
     {
       "number": 468,
       "id": "PR_kwDOGNtpaM6CPBbP",
-      "title": "Add new frame type: PATH_CID_BLOCKED frame",
+      "title": "Add new frame type: PATH_CIDS_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/pull/468",
       "state": "OPEN",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-12-04T14:12:14Z",
+      "updatedAt": "2024-12-06T08:40:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
@@ -50909,6 +50993,39 @@
               "updatedAt": "2024-12-04T12:25:54Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UAxTM",
+          "commit": {
+            "abbreviatedOid": "6c7322a"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-12-05T23:36:25Z",
+          "updatedAt": "2024-12-05T23:36:25Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UDyzI",
+          "commit": {
+            "abbreviatedOid": "6c7322a"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-06T08:40:18Z",
+          "updatedAt": "2024-12-06T08:40:18Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "Actually I think this is slightly different. In case of streams there is no really good reason to limit streams too much. Of course you want to have a limit to avoid excessive resource usage because that would open an attack, however, under normal operation you should not be blocked. In case of the number of paths, there can be other reasons to limit, e.g. you may have a policy to not use more than a small number of paths. Therefore I argue that MAY would make more sense here than SHOULD. However, I don't have a really strong opinion. I would like to hear other people's thoughts.",
+              "createdAt": "2024-12-06T08:40:18Z",
+              "updatedAt": "2024-12-06T08:40:18Z"
+            }
+          ]
         }
       ]
     },
@@ -50917,7 +51034,7 @@
       "id": "PR_kwDOGNtpaM6Dfx8_",
       "title": "recommend use of new paths instead of migration",
       "url": "https://github.com/quicwg/multipath/pull/469",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -50926,17 +51043,19 @@
       ],
       "body": "fixes #458 ",
       "createdAt": "2024-11-28T17:16:04Z",
-      "updatedAt": "2024-12-04T12:11:14Z",
+      "updatedAt": "2024-12-06T08:33:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-20",
       "headRefOid": "7f7d4b123021f938321e08ece0b30cdeec94d70c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-12-06T08:33:57Z",
+      "mergedAt": "2024-12-06T08:33:57Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "a73361175c8dcbfaaf246831c239ec092eb42d87"
+      },
       "comments": [],
       "reviews": [
         {
@@ -51058,7 +51177,7 @@
       "labels": [],
       "body": "fixes #470",
       "createdAt": "2024-12-03T17:28:38Z",
-      "updatedAt": "2024-12-04T16:14:58Z",
+      "updatedAt": "2024-12-06T05:18:10Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
@@ -51108,6 +51227,19 @@
           "body": "",
           "createdAt": "2024-12-04T16:14:58Z",
           "updatedAt": "2024-12-04T16:14:58Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UCggT",
+          "commit": {
+            "abbreviatedOid": "8a3966d"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "My feeling is that It may not be necessary to include this level of detail here. multipath QUIC, as a reliable protocol, will inherently address frame loss, and the decision on how best to handle it\u2014including on which path to retransmit\u2014should be guided by the path scheduler. But I do like the fact that the loss of path_abandon could hurt performance and is called out here.",
+          "createdAt": "2024-12-06T05:18:10Z",
+          "updatedAt": "2024-12-06T05:18:10Z",
           "comments": []
         }
       ]
