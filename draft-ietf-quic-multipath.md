@@ -1401,7 +1401,7 @@ resource constraints prevent the continuation of the path.
 
 UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because
 the used interface is considered to be unstable. This condition can occur, e.g.,
-due to a weak wireless signal or frequent mobility events.
+due to a weak wireless signal or frequent handover events during high-speed mobility.
 
 NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
 the lack of a connection ID for this path.
