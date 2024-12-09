@@ -1359,11 +1359,11 @@ MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
 ## PATHS_BLOCKED and PATH_CIDS_BLOCKED frames {#paths-and-cids-blocked-frame}
 
-A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
+A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer.
 
-A sender SHOULD send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
+A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
 it wishes to open a path with a valid Path ID or change the CID on an established path
 but is unable to do so because there are no unused connection IDs available
 for the corresponding Path ID.
