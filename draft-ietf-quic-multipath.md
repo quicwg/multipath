@@ -612,7 +612,7 @@ as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers MUST follow the specifications
 in {{QUIC-TRANSPORT}}.
 
-This document does not specify any specific per-path timeouts. An endpoint
+This document does not specify per-path idle timeouts. An endpoint
 can decide to close a path at any time, whether the path is in active
 use or not, by sending a PATH_ABANDON frame. It is not required
 to send a PATH_ABANDON frame at any specific point in time.
@@ -1032,13 +1032,15 @@ Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
 on each of these paths before the idle timeout expires.
 
-## Connection ID Changes and NAT Rebindings {#migration}
+## Connection ID Changes
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.
+
+## Migration and NAT Rebindings {#migration}
 
 While endpoints assign a connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
@@ -1054,7 +1056,14 @@ multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
 multiple open paths instead.
 
-### Using multiple paths on the same 4-tuple
+More generally, while migration cannot be avoided in case of network-based
+NAT rebindings, opening a new path instead of active client migration
+should be strongly preferred when the multipath extension is supported.
+This enables a smoother handover and allows a simplified migration
+handling at the server as NAT rebindings imply immediate loss of the old
+address.
+
+## Using multiple paths on the same 4-tuple
 
 As noted in {{basic-design-points}}, it is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
@@ -1159,7 +1168,7 @@ Path Identifier:
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
   this path. NO_ERROR(0x0) indicates that the path is being abandoned
-  without any error being encountered.
+  without any error being encountered. Other error codes can be found in {{error-codes}}.
 
 PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1415,15 +1424,26 @@ QUIC transport error codes are 62-bit unsigned integers
 NO_ERROR(0x0), the following QUIC error codes are defined
 for use in the PATH_ABANDON frame:
 
-APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the
+APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
 request of the application. The application has determined that it no
 longer needs this path. This error is used when the application layer
 decides to stop using a specific path.
 
-RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path because
+RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
 it cannot allocate sufficient resources to maintain it. This is due to
 limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
+
+UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
+the used interface is considered to be unstable. This condition can occur, e.g.,
+due to a weak wireless signal or frequent handover events during high-speed mobility.
+
+NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
+the lack of a connection ID for this path.
+This may occur when the peer initiates a new path
+but has not provided a corresponding connection ID for the path ID
+(or the packet containing the connection IDs has not arrived yet).
+
 
 # IANA Considerations
 
@@ -1466,6 +1486,8 @@ Value                       | Code                  | Description               
 ----------------------------|-----------------------|-------------------------------|-------------------
 TBD-10 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
 TBD-11 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-12 (experiments use 0x00554e5f494e5446) | UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
+TBD-13 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
