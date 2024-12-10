@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 June 2025                              Uber Technologies Inc.
+Expires: 13 June 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 June 2025                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         6 December 2024
+                                                        10 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 June 2025.
+   This Internet-Draft will expire on 13 June 2025.
 
 Copyright Notice
 
@@ -1257,7 +1257,8 @@ Table of Contents
 
    Error Code:  A variable-length integer that indicates the reason for
       abandoning this path.  NO_ERROR(0x0) indicates that the path is
-      being abandoned without any error being encountered.
+      being abandoned without any error being encountered.  Other error
+      codes can be found in Section 8.
 
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
@@ -1496,6 +1497,17 @@ Table of Contents
    indicates that resource constraints prevent the continuation of the
    path.
 
+   UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path
+   because the used interface is considered to be unstable.  This
+   condition can occur, e.g., due to a weak wireless signal or frequent
+   handover events during high-speed mobility.
+
+   NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
+   the lack of a connection ID for this path.  This may occur when the
+   peer initiates a new path but has not provided a corresponding
+   connection ID for the path ID (or the packet containing the
+   connection IDs has not arrived yet).
+
 9.  IANA Considerations
 
    This document defines a new transport parameter for the negotiation
@@ -1568,6 +1580,19 @@ Table of Contents
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
+   +-------------------+----------------------+-------------+-------------+
+   |TBD-11 (experiments|UNSTABLE_INTERFACE    |Path         |Section 8    |
+   |use                |                      |abandoned due|             |
+   |0x00554e5f494e5446)|                      |to unstable  |             |
+   |                   |                      |interfaces   |             |
+   +-------------------+----------------------+-------------+-------------+
+   |TBD-12 (experiments|NO_CID_AVAILABLE      |Path         |Section 8    |
+   |use                |                      |abandoned due|             |
+   |0x004e4f5f4349445f)|                      |to no        |             |
+   |                   |                      |available    |             |
+   |                   |                      |connection   |             |
+   |                   |                      |IDs for the  |             |
+   |                   |                      |path         |             |
    +-------------------+----------------------+-------------+-------------+
 
                   Table 4: Error Codes for Multipath QUIC
