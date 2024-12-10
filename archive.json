@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-08T01:04:05.276776+00:00",
+  "timestamp": "2024-12-10T01:00:44.162500+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12282,7 +12282,7 @@
       "id": "I_kwDOGNtpaM6c2Bj6",
       "title": "Clarification on Preferred Address handling",
       "url": "https://github.com/quicwg/multipath/issues/460",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -12291,8 +12291,8 @@
       ],
       "body": "The current draft (version 11) says _\"Also, the Path ID for the connection ID specified in the \"preferred address\" transport parameter is 0. Use of the \"preferred address\" is considered as a migration event that does not change the Path ID.\"_ This point is further reinforced in the path management section: _\"In particular, if the server uses the preferred_address transport parameter, clients cannot assume that the initial server address and the addresses contained in this parameter can be simultaneously used for multipath (Section 9.6.2 of [QUIC-TRANSPORT]).\"_\r\n\r\nThis is questionable, since support of RFC-9000 style \"migration\" is problematic, as explained in issue #458. With multipath negotiated, \"path migration\" uses the same code path as \"NAT Rebinding\", which is a poor fit for preferred address migration. The selected path will eventually depend on the order in which packets are received, which might bring back usage of the original address instead of the preferred address. \r\n\r\nClients will get a much more reliable result if they proceed in two steps: first establish a new path to the preferred address (typically path id 1), then abandon the initial path (path id 0). This is the \"make before break\" scenario that should generally be preferred to path migration. But this behavior is gated by two conditions: the server should allow a \"max path id\" value no lower than 1; and, the server shall provide the client with connection IDs for path 1. Otherwise, the client will have to wait until the server sends a new MAX_PATH_ID and PATH_CONNECTION_ID frames.\r\n\r\nWe may want to revise the text to explicitly authorize \"make before break\" behavior, i.e., using path creation instead of path migration for handling the preferred address. If we don't do that, stacks would probably need a special handling of the preferred address, as an exception to the normal code behavior, and that special handling should probably be discussed in the implementation section.",
       "createdAt": "2024-11-03T19:06:23Z",
-      "updatedAt": "2024-12-03T17:47:18Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-08T14:53:26Z",
+      "closedAt": "2024-12-08T14:53:26Z",
       "comments": [
         {
           "author": "mirjak",
@@ -12405,7 +12405,7 @@
       ],
       "body": "Currently the draft only says:\r\n\r\n\"knowledge of the connection identifiers received from the peer and of the state of the number space associated to the path SHOULD be retained while packets from the peer might still be in transit, i.e., for a delay of 3 PTO after the PATH_ABANDON frame has been received from the peer\"\r\n\r\nTherefore state removal is triggered by reception of the path abandon frame. There is MUST in the text that my peer must send me a path_abandon frame if it has received mine. What if it doesn't send a path_abandon frame ever?\r\n\r\nThe sentence above is only a SHOULD, so I guess you could remove state any reasonable time after sending the path_abandon frame, however, maybe we should say more explicitly that it makes sense to also start a timer after the ACK for the path_abandon frame was received, or stop retransmitting the path_abandon frame after X tries and then just remove state?",
       "createdAt": "2024-11-28T17:40:59Z",
-      "updatedAt": "2024-12-06T08:49:23Z",
+      "updatedAt": "2024-12-09T12:18:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -12435,6 +12435,20 @@
           "body": "You have start a start a timer after sending the PATH_ABANDON frame anyway because you may have to retransmit it. I think what we need is to also start a timer after the ACK for the PATH_ABANDON has been received and also specify that the PATH_ABANDON should not be retransmitted more than X time and when you stop retransmitting you also remove all path state.\r\n\r\nI guess we could also say that you can remove most path state after the first PTO and then only keep information about the PATH_ABANDON in order to retransmit it. But not sure if that makes a big difference.",
           "createdAt": "2024-12-06T08:49:22Z",
           "updatedAt": "2024-12-06T08:49:22Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think that we should point out the issue and leave the implementers a choice.\r\n\r\nAs discussed in the WG, we do not have a lot of experience with deployment. This is kind of a research area, and we are exhausting ourselves trying to provide operational guidance or implementation guidance. There are indeed multiple choices:\r\n\r\n1) Start a timer after sending the first path Abandon, then close the connection with an error code if the path abandon from the peer is not received in time. Of course, all solutions based on timers introduce some fragility, so the timer will have to be large.\r\n\r\n2) Same, but start the timer after the Path Abandon frame is acknowledged. More complicated than 1 because you need to track ACKs, and same fragility.\r\n\r\n3) Do nothing. After all, the only effect of having a path lingering in limbo is to reduce the number of path-id available for path creation. If you don't need to create a new path, there is no real issue. This is the option with the least side effects.\r\n\r\n4) Put the path in some explicit limbo state after the Abandon is acked or after a short timer. In that state, drop all incoming packets, never ack them. Kinda like doing nothing, but with fewer resource allocated locally.",
+          "createdAt": "2024-12-08T14:43:38Z",
+          "updatedAt": "2024-12-08T14:43:38Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "FWIW, I think choice number 3 is the correct one. An endpoint should however be allowed to ignore any incoming packets after some (unspecified) time.\r\n\r\nSetting a timer to abort the connection is needlessly complex and brutal, and can easily have false positives if the peer's PATH_ABANDON frame is retransmitted. ",
+          "createdAt": "2024-12-09T12:18:36Z",
+          "updatedAt": "2024-12-09T12:18:36Z"
         }
       ]
     },
@@ -50201,13 +50215,13 @@
       ],
       "body": "To fix issue #414, according to the discussion during IETF 121.",
       "createdAt": "2024-11-11T12:03:45Z",
-      "updatedAt": "2024-12-06T09:56:04Z",
+      "updatedAt": "2024-12-09T04:43:05Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-414-codes",
-      "headRefOid": "0601c1c989e8eb3e6d82444f3565fab7ac20ae45",
+      "headRefOid": "00a701f65c1a907957b7a58aad881fe412cd0585",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -50465,6 +50479,52 @@
               "updatedAt": "2024-12-06T09:56:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UPM_n",
+          "commit": {
+            "abbreviatedOid": "0601c1c"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-12-08T14:31:12Z",
+          "updatedAt": "2024-12-08T14:31:12Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6URxMo",
+          "commit": {
+            "abbreviatedOid": "0601c1c"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-09T04:11:39Z",
+          "updatedAt": "2024-12-09T04:11:39Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\r\ndue to a weak wireless signal or frequent handover events during high-speed mobility.\r\n```",
+              "createdAt": "2024-12-09T04:11:39Z",
+              "updatedAt": "2024-12-09T04:11:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UR47B",
+          "commit": {
+            "abbreviatedOid": "00a701f"
+          },
+          "author": "yfmascgy",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-12-09T04:43:05Z",
+          "updatedAt": "2024-12-09T04:43:05Z",
+          "comments": []
         }
       ]
     },
@@ -50629,13 +50689,13 @@
       ],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-12-06T08:40:18Z",
+      "updatedAt": "2024-12-09T03:42:01Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-459",
-      "headRefOid": "6c7322a3338b6580cd260b5468621bb0278b39bf",
+      "headRefOid": "cb53be833997ff2f84207bd365592d9cf2deaa16",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -51026,6 +51086,39 @@
               "updatedAt": "2024-12-06T08:40:18Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6UPZuS",
+          "commit": {
+            "abbreviatedOid": "6c7322a"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Approve, but as @mirjak replace SHOULD by MAY or can.",
+          "createdAt": "2024-12-08T14:55:11Z",
+          "updatedAt": "2024-12-08T14:55:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6URQVB",
+          "commit": {
+            "abbreviatedOid": "ec5235d"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-09T03:11:34Z",
+          "updatedAt": "2024-12-09T03:11:35Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "That's fair enough. For the reason of anti-attack, I agree to use \"can\" here.",
+              "createdAt": "2024-12-09T03:11:35Z",
+              "updatedAt": "2024-12-09T03:11:35Z"
+            }
+          ]
         }
       ]
     },
@@ -51177,7 +51270,7 @@
       "labels": [],
       "body": "fixes #470",
       "createdAt": "2024-12-03T17:28:38Z",
-      "updatedAt": "2024-12-06T05:18:10Z",
+      "updatedAt": "2024-12-08T14:45:29Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
@@ -51188,7 +51281,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I agree with @yfmascgy. This is a general issue, not specific to path abandon. We don't need more text.",
+          "createdAt": "2024-12-08T14:45:27Z",
+          "updatedAt": "2024-12-08T14:45:27Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6Tufbq",
