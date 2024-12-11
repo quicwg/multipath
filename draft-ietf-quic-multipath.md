@@ -252,7 +252,7 @@ the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- initial_max_path_id (current version uses 0x0f739bbc1b666d11): a
+- initial_max_path_id (current version uses 0x0f739bbc1b666d0c): a
   variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
   This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
@@ -1456,7 +1456,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d11) | initial_max_path_id | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d0c) | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
