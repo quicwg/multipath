@@ -358,16 +358,19 @@ on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver 
 as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
 but MUST use a new connection ID for the same Path ID.
 
-This proposal adds five multipath control frames for path management:
+This proposal adds six multipath control frames for path management:
 
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}}),
 - PATH_BACKUP and PATH_AVAILABLE frames to express a preference
 in path usage (see {{path-backup-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-path identifiers, and PATHS_BLOCKED frame (see {{paths-blocked-frame}})
+path identifiers,
+- PATHS_BLOCKED and PATH_CID_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
 to notify the peer of being blocked to open new paths as
-the limit of active paths set by the peer has been reached.
+the limit of active paths set by the peer has been reached
+or there are no unused connection IDs available
+for the corresponding Path ID.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
 
@@ -702,7 +705,7 @@ in {{frames}}.
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
-(see Section {{paths-blocked-frame}}) to inform the peer that a new path
+(see Section {{paths-and-cids-blocked-frame}}) to inform the peer that a new path
 identifier was needed but the current limit set by the peer prevented the
 creation of the new path.
 
@@ -1362,15 +1365,21 @@ Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
-## PATHS_BLOCKED frames {#paths-blocked-frame}
+## PATHS_BLOCKED and PATH_CIDS_BLOCKED frames {#paths-and-cids-blocked-frame}
 
-A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when
+A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
 limit set by its peer.
-Note that PATHS_BLOCKED frame is informational. Sending a PATHS_BLOCKED frame does not
-imply a particular action from the peer like updating the new Max Path ID value,
-but informs the peer that the maximum path identifier limit prevented the creation of new paths.
 
+A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
+it wishes to open a path with a valid Path ID or change the CID on an established path
+but is unable to do so because there are no unused connection IDs available
+for the corresponding Path ID.
+
+Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
+Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
+like updating the new Max Path ID value, but informs the peer that the maximum path identifier limit
+or the absence of unused connection IDs prevented the creation or the usage of paths.
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
@@ -1388,8 +1397,24 @@ Maximum Path Identifier:
 : A variable-length integer indicating the maximum path identifier that was
   allowed at the time the frame was sent. If the received value is lower than
   the currently allowed maximum value, this frame can be ignored.
-  Receipt of a value that is higher than the local maximum value MUST
-  be treated as a connection error of type PROTOCOL_VIOLATION.
+
+
+PATH_CIDS_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-format}}.
+
+~~~
+PATH_CIDS_BLOCKED Frame {
+  Type (i) = TBD-09 (experiments use 0x15228c0e),
+  Path Identifier (i),
+}
+~~~
+{: #fig-path-cid-blocked-frame-format title="PATH_CIDS_BLOCKED Frame Format"}
+
+Path Identifier:
+: Identifier of the path for which unused connection IDs are not available.
+
+Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
+the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
+
 
 # Error Codes {#error-codes}
 
@@ -1398,21 +1423,21 @@ QUIC transport error codes are 62-bit unsigned integers
 NO_ERROR(0x0), the following QUIC error codes are defined
 for use in the PATH_ABANDON frame:
 
-APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at the
+APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
 request of the application. The application has determined that it no
 longer needs this path. This error is used when the application layer
 decides to stop using a specific path.
 
-RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path because
+RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
 it cannot allocate sufficient resources to maintain it. This is due to
 limitations in the transport layer's capacity. This error indicates that
 resource constraints prevent the continuation of the path.
 
-UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path because
+UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
 the used interface is considered to be unstable. This condition can occur, e.g.,
 due to a weak wireless signal or frequent handover events during high-speed mobility.
 
-NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
+NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
 the lack of a connection ID for this path.
 This may occur when the peer initiates a new path
 but has not provided a corresponding connection ID for the path ID
@@ -1448,7 +1473,8 @@ TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{p
 TBD-05 (experiments use 0x15228c09)                  | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
-TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED    | {{paths-blocked-frame}}
+TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED     | {{paths-and-cids-blocked-frame}}
+TBD-09 (experiments use 0x15228c0e)                  | PATH_CIDS_BLOCKED | {{paths-and-cids-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
@@ -1457,10 +1483,10 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD-09 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD-10 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
-TBD-11 (experiments use 0x00554e5f494e5446) | UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
-TBD-12 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE | Path abandoned due to no available connection IDs for the path | {{error-codes}}
+TBD-10 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
+TBD-11 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-12 (experiments use 0x00554e5f494e5446) | UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
+TBD-13 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
