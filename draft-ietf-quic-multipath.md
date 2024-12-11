@@ -369,8 +369,7 @@ path identifiers,
 - PATHS_BLOCKED frame (see {{paths-and-cids-blocked-frame}})
 to notify the peer of being blocked to open new paths as
 the limit of active paths set by the peer has been reached
-- PATH_CIDS_BLOCKED frame (see {{paths-and-cids-blocked-frame}})
-to notify the peer there are no unused connection IDs available
+or there are no unused connection IDs available
 for the corresponding Path ID.
 
 All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
