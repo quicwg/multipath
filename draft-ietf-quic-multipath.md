@@ -541,6 +541,15 @@ both to avoid generating spurious stateless packets as specified in
 {{spurious-stateless-reset}} and to be able to acknowledge the
 last packets received from the peer as specified in {{ack-after-abandon}}.
 
+This means path state removal is supposed to be triggered by the reception of a
+PATH_ABANDON frame. If a peer sends an PATH_ABANDON frame but never receives
+a corresponding PATH_ABANDON frame, it either might not be able to remove path state or
+could use additional timers, e.g. after receiving the corresponding ACK frame,
+or other conditions like a maximum number of retransmissions to remove state.
+If path state is remove without receiving a PATH_ABANDON frame this could lead
+to packet loss. It is left to the implementation to handle this unexpected
+behavior as it does not impact interoperability.
+
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
 promptly send PATH_ACK frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in {{ack-after-abandon}}.
