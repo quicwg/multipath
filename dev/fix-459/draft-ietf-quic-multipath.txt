@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 13 June 2025                             Uber Technologies Inc.
+Expires: 14 June 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 13 June 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        10 December 2024
+                                                        11 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 June 2025.
+   This Internet-Draft will expire on 14 June 2025.
 
 Copyright Notice
 
@@ -431,11 +431,8 @@ Table of Contents
 
    *  PATHS_BLOCKED frame (see Section 7.7) to notify the peer of being
       blocked to open new paths as the limit of active paths set by the
-      peer has been reached
-
-   *  PATH_CIDS_BLOCKED frame (see Section 7.7) to notify the peer there
-      are no unused connection IDs available for the corresponding Path
-      ID.
+      peer has been reached or there are no unused connection IDs
+      available for the corresponding Path ID.
 
    All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
