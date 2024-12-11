@@ -429,10 +429,10 @@ Table of Contents
    *  MAX_PATH_ID frame (see Section 7.6) for increasing the limit of
       path identifiers,
 
-   *  PATHS_BLOCKED frame (see Section 7.7) to notify the peer of being
-      blocked to open new paths as the limit of active paths set by the
-      peer has been reached or there are no unused connection IDs
-      available for the corresponding Path ID.
+   *  PATHS_BLOCKED and PATH_CID_BLOCKED frames (see Section 7.7) to
+      notify the peer of being blocked to open new paths as the limit of
+      active paths set by the peer has been reached or there are no
+      unused connection IDs available for the corresponding Path ID.
 
    All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
