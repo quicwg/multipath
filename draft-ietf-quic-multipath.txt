@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 13 June 2025                             Uber Technologies Inc.
+Expires: 14 June 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 13 June 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        10 December 2024
+                                                        11 December 2024
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 June 2025.
+   This Internet-Draft will expire on 14 June 2025.
 
 Copyright Notice
 
@@ -110,7 +110,7 @@ Table of Contents
      7.4.  PATH_NEW_CONNECTION_ID frames
      7.5.  PATH_RETIRE_CONNECTION_ID frames
      7.6.  MAX_PATH_ID frames
-     7.7.  PATHS_BLOCKED frames
+     7.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
    8.  Error Codes
    9.  IANA Considerations
    10. Security Considerations
@@ -418,7 +418,7 @@ Table of Contents
    specified in Section 9.3 of [QUIC-TRANSPORT] by initiating path
    validation but MUST use a new connection ID for the same Path ID.
 
-   This proposal adds five multipath control frames for path management:
+   This proposal adds six multipath control frames for path management:
 
    *  PATH_ABANDON frame for the receiver side to abandon the path (see
       Section 7.2),
@@ -427,9 +427,12 @@ Table of Contents
       path usage (see Section 7.3), and
 
    *  MAX_PATH_ID frame (see Section 7.6) for increasing the limit of
-      path identifiers, and PATHS_BLOCKED frame (see Section 7.7) to
+      path identifiers,
+
+   *  PATHS_BLOCKED and PATH_CID_BLOCKED frames (see Section 7.7) to
       notify the peer of being blocked to open new paths as the limit of
-      active paths set by the peer has been reached.
+      active paths set by the peer has been reached or there are no
+      unused connection IDs available for the corresponding Path ID.
 
    All new frames are sent in 1-RTT packets [QUIC-TRANSPORT].
 
@@ -1451,15 +1454,23 @@ Table of Contents
    previously received.  MAX_PATH_ID frames that do not increase the
    path limit MUST be ignored.
 
-7.7.  PATHS_BLOCKED frames
+7.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
 
-   A sender SHOULD send a PATHS_BLOCKED frame (type=0x15228c0d) when it
+   A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when it
    wishes to open a path but is unable to do so due to the maximum path
-   identifier limit set by its peer.  Note that PATHS_BLOCKED frame is
-   informational.  Sending a PATHS_BLOCKED frame does not imply a
-   particular action from the peer like updating the new Max Path ID
-   value, but informs the peer that the maximum path identifier limit
-   prevented the creation of new paths.
+   identifier limit set by its peer.
+
+   A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when it
+   wishes to open a path with a valid Path ID or change the CID on an
+   established path but is unable to do so because there are no unused
+   connection IDs available for the corresponding Path ID.
+
+   Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are
+   informational.  Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame
+   does not imply a particular action from the peer like updating the
+   new Max Path ID value, but informs the peer that the maximum path
+   identifier limit or the absence of unused connection IDs prevented
+   the creation or the usage of paths.
 
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 
@@ -1475,9 +1486,23 @@ Table of Contents
    Maximum Path Identifier:  A variable-length integer indicating the
       maximum path identifier that was allowed at the time the frame was
       sent.  If the received value is lower than the currently allowed
-      maximum value, this frame can be ignored.  Receipt of a value that
-      is higher than the local maximum value MUST be treated as a
-      connection error of type PROTOCOL_VIOLATION.
+      maximum value, this frame can be ignored.
+
+   PATH_CIDS_BLOCKED frames are formatted as shown in Figure 11.
+
+   PATH_CIDS_BLOCKED Frame {
+     Type (i) = TBD-09 (experiments use 0x15228c0e),
+     Path Identifier (i),
+   }
+
+                 Figure 11: PATH_CIDS_BLOCKED Frame Format
+
+   Path Identifier:  Identifier of the path for which unused connection
+      IDs are not available.
+
+   Receipt of a value of Maximum Path Identifier or Path Identifier that
+   is higher than the local maximum value MUST be treated as a
+   connection error of type PROTOCOL_VIOLATION.
 
 8.  Error Codes
 
@@ -1486,23 +1511,23 @@ Table of Contents
    following QUIC error codes are defined for use in the PATH_ABANDON
    frame:
 
-   APPLICATION_ABANDON (TBD-09): The endpoint is abandoning the path at
+   APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at
    the request of the application.  The application has determined that
    it no longer needs this path.  This error is used when the
    application layer decides to stop using a specific path.
 
-   RESOURCE_LIMIT_REACHED (TBD-10): The endpoint is abandoning the path
+   RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path
    because it cannot allocate sufficient resources to maintain it.  This
    is due to limitations in the transport layer's capacity.  This error
    indicates that resource constraints prevent the continuation of the
    path.
 
-   UNSTABLE_INTERFACE (TBD-11): The endpoint is abandoning the path
+   UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path
    because the used interface is considered to be unstable.  This
    condition can occur, e.g., due to a weak wireless signal or frequent
    handover events during high-speed mobility.
 
-   NO_CID_AVAILABLE (TBD-12): The endpoint is abandoning the path due to
+   NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
    the lack of a connection ID for this path.  This may occur when the
    peer initiates a new path but has not provided a corresponding
    connection ID for the path ID (or the packet containing the
@@ -1558,6 +1583,9 @@ Table of Contents
    | TBD-08 (experiments    | PATHS_BLOCKED             |Section 7.7  |
    | use 0x15228c0d)        |                           |             |
    +------------------------+---------------------------+-------------+
+   | TBD-09 (experiments    | PATH_CIDS_BLOCKED         |Section 7.7  |
+   | use 0x15228c0e)        |                           |             |
+   +------------------------+---------------------------+-------------+
 
               Table 3: Addition to QUIC Frame Types Entries
 
@@ -1568,25 +1596,25 @@ Table of Contents
    +===================+======================+=============+=============+
    |Value              |Code                  |Description  |Specification|
    +===================+======================+=============+=============+
-   |TBD-09 (experiments|APPLICATION_ABANDON   |Path         |Section 8    |
+   |TBD-10 (experiments|APPLICATION_ABANDON   |Path         |Section 8    |
    |use                |                      |abandoned at |             |
    |0x004150504142414e)|                      |the          |             |
    |                   |                      |application's|             |
    |                   |                      |request      |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-10 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 8    |
+   |TBD-11 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 8    |
    |use                |                      |abandoned due|             |
    |0x0052534c494d4954)|                      |to resource  |             |
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-11 (experiments|UNSTABLE_INTERFACE    |Path         |Section 8    |
+   |TBD-12 (experiments|UNSTABLE_INTERFACE    |Path         |Section 8    |
    |use                |                      |abandoned due|             |
    |0x00554e5f494e5446)|                      |to unstable  |             |
    |                   |                      |interfaces   |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-12 (experiments|NO_CID_AVAILABLE      |Path         |Section 8    |
+   |TBD-13 (experiments|NO_CID_AVAILABLE      |Path         |Section 8    |
    |use                |                      |abandoned due|             |
    |0x004e4f5f4349445f)|                      |to no        |             |
    |                   |                      |available    |             |
