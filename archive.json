@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-10T01:00:44.162500+00:00",
+  "timestamp": "2024-12-12T00:59:22.706927+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11598,7 +11598,7 @@
       "id": "I_kwDOGNtpaM6PG5eC",
       "title": "Abandon Frame needs Error Code definition",
       "url": "https://github.com/quicwg/multipath/issues/414",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [
@@ -11610,8 +11610,8 @@
       ],
       "body": "Section 7.2:\r\nShould Error Code reference the number space defined by transport or the IANA Registry? ",
       "createdAt": "2024-07-10T14:34:30Z",
-      "updatedAt": "2024-11-11T12:13:47Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-10T11:08:14Z",
+      "closedAt": "2024-12-10T11:08:14Z",
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -11746,7 +11746,7 @@
       "id": "I_kwDOGNtpaM6Q4WEd",
       "title": "Anti-amplification limits",
       "url": "https://github.com/quicwg/multipath/issues/422",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "MikeBishop",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -11758,8 +11758,8 @@
       ],
       "body": "RFC 9000 requires that:\r\n- Datagrams carrying Initial packets be expanded to 1200+ bytes\r\n- Servers verify the client address on handshake *and* when the address changes through migration / rebinding\r\n- The server can send no more than 3x the received bytes until the client's address is validated, both during the handshake and following client migration / rebinding\r\n\r\nThis draft states in the Security Considerations that \"the anti-amplification limits as specified in [Section 8](https://rfc-editor.org/rfc/rfc9000#section-8) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)] need to be followed to limit the amplification risk.\" However, there's no text that describes how this maps into multipath behavior.\r\n\r\nMy proposal is that:\r\n- The packet on a new path SHOULD be expanded to 1200+ bytes (PADDING, etc.) for the first 1 RTT or until validation completes\r\n- When a packet is received from an unverified address, an endpoint MUST NOT send more than 3x the received bytes until address validation completes",
       "createdAt": "2024-07-25T18:08:16Z",
-      "updatedAt": "2024-10-18T14:55:36Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-10T20:12:09Z",
+      "closedAt": "2024-12-10T20:11:57Z",
       "comments": [
         {
           "author": "mirjak",
@@ -11788,6 +11788,13 @@
           "body": "@MikeBishop we merged #442. Can you confirm that this addressed the issue (and close it)? Thanks!",
           "createdAt": "2024-10-18T14:55:35Z",
           "updatedAt": "2024-10-18T14:55:35Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this issue as no further comments were provided.",
+          "createdAt": "2024-12-10T20:11:57Z",
+          "updatedAt": "2024-12-10T20:12:09Z"
         }
       ]
     },
@@ -11920,7 +11927,7 @@
       ],
       "body": "```\r\n[..]. To avoid this pitfall, endpoints could\r\nadopt a simple coordination rule, such as only letting the client\r\ninitiate closure of duplicate paths, or perhaps relying on\r\nthe application protocol to decide which paths should be closed.\r\n```\r\n\r\nI understand this as: it is okay to just implement the simple rule,\r\nand that letting the application protocol decide is an optional feature.\r\n\r\nThis should IMHO be more prescriptive and make sure that this also works for a path-aware network, where use of multiple paths for the same 4-tuple is very intentional.\u00a0\r\n\r\nI think the application should always be able to decide on the policy and only use the simple rule if no application protocol is defined or if it indicates that the simple rule is fine.\r\n\r\nI would propose to change the phrasing here to something like:\r\n\r\n```\r\n[..]. To avoid this pitfall, endpoints should allow the application\r\nprotocol to decide whether or which path to close. If the application\r\nprotocol defines no such rule, a simple default coordination rule \r\ncould be adopted, such as only letting the client initiate closure of \r\nduplicate paths.\r\n```",
       "createdAt": "2024-10-23T09:25:22Z",
-      "updatedAt": "2024-10-28T11:42:01Z",
+      "updatedAt": "2024-12-11T10:29:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -11950,6 +11957,13 @@
           "body": "> I am not sure that we should get into discussions of APIs. \r\n\r\nI'm just a bit concerned that `or perhaps relying on the application protocol to decide which paths should be closed.` is understood as exactly that, an API suggestion. The suggestion being that even in presence of an API (application protocol), asking the application for a policy on on duplicate path closure is optional and can be dismissed.\r\n\r\nI guess my concern is really with the words \"the application protocol\" (sounding like there is an API) vs \"perhaps\" (sounding almost dismissive to my ears).\r\n\r\nHow about: \r\n\r\n```\r\n[..]. To avoid this pitfall, endpoints could\r\nadopt a simple coordination rule, such as only letting the client\r\ninitiate closure of duplicate paths, or, if available, let the\r\nthe application protocol decide which paths should be closed.\r\n```\r\nThat would actually be shorter (by four characters) than the current wording.",
           "createdAt": "2024-10-28T09:48:17Z",
           "updatedAt": "2024-10-28T11:42:01Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "To be honest, I don't really see the difference. You don't need a specific interface, because an application can already close a path anytime. So this is more saying, you may implement a default policy in the quic stack or just do nothing in the quic stack and rely on the application to the right thing (which might also be nothing).",
+          "createdAt": "2024-12-11T10:29:47Z",
+          "updatedAt": "2024-12-11T10:29:47Z"
         }
       ]
     },
@@ -12015,7 +12029,7 @@
       ],
       "body": "QUIC packets that only contain an ACK frame are not congestion controlled. [RFC 9000 states](https://www.rfc-editor.org/rfc/rfc9000.html#section-13.2.1-3) that:\r\n\r\n> _Since packets containing only ACK frames are not congestion controlled, an endpoint MUST NOT send more than one such packet in response to receiving an ack-eliciting packet._\r\n\r\nWhen ACK-only packets are sent on another path than where the ack-eliciting packets were received, this requirement is obviously violated. A receiver of a big flow of packets could easily swamp a low-latency, low-bandwidth path by sending the acknowledgments there.",
       "createdAt": "2024-10-30T07:51:06Z",
-      "updatedAt": "2024-10-31T16:36:21Z",
+      "updatedAt": "2024-12-10T20:13:05Z",
       "closedAt": null,
       "comments": [
         {
@@ -12045,6 +12059,13 @@
           "body": "I agree that the problem discussed is not specific to a specific path and as such not specific to the multipath extension. I proposed to close the issue with no action.\r\n\r\nThe only thing we could do is to add a bit of discussion or a note of caution to not overload a path if one path is only used to send ACKs given they are not congestion control. But again this is effectively already a problem if you only have one path and send only ACKs in one direction. So not sure if even makes sense to explicitly say anything.",
           "createdAt": "2024-10-31T16:36:14Z",
           "updatedAt": "2024-10-31T16:36:14Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@michael-eriksson can we close this issue?",
+          "createdAt": "2024-12-10T20:13:03Z",
+          "updatedAt": "2024-12-10T20:13:03Z"
         }
       ]
     },
@@ -12241,7 +12262,7 @@
       "id": "I_kwDOGNtpaM6c1ZsS",
       "title": "Clarify interaction between PATHS_BLOCKED and PATH_NEW_CONNECTION_ID",
       "url": "https://github.com/quicwg/multipath/issues/459",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -12251,8 +12272,8 @@
       ],
       "body": "In the MP-QUIC interop testing at IETF 121 it was observed that an issue when testing PATHS_BLOCKED is that some servers where blocking path creation by not providing CIDS for some of the path IDs that it allowed. Thus, the client may desire to open more paths, there are agreed on path IDs, but lacks the CIDs. If the PATHS_BLOCKED is usable, how does one handle the situation when the server block the client by not providing CIDs? \r\n\r\nI believe some clarifications and possible requirements are needed. I think there are two roads to take here:\r\n\r\n1) Require that endpoints provide PATH_NEW_CONNECTION_ID when there are no CIDs for an unused PATH ID, as long as below MAX_PATH_IDS. \r\n2) Create an equivalent or parameter on PATHS_BLOCKED indicating what is the issue. \r\n\r\n",
       "createdAt": "2024-11-03T14:33:59Z",
-      "updatedAt": "2024-11-28T05:19:07Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-11T07:17:10Z",
+      "closedAt": "2024-12-11T07:17:10Z",
       "comments": [
         {
           "author": "huitema",
@@ -12405,7 +12426,7 @@
       ],
       "body": "Currently the draft only says:\r\n\r\n\"knowledge of the connection identifiers received from the peer and of the state of the number space associated to the path SHOULD be retained while packets from the peer might still be in transit, i.e., for a delay of 3 PTO after the PATH_ABANDON frame has been received from the peer\"\r\n\r\nTherefore state removal is triggered by reception of the path abandon frame. There is MUST in the text that my peer must send me a path_abandon frame if it has received mine. What if it doesn't send a path_abandon frame ever?\r\n\r\nThe sentence above is only a SHOULD, so I guess you could remove state any reasonable time after sending the path_abandon frame, however, maybe we should say more explicitly that it makes sense to also start a timer after the ACK for the path_abandon frame was received, or stop retransmitting the path_abandon frame after X tries and then just remove state?",
       "createdAt": "2024-11-28T17:40:59Z",
-      "updatedAt": "2024-12-09T12:18:38Z",
+      "updatedAt": "2024-12-11T10:13:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -12449,6 +12470,13 @@
           "body": "FWIW, I think choice number 3 is the correct one. An endpoint should however be allowed to ignore any incoming packets after some (unspecified) time.\r\n\r\nSetting a timer to abort the connection is needlessly complex and brutal, and can easily have false positives if the peer's PATH_ABANDON frame is retransmitted. ",
           "createdAt": "2024-12-09T12:18:36Z",
           "updatedAt": "2024-12-09T12:18:36Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@michael-eriksson if you say the endpoint should be allow to ignore incoming packets that is option 4.\r\n\r\nAnyway, I think we agree that we want to note the issue but don't specify anything normatively. So I created PR #475. Please have a look!",
+          "createdAt": "2024-12-11T10:13:51Z",
+          "updatedAt": "2024-12-11T10:13:51Z"
         }
       ]
     },
@@ -50206,7 +50234,7 @@
       "id": "PR_kwDOGNtpaM6BgGQh",
       "title": "Add two more specific error codes for path abandon frame",
       "url": "https://github.com/quicwg/multipath/pull/466",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -50215,17 +50243,19 @@
       ],
       "body": "To fix issue #414, according to the discussion during IETF 121.",
       "createdAt": "2024-11-11T12:03:45Z",
-      "updatedAt": "2024-12-09T04:43:05Z",
+      "updatedAt": "2024-12-10T11:08:13Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-414-codes",
       "headRefOid": "00a701f65c1a907957b7a58aad881fe412cd0585",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-12-10T11:08:13Z",
+      "mergedAt": "2024-12-10T11:08:13Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "0ed215c1cc52636c3aba894f2b9030821aaefc1a"
+      },
       "comments": [],
       "reviews": [
         {
@@ -50680,7 +50710,7 @@
       "id": "PR_kwDOGNtpaM6CPBbP",
       "title": "Add new frame type: PATH_CIDS_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/pull/468",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -50689,17 +50719,19 @@
       ],
       "body": "To solve issue #459 according to comments in IETF-121",
       "createdAt": "2024-11-18T11:40:36Z",
-      "updatedAt": "2024-12-09T03:42:01Z",
+      "updatedAt": "2024-12-11T07:17:09Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "a56f65bb31f897906e53a58a99835179875a208d",
+      "baseRefOid": "0ed215c1cc52636c3aba894f2b9030821aaefc1a",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/fix-459",
-      "headRefOid": "cb53be833997ff2f84207bd365592d9cf2deaa16",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e3af7b2aee70292147fc074f7dc4932d01fd985a",
+      "closedAt": "2024-12-11T07:17:09Z",
+      "mergedAt": "2024-12-11T07:17:09Z",
+      "mergedBy": "Yanmei-Liu",
+      "mergeCommit": {
+        "oid": "39b6067fb9d1fee12bb78917509531c29d3ddd63"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -51119,6 +51151,46 @@
               "updatedAt": "2024-12-09T03:11:35Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Un0n8",
+          "commit": {
+            "abbreviatedOid": "681c24e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-10T20:09:30Z",
+          "updatedAt": "2024-12-10T20:09:31Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Editorial suggestion to combine these to one bullet point again (total 2 proposed commits): \r\n```suggestion\r\n- PATHS_BLOCKED and PATH_CID_BLOCKED frames (see {{paths-and-cids-blocked-frame}})\r\n```",
+              "createdAt": "2024-12-10T20:09:30Z",
+              "updatedAt": "2024-12-10T20:10:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Un0-f",
+          "commit": {
+            "abbreviatedOid": "681c24e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-10T20:10:19Z",
+          "updatedAt": "2024-12-10T20:10:19Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nor there are no unused connection IDs available\r\nfor the corresponding Path ID.\r\n```",
+              "createdAt": "2024-12-10T20:10:19Z",
+              "updatedAt": "2024-12-10T20:10:19Z"
+            }
+          ]
         }
       ]
     },
@@ -51270,7 +51342,7 @@
       "labels": [],
       "body": "fixes #470",
       "createdAt": "2024-12-03T17:28:38Z",
-      "updatedAt": "2024-12-08T14:45:29Z",
+      "updatedAt": "2024-12-10T20:16:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
@@ -51288,6 +51360,13 @@
           "body": "I agree with @yfmascgy. This is a general issue, not specific to path abandon. We don't need more text.",
           "createdAt": "2024-12-08T14:45:27Z",
           "updatedAt": "2024-12-08T14:45:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "For sure this text is not necessarily needed but I think having a PTO for the path_abandon frame is an important case and therefore pointing this out could people help to get at least this case right. But I have no strong opinion. I think the question is would it potentially help implementors?",
+          "createdAt": "2024-12-10T20:16:16Z",
+          "updatedAt": "2024-12-10T20:16:16Z"
         }
       ],
       "reviews": [
@@ -51344,6 +51423,66 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 474,
+      "id": "PR_kwDOGNtpaM6Ezy-_",
+      "title": "Update transport parameter for draft-12",
+      "url": "https://github.com/quicwg/multipath/pull/474",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As we have add new frame type PATH_CIDS_BLOCKED frame, we'd need a new transport parameter type.\r\nBTW, as the transport parameter type is hex value, I used 0x0c for draft-12.",
+      "createdAt": "2024-12-11T07:24:36Z",
+      "updatedAt": "2024-12-11T13:33:58Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/update-tp-12",
+      "headRefOid": "6d9b14e45c7acf58a7ea19ce046872c32dd5005f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "yes, it's an hex value but I thought the intention was to map the last two values to the decimal revision number of the draft. At least that was my understanding of what we did so far, so let's not change this now.",
+          "createdAt": "2024-12-11T13:32:49Z",
+          "updatedAt": "2024-12-11T13:33:58Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 475,
+      "id": "PR_kwDOGNtpaM6E1LWg",
+      "title": "Note that path state cannot be removed without reception of PATH_ABANDON",
+      "url": "https://github.com/quicwg/multipath/pull/475",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #471",
+      "createdAt": "2024-12-11T10:06:40Z",
+      "updatedAt": "2024-12-11T10:13:39Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-23",
+      "headRefOid": "3431f5975f34b0f4f1d399f99703466833456566",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
