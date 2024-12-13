@@ -390,13 +390,13 @@ it MUST pick a Connection ID with the same Path ID for sending the PATH_RESPONSE
 When the multipath extension is negotiated, a client that wants to use an
 additional path MUST validate the peer's address before sending any data packets
 as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
-unless it has previously validated the four-tuple used for that path.
+unless it has previously validated the 4-tuple used for that path.
 
 After receiving packets from the
 client on a new path, if the server decides to use the new path,
 the server MUST validate the peer's address before sending any data packets
 as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
-unless it has previously validated the four-tuple used for that path.
+unless it has previously validated the 4-tuple used for that path.
 Until the client's address is
 validated, the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
 applies.
@@ -1074,7 +1074,7 @@ Since these paths use different path IDs, they can be managed
 independently to suit the needs of the application.
 
 There may be cases in which paths are created with different 4-tuples,
-but end up using the same four tuples as a consequence of path
+but end up using the same 4-tuples as a consequence of path
 migrations. For example:
 
 * Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
