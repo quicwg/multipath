@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-12T00:59:22.706927+00:00",
+  "timestamp": "2024-12-15T01:04:10.615903+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -11918,7 +11918,7 @@
       "id": "I_kwDOGNtpaM6bcU0g",
       "title": "Automatic closing of unintentional duplicate paths",
       "url": "https://github.com/quicwg/multipath/issues/451",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tzaeschke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -11927,8 +11927,8 @@
       ],
       "body": "```\r\n[..]. To avoid this pitfall, endpoints could\r\nadopt a simple coordination rule, such as only letting the client\r\ninitiate closure of duplicate paths, or perhaps relying on\r\nthe application protocol to decide which paths should be closed.\r\n```\r\n\r\nI understand this as: it is okay to just implement the simple rule,\r\nand that letting the application protocol decide is an optional feature.\r\n\r\nThis should IMHO be more prescriptive and make sure that this also works for a path-aware network, where use of multiple paths for the same 4-tuple is very intentional.\u00a0\r\n\r\nI think the application should always be able to decide on the policy and only use the simple rule if no application protocol is defined or if it indicates that the simple rule is fine.\r\n\r\nI would propose to change the phrasing here to something like:\r\n\r\n```\r\n[..]. To avoid this pitfall, endpoints should allow the application\r\nprotocol to decide whether or which path to close. If the application\r\nprotocol defines no such rule, a simple default coordination rule \r\ncould be adopted, such as only letting the client initiate closure of \r\nduplicate paths.\r\n```",
       "createdAt": "2024-10-23T09:25:22Z",
-      "updatedAt": "2024-12-11T10:29:48Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-13T09:29:48Z",
+      "closedAt": "2024-12-13T09:29:47Z",
       "comments": [
         {
           "author": "mirjak",
@@ -11964,6 +11964,13 @@
           "body": "To be honest, I don't really see the difference. You don't need a specific interface, because an application can already close a path anytime. So this is more saying, you may implement a default policy in the quic stack or just do nothing in the quic stack and rely on the application to the right thing (which might also be nothing).",
           "createdAt": "2024-12-11T10:29:47Z",
           "updatedAt": "2024-12-11T10:29:47Z"
+        },
+        {
+          "author": "tzaeschke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@mirjak Thanks, and my apologies, it turns out I managed to misread (even while rephrasing it) what it actually says here. It does say exactly what I wanted.\r\n\r\n",
+          "createdAt": "2024-12-13T09:29:47Z",
+          "updatedAt": "2024-12-13T09:29:47Z"
         }
       ]
     },
@@ -51342,7 +51349,7 @@
       "labels": [],
       "body": "fixes #470",
       "createdAt": "2024-12-03T17:28:38Z",
-      "updatedAt": "2024-12-10T20:16:18Z",
+      "updatedAt": "2024-12-14T16:25:28Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
@@ -51367,6 +51374,20 @@
           "body": "For sure this text is not necessarily needed but I think having a PTO for the path_abandon frame is an important case and therefore pointing this out could people help to get at least this case right. But I have no strong opinion. I think the question is would it potentially help implementors?",
           "createdAt": "2024-12-10T20:16:16Z",
           "updatedAt": "2024-12-10T20:16:16Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I agree with the majority here and still stick with my original opinion that this text is not really needed (or at least not there). We may add something in the implementation considerations regarding the scheduling and the potential performance issues we may have -- though again, I would not fight to have such text in the draft.",
+          "createdAt": "2024-12-13T10:20:20Z",
+          "updatedAt": "2024-12-13T10:22:53Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I do not think that additional text would help implementers. We have to assume that people implementing a complex real-time transport protocol have sufficient skills and exercise judgment. Piling up extra text leads to generally increasing the size of the document -- maybe one paragraph at a time, but it does add up. And then we have the next issue: making the document so large that implementers shudder at the idea of reading it all. \r\n\r\nAlso, let me reiterate that we have very little operational experience. We can make recommendations, but they are based on that limited experience. When there are lots of possible valid strategies, it might be better to say nothing.",
+          "createdAt": "2024-12-14T16:25:27Z",
+          "updatedAt": "2024-12-14T16:25:27Z"
         }
       ],
       "reviews": [
@@ -51470,7 +51491,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2024-12-11T10:13:39Z",
+      "updatedAt": "2024-12-14T16:36:15Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51482,6 +51503,69 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6VIH0n",
+          "commit": {
+            "abbreviatedOid": "3431f59"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "LGTM.",
+          "createdAt": "2024-12-13T10:15:45Z",
+          "updatedAt": "2024-12-13T10:15:45Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6VPsOr",
+          "commit": {
+            "abbreviatedOid": "3431f59"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "I do not think this paragraph is necessary. I also think it is probably wrong. Suppose that I put a path in a \"locally abandoned\" state, and:\r\n\r\n* send a last ACK for the packets received so far,\r\n* consider all the packets sent so far and not acknowledged,\r\n* drop all incoming packets on that path without processing them.\r\n\r\nI have at that point removed 99% of the path state -- the only resource that I need to keep is the path identifier, and I will only remove that when the ABANDON is received. But I have removed the bulk of the memory allocation: the copy of packets waiting for an ACK, the list of packets received from the peer that should be acked, probably the CID allocated for the path as well. \r\n\r\nYes, that will lead to packet loss, but so what? I have sent the ABANDON already, the peer should not be using the path, if it keeps doing so, too bad. There is never a guarantee that a packet will be received, and there is no protocol violation if the packets that were dropped are not acked.\r\n\r\n\r\nWhich points that ",
+          "createdAt": "2024-12-14T16:36:15Z",
+          "updatedAt": "2024-12-14T16:36:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 476,
+      "id": "PR_kwDOGNtpaM6FH1w2",
+      "title": "Typos: four tuples vs 4-tuples",
+      "url": "https://github.com/quicwg/multipath/pull/476",
+      "state": "MERGED",
+      "author": "tzaeschke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-12-13T09:35:13Z",
+      "updatedAt": "2024-12-13T09:59:58Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
+      "headRepository": "tzaeschke/multipath",
+      "headRefName": "patch-2",
+      "headRefOid": "b38c9fd9b2c7dbad48e555cbe826363354fb1620",
+      "closedAt": "2024-12-13T09:59:58Z",
+      "mergedAt": "2024-12-13T09:59:58Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "b02e889e5d955186c8775d0bd8733e6c21e20e60"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks! will merge!",
+          "createdAt": "2024-12-13T09:59:55Z",
+          "updatedAt": "2024-12-13T09:59:55Z"
+        }
+      ],
       "reviews": []
     }
   ]
