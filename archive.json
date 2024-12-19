@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-17T00:59:54.835011+00:00",
+  "timestamp": "2024-12-19T00:57:58.572096+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12036,7 +12036,7 @@
       ],
       "body": "QUIC packets that only contain an ACK frame are not congestion controlled. [RFC 9000 states](https://www.rfc-editor.org/rfc/rfc9000.html#section-13.2.1-3) that:\r\n\r\n> _Since packets containing only ACK frames are not congestion controlled, an endpoint MUST NOT send more than one such packet in response to receiving an ack-eliciting packet._\r\n\r\nWhen ACK-only packets are sent on another path than where the ack-eliciting packets were received, this requirement is obviously violated. A receiver of a big flow of packets could easily swamp a low-latency, low-bandwidth path by sending the acknowledgments there.",
       "createdAt": "2024-10-30T07:51:06Z",
-      "updatedAt": "2024-12-16T16:39:07Z",
+      "updatedAt": "2024-12-18T16:59:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -12101,6 +12101,48 @@
           "body": "These are areas for experimentation but the basic problem exists in both cases.",
           "createdAt": "2024-12-16T16:39:05Z",
           "updatedAt": "2024-12-16T16:39:05Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I propose closing this issue, because we do have great experience that ACK should not be congestion controlled in general -- whether on one path or another. We may want to open another issue regarding control of ACK frequency for multiple paths.",
+          "createdAt": "2024-12-17T01:54:57Z",
+          "updatedAt": "2024-12-17T01:54:57Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Do you mean we should say something in this draft about ACK frequency or would that be a separate draft?\r\n\r\nI think the only we thing we can say right now is that the ack frequency is negotiated for all path and if different ack frequencies are need for different path, that would require a new extension. However, the ack frequency after all is a recommendation for a max value and of course the sender could still use different (smaller) delay on each path.\r\n\r\nI guess we could add that as a short subsection to the implementation section...?\r\n\r\nI that is not something useful to say. I recommend we mark this is as \"separate draft\" and leave it open for later.",
+          "createdAt": "2024-12-17T09:34:00Z",
+          "updatedAt": "2024-12-17T09:34:00Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "It absolutely should be a separate draft. I started working on a simple \"PATH_ACK_FREQUENCY\" draft, but quickly realized it is not that simple and that parallel \"ships in the night\" handling of each path will not necessarily work. For example, one of the motivation for ACK_FREQUENCY is to set a \"budget of acknowledgements\" so we send the right amount, don't cause CPU overload but also don't cause spurious timers. The \"spurious timer\" part could be set per path, because it is a function of the RTT of the path. But the \"overload\" part is a global setting. So, yes it is important, but No we should not try to do it as part of the main multipath draft.",
+          "createdAt": "2024-12-18T02:04:56Z",
+          "updatedAt": "2024-12-18T02:04:56Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Do you want to say anything about it in this draft?",
+          "createdAt": "2024-12-18T08:40:42Z",
+          "updatedAt": "2024-12-18T08:40:42Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "I agree that a separate draft is the right thing to do.\r\n\r\nUntil it is available, I am strongly against the current (intended Standards Track!) document allowing, or even requiring, the transmission of huge amounts of acknowledgments on paths with completely unknown capacity and load.",
+          "createdAt": "2024-12-18T13:25:32Z",
+          "updatedAt": "2024-12-18T13:25:32Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am against adding text for that issue. We received strong feedback in Dublin that the draft was too researchy. If anything, we need to trim it to concentrate on presenting the mechanism and focusing on interop. Dropping half the text would be nice. \r\n\r\nSending tons of packets on a narrow link is stupid. But we have to assume that developers are not stupid, and we cannot add text for each of the many ways in which they can do stupid things.",
+          "createdAt": "2024-12-18T16:58:36Z",
+          "updatedAt": "2024-12-18T16:59:22Z"
         }
       ]
     },
@@ -51384,7 +51426,7 @@
       "labels": [],
       "body": "fixes #470",
       "createdAt": "2024-12-03T17:28:38Z",
-      "updatedAt": "2024-12-16T10:04:47Z",
+      "updatedAt": "2024-12-17T21:14:29Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "bf656740863c73c418f089bedfc50448f56c8cf9",
@@ -51430,6 +51472,27 @@
           "body": "Again, we don't need this text and I'm fine close this PR, however, I want to comment on two points above:\r\n\r\nI think one of the few things that we actually know is exactly this advise above, that if you have a PTO for an PATH_ABANDON frame, there is really no good reason to not retransmit it on another path that you know is working for sure. I guess you could even always transmit the first PATH_ABANDON on a path that you know is working for sure but I guess that's something we didn't really experiment with yet. So I think this specific case is really more than a random recommendation.\r\n\r\nSecond, you mention that the draft gets too long. a) these are really the final edits here, so I actually think it a bit too late to worry about this now. However, more importantly b) we need to do another editorial path. I think there are a bunch of things in the intro part that we can remove or move to the appendix. Maybe there are also a few things from the \"normative\" part (section 2, 3, 4) that we can move into the implementation guidance. However that part is only 10 pages and I don't think overly lengthly. Again an editorial pass might still help to tighten the language up more but that's on my todo list for after this draft revision.",
           "createdAt": "2024-12-16T10:04:45Z",
           "updatedAt": "2024-12-16T10:04:45Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "My code will always send the PATH_ABANDON on another path, will not wait the PTO to do that. This should be the preferred behavior, especially if the path is abandoned because its quality is poor.",
+          "createdAt": "2024-12-17T01:51:28Z",
+          "updatedAt": "2024-12-17T01:51:28Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Should we maybe then change the previous sentence the following way maybe:\r\n\r\nOLD:\r\nThis, even if connectivity on that path is already broken\r\nbut there is still another usable path, it is RECOMMENDED to\r\nsend the PATH_ABANDON frames on another path.\r\n\r\nNEW\r\nIt is RECOMMENDED to\r\nsend the PATH_ABANDON frames on another path,\r\nespecially if connectivity on the to-be-abandoned path\r\nis expected to be broken.\r\n\r\n?",
+          "createdAt": "2024-12-17T09:28:25Z",
+          "updatedAt": "2024-12-17T09:28:25Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@mirjak we already have that text, \"PATH_ABANDON frames can be sent on any path,\r\nnot only the path that is intended to be closed. Thus,\r\neven if connectivity on that path is already broken\r\nbut there is still another usable path, it is RECOMMENDED to\r\nsend the PATH_ABANDON frames on another path.\"\r\n\r\nI think that's sufficient. We might want to tune it a little, but the basic idea is that PATH_ABANDON should be sent on a path that the node wants to keep, not on the path that the node wants to abandon. The handling of repetition is just a consequence of that preference, and does not need to be explicit -- there is no difference there between path abandon and any other frame.",
+          "createdAt": "2024-12-17T21:14:28Z",
+          "updatedAt": "2024-12-17T21:14:28Z"
         }
       ],
       "reviews": [
@@ -51621,13 +51684,13 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2024-12-16T09:54:49Z",
+      "updatedAt": "2024-12-17T21:08:16Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-23",
-      "headRefOid": "3431f5975f34b0f4f1d399f99703466833456566",
+      "headRefOid": "b162e643bf3aeb6ec5a9960c081175e0fadd6ddb",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -51639,6 +51702,27 @@
           "body": "@huitema looks like you comment above is half finished only...?\r\n\r\nSo what exactly is wrong about the current text?\r\n\r\nI proposed this PR because the agreement in issue #471 that we wanted to note this issue. Please continue discussion there if you changed your mind and think we should not do anything.",
           "createdAt": "2024-12-16T09:54:49Z",
           "updatedAt": "2024-12-16T09:54:49Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The only recommendation that we should make is to not take any drastic action too soon. For example, it would be bad if application waited less than 3 PTO before closing the connection because they have not received a PATH_ABANDON yet. ",
+          "createdAt": "2024-12-17T01:49:01Z",
+          "updatedAt": "2024-12-17T01:49:01Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I entered your proposed change which is fine for me. But based on your second comment, do you want to add anther sentence like:\r\n\r\n\"An endpoint SHOULD NOT remove path state earlier than 3 PTOs after sending the PATh_ABANDON frame\".\r\n\r\n?",
+          "createdAt": "2024-12-17T09:20:15Z",
+          "updatedAt": "2024-12-17T09:20:15Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, please add the warning against removing state too soon.",
+          "createdAt": "2024-12-17T21:07:42Z",
+          "updatedAt": "2024-12-17T21:07:42Z"
         }
       ],
       "reviews": [
@@ -51663,10 +51747,50 @@
           "author": "huitema",
           "authorAssociation": "CONTRIBUTOR",
           "state": "CHANGES_REQUESTED",
-          "body": "I do not think this paragraph is necessary. I also think it is probably wrong. Suppose that I put a path in a \"locally abandoned\" state, and:\r\n\r\n* send a last ACK for the packets received so far,\r\n* consider all the packets sent so far and not acknowledged,\r\n* drop all incoming packets on that path without processing them.\r\n\r\nI have at that point removed 99% of the path state -- the only resource that I need to keep is the path identifier, and I will only remove that when the ABANDON is received. But I have removed the bulk of the memory allocation: the copy of packets waiting for an ACK, the list of packets received from the peer that should be acked, probably the CID allocated for the path as well. \r\n\r\nYes, that will lead to packet loss, but so what? I have sent the ABANDON already, the peer should not be using the path, if it keeps doing so, too bad. There is never a guarantee that a packet will be received, and there is no protocol violation if the packets that were dropped are not acked.\r\n\r\n\r\nWhich points that ",
+          "body": "I do not think this paragraph is necessary. I also think it is probably wrong. Suppose that I put a path in a \"locally abandoned\" state, and:\r\n\r\n* send a last ACK for the packets received so far,\r\n* consider all the packets sent so far and not acknowledged,\r\n* drop all incoming packets on that path without processing them.\r\n\r\nI have at that point removed 99% of the path state -- the only resource that I need to keep is the path identifier, and I will only remove that when the ABANDON is received. But I have removed the bulk of the memory allocation: the copy of packets waiting for an ACK, the list of packets received from the peer that should be acked, probably the CID allocated for the path as well. \r\n\r\nYes, that will lead to packet loss, but so what? I have sent the ABANDON already, the peer should not be using the path, if it keeps doing so, too bad. There is never a guarantee that a packet will be received, and there is no protocol violation if the packets that were dropped are not acked.\r\n\r\n\r\nWhich points that [see next comment]",
           "createdAt": "2024-12-14T16:36:15Z",
-          "updatedAt": "2024-12-14T16:36:15Z",
+          "updatedAt": "2024-12-17T01:25:34Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6VeEDZ",
+          "commit": {
+            "abbreviatedOid": "3431f59"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-17T01:45:29Z",
+          "updatedAt": "2024-12-17T01:45:29Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Less is more. I would remove extra text and just keep the following:\r\n\r\nIf a peer sends a PATH_ABANDON frame but never receives\r\na corresponding PATH_ABANDON frame, it ~~either~~ might not be able to remove path state ~~or\r\ncould use additional timers, e.g. after receiving the corresponding ACK frame,\r\nor other conditions like a maximum number of retransmissions to remove state~~.\r\n~~If path state is removed without receiving a PATH_ABANDON frame this could lead\r\nto packet loss.~~ It is left to the implementation to handle this unexpected\r\nbehavior as it does not impact interoperability.",
+              "createdAt": "2024-12-17T01:45:29Z",
+              "updatedAt": "2024-12-17T01:45:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6VgWS4",
+          "commit": {
+            "abbreviatedOid": "3431f59"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-17T09:17:48Z",
+          "updatedAt": "2024-12-17T09:17:49Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\nIf a peer sends a PATH_ABANDON frame but never receives\r\na corresponding PATH_ABANDON frame, it might not be able to remove path state.\r\nIt is left to the implementation to handle this unexpected\r\n```",
+              "createdAt": "2024-12-17T09:17:48Z",
+              "updatedAt": "2024-12-17T09:17:49Z"
+            }
+          ]
         }
       ]
     },
