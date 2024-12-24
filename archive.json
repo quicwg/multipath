@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-22T00:59:29.164314+00:00",
+  "timestamp": "2024-12-24T00:54:51.490714+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51733,7 +51733,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2024-12-20T13:29:36Z",
+      "updatedAt": "2024-12-23T14:13:07Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51911,7 +51911,7 @@
       "labels": [],
       "body": "I created this PR based on the discussion in (the now-closed) PR #473.\r\n\r\nThis is a slight change of the normative recommendation as it generally recommends to send the PATH_ABANDON on another path.\r\n\r\nI understood that this is what we want to recommend but if not, we cannot also not apply this PR. Please comment!",
       "createdAt": "2024-12-20T13:34:54Z",
-      "updatedAt": "2024-12-20T13:41:42Z",
+      "updatedAt": "2024-12-23T14:12:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -51958,7 +51958,7 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2024-12-20T13:40:59Z",
+      "updatedAt": "2024-12-23T14:13:00Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
