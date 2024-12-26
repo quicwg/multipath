@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-24T00:54:51.490714+00:00",
+  "timestamp": "2024-12-26T00:54:23.702989+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51733,7 +51733,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2024-12-23T14:13:07Z",
+      "updatedAt": "2024-12-24T20:44:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51860,6 +51860,45 @@
               "updatedAt": "2024-12-20T13:29:25Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6WVcFO",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I don't think we should add this paragraph. If we do, I would just keep the first sentence and the first words of the second. The alternative is a full page of text, maybe in the \"implementation\" section, explaining the various tradeoffs. But I have no appetite for that.",
+          "createdAt": "2024-12-24T20:24:55Z",
+          "updatedAt": "2024-12-24T20:29:36Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "What state are we speaking about? I think that we are saying either too much or too little. There many kinds of \"states\":\r\n\r\n1) Lists of packets that were sent on the path and not yet acked by the peer,\r\n2) Packets that were received from the peer and processed but not yet acked,\r\n3) the total number of paths considered active, which some implementation use to decide when to increase the Max Path ID.\r\n\r\nSuppose that an implementation has abandoned a path, had not received a Path Abandon from the peer, and is losing patience. It may do a number of things:\r\n\r\n1) It may decide to drop any incoming packet on that path. That has no interoperability impact, as long as those dropped packets are never acknowledged. Indeed, that's exactly what would happen if the path had become bad and packets were dropped in the network. But it has some performance impact, since some packets will be in transit when the Path Abandon is sent. It is recommended to not do that earlier than 3 PTOs after sending the PATH_ABANDON frame.\r\n\r\n2) It may decide to consider all packets send on that path as lost, and resend the frames through another path. That's fine. It might cause some duplicate transmission, but that also happens for other reasons (e.g., bad timers) and has no interoperability impact. The rules there are murky, because this is a tradeoff -- resend sooner minimizes the end-to-end latency caused by losses, but resend sooner also increases the risk of duplicate transmission, which reduces efficiency. The 3PTO rule is probably one end of the tradeoff: good mitigation of duplicate transmission, poor management of latency. A 1PTO rule would be a different tradeoff, more focused on managing latency.\r\n\r\n3) It should send the \"missing ACKs\" on another path before clearing the missing ACK state. Again, that's an efficiency tradeoff. If the node does not send acknowledgements, it risks causing spurious retransmission. \r\n\r\n4) It may well decide to never increase the MAX_PATH_ID until the PATH_ABANDON has been received. That's a reasonable way for an implementation to conserve resource.",
+              "createdAt": "2024-12-24T20:24:55Z",
+              "updatedAt": "2024-12-24T20:29:36Z"
+            },
+            {
+              "originalPosition": 9,
+              "body": "I would just say:\r\n\r\nIf a peer sends a PATH_ABANDON frame but never receives\r\na corresponding PATH_ABANDON frame, it might not be able to remove path state.\r\nIt is left to the implementation to handle this unexpected\r\nbehavior.",
+              "createdAt": "2024-12-24T20:28:32Z",
+              "updatedAt": "2024-12-24T20:29:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6WVdUp",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-12-24T20:44:48Z",
+          "updatedAt": "2024-12-24T20:44:48Z",
+          "comments": []
         }
       ]
     },
@@ -51911,7 +51950,7 @@
       "labels": [],
       "body": "I created this PR based on the discussion in (the now-closed) PR #473.\r\n\r\nThis is a slight change of the normative recommendation as it generally recommends to send the PATH_ABANDON on another path.\r\n\r\nI understood that this is what we want to recommend but if not, we cannot also not apply this PR. Please comment!",
       "createdAt": "2024-12-20T13:34:54Z",
-      "updatedAt": "2024-12-23T14:12:48Z",
+      "updatedAt": "2024-12-24T20:01:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -51943,6 +51982,19 @@
               "updatedAt": "2024-12-20T13:41:35Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6WVag0",
+          "commit": {
+            "abbreviatedOid": "38f1559"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2024-12-24T20:01:11Z",
+          "updatedAt": "2024-12-24T20:01:11Z",
+          "comments": []
         }
       ]
     },
@@ -51958,7 +52010,7 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2024-12-23T14:13:00Z",
+      "updatedAt": "2024-12-24T19:58:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -51970,7 +52022,28 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6WVaKP",
+          "commit": {
+            "abbreviatedOid": "923cf90"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I still think this is not needed. I think that we should expurgate that kind of text from the draft, and place it is a separate informational document, but if you really want to add it, I wont stand in the the way. In that case, I suggest a minor rewrite.",
+          "createdAt": "2024-12-24T19:56:16Z",
+          "updatedAt": "2024-12-24T19:58:18Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "The additional sentence uses the passive form and is a bit hard to read. If we want something, I would suggest:\r\n\r\nHowever, since packets that only carries PATH_ACK frames\r\nare not congestion controlled, senders should carefully consider the load induced by these packets, especially\r\nif the capacity is unknown on that path.",
+              "createdAt": "2024-12-24T19:56:16Z",
+              "updatedAt": "2024-12-24T19:58:18Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
