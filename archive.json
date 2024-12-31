@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-29T00:59:56.786504+00:00",
+  "timestamp": "2024-12-31T00:54:32.123597+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51733,7 +51733,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2024-12-24T20:44:48Z",
+      "updatedAt": "2024-12-30T14:06:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51772,6 +51772,13 @@
           "body": "Yes, please add the warning against removing state too soon.",
           "createdAt": "2024-12-17T21:07:42Z",
           "updatedAt": "2024-12-17T21:07:42Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "OK, I need to explain why I said first \"Yes, please add the warning against removing state too soon\", and then \"just keep the first sentence and the first words of the second.\" I did indeed change my mind. That's because most of the issues about releasing state too soon are already discussed in the draft, in particular is [3.3.1. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.3.1)[Avoiding Spurious Stateless Resets](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-avoiding-spurious-stateless).\r\n\r\nThe \"spurious stateless reset\" issue is the main reason to be cautious with unilateral removal of state. Dropping packets is kind of bad, but will not crash the connection. Dropping the CID sent to the peer before receiving the PATH_ABANDON from the peer is worse, because of the risk of generating a spurious stateless reset and thus killing the connection. \r\n\r\nSo maybe we should say:\r\n```\r\nIt is left to the implementation to handle this unexpected\r\nbehavior. Implementation MAY shed some of the path state and reduce\r\nresource consumption if the PATH_ABANDON is\r\nnot arriving in a reasonable time, but they SHOULD\r\ntake steps and avoid sending spurious stateless reset (see {{spurious-stateless-reset}}).\r\n```\r\n\r\n",
+          "createdAt": "2024-12-30T05:43:55Z",
+          "updatedAt": "2024-12-30T05:43:55Z"
         }
       ],
       "reviews": [
@@ -51899,6 +51906,26 @@
           "createdAt": "2024-12-24T20:44:48Z",
           "updatedAt": "2024-12-24T20:44:48Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6WiftB",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-12-30T14:06:51Z",
+          "updatedAt": "2024-12-30T14:06:52Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "> What state are we speaking about? I think that we are saying either too much or too little. There many kinds of \"states\":\r\n> \r\n> 1. Lists of packets that were sent on the path and not yet acked by the peer,\r\n> 2. Packets that were received from the peer and processed but not yet acked,\r\n> 3. the total number of paths considered active, which some implementation use to decide when to increase the Max Path ID.\r\n\r\nPacket handling as mentioned in point 1 and 2 seems actually partly orthogonal here. If you have send the path abandon frame, you should probably not have any outstanding packets that need to be acked on that path. However, you should also never just forgot about outstanting/non-acked packets. If you decide to remove state about non-ack packets, you need to declare them lost and resent on another path. I guess if you really want to sent a path abandon frame even though you have outstanding packets, you should probably declare them lost and resent on another path right away.\r\n\r\nAbout your point 2, I don't think there is an issue here and I'm not sure when this case could/would happen. If you have received packets, I guess you should first send the ACK and then the path abandon. Of course you can also send ACKs on other paths still.\r\n\r\nThe important part is about packet handling of new incoming packets and you should be able to process those for at least 3 PTOs after sending the path abandon frame. This means, you need to remember the path ID and corresponding CID(s) as well as the packet number space state. However, as soon as you remove the CID(s), you cannot process any new incoming packets anymore and as such you can then also remove all packet number space state as well for received packets. For out-going packets, it's really on you if you remove state even though there are ACKs missing; however, as I said above that means you have to retransmit on another paths.\r\n\r\nThe interesting case is actually your point 3. If you remove path state that means you remove the path ID and will consider it as not active anymore. As such you could send a new max path ID. However, as the other end is not sending you a path abandon frame it will consider the path ID as active and not increase its max path ID. Respectively, you might not be able to open a new path. But I guess that's what we have the path blocked frame for. So I guess there is no problem either way.\r\n\r\nSo should we maybe say this to be more clear:\r\n\r\n> However, an endpoint SHOULD process incoming packets for the abandoned Path ID and corresponding connection IDs for at least 3 PTOs after sending the PATh_ABANDON frame.",
+              "createdAt": "2024-12-30T14:06:51Z",
+              "updatedAt": "2024-12-30T14:06:52Z"
+            }
+          ]
         }
       ]
     },
