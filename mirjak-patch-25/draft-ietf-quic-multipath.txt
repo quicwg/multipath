@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 23 June 2025                             Uber Technologies Inc.
+Expires: 14 July 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 23 June 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        20 December 2024
+                                                         10 January 2025
 
 
                       Multipath Extension for QUIC
@@ -52,11 +52,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 June 2025.
+   This Internet-Draft will expire on 14 July 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1059,11 +1059,10 @@ Table of Contents
    that implementations can choose between multiple strategies such as
    sending PATH_ACK frames on the path they acknowledge packets, or
    sending PATH_ACK frames on the shortest path, which results in
-   shorter control loops and thus better performance.  As packets that
-   only carries PATH_ACK frames are not congestion controlled, sending
-   only PATH_ACK frames on a path should carefully consider the load
-   induced by these packets, especially if the capacity is unknown on
-   that path.
+   shorter control loops and thus better performance.  However, since
+   packets that only carries PATH_ACK frames are not congestion
+   controlled, senders should carefully consider the load induced by
+   these packets, especially if the capacity is unknown on that path.
 
 6.5.  Retransmissions
 

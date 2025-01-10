@@ -24,7 +24,7 @@ enable the simultaneous usage of multiple paths for a single connection.
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.4
+    Jinja2 3.1.5
     lxml 5.3.0
     platformdirs 4.3.6
     pycountry 24.6.1
@@ -1050,11 +1050,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">December 2024</td>
+<td class="right">January 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 23 June 2025</td>
+<td class="center">Expires 14 July 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-12-20" class="published">20 December 2024</time>
+<time datetime="2025-01-10" class="published">10 January 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-06-23">23 June 2025</time></dd>
+<dd class="expires"><time datetime="2025-07-14">14 July 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 July 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1152,7 +1152,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2024 IETF Trust and the persons identified as the
+            Copyright (c) 2025 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -2337,10 +2337,9 @@ faster if the scheduling strategy is stable, but besides that
 implementations can choose between multiple strategies such as sending
 PATH_ACK frames on the path they acknowledge packets, or sending
 PATH_ACK frames on the shortest path, which results in shorter control loops
-and thus better performance. As packets that only carries PATH_ACK frames
-are not congestion controlled, sending only PATH_ACK frames on a path
-should carefully consider the load induced by these packets, especially
-if the capacity is unknown on that path.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
+and thus better performance. However, since packets that only carries PATH_ACK frames
+are not congestion controlled, senders should carefully consider the load induced
+by these packets, especially if the capacity is unknown on that path.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="retransmissions">
