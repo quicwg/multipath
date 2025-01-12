@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-09T00:54:51.160173+00:00",
+  "timestamp": "2025-01-12T01:00:19.614377+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51733,7 +51733,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2024-12-30T14:06:52Z",
+      "updatedAt": "2025-01-10T15:36:55Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51779,6 +51779,13 @@
           "body": "OK, I need to explain why I said first \"Yes, please add the warning against removing state too soon\", and then \"just keep the first sentence and the first words of the second.\" I did indeed change my mind. That's because most of the issues about releasing state too soon are already discussed in the draft, in particular is [3.3.1. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.3.1)[Avoiding Spurious Stateless Resets](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-avoiding-spurious-stateless).\r\n\r\nThe \"spurious stateless reset\" issue is the main reason to be cautious with unilateral removal of state. Dropping packets is kind of bad, but will not crash the connection. Dropping the CID sent to the peer before receiving the PATH_ABANDON from the peer is worse, because of the risk of generating a spurious stateless reset and thus killing the connection. \r\n\r\nSo maybe we should say:\r\n```\r\nIt is left to the implementation to handle this unexpected\r\nbehavior. Implementation MAY shed some of the path state and reduce\r\nresource consumption if the PATH_ABANDON is\r\nnot arriving in a reasonable time, but they SHOULD\r\ntake steps and avoid sending spurious stateless reset (see {{spurious-stateless-reset}}).\r\n```\r\n\r\n",
           "createdAt": "2024-12-30T05:43:55Z",
           "updatedAt": "2024-12-30T05:43:55Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm not sure about your proposed text above, Christian. First it's very vague saying \"shed _some_ path state and reduce resource consumption\" as well as \"in a reasonable time\". However, I don't think it addresses the issue. If you send a path_abandon frame you immediately retire all CIDs that you received from the other end which means you can't not sent on the path anymore. That avoids connection closure of spurious reset, as also mentioned in the paragraph just before his new proposed text, and it exactly what path_abandon stand for - it a clear promise that you won't sent on the path anymore.\r\n\r\nThe problem we are trying to address is about retiring the CIDs that you provided to the peer. Because those you are expected to only retire when you receive a path_abandon from the other end. And here I think we should be clear that there is also a recommend minimal time of 3 PTO before retiring the CID that were issues to the other end. But I think we could be more concrete in the proposed text and not talk about \"path state\" but more specifically about \"issued CIDs\". Would that help (see proposed commit)?",
+          "createdAt": "2025-01-10T15:36:34Z",
+          "updatedAt": "2025-01-10T15:36:34Z"
         }
       ],
       "reviews": [
@@ -51926,6 +51933,26 @@
               "updatedAt": "2024-12-30T14:06:52Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Xjyoo",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-10T15:36:55Z",
+          "updatedAt": "2025-01-10T15:36:55Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nremove issued CIDs earlier than 3 PTOs after sending the PATh_ABANDON frame.\r\n```",
+              "createdAt": "2025-01-10T15:36:55Z",
+              "updatedAt": "2025-01-10T15:36:55Z"
+            }
+          ]
         }
       ]
     },
@@ -52037,13 +52064,13 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2024-12-24T19:58:18Z",
+      "updatedAt": "2025-01-10T15:15:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-25",
-      "headRefOid": "923cf90bbe870c024d8a9a365b275d7ba75ee609",
+      "headRefOid": "43dbcc8961de4a671460e429786335eb216c9a97",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -52067,6 +52094,26 @@
               "body": "The additional sentence uses the passive form and is a bit hard to read. If we want something, I would suggest:\r\n\r\nHowever, since packets that only carries PATH_ACK frames\r\nare not congestion controlled, senders should carefully consider the load induced by these packets, especially\r\nif the capacity is unknown on that path.",
               "createdAt": "2024-12-24T19:56:16Z",
               "updatedAt": "2024-12-24T19:58:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6XjmIg",
+          "commit": {
+            "abbreviatedOid": "923cf90"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-10T15:15:11Z",
+          "updatedAt": "2025-01-10T15:15:11Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nand thus better performance. However, since packets that only carries PATH_ACK frames\r\nare not congestion controlled, senders should carefully consider the load induced\r\nby these packets, especially if the capacity is unknown on that path.\r\n```",
+              "createdAt": "2025-01-10T15:15:11Z",
+              "updatedAt": "2025-01-10T15:15:12Z"
             }
           ]
         }
