@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-12T01:00:19.614377+00:00",
+  "timestamp": "2025-01-14T00:52:41.078035+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51733,7 +51733,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2025-01-10T15:36:55Z",
+      "updatedAt": "2025-01-13T07:33:02Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51953,6 +51953,46 @@
               "updatedAt": "2025-01-10T15:36:55Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Xvyk2",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-13T07:30:07Z",
+          "updatedAt": "2025-01-13T07:30:08Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "There is no way to \"(retire) the CIDs that you provided to the peer.\" Only the peer can do that, either by sending individual RETIRE_CONNECTION_ID frames or by sending a PATH_ABANDON frame.\r\n\r\nOf course, you can decide to unilaterally \"forget\" these CIDs. The practical effect is that if the peer uses them to send packets, the forgotten CIDs will trigger a stateless reset, thus closing the connection. If you want to do that, you can just as well close the connection with some appropriate error code. A frank closure of the connection seems better than a passive-aggressive booby trap...\r\n\r\nMaybe we should define an error code for that scenario. \"I waited for the path abandon for more that 3 PTOs, and did not receive the expected path abandon, so bye. Try to fix your bugs next time.\"",
+              "createdAt": "2025-01-13T07:30:08Z",
+              "updatedAt": "2025-01-13T07:30:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Xv03i",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-13T07:33:02Z",
+          "updatedAt": "2025-01-13T07:33:02Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Actually, you could send a \"NEW CONNECTION ID\" with a \"retire prior\", but that's bad because you have abandoned the path already? Plus, the new connection ID will have the path ID of the abandoned path, so that does not let you abandon the path ID.",
+              "createdAt": "2025-01-13T07:33:02Z",
+              "updatedAt": "2025-01-13T07:33:02Z"
+            }
+          ]
         }
       ]
     },
@@ -52004,7 +52044,7 @@
       "labels": [],
       "body": "I created this PR based on the discussion in (the now-closed) PR #473.\r\n\r\nThis is a slight change of the normative recommendation as it generally recommends to send the PATH_ABANDON on another path.\r\n\r\nI understood that this is what we want to recommend but if not, we cannot also not apply this PR. Please comment!",
       "createdAt": "2024-12-20T13:34:54Z",
-      "updatedAt": "2024-12-24T20:01:11Z",
+      "updatedAt": "2025-01-13T14:15:02Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -52049,6 +52089,32 @@
           "createdAt": "2024-12-24T20:01:11Z",
           "updatedAt": "2024-12-24T20:01:11Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Xxr8e",
+          "commit": {
+            "abbreviatedOid": "38f1559"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good to me.",
+          "createdAt": "2025-01-13T11:40:57Z",
+          "updatedAt": "2025-01-13T11:40:57Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6XzDfj",
+          "commit": {
+            "abbreviatedOid": "38f1559"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-13T14:15:02Z",
+          "updatedAt": "2025-01-13T14:15:02Z",
+          "comments": []
         }
       ]
     },
@@ -52064,7 +52130,7 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2025-01-10T15:15:33Z",
+      "updatedAt": "2025-01-13T20:45:47Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -52114,6 +52180,85 @@
               "body": "```suggestion\r\nand thus better performance. However, since packets that only carries PATH_ACK frames\r\nare not congestion controlled, senders should carefully consider the load induced\r\nby these packets, especially if the capacity is unknown on that path.\r\n```",
               "createdAt": "2025-01-10T15:15:11Z",
               "updatedAt": "2025-01-10T15:15:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6XxvLQ",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-13T11:48:03Z",
+          "updatedAt": "2025-01-13T11:51:41Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nare not congestion controlled(following {{Section 7 of QUIC-RECOVERY}}), senders should carefully consider the load induced\r\n```",
+              "createdAt": "2025-01-13T11:48:03Z",
+              "updatedAt": "2025-01-13T11:51:41Z"
+            },
+            {
+              "originalPosition": 6,
+              "body": "I think it's contained in RFC 9002 Section 7:\r\n> Similar to TCP, packets containing only ACK frames do not count toward bytes in flight and are not congestion controlled.\r\n\r\nBut as PATH_ACK is a new frame added by multipath extension, I'm not against on adding this part to make things more clear. Just minor fix.",
+              "createdAt": "2025-01-13T11:51:29Z",
+              "updatedAt": "2025-01-13T11:51:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6XzJkn",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "No strong opinion here. I think it is fine in the implementation section, but this section starts being very large...",
+          "createdAt": "2025-01-13T14:22:50Z",
+          "updatedAt": "2025-01-13T14:22:50Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6X3PEE",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-13T20:43:28Z",
+          "updatedAt": "2025-01-13T20:43:28Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I believe that the way RFC9002 is written the wrong way. It wants to say that ACK can be sent whatever the state of congestion control, but it says that by stating that \"ACK packets do count as bytes in flight\", which is wrong -- they create queues in the network just like other packets. Mirja's text nicely avoids that issue. I do not think that we should add a reference to RFC9002.\r\n\r\n",
+              "createdAt": "2025-01-13T20:43:28Z",
+              "updatedAt": "2025-01-13T20:44:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6X3Qp3",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks OK, besides on nit.",
+          "createdAt": "2025-01-13T20:45:26Z",
+          "updatedAt": "2025-01-13T20:45:47Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Typo. Should be \" As packets that only carry\", not \"carries\" (subject is plural).",
+              "createdAt": "2025-01-13T20:45:26Z",
+              "updatedAt": "2025-01-13T20:45:47Z"
             }
           ]
         }
