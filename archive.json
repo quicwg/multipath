@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-14T00:52:41.078035+00:00",
+  "timestamp": "2025-01-16T00:53:24.738903+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -52130,7 +52130,7 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2025-01-13T20:45:47Z",
+      "updatedAt": "2025-01-15T04:15:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -52259,6 +52259,39 @@
               "body": "Typo. Should be \" As packets that only carry\", not \"carries\" (subject is plural).",
               "createdAt": "2025-01-13T20:45:26Z",
               "updatedAt": "2025-01-13T20:45:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YFPEh",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-15T04:01:23Z",
+          "updatedAt": "2025-01-15T04:01:23Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YFR0o",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-15T04:15:51Z",
+          "updatedAt": "2025-01-15T04:15:51Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "@huitema You're right about the packets only contains ACK still create queues on switching devices and cause process cost on both sides. My suggestion is about that \"PATH_ACK is not count into congestion control\" isn't something new added by multipath extension, but is inherit from RFC 9000 and 9002. ",
+              "createdAt": "2025-01-15T04:15:51Z",
+              "updatedAt": "2025-01-15T04:15:52Z"
             }
           ]
         }
