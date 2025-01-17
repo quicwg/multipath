@@ -979,7 +979,7 @@ faster if the scheduling strategy is stable, but besides that
 implementations can choose between multiple strategies such as sending
 PATH_ACK frames on the path they acknowledge packets, or sending
 PATH_ACK frames on the shortest path, which results in shorter control loops
-and thus better performance. However, since packets that only carries PATH_ACK frames
+and thus better performance. However, since packets that only carry PATH_ACK frames
 are not congestion controlled, senders should carefully consider the load induced
 by these packets, especially if the capacity is unknown on that path.
 
