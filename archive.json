@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-16T00:53:24.738903+00:00",
+  "timestamp": "2025-01-19T00:57:32.553605+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51733,7 +51733,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2025-01-13T07:33:02Z",
+      "updatedAt": "2025-01-17T11:58:37Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -51993,6 +51993,46 @@
               "updatedAt": "2025-01-13T07:33:02Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YhMR3",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-17T11:57:28Z",
+          "updatedAt": "2025-01-17T11:57:28Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nbehavior as it does not impact interoperability. If the endpoint is no longer \r\nwilling to process the issued connection IDs for the abandoned path,\r\nit MAY close the connection, but SHOULD wait at least 3 PTOs after\r\nsending the PATh_ABANDON frame.\r\n```",
+              "createdAt": "2025-01-17T11:57:28Z",
+              "updatedAt": "2025-01-17T11:57:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YhMxx",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-17T11:58:37Z",
+          "updatedAt": "2025-01-17T11:58:37Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Actually RFC9000 says:\r\n\r\n> \"An endpoint might need to stop accepting previously issued connection IDs in certain circumstances. Such an endpoint can cause its peer to retire connection IDs by sending a NEW_CONNECTION_ID frame with an increased Retire Prior To field. The endpoint SHOULD continue to accept the previously issued connection IDs until they are retired by the peer. If the endpoint can no longer process the indicated connection IDs, it MAY close the connection.\"\r\n\r\nSo effectively even a \"NEW CONNECTION ID\" with a \"retire prior\" will not retire them. And given the text above I guess closing the connection is the right/only option. Therefore see proposed new text aligning with language in RFC9000.\r\n\r\nI'm still proposing this PR because I still think we should spell out normatively that you should wait at least 3 PTO before doing anything. Given this is not enforceable I would stick with a SHOULD but effectively this is meant to be a MUST.\r\n",
+              "createdAt": "2025-01-17T11:58:37Z",
+              "updatedAt": "2025-01-17T11:58:37Z"
+            }
+          ]
         }
       ]
     },
@@ -52037,24 +52077,26 @@
       "id": "PR_kwDOGNtpaM6F6kAG",
       "title": "always recommend to send path_abandon on another path",
       "url": "https://github.com/quicwg/multipath/pull/477",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "I created this PR based on the discussion in (the now-closed) PR #473.\r\n\r\nThis is a slight change of the normative recommendation as it generally recommends to send the PATH_ABANDON on another path.\r\n\r\nI understood that this is what we want to recommend but if not, we cannot also not apply this PR. Please comment!",
       "createdAt": "2024-12-20T13:34:54Z",
-      "updatedAt": "2025-01-13T14:15:02Z",
+      "updatedAt": "2025-01-17T11:33:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-24",
       "headRefOid": "38f1559ff23479139066836374b5c1e35410fb5f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-01-17T11:33:37Z",
+      "mergedAt": "2025-01-17T11:33:37Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "d782916d29d6c440e8d1979c63c1c6b035ebd2d0"
+      },
       "comments": [],
       "reviews": [
         {
@@ -52130,18 +52172,26 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2025-01-15T04:15:52Z",
+      "updatedAt": "2025-01-17T12:18:40Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-25",
-      "headRefOid": "43dbcc8961de4a671460e429786335eb216c9a97",
+      "headRefOid": "365e2790745293422dcee175e247e5e0da534f9b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> No strong opinion here. I think it is fine in the implementation section, but this section starts being very large...\r\n\r\n@qdeconinck the implementation section is currently 4.5 pages. It has a bunch of subsections but most of them are short. I think that is fine and I think we should more concentrate to have all the other sections concise and to the point. However, again, I'm planning to do a full editorial pass and I can imagine that some alignment in the implementation section might also make that part a bit shorter. Therefore I think we should merge for now.",
+          "createdAt": "2025-01-17T12:04:19Z",
+          "updatedAt": "2025-01-17T12:04:19Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6WVaKP",
@@ -52197,9 +52247,9 @@
           "comments": [
             {
               "originalPosition": 6,
-              "body": "```suggestion\r\nare not congestion controlled(following {{Section 7 of QUIC-RECOVERY}}), senders should carefully consider the load induced\r\n```",
+              "body": "```suggestion\r\nare not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}), senders should carefully consider the load induced\r\n```",
               "createdAt": "2025-01-13T11:48:03Z",
-              "updatedAt": "2025-01-13T11:51:41Z"
+              "updatedAt": "2025-01-17T11:37:35Z"
             },
             {
               "originalPosition": 6,
@@ -52294,6 +52344,59 @@
               "updatedAt": "2025-01-15T04:15:52Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YhCdI",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-17T11:35:13Z",
+          "updatedAt": "2025-01-17T11:35:13Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nand thus better performance. However, since packets that only carry PATH_ACK frames\r\n```",
+              "createdAt": "2025-01-17T11:35:13Z",
+              "updatedAt": "2025-01-17T11:35:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YhHo4",
+          "commit": {
+            "abbreviatedOid": "365e279"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-17T11:47:06Z",
+          "updatedAt": "2025-01-17T11:47:06Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Sec 7 of RFC9002 says:\r\n\r\n\"Similar to TCP, packets containing only ACK frames do not count toward bytes in flight and are not congestion controlled.\"\r\n\r\nFurther the next sentence in RFC9002 is actually:\r\n\r\n\"Unlike TCP, QUIC can detect the loss of these packets and MAY use that information to adjust the congestion controller or the rate of ACK-only packets being sent, but this document does not describe a mechanism for doing so.\"\r\n\r\nSo I guess it's fine to add a reference here or it might actually be useful for more context.",
+              "createdAt": "2025-01-17T11:47:06Z",
+              "updatedAt": "2025-01-17T11:47:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YhWQN",
+          "commit": {
+            "abbreviatedOid": "365e279"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-17T12:18:40Z",
+          "updatedAt": "2025-01-17T12:18:40Z",
+          "comments": []
         }
       ]
     }
