@@ -1547,7 +1547,7 @@ Table of Contents
     | Value                    | Parameter Name.     | Specification |
     +==========================+=====================+===============+
     | TBD (current version     | initial_max_path_id | Section 2     |
-    | uses 0x0f739bbc1b666d12) |                     |               |
+    | uses 0x0f739bbc1b666d0c) |                     |               |
     +--------------------------+---------------------+---------------+
 
           Table 2: Addition to QUIC Transport Parameters Entries
