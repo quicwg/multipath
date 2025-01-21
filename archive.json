@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-19T00:57:32.553605+00:00",
+  "timestamp": "2025-01-21T00:53:17.325120+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -51611,13 +51611,13 @@
       "labels": [],
       "body": "As we have add new frame type PATH_CIDS_BLOCKED frame, we'd need a new transport parameter type.\r\nBTW, as the transport parameter type is hex value, I used 0x0c for draft-12.",
       "createdAt": "2024-12-11T07:24:36Z",
-      "updatedAt": "2024-12-16T09:42:48Z",
+      "updatedAt": "2025-01-20T03:46:02Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/update-tp-12",
-      "headRefOid": "bbb47c45b562c535908ebecbaadc64eb1db65b43",
+      "headRefOid": "223b29baf86c3344af5c8cbf635d4a3e7aca9ea9",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -51718,6 +51718,19 @@
               "updatedAt": "2024-12-16T06:06:17Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YqcMS",
+          "commit": {
+            "abbreviatedOid": "223b29b"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-20T03:46:02Z",
+          "updatedAt": "2025-01-20T03:46:02Z",
+          "comments": []
         }
       ]
     },
@@ -51733,7 +51746,7 @@
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2025-01-17T11:58:37Z",
+      "updatedAt": "2025-01-20T21:13:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
@@ -52008,9 +52021,9 @@
           "comments": [
             {
               "originalPosition": 8,
-              "body": "```suggestion\r\nbehavior as it does not impact interoperability. If the endpoint is no longer \r\nwilling to process the issued connection IDs for the abandoned path,\r\nit MAY close the connection, but SHOULD wait at least 3 PTOs after\r\nsending the PATh_ABANDON frame.\r\n```",
+              "body": "```suggestion\r\nbehavior as it does not impact interoperability. If the endpoint is no longer \r\nwilling to process the issued connection IDs for the abandoned path,\r\nit MAY close the connection, but SHOULD wait at least 3 PTOs after\r\nsending the PATH_ABANDON frame.\r\n```",
               "createdAt": "2025-01-17T11:57:28Z",
-              "updatedAt": "2025-01-17T11:57:28Z"
+              "updatedAt": "2025-01-20T21:12:11Z"
             }
           ]
         },
@@ -52031,6 +52044,46 @@
               "body": "Actually RFC9000 says:\r\n\r\n> \"An endpoint might need to stop accepting previously issued connection IDs in certain circumstances. Such an endpoint can cause its peer to retire connection IDs by sending a NEW_CONNECTION_ID frame with an increased Retire Prior To field. The endpoint SHOULD continue to accept the previously issued connection IDs until they are retired by the peer. If the endpoint can no longer process the indicated connection IDs, it MAY close the connection.\"\r\n\r\nSo effectively even a \"NEW CONNECTION ID\" with a \"retire prior\" will not retire them. And given the text above I guess closing the connection is the right/only option. Therefore see proposed new text aligning with language in RFC9000.\r\n\r\nI'm still proposing this PR because I still think we should spell out normatively that you should wait at least 3 PTO before doing anything. Given this is not enforceable I would stick with a SHOULD but effectively this is meant to be a MUST.\r\n",
               "createdAt": "2025-01-17T11:58:37Z",
               "updatedAt": "2025-01-17T11:58:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YxXsM",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-20T20:00:00Z",
+          "updatedAt": "2025-01-20T20:00:00Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Yes, that works. It avoids saying creative things, and it sends the right message to developers: reply by ABANDON to ABANDON, or risk losing the connection. Note the typo \"PATh_ABANDON\". ",
+              "createdAt": "2025-01-20T20:00:00Z",
+              "updatedAt": "2025-01-20T20:00:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YxnwA",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-20T21:13:03Z",
+          "updatedAt": "2025-01-20T21:13:03Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "I corrected the nit.\r\n\r\n@Yanmei-Liu @qdeconinck @yfmascgy does this proposed text work for you as well?",
+              "createdAt": "2025-01-20T21:13:03Z",
+              "updatedAt": "2025-01-20T21:13:04Z"
             }
           ]
         }
@@ -52172,7 +52225,7 @@
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2025-01-17T12:18:40Z",
+      "updatedAt": "2025-01-20T17:56:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
@@ -52397,6 +52450,46 @@
           "createdAt": "2025-01-17T12:18:40Z",
           "updatedAt": "2025-01-17T12:18:40Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6YpPvP",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-19T08:49:11Z",
+          "updatedAt": "2025-01-19T08:49:11Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Not really a comment on this PR, but the part about QUIC using acknowledgments of ACK packets may be a bit optimistic. ACK-only packets do not trigger ACK. Implementation may trigger that ACK by bundling a Ping with their ACK, but they cannot do that too frequently -- typically no more than once every N ACK, with N at least 2, and no more than once per RTT. So you get very scarce feedback, and any estimation of capacity based on that is imprecise. Plus, in the general case, the ACK traffic is way lower than link capacity, so you don't get an accurate estimate of capacity -- this is an app-limited scenario. ",
+              "createdAt": "2025-01-19T08:49:11Z",
+              "updatedAt": "2025-01-19T08:49:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Yw3kb",
+          "commit": {
+            "abbreviatedOid": "43dbcc8"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-20T17:56:04Z",
+          "updatedAt": "2025-01-20T17:56:04Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Yes, ACK congestion control is an open issue but that's not specific for the multipath case, as also initially discussed in issue #454. However, given we discuss in this text in the implementation guidance explicitly that ACKs could be send on another path, with is different than in the single path case, I think it is fair to add an additional warning about congestion control and point to the respective text in RFC9002 that already takes about ACK congestion control. Therefore I propose to merge this PR incl. the proposed commit with the reference to RFC9002; I believe the discussed showed there is agreement to merge.",
+              "createdAt": "2025-01-20T17:56:04Z",
+              "updatedAt": "2025-01-20T17:56:04Z"
+            }
+          ]
         }
       ]
     }
