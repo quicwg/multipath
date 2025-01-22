@@ -307,7 +307,7 @@ Table of Contents
    as specified in [QUIC-TRANSPORT].  The new transport parameter is
    defined as follows:
 
-   *  initial_max_path_id (current version uses 0x0f739bbc1b666d11): a
+   *  initial_max_path_id (current version uses 0x0f739bbc1b666d0c): a
       variable-length integer specifying the maximum path identifier an
       endpoint is willing to maintain at connection initiation.  This
       value MUST NOT exceed 2^32-1, the maximum allowed value for the
@@ -1558,7 +1558,7 @@ Table of Contents
     | Value                    | Parameter Name.     | Specification |
     +==========================+=====================+===============+
     | TBD (current version     | initial_max_path_id | Section 2     |
-    | uses 0x0f739bbc1b666d11) |                     |               |
+    | uses 0x0f739bbc1b666d0c) |                     |               |
     +--------------------------+---------------------+---------------+
 
           Table 2: Addition to QUIC Transport Parameters Entries
