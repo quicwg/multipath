@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 21 July 2025                             Uber Technologies Inc.
+Expires: 26 July 2025                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 21 July 2025                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         17 January 2025
+                                                         22 January 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 July 2025.
+   This Internet-Draft will expire on 26 July 2025.
 
 Copyright Notice
 
@@ -608,6 +608,14 @@ Table of Contents
    generating spurious stateless packets as specified in Section 3.3.1
    and to be able to acknowledge the last packets received from the peer
    as specified in Section 3.3.2.
+
+   If a peer sends a PATH_ABANDON frame but never receives a
+   corresponding PATH_ABANDON frame, it might not be able to remove path
+   state.  It is left to the implementation to handle this unexpected
+   behavior as it does not impact interoperability.  If the endpoint is
+   no longer willing to process the issued connection IDs for the
+   abandoned path, it MAY close the connection, but SHOULD wait at least
+   3 PTOs after sending the PATH_ABANDON frame.
 
    After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
    promptly send PATH_ACK frames to acknowledge all packets received on

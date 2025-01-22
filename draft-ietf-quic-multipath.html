@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 21 July 2025</td>
+<td class="center">Expires 26 July 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-01-17" class="published">17 January 2025</time>
+<time datetime="2025-01-22" class="published">22 January 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-07-21">21 July 2025</time></dd>
+<dd class="expires"><time datetime="2025-07-26">26 July 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 July 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 July 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1842,19 +1842,26 @@ packets from the peer might still be in transit, i.e., for a delay of
 both to avoid generating spurious stateless packets as specified in
 <a href="#spurious-stateless-reset" class="auto internal xref">Section 3.3.1</a> and to be able to acknowledge the
 last packets received from the peer as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
+<p id="section-3.3-5">If a peer sends a PATH_ABANDON frame but never receives
+a corresponding PATH_ABANDON frame, it might not be able to remove path state.
+It is left to the implementation to handle this unexpected
+behavior as it does not impact interoperability. If the endpoint is no longer
+willing to process the issued connection IDs for the abandoned path,
+it MAY close the connection, but SHOULD wait at least 3 PTOs after
+sending the PATH_ABANDON frame.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
 promptly send PATH_ACK frames to acknowledge all packets received on
 the path and not yet acknowledged, as specified in <a href="#ack-after-abandon" class="auto internal xref">Section 3.3.2</a>.
 When an endpoint finally deletes all resource associated with the path,
-the packets sent over the path and not yet acknowledged MUST be considered lost.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3-6">After a path is abandoned, the Path ID MUST NOT be reused
-for new paths, as the Path ID is part of the nonce calculation <a href="#multipath-aead" class="auto internal xref">Section 4</a>.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
-<p id="section-3.3-7">PATH_ABANDON frames can be sent on any path,
+the packets sent over the path and not yet acknowledged MUST be considered lost.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">After a path is abandoned, the Path ID MUST NOT be reused
+for new paths, as the Path ID is part of the nonce calculation <a href="#multipath-aead" class="auto internal xref">Section 4</a>.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.3-8">PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed.
 It is RECOMMENDED to send the PATH_ABANDON frames on another path,
 especially if connectivity on the to-be-abandoned path
-is expected to be broken.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
-<p id="section-3.3-8">If a PATH_ABANDON frame is received for the only open path of a QUIC
+is expected to be broken.<a href="#section-3.3-8" class="pilcrow">¶</a></p>
+<p id="section-3.3-9">If a PATH_ABANDON frame is received for the only open path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. If the client received a PATH_ABANDON
 frame for the last open path, it MAY instead try to open a new path, if
@@ -1862,7 +1869,7 @@ available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly
 the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
-CONNECTION_CLOSE frame.<a href="#section-3.3-8" class="pilcrow">¶</a></p>
+CONNECTION_CLOSE frame.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
 <div id="spurious-stateless-reset">
 <section id="section-3.3.1">
           <h4 id="name-avoiding-spurious-stateless">
