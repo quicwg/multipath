@@ -544,8 +544,10 @@ last packets received from the peer as specified in {{ack-after-abandon}}.
 If a peer sends a PATH_ABANDON frame but never receives
 a corresponding PATH_ABANDON frame, it might not be able to remove path state.
 It is left to the implementation to handle this unexpected
-behavior as it does not impact interoperability. However, an endpoint SHOULD NOT
-remove path state earlier than 3 PTOs after sending the PATh_ABANDON frame.
+behavior as it does not impact interoperability. If the endpoint is no longer 
+willing to process the issued connection IDs for the abandoned path,
+it MAY close the connection, but SHOULD wait at least 3 PTOs after
+sending the PATH_ABANDON frame.
 
 After receiving or sending a PATH_ABANDON frame, the endpoints SHOULD
 promptly send PATH_ACK frames to acknowledge all packets received on
