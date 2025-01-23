@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-21T00:53:17.325120+00:00",
+  "timestamp": "2025-01-23T00:53:41.935880+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12027,7 +12027,7 @@
       "id": "I_kwDOGNtpaM6cWqlD",
       "title": "Cross-path acknowledgments should be congestion controlled",
       "url": "https://github.com/quicwg/multipath/issues/454",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "michael-eriksson",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -12036,8 +12036,8 @@
       ],
       "body": "QUIC packets that only contain an ACK frame are not congestion controlled. [RFC 9000 states](https://www.rfc-editor.org/rfc/rfc9000.html#section-13.2.1-3) that:\r\n\r\n> _Since packets containing only ACK frames are not congestion controlled, an endpoint MUST NOT send more than one such packet in response to receiving an ack-eliciting packet._\r\n\r\nWhen ACK-only packets are sent on another path than where the ack-eliciting packets were received, this requirement is obviously violated. A receiver of a big flow of packets could easily swamp a low-latency, low-bandwidth path by sending the acknowledgments there.",
       "createdAt": "2024-10-30T07:51:06Z",
-      "updatedAt": "2024-12-20T13:08:55Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-22T09:00:56Z",
+      "closedAt": "2025-01-22T09:00:54Z",
       "comments": [
         {
           "author": "huitema",
@@ -12178,6 +12178,13 @@
           "body": "PATH_ABANDON means that you don't send any new packets using the CID belong to the path ID indicated. This has nothing to do with data or not data. Changing that is a mayor change because current assumptions in path closure won't hold.\r\n\r\nAcking every second packet is a fine strategy. If that leads to some ACK losses that is actually not a big problem. Usually the peer should stop sending you packets as soon as it receives the PATH_ABANDON so after one RTT anyway.\r\n\r\nAlso I would expect that it is rather unlikely that you send a PATH_ABANDON while the other end is currently sending full speed. E.g. you could first send a PATH_STANDBY and then later the PATH_ABANDON. Or if you do that, maybe also spending the effort of implementing a specific ack strategy for this case is worth it, especially if you have local knowledge about these other path. Nothing in the spec prevents you from optimising these corner cases. However, these are all the things where we don't know how this is used and we therefore cannot and should not say more.",
           "createdAt": "2024-12-20T13:08:54Z",
           "updatedAt": "2024-12-20T13:08:54Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We added a warning in PR #478. Closing this issue now.",
+          "createdAt": "2025-01-22T09:00:54Z",
+          "updatedAt": "2025-01-22T09:00:54Z"
         }
       ]
     },
@@ -12489,7 +12496,7 @@
       "id": "I_kwDOGNtpaM6hGcfQ",
       "title": "Recommend that PATH_ABANDON should be retransmitted on another path",
       "url": "https://github.com/quicwg/multipath/issues/470",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -12498,8 +12505,8 @@
       ],
       "body": "Maybe this is obvious but if a path_abandon frame gets lost, this will usually lead to a PTO. In this case the path is highly likely to be already broken and I probably should retransmit the path_abandon frame on another path to actually be able to close the path. We already say in the new \"handling PTO\" section that it makes sense to generally retransmit on another path. However, maybe we should actually say this using normative language (SHOULD or MUST?) in the path closure section in case of the path_abandon frame?",
       "createdAt": "2024-11-28T17:32:18Z",
-      "updatedAt": "2024-12-20T13:37:19Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-22T08:59:09Z",
+      "closedAt": "2025-01-22T08:59:08Z",
       "comments": [
         {
           "author": "huitema",
@@ -12528,6 +12535,13 @@
           "body": "I closed #473 but based on the discussion there created PR #477. This new PR is a slight rephrasing of the existing sentence but makes it now clear that it is generally recommend to send the PATH_ABANDON on another path. That was the take-away for me from the discussion on #473. Please let me know if you agree to that or not!",
           "createdAt": "2024-12-20T13:37:18Z",
           "updatedAt": "2024-12-20T13:37:18Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR #477 was merged.",
+          "createdAt": "2025-01-22T08:59:08Z",
+          "updatedAt": "2025-01-22T08:59:08Z"
         }
       ]
     },
@@ -12536,7 +12550,7 @@
       "id": "I_kwDOGNtpaM6hGpaA",
       "title": "If the peer does not reply with a path_abandon frame, state can never be removed",
       "url": "https://github.com/quicwg/multipath/issues/471",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -12545,8 +12559,8 @@
       ],
       "body": "Currently the draft only says:\r\n\r\n\"knowledge of the connection identifiers received from the peer and of the state of the number space associated to the path SHOULD be retained while packets from the peer might still be in transit, i.e., for a delay of 3 PTO after the PATH_ABANDON frame has been received from the peer\"\r\n\r\nTherefore state removal is triggered by reception of the path abandon frame. There is MUST in the text that my peer must send me a path_abandon frame if it has received mine. What if it doesn't send a path_abandon frame ever?\r\n\r\nThe sentence above is only a SHOULD, so I guess you could remove state any reasonable time after sending the path_abandon frame, however, maybe we should say more explicitly that it makes sense to also start a timer after the ACK for the path_abandon frame was received, or stop retransmitting the path_abandon frame after X tries and then just remove state?",
       "createdAt": "2024-11-28T17:40:59Z",
-      "updatedAt": "2024-12-16T13:20:00Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-22T08:57:16Z",
+      "closedAt": "2025-01-22T08:57:16Z",
       "comments": [
         {
           "author": "huitema",
@@ -51604,24 +51618,26 @@
       "id": "PR_kwDOGNtpaM6Ezy-_",
       "title": "Update transport parameter for draft-12",
       "url": "https://github.com/quicwg/multipath/pull/474",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "As we have add new frame type PATH_CIDS_BLOCKED frame, we'd need a new transport parameter type.\r\nBTW, as the transport parameter type is hex value, I used 0x0c for draft-12.",
       "createdAt": "2024-12-11T07:24:36Z",
-      "updatedAt": "2025-01-20T03:46:02Z",
+      "updatedAt": "2025-01-22T08:58:21Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/update-tp-12",
       "headRefOid": "223b29baf86c3344af5c8cbf635d4a3e7aca9ea9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-01-22T08:58:21Z",
+      "mergedAt": "2025-01-22T08:58:21Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "1cd0896d19833d5e2390366c607702c19a577561"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -51739,24 +51755,26 @@
       "id": "PR_kwDOGNtpaM6E1LWg",
       "title": "Note that path state cannot be removed without reception of PATH_ABANDON",
       "url": "https://github.com/quicwg/multipath/pull/475",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #471",
       "createdAt": "2024-12-11T10:06:40Z",
-      "updatedAt": "2025-01-20T21:13:03Z",
+      "updatedAt": "2025-01-22T08:57:15Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "39b6067fb9d1fee12bb78917509531c29d3ddd63",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-23",
-      "headRefOid": "4b598c98b033e3b9aeaf75d66a2631ce21d53e6a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "a16be59f4390acb5746aa68698daa1108fad1d63",
+      "closedAt": "2025-01-22T08:57:15Z",
+      "mergedAt": "2025-01-22T08:57:15Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "ec8497db06868c25c4eecc1ea99a502b2d55936f"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -52086,6 +52104,92 @@
               "updatedAt": "2025-01-20T21:13:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Y9gzE",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-22T06:04:17Z",
+          "updatedAt": "2025-01-22T06:04:17Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "I believe it works.",
+              "createdAt": "2025-01-22T06:04:17Z",
+              "updatedAt": "2025-01-22T06:04:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Y9g1l",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-22T06:04:26Z",
+          "updatedAt": "2025-01-22T06:04:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Y-TxV",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-22T08:16:40Z",
+          "updatedAt": "2025-01-22T08:16:40Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Yes, this works for me.",
+              "createdAt": "2025-01-22T08:16:40Z",
+              "updatedAt": "2025-01-22T08:16:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Y-aam",
+          "commit": {
+            "abbreviatedOid": "4b598c9"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-22T08:26:08Z",
+          "updatedAt": "2025-01-22T08:26:08Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Y-tNt",
+          "commit": {
+            "abbreviatedOid": "2ca5618"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-22T08:56:01Z",
+          "updatedAt": "2025-01-22T08:56:01Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\nbehavior as it does not impact interoperability. If the endpoint is no longer\r\n```",
+              "createdAt": "2025-01-22T08:56:01Z",
+              "updatedAt": "2025-01-22T08:56:01Z"
+            }
+          ]
         }
       ]
     },
@@ -52218,24 +52322,26 @@
       "id": "PR_kwDOGNtpaM6F6mRk",
       "title": "acks are not congestion control -> be careful",
       "url": "https://github.com/quicwg/multipath/pull/478",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "this PR is a clarification based on the discussion in issue #454. Of course it's optimal to add this recommendation or not. However, it's in the implementation considerations section and I think at least noting the issue is a good thing.",
       "createdAt": "2024-12-20T13:40:59Z",
-      "updatedAt": "2025-01-20T17:56:04Z",
+      "updatedAt": "2025-01-22T08:58:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b02e889e5d955186c8775d0bd8733e6c21e20e60",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-25",
-      "headRefOid": "365e2790745293422dcee175e247e5e0da534f9b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "ccb3cc4f2eeb58ca1da8bf56de054bfd3a47f5be",
+      "closedAt": "2025-01-22T08:58:02Z",
+      "mergedAt": "2025-01-22T08:58:02Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "218435d6e75daac8bb11f1086f38eff65f4103e8"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -52488,6 +52594,26 @@
               "body": "Yes, ACK congestion control is an open issue but that's not specific for the multipath case, as also initially discussed in issue #454. However, given we discuss in this text in the implementation guidance explicitly that ACKs could be send on another path, with is different than in the single path case, I think it is fair to add an additional warning about congestion control and point to the respective text in RFC9002 that already takes about ACK congestion control. Therefore I propose to merge this PR incl. the proposed commit with the reference to RFC9002; I believe the discussed showed there is agreement to merge.",
               "createdAt": "2025-01-20T17:56:04Z",
               "updatedAt": "2025-01-20T17:56:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6Y-toZ",
+          "commit": {
+            "abbreviatedOid": "6b61060"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-22T08:56:41Z",
+          "updatedAt": "2025-01-22T08:56:42Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\nare not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),\r\nsenders should carefully consider the load induced\r\nby these packets, especially if the capacity is unknown on that path.\r\n```",
+              "createdAt": "2025-01-22T08:56:41Z",
+              "updatedAt": "2025-01-22T08:56:42Z"
             }
           ]
         }
