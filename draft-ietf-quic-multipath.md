@@ -366,7 +366,7 @@ This proposal adds six multipath control frames for path management:
 in path usage (see {{path-backup-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
 path identifiers,
-- PATHS_BLOCKED and PATH_CID_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
+- PATHS_BLOCKED and PATH_CIDS_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
 to notify the peer of being blocked to open new paths as
 the limit of active paths set by the peer has been reached
 or there are no unused connection IDs available
