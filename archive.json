@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-28T00:53:44.429453+00:00",
+  "timestamp": "2025-01-30T00:52:41.206257+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -52618,6 +52618,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 479,
+      "id": "PR_kwDOGNtpaM6JM3x-",
+      "title": "[=] fix typo for PATH_CIDS_BLOCKED frame",
+      "url": "https://github.com/quicwg/multipath/pull/479",
+      "state": "OPEN",
+      "author": "Yanmei-Liu",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-01-28T10:16:43Z",
+      "updatedAt": "2025-01-28T10:16:43Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "dev/typo-2",
+      "headRefOid": "fee5dc36ae04a32e94199c385080a709e72452d0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
