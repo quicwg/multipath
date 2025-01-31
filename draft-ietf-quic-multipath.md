@@ -215,7 +215,7 @@ that does not change the Path ID.
 This extension uses multiple packet number spaces, one for each path.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in {{QUIC-TRANSPORT}}.
 Using multiple packet number spaces enables direct use of the
-loss recovery and congestion control mechanisms defined in
+loss detection and congestion control mechanisms defined in
 {{QUIC-RECOVERY}} on a per-path basis.
 
 Each Path ID-specific packet number space starts at packet number 0. When following
@@ -405,7 +405,7 @@ The server may receive packets for a yet unused Path ID that do not
 contain a path challenge. Such packets are valid if they can be properly decrypted
 and if they contain a valid connection ID.
 
-Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported
+Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
 on the path. This can be done during initial path validation or separately later if
 the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.
 
@@ -1250,7 +1250,7 @@ A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTIO
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
-## PATH_NEW_CONNECTION_ID frames {#mp-new-conn-id-frame}
+## PATH_NEW_CONNECTION_ID frame {#mp-new-conn-id-frame}
 
 The PATH_NEW_CONNECTION_ID frame (type=0x15228c09)
 is an extension of the NEW_CONNECTION_ID frame specified in
@@ -1301,7 +1301,7 @@ applies for PATH_RETIRE_CONNECTION_ID frames, but it applies per path. After the
 multipath extension is negotiated successfully, the rule
 for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
-## PATH_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
+## PATH_RETIRE_CONNECTION_ID frame {#mp-retire-conn-id-frame}
 
 The PATH_RETIRE_CONNECTION_ID frame (type=0x15228c0a)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
@@ -1345,7 +1345,7 @@ is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
 processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
-## MAX_PATH_ID frames {#max-paths-frame}
+## MAX_PATH_ID frame {#max-paths-frame}
 
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
