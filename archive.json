@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-30T00:52:41.206257+00:00",
+  "timestamp": "2025-02-02T00:56:37.347387+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12643,6 +12643,64 @@
           "updatedAt": "2024-12-03T17:15:47Z"
         }
       ]
+    },
+    {
+      "number": 481,
+      "id": "I_kwDOGNtpaM6oR_nZ",
+      "title": "PATH_AVAILABLE is not ack-eliciting",
+      "url": "https://github.com/quicwg/multipath/issues/481",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [
+        "has PR"
+      ],
+      "body": "I noted in PATH_AVAILABLE frame definition that it is not ack-eliciting when PATH_BACKUP is:\n\n`PATH_BACKUP frames are ack-eliciting. If a packet containing a PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame only if it contains the last status sent for that path -- as indicated by the sequence number.`\n\nI think also PATH_AVAILABLE should be ack-eliciting. ",
+      "createdAt": "2025-01-31T12:22:48Z",
+      "updatedAt": "2025-01-31T16:17:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I believe this was an oversight. I created PR #484",
+          "createdAt": "2025-01-31T16:16:52Z",
+          "updatedAt": "2025-01-31T16:16:52Z"
+        }
+      ]
+    },
+    {
+      "number": 482,
+      "id": "I_kwDOGNtpaM6oSCyJ",
+      "title": "Section 5.2 Example in Figure 2 on closing path does use same path ID",
+      "url": "https://github.com/quicwg/multipath/issues/482",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I noted that the example in Figure 2 likely should be updated:  \n\n`Client                                                      Server\n\n(client tells server to abandon a path with Path ID 1)\n1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->\n                           (server tells client to abandon a path)\n                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],\n                                           PATH_ACK[PATH ID=1, PN=X]\n1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] ->`\n\nWith the new recommendation to send PATH_ABANDON on the other path than the one being closed this example should be updated:\n\n- Send PATH_ABANDON on DCID = S0 or S2\n- Make corresponding update on which path the message being ACKED was received on. \n",
+      "createdAt": "2025-01-31T12:26:25Z",
+      "updatedAt": "2025-01-31T12:26:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 483,
+      "id": "I_kwDOGNtpaM6oSEM6",
+      "title": "Improve text on IV creation and cipher algorithm restrictions in Section 4.1",
+      "url": "https://github.com/quicwg/multipath/issues/483",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4.1:\n`If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the size of the IV.`\n \nI think the \"If the IV is larger ...\" should rather be \"If the Nonce field for the used AEAD algorithm is larger ...\"\n \nSecondly I think this section should bring up that AEAD algorithms that uses an nonce that are shorter than 96 bits MUST NOT be used. Currently this limitation appear to only be mentioned in a paragraph in Section 2.\n \nNote that I think is this part of the text you are talking about the nonce as specified by the AEAD interface as defined by RFC 5116.",
+      "createdAt": "2025-01-31T12:28:07Z",
+      "updatedAt": "2025-01-31T12:28:07Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -52631,13 +52689,93 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-01-28T10:16:43Z",
-      "updatedAt": "2025-01-28T10:16:43Z",
+      "updatedAt": "2025-01-31T16:14:05Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/typo-2",
       "headRefOid": "fee5dc36ae04a32e94199c385080a709e72452d0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6aNXvo",
+          "commit": {
+            "abbreviatedOid": "fee5dc3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-31T16:14:05Z",
+          "updatedAt": "2025-01-31T16:14:05Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 480,
+      "id": "PR_kwDOGNtpaM6JoNFW",
+      "title": "Editorial fixes",
+      "url": "https://github.com/quicwg/multipath/pull/480",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "It is the loss detection that is reused as is. MTU is on the QUIC packet level. Wrong plural on some frame section headers.",
+      "createdAt": "2025-01-31T12:19:26Z",
+      "updatedAt": "2025-01-31T16:13:47Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "gloinul/multipath",
+      "headRefName": "mw-edits",
+      "headRefOid": "7d982743af01160fe815049c1531d968906c091a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6aNXXd",
+          "commit": {
+            "abbreviatedOid": "7d98274"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-01-31T16:13:27Z",
+          "updatedAt": "2025-01-31T16:13:27Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 484,
+      "id": "PR_kwDOGNtpaM6JqZAs",
+      "title": "PATH_AVAILABLE is ack-eliciting",
+      "url": "https://github.com/quicwg/multipath/pull/484",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #481",
+      "createdAt": "2025-01-31T16:16:32Z",
+      "updatedAt": "2025-01-31T16:16:32Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-26",
+      "headRefOid": "44000e84849061b210e132fd5dfe3f77391dba3f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
