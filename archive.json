@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-02T00:56:37.347387+00:00",
+  "timestamp": "2025-02-04T00:53:51.883161+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12701,6 +12701,37 @@
       "updatedAt": "2025-01-31T12:28:07Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 485,
+      "id": "I_kwDOGNtpaM6ocdCA",
+      "title": "Managing ACK and repeat of PATH_CID_BLOCKED frame",
+      "url": "https://github.com/quicwg/multipath/issues/485",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Suppose that the packet carrying a PATH_CID_BLOCKED frame is lost. How does the implementation decide whether that frame should be repeated?\n\nFor the paths blocked frame, we have a good logic: if a the packet containing a path blocked frame is lost, compared the \"pax path id\" in the blocked frame to the highest value of the max path id in a PATHS_BLOCKED frame acknowledged by the peer. If the value is higher than the retained value, repeat. Otherwise, don't. But we don't have anything like that for the PATH_CID_BLOCKED blocked frame.\n\nOne possibility is to repeat it no matter what, but this may create extra traffic. Another is to never repeat it, but that means losing the signal. Yet another would be to remember if the PATH_CID_BLOCKED frame for that path was already acknowledged, but what if we need to send several such frames for the same path over time? We could also test whether the path is still blocked.\n\nI think this is a bit under-specified.",
+      "createdAt": "2025-02-02T21:43:29Z",
+      "updatedAt": "2025-02-03T11:56:55Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The way I implemented it is as follow:\n\n1. when the application sends a PATH_CID_BLOCKED frame, set a flag in the path context, \"currently sending a path CID blocked frame\"\n\n2. When an ACK for the packet carrying the frame is received, clear that flag.\n\n3. If a packet carrying a PATH_CID_BLOCKED frame is lost, check whether the path still exists (it may have been abandoned and deleted) and whether the flag is set. If both conditions are true, repeat the frame, otherwise just forget it.\n",
+          "createdAt": "2025-02-02T22:03:57Z",
+          "updatedAt": "2025-02-02T22:03:57Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Actually we don't even say that PATH_CID_BLOCKED and PATHS_BLOCKED (as well as MAX_PATH_ID btw) are ack-eliciting. So we should fix that.\n\nNot sure we need to specify the retransmission behavior in detail but probably need to say something, maybe just like: MAY retransmit if still blocked. (For MAX_PATH_ID it's probably a SHOULD or even MUST retransmit?)",
+          "createdAt": "2025-02-03T11:56:53Z",
+          "updatedAt": "2025-02-03T11:56:53Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -52769,7 +52800,7 @@
       "labels": [],
       "body": "fixes #481",
       "createdAt": "2025-01-31T16:16:32Z",
-      "updatedAt": "2025-01-31T16:16:32Z",
+      "updatedAt": "2025-02-03T14:59:01Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -52781,7 +52812,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6aYs1G",
+          "commit": {
+            "abbreviatedOid": "44000e8"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-03T14:59:01Z",
+          "updatedAt": "2025-02-03T14:59:01Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
