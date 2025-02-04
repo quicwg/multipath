@@ -88,7 +88,7 @@ enable the simultaneous usage of multiple paths for a single connection.
 
 This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
 to enable the simultaneous usage of multiple paths for a single
-connection, using the same or different 4-tuples. 
+connection, using the same or different 4-tuples.
 
 Connection migration as specified in {{Section 9 of QUIC-TRANSPORT}}
 directs a peer to switch sending through
