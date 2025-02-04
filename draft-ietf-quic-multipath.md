@@ -88,73 +88,41 @@ enable the simultaneous usage of multiple paths for a single connection.
 
 This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
 to enable the simultaneous usage of multiple paths for a single
-connection. This contrasts with
-the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
-selects only one path at a time to exchange such packets.
+connection, using the same or different 4-tuples. 
 
-The path management specified in {{Section 9 of QUIC-TRANSPORT}}
-fulfills multiple goals: it directs a peer to switch sending through
-a new preferred path, and it allows the peer to release resources
-associated with the old path. The multipath extension specified in this document requires
-several changes to that mechanism:
-
-  *  Simultaneous transmission on multiple paths.
-  *  Introduction of a path identifier to manage connection IDs and
-     packet number spaces per path.
-  *  Removal of paths that have been abandoned.
+Connection migration as specified in {{Section 9 of QUIC-TRANSPORT}}
+directs a peer to switch sending through
+a new preferred path, and, if successful, to release resources
+associated with the old path. The multipath extension specified in this document
+builds on this mechanism but introduces a path identifier (see {{explicit-path-id}})
+to manage connection IDs and packet number spaces per path (see {{num-spaces}}).
 
 As such, this extension specifies a departure from the specification of
 path management in {{Section 9 of QUIC-TRANSPORT}} and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in {{nego}}. Further, as different packet number
 spaces are used for each path, this specification requires the use of
-non-zero connection IDs in order to identify the path and respective
-packet number space.
+non-zero connection IDs in order to identify the path as well as the respective
+packet number space and specifies a modified AEAD calculation including the
+Path ID {{multipath-key-update}}.
 
-To add a new path to an existing QUIC connection with multipath support,
-a client sends a packet with a connection ID belonging to a so-far unused Path ID on
-the chosen path, as further described in {{path-initiation}}.
-A new path can only be used once the associated 4-tuple has been validated
-by ensuring that the peer is able to receive packets at that address
-(see {{Section 8 of QUIC-TRANSPORT}}).
-In this version of the document, a QUIC server does not initiate the creation
-of a path, but it can validate a new path created by a client.
-
-Each endpoint may use several IP addresses for the connection. In
-particular, the multipath extension supports the following scenarios.
-
-  * The client uses multiple IP addresses and the server listens on only
-    one.
-  * The client uses only one IP address and the server listens on
-    several ones.
-  * The client uses multiple IP addresses and the server listens on
-    several ones.
-  * The client uses only one IP address and the server
-    listens on only one.
-
-Note that in the last scenario, it still remains possible to have
-multiple paths over the connection, given that a path is not only
-defined by the IP addresses being used, but also the port numbers.
-In particular, the client can use one or several ports per IP
-address and the server can listen on one or several ports per IP
-address.
-
-In addition to these core features, an application using the multipath extension will typically
-need additional algorithms to handle multiple, simultaneously open paths and how they are used to
-send packets. As these differ depending on the application's requirements,
-this proposal only specifies a simple basic packet
-scheduling algorithm (see {{packet-scheduling}}),
-in order to provide some basic implementation
-guidance. However, more advanced algorithms as well as potential
-extensions to enhance signaling of the current path status are expected
-as future work.
+This document specifies the needed path management mechanisms for path
+initiation {{path-initiation}}, handling of per-path connection IDs {{consume-retire-cid}},
+signaling of preferred path usage {{path-state}}, and explicit
+removal of paths that have been abandoned {{path-close}}.
+However, this document does not specify detailed algorithms that define
+how multiple, simultaneously open paths are used to send packets.
+As these differ depending on the application requirements,
+only some basic implementation guidance is discussed in {{impl-consideration}}.
 
 Further, this proposal does also not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
 to be handled by the application that is using the QUIC multipath
-extension. This is sufficient to address the first aforementioned
-scenario. However, this document does not prevent future extensions from
+extension. However, this document does not prevent future extensions from
 defining mechanisms to address the remaining scenarios.
+
+In this extention, a QUIC server does not initiate the creation
+of a path, but it has to validate a new path created by a client.
 
 ## Basic Design Points
 
@@ -183,9 +151,6 @@ pointing to an existing path ID, but the connection ID and/or the
   * It is possible to create multiple paths sharing the same 4-tuple.
 Each of these paths can be closed at any time, like any other path.
 
-Further the design of this extension introduces an explicit path identifier
-and use of multiple packet number spaces as further explained in the next sections.
-
 ## Introduction of an Explicit Path Identifier {#explicit-path-id}
 
 This extension specifies a new path identifier (Path ID), which is an
@@ -210,7 +175,7 @@ the connection ID specified in the "preferred address" transport parameter is 0.
 Use of the "preferred address" is considered as a migration event
 that does not change the Path ID.
 
-## Use of Multiple Packet Number Spaces
+## Use of Multiple Packet Number Spaces {#num-spaces}
 
 This extension uses multiple packet number spaces, one for each path.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in {{QUIC-TRANSPORT}}.
@@ -463,7 +428,7 @@ a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
 found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
-## Path Status Management
+## Path Status Management {#path-state}
 
 An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform the peer that it should
 send packets with the preference expressed by these frames.
@@ -868,7 +833,7 @@ Client                                                      Server
 Note that the last acknowledgment needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
 
 
-# Implementation Considerations
+# Implementation Considerations {#impl-consideration}
 
 ## Number Spaces
 
