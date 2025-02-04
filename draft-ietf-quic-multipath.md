@@ -852,7 +852,7 @@ In this example, the client wants to close the path with Path ID 0.
 It sends the PATH_ABANDON frame to terminate the path with Path ID 0
 on the path with Path ID 1 using the connection ID S1. After receiving
 the PATH_ABANDON frame for Path ID 0, the server also send a
-PATH_ABANDON frame with Path ID 0 together with an ACK frame 
+PATH_ABANDON frame with Path ID 0 together with an ACK frame
 on the same path using connection ID C1.
 
 ~~~
