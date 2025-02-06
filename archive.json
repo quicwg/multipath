@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-04T00:53:51.883161+00:00",
+  "timestamp": "2025-02-06T00:54:45.371202+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12679,12 +12679,22 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "I noted that the example in Figure 2 likely should be updated:  \n\n`Client                                                      Server\n\n(client tells server to abandon a path with Path ID 1)\n1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->\n                           (server tells client to abandon a path)\n                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],\n                                           PATH_ACK[PATH ID=1, PN=X]\n1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] ->`\n\nWith the new recommendation to send PATH_ABANDON on the other path than the one being closed this example should be updated:\n\n- Send PATH_ABANDON on DCID = S0 or S2\n- Make corresponding update on which path the message being ACKED was received on. \n",
       "createdAt": "2025-01-31T12:26:25Z",
-      "updatedAt": "2025-01-31T12:26:25Z",
+      "updatedAt": "2025-02-04T13:20:17Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #487",
+          "createdAt": "2025-02-04T13:20:10Z",
+          "updatedAt": "2025-02-04T13:20:10Z"
+        }
+      ]
     },
     {
       "number": 483,
@@ -12695,12 +12705,36 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "no-action-needed"
+      ],
       "body": "Section 4.1:\n`If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the size of the IV.`\n \nI think the \"If the IV is larger ...\" should rather be \"If the Nonce field for the used AEAD algorithm is larger ...\"\n \nSecondly I think this section should bring up that AEAD algorithms that uses an nonce that are shorter than 96 bits MUST NOT be used. Currently this limitation appear to only be mentioned in a paragraph in Section 2.\n \nNote that I think is this part of the text you are talking about the nonce as specified by the AEAD interface as defined by RFC 5116.",
       "createdAt": "2025-01-31T12:28:07Z",
-      "updatedAt": "2025-01-31T12:28:07Z",
+      "updatedAt": "2025-02-05T07:17:29Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think the text is correct as it and inline with RFC9000. This is what RFC9000 says:\n\n```\nThe key and IV for the packet are computed as described in Section 5.1. The nonce, N, is formed by combining the packet protection IV with the packet number. The 62 bits of the reconstructed QUIC packet number in network byte order are left-padded with zeros to the size of the IV. The exclusive OR of the padded packet number and the IV forms the AEAD nonce.\n```\n\nAlso the size of the IV is mentioned in RFC9000 to be the size of the nonce with a reference to RFC5116. This seems a bit circular but I don't think we need or should specify this here a second time:\n\n```\nThe Length provided with \"quic iv\" is the minimum length of the AEAD nonce or 8 bytes if that is larger; see [[AEAD](https://datatracker.ietf.org/doc/html/rfc5116)].\n```\n\nI think we can close this issue...?",
+          "createdAt": "2025-02-04T13:37:47Z",
+          "updatedAt": "2025-02-04T13:37:47Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "So I was partially wrong in my issue. I realize thanks to your citations here. But, I think there are still an issue. So per RFC 9001 Section 5.1 the IV is derived using a key derivation function using the label \"quic iv\". But that resulting IVs length is to my understanding depending on the selected cipher hash functions and what length it outputs:\n\nSection 5.1 of RFC 9001:\n`  The keys used for packet protection are computed from the TLS secrets\n   using the KDF provided by TLS.  In TLS 1.3, the HKDF-Expand-Label\n   function described in Section 7.1 of [TLS13] is used with the hash\n   function from the negotiated cipher suite.  All uses of HKDF-Expand-\n   Label in QUIC use a zero-length Context.`\n\nThe IV length appears cipher dependent, thus it is possible that if one would arrive at a cipher that has an IV that is shorter than 96 bits the behavior is undefined. However, I agree that the text I complained about is necessary to define the behavior when the IV is longer than 96-bits so the path+pn is defined in those cases. \n",
+          "createdAt": "2025-02-04T14:22:27Z",
+          "updatedAt": "2025-02-04T14:26:15Z"
+        },
+        {
+          "author": "emanjon",
+          "authorAssociation": "NONE",
+          "body": "I think the reader can be helped by adding \"The IV length is equal to the nonce length.\" , which is always true in both TLS 1.3 and QUIC.\n\nI think the relevant text for this discussion is this part of RFC 8446\n\n```\nThe length of the TLS per-record nonce (iv_length) is set to the\n   larger of 8 bytes and N_MIN for the AEAD algorithm (see [RFC5116],\n   Section 4).  An AEAD algorithm where N_MAX is less than 8 bytes\n   MUST NOT be used with TLS.\n\n```\nThe QUIC multipath extension does not seem to work for nonce lengths less than 96 bits. This needs to be described similar to how TLS 1.3 states that AEAD algorithms with nonces less than 8 bytes MUST NOT be used. Suggestion:\n\n\"An AEAD algorithm where N_MIN is less than 12 bytes MUST NOT be used with the QUIC multipath extension.\"\n\nI made a PR with these suggestions #490 ",
+          "createdAt": "2025-02-05T07:16:26Z",
+          "updatedAt": "2025-02-05T07:17:29Z"
+        }
+      ]
     },
     {
       "number": 485,
@@ -12711,10 +12745,12 @@
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "Suppose that the packet carrying a PATH_CID_BLOCKED frame is lost. How does the implementation decide whether that frame should be repeated?\n\nFor the paths blocked frame, we have a good logic: if a the packet containing a path blocked frame is lost, compared the \"pax path id\" in the blocked frame to the highest value of the max path id in a PATHS_BLOCKED frame acknowledged by the peer. If the value is higher than the retained value, repeat. Otherwise, don't. But we don't have anything like that for the PATH_CID_BLOCKED blocked frame.\n\nOne possibility is to repeat it no matter what, but this may create extra traffic. Another is to never repeat it, but that means losing the signal. Yet another would be to remember if the PATH_CID_BLOCKED frame for that path was already acknowledged, but what if we need to send several such frames for the same path over time? We could also test whether the path is still blocked.\n\nI think this is a bit under-specified.",
       "createdAt": "2025-02-02T21:43:29Z",
-      "updatedAt": "2025-02-03T11:56:55Z",
+      "updatedAt": "2025-02-04T13:11:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -12730,8 +12766,31 @@
           "body": "Actually we don't even say that PATH_CID_BLOCKED and PATHS_BLOCKED (as well as MAX_PATH_ID btw) are ack-eliciting. So we should fix that.\n\nNot sure we need to specify the retransmission behavior in detail but probably need to say something, maybe just like: MAY retransmit if still blocked. (For MAX_PATH_ID it's probably a SHOULD or even MUST retransmit?)",
           "createdAt": "2025-02-03T11:56:53Z",
           "updatedAt": "2025-02-03T11:56:53Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #486. Please review if this is sufficient.",
+          "createdAt": "2025-02-04T13:11:21Z",
+          "updatedAt": "2025-02-04T13:11:21Z"
         }
       ]
+    },
+    {
+      "number": 489,
+      "id": "I_kwDOGNtpaM6ouoh3",
+      "title": "Editorial pass: proposes new structure",
+      "url": "https://github.com/quicwg/multipath/issues/489",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It's time for a full editorial pass on the doc and some clean ups. Before we start I would like to propose the following new structure:\n\n1.\u00a0\u00a0Introduction\n\t1.1.\u00a0\u00a0Basic Design Points (move to appendix or remove)\n\t1.2.\u00a0\u00a0Introduction of an Explicit Path Identifier (needed?)\n\t1.3.\u00a0\u00a0Use of Multiple Packet Number Spaces (needed?)\n\t1.4.\u00a0\u00a0Conventions and Definitions\t\t\n2. Handshake Negotiation (or maybe: Cryptographic and Transport Handshake -> title of sec 7. In RFC9000)\n\t2.1. New Transport Parameter\n\t2.2 Relation to other Transport Parameters\n\t2.3 Handling ACK and PATH_ACK in 0-RTT and 1-RTT\n\t2.4 \u00a0Packet Protection\n\t\t2.4.1.\u00a0Nonce Calculation\n\t\t2.4.2.\u00a0Key Update\n3.\u00a0\u00a0Path Management\n\t3.1.\u00a0\u00a0Path Initiation and Validation\n\t\t3.1.1. Example Path Establishment\n\t\t3.1.2 Relation to Migration and Probing\n\t\t3.1.3 Address Validation Token\n        3.2.\u00a0\u00a0Connection ID Handling\n\t\t3.2.1 Issuing New Connection IDs\n\t\t3.2.2 Retiring Connection IDs\n\t3.3.\u00a0\u00a0Path Status Management\n\t3.4.\u00a0\u00a0Path Close\n\t\t3.4.1  Example Path Closure\n\t        3.4.2.\u00a0\u00a0Avoiding Spurious Stateless Resets\n\t        3.4.3.\u00a0\u00a0Handling PATH_ACK for abandoned paths (remove/merge into 3.4?)\n\t        3.3.4.\u00a0\u00a0Idle Timeout (move to implementation guidance? -> no normative reqs here\u2026)\n\t        3.3.5.\u00a0\u00a0Early Abandon (is this important enough for a separate subsection or merge into 3.4?)\n4.\u00a0\u00a0New Frames\n\t4.1.\u00a0\u00a0PATH_ACK Frame\n\t4.2.\u00a0\u00a0PATH_ABANDON Frame\n\t4.3.\u00a0\u00a0PATH_BACKUP and PATH_AVAILABLE frames\n\t4.4.\u00a0\u00a0PATH_NEW_CONNECTION_ID frames\n\t4.5.\u00a0\u00a0PATH_RETIRE_CONNECTION_ID frames\n\t4.6.\u00a0\u00a0MAX_PATH_ID frames\n\t4.7.\u00a0\u00a0PATHS_BLOCKED and PATH_CIDS_BLOCKED frames\n5.\u00a0\u00a0Error Codes\n6.\u00a0\u00a0Implementation Considerations (review order of subsections to be done later)\n\t6.1.\u00a0\u00a0Number Spaces\n\t6.2.\u00a0\u00a0Congestion Control\n\t6.3.\u00a0\u00a0Computing Path RTT\n\t6.4.\u00a0\u00a0Packet Scheduling\n\t6.5.\u00a0\u00a0Retransmissions\n\t6.6.\u00a0\u00a0Handling PTO\n\t6.7.\u00a0\u00a0Handling different PMTU sizes\n\t6.8.\u00a0\u00a0Keep Alive\n\t6.9.\u00a0\u00a0Connection ID Changes\n\t6.10.\u00a0Migration and NAT Rebindings\n\t6.11.\u00a0Using multiple paths on the same 4-tuple\n7.\u00a0\u00a0IANA Considerations\n8.\u00a0Security Considerations\n\t8.1.\u00a0\u00a0Memory Allocation for Per-Path Resources\n\t8.2.\u00a0\u00a0Request Forgery with Spoofed Address\n\t8.3.\u00a0\u00a0Use of Transport Layer Security and the AEAD Encryption Nonce\n\n\nSome of the main changes are:\n- Move key protection into section 2. The idea is to handle everything related to the handshake here which includes the packet protection when negotiation is succeeded. Maybe there is a better title for this section to reflect that?\n- Further also create subsections in section 2 but the content would be the same.\n- Sec 3 includes the examples, path initiation would be splitted up in subsections (again same content as now), CID handling is moved up/renamed + subsection added (no new content).\n- I have some open questions about moving some of the content from the path closure section...? (see above)\n- No changes on frames and error codes\n- Implementation considerations moved further to the back after frames and error codes (but this is optional; we can also keep it where it is now but I thought we have all normative things first)\n- no review of the structure of the implementation considerations section was done yet; this will follow later\n\n\nAlso note that I already created a first editorial PR for the intro. However, we might first want to land all other PRs and submit another revision and then start the rest of the editorial work.",
+      "createdAt": "2025-02-04T16:50:57Z",
+      "updatedAt": "2025-02-04T16:50:57Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -52825,6 +52884,214 @@
           "createdAt": "2025-02-03T14:59:01Z",
           "updatedAt": "2025-02-03T14:59:01Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 486,
+      "id": "PR_kwDOGNtpaM6J_rNA",
+      "title": "ack-eliciting/retrans of PATHS_BLOCKED, PATH_ID_BLOCKED, MAX_PATHS",
+      "url": "https://github.com/quicwg/multipath/pull/486",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #485",
+      "createdAt": "2025-02-04T13:10:45Z",
+      "updatedAt": "2025-02-04T13:11:34Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-27",
+      "headRefOid": "749e561dca6febb23cb3c9643d5ae6d97aa663d7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 487,
+      "id": "PR_kwDOGNtpaM6J_w0a",
+      "title": "Update closure example",
+      "url": "https://github.com/quicwg/multipath/pull/487",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #482",
+      "createdAt": "2025-02-04T13:19:43Z",
+      "updatedAt": "2025-02-04T13:58:55Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-28",
+      "headRefOid": "f4581f934b447d61ce1c5b77b1e4c0801b614210",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6ajEF2",
+          "commit": {
+            "abbreviatedOid": "3548fd7"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-04T13:39:08Z",
+          "updatedAt": "2025-02-04T13:39:09Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\nPATH_ABANDON frame with Path ID 0 together with an ACK frame\r\n```",
+              "createdAt": "2025-02-04T13:39:08Z",
+              "updatedAt": "2025-02-04T13:39:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6ajTj9",
+          "commit": {
+            "abbreviatedOid": "f4581f9"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-04T13:58:55Z",
+          "updatedAt": "2025-02-04T13:58:55Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 488,
+      "id": "PR_kwDOGNtpaM6KAYjB",
+      "title": "Shorter intro",
+      "url": "https://github.com/quicwg/multipath/pull/488",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR is an editorial pass of the intro. The aim is to provide a shorter, more clear text. This PR does not (really) modify the subsections of the intro, however, we could consider if sec 1.1. and maybe also the others should simply be removed...?",
+      "createdAt": "2025-02-04T14:22:22Z",
+      "updatedAt": "2025-02-04T14:28:15Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-29",
+      "headRefOid": "7ebd8540e8a4bfa52207107e8e9f8e59b18b77b6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Actually we wouldn't be able to just remove section 1.2 (path ID) and 1.3 entirely (multiple packet spaces), however, we could move the needed text somewhere else.",
+          "createdAt": "2025-02-04T14:28:13Z",
+          "updatedAt": "2025-02-04T14:28:13Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6ajozT",
+          "commit": {
+            "abbreviatedOid": "eeadc4e"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-04T14:26:24Z",
+          "updatedAt": "2025-02-04T14:26:24Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\nconnection, using the same or different 4-tuples.\r\n```",
+              "createdAt": "2025-02-04T14:26:24Z",
+              "updatedAt": "2025-02-04T14:26:24Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 490,
+      "id": "PR_kwDOGNtpaM6KGICr",
+      "title": "Improve text on IV and nonce",
+      "url": "https://github.com/quicwg/multipath/pull/490",
+      "state": "OPEN",
+      "author": "emanjon",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "#483",
+      "createdAt": "2025-02-05T07:12:20Z",
+      "updatedAt": "2025-02-05T11:44:51Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "emanjon/multipath",
+      "headRefName": "patch-1",
+      "headRefOid": "2702dc7f003e2f5fd1b92d0c08055b612c6421c6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6aswpP",
+          "commit": {
+            "abbreviatedOid": "39780e1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-05T11:42:03Z",
+          "updatedAt": "2025-02-05T11:42:03Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "N_MIN is not defined in this text. Would it be also okay to just say \"nonce\" instead? Or we need to add reference here.",
+              "createdAt": "2025-02-05T11:42:03Z",
+              "updatedAt": "2025-02-05T11:42:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6asyJh",
+          "commit": {
+            "abbreviatedOid": "39780e1"
+          },
+          "author": "emanjon",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-05T11:44:51Z",
+          "updatedAt": "2025-02-05T11:44:51Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Yes, let's remove N_MIN",
+              "createdAt": "2025-02-05T11:44:51Z",
+              "updatedAt": "2025-02-05T11:44:51Z"
+            }
+          ]
         }
       ]
     }
