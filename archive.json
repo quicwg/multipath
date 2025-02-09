@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-06T00:54:45.371202+00:00",
+  "timestamp": "2025-02-09T00:57:38.136950+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12710,7 +12710,7 @@
       ],
       "body": "Section 4.1:\n`If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the size of the IV.`\n \nI think the \"If the IV is larger ...\" should rather be \"If the Nonce field for the used AEAD algorithm is larger ...\"\n \nSecondly I think this section should bring up that AEAD algorithms that uses an nonce that are shorter than 96 bits MUST NOT be used. Currently this limitation appear to only be mentioned in a paragraph in Section 2.\n \nNote that I think is this part of the text you are talking about the nonce as specified by the AEAD interface as defined by RFC 5116.",
       "createdAt": "2025-01-31T12:28:07Z",
-      "updatedAt": "2025-02-05T07:17:29Z",
+      "updatedAt": "2025-02-06T13:39:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -12733,6 +12733,13 @@
           "body": "I think the reader can be helped by adding \"The IV length is equal to the nonce length.\" , which is always true in both TLS 1.3 and QUIC.\n\nI think the relevant text for this discussion is this part of RFC 8446\n\n```\nThe length of the TLS per-record nonce (iv_length) is set to the\n   larger of 8 bytes and N_MIN for the AEAD algorithm (see [RFC5116],\n   Section 4).  An AEAD algorithm where N_MAX is less than 8 bytes\n   MUST NOT be used with TLS.\n\n```\nThe QUIC multipath extension does not seem to work for nonce lengths less than 96 bits. This needs to be described similar to how TLS 1.3 states that AEAD algorithms with nonces less than 8 bytes MUST NOT be used. Suggestion:\n\n\"An AEAD algorithm where N_MIN is less than 12 bytes MUST NOT be used with the QUIC multipath extension.\"\n\nI made a PR with these suggestions #490 ",
           "createdAt": "2025-02-05T07:16:26Z",
           "updatedAt": "2025-02-05T07:17:29Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "Thanks from my perspective the suggested fixes in #490 do resolve the issue for me. ",
+          "createdAt": "2025-02-06T13:39:28Z",
+          "updatedAt": "2025-02-06T13:39:28Z"
         }
       ]
     },
@@ -12750,7 +12757,7 @@
       ],
       "body": "Suppose that the packet carrying a PATH_CID_BLOCKED frame is lost. How does the implementation decide whether that frame should be repeated?\n\nFor the paths blocked frame, we have a good logic: if a the packet containing a path blocked frame is lost, compared the \"pax path id\" in the blocked frame to the highest value of the max path id in a PATHS_BLOCKED frame acknowledged by the peer. If the value is higher than the retained value, repeat. Otherwise, don't. But we don't have anything like that for the PATH_CID_BLOCKED blocked frame.\n\nOne possibility is to repeat it no matter what, but this may create extra traffic. Another is to never repeat it, but that means losing the signal. Yet another would be to remember if the PATH_CID_BLOCKED frame for that path was already acknowledged, but what if we need to send several such frames for the same path over time? We could also test whether the path is still blocked.\n\nI think this is a bit under-specified.",
       "createdAt": "2025-02-02T21:43:29Z",
-      "updatedAt": "2025-02-04T13:11:44Z",
+      "updatedAt": "2025-02-06T13:38:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -12773,6 +12780,13 @@
           "body": "I created PR #486. Please review if this is sufficient.",
           "createdAt": "2025-02-04T13:11:21Z",
           "updatedAt": "2025-02-04T13:11:21Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "I can see that one could trip over the uncertainty with Path_CID_BLOCKED. I would think that including in addition to the path ID also the highest current CID sequence number would resolve the uncertainty for the receiver.",
+          "createdAt": "2025-02-06T13:38:25Z",
+          "updatedAt": "2025-02-06T13:38:25Z"
         }
       ]
     },
@@ -53040,7 +53054,7 @@
       "labels": [],
       "body": "#483",
       "createdAt": "2025-02-05T07:12:20Z",
-      "updatedAt": "2025-02-05T11:44:51Z",
+      "updatedAt": "2025-02-06T13:39:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -53092,6 +53106,19 @@
               "updatedAt": "2025-02-05T11:44:51Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6a5SRG",
+          "commit": {
+            "abbreviatedOid": "2702dc7"
+          },
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-06T13:39:49Z",
+          "updatedAt": "2025-02-06T13:39:49Z",
+          "comments": []
         }
       ]
     }
