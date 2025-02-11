@@ -196,7 +196,7 @@ to a packet number space.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-backup-available-frame}}},
+such as PATH_ABANDON {{path-abandon-frame}}, PATH_BACKUP {{path-backup-available-frame}},
 PATH_AVAILABLE {{path-backup-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
@@ -1236,7 +1236,7 @@ equal to or higher than the Path Status sequence number of the incoming frame.
 
 The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
-same sequence number for PATH_AVAILABLE or PATH_STANDBY Frames
+same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
 on different paths. The receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
 separately for each Path ID.
@@ -1341,7 +1341,7 @@ path. The PATH_RETIRE_CONNECTION_ID frame retires the Connection ID with
 the specified Path ID and sequence number.
 
 The processing of an incoming RETIRE_CONNECTION_ID frame
-is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
+is described in {{Section 19.16 of QUIC-TRANSPORT}}. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
 processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
@@ -1541,7 +1541,7 @@ and therefore only one path migration at the time should be validated,
 this extension allows for multiple open paths, that could in theory be migrated
 all at the same time, and it allows for multiple paths that could be initialized
 simultaneously. Therefore, each path could be used to further amplify an attack.
-Endpoints needs limit the number of maximum paths and might consider
+Endpoints need to limit the number of maximum paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
