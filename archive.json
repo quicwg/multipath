@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-11T00:54:26.482618+00:00",
+  "timestamp": "2025-02-13T00:54:57.865175+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12793,7 +12793,7 @@
     {
       "number": 489,
       "id": "I_kwDOGNtpaM6ouoh3",
-      "title": "Editorial pass: proposes new structure",
+      "title": "Editorial pass: proposed new structure",
       "url": "https://github.com/quicwg/multipath/issues/489",
       "state": "OPEN",
       "author": "mirjak",
@@ -12802,7 +12802,7 @@
       "labels": [],
       "body": "It's time for a full editorial pass on the doc and some clean ups. Before we start I would like to propose the following new structure:\n\n1.\u00a0\u00a0Introduction\n\t1.1.\u00a0\u00a0Basic Design Points (move to appendix or remove)\n\t1.2.\u00a0\u00a0Introduction of an Explicit Path Identifier (needed?)\n\t1.3.\u00a0\u00a0Use of Multiple Packet Number Spaces (needed?)\n\t1.4.\u00a0\u00a0Conventions and Definitions\t\t\n2. Handshake Negotiation (or maybe: Cryptographic and Transport Handshake -> title of sec 7. In RFC9000)\n\t2.1. New Transport Parameter\n\t2.2 Relation to other Transport Parameters\n\t2.3 Handling ACK and PATH_ACK in 0-RTT and 1-RTT\n\t2.4 \u00a0Packet Protection\n\t\t2.4.1.\u00a0Nonce Calculation\n\t\t2.4.2.\u00a0Key Update\n3.\u00a0\u00a0Path Management\n\t3.1.\u00a0\u00a0Path Initiation and Validation\n\t\t3.1.1. Example Path Establishment\n\t\t3.1.2 Relation to Migration and Probing\n\t\t3.1.3 Address Validation Token\n        3.2.\u00a0\u00a0Connection ID Handling\n\t\t3.2.1 Issuing New Connection IDs\n\t\t3.2.2 Retiring Connection IDs\n\t3.3.\u00a0\u00a0Path Status Management\n\t3.4.\u00a0\u00a0Path Close\n\t\t3.4.1  Example Path Closure\n\t        3.4.2.\u00a0\u00a0Avoiding Spurious Stateless Resets\n\t        3.4.3.\u00a0\u00a0Handling PATH_ACK for abandoned paths (remove/merge into 3.4?)\n\t        3.3.4.\u00a0\u00a0Idle Timeout (move to implementation guidance? -> no normative reqs here\u2026)\n\t        3.3.5.\u00a0\u00a0Early Abandon (is this important enough for a separate subsection or merge into 3.4?)\n4.\u00a0\u00a0New Frames\n\t4.1.\u00a0\u00a0PATH_ACK Frame\n\t4.2.\u00a0\u00a0PATH_ABANDON Frame\n\t4.3.\u00a0\u00a0PATH_BACKUP and PATH_AVAILABLE frames\n\t4.4.\u00a0\u00a0PATH_NEW_CONNECTION_ID frames\n\t4.5.\u00a0\u00a0PATH_RETIRE_CONNECTION_ID frames\n\t4.6.\u00a0\u00a0MAX_PATH_ID frames\n\t4.7.\u00a0\u00a0PATHS_BLOCKED and PATH_CIDS_BLOCKED frames\n5.\u00a0\u00a0Error Codes\n6.\u00a0\u00a0Implementation Considerations (review order of subsections to be done later)\n\t6.1.\u00a0\u00a0Number Spaces\n\t6.2.\u00a0\u00a0Congestion Control\n\t6.3.\u00a0\u00a0Computing Path RTT\n\t6.4.\u00a0\u00a0Packet Scheduling\n\t6.5.\u00a0\u00a0Retransmissions\n\t6.6.\u00a0\u00a0Handling PTO\n\t6.7.\u00a0\u00a0Handling different PMTU sizes\n\t6.8.\u00a0\u00a0Keep Alive\n\t6.9.\u00a0\u00a0Connection ID Changes\n\t6.10.\u00a0Migration and NAT Rebindings\n\t6.11.\u00a0Using multiple paths on the same 4-tuple\n7.\u00a0\u00a0IANA Considerations\n8.\u00a0Security Considerations\n\t8.1.\u00a0\u00a0Memory Allocation for Per-Path Resources\n\t8.2.\u00a0\u00a0Request Forgery with Spoofed Address\n\t8.3.\u00a0\u00a0Use of Transport Layer Security and the AEAD Encryption Nonce\n\n\nSome of the main changes are:\n- Move key protection into section 2. The idea is to handle everything related to the handshake here which includes the packet protection when negotiation is succeeded. Maybe there is a better title for this section to reflect that?\n- Further also create subsections in section 2 but the content would be the same.\n- Sec 3 includes the examples, path initiation would be splitted up in subsections (again same content as now), CID handling is moved up/renamed + subsection added (no new content).\n- I have some open questions about moving some of the content from the path closure section...? (see above)\n- No changes on frames and error codes\n- Implementation considerations moved further to the back after frames and error codes (but this is optional; we can also keep it where it is now but I thought we have all normative things first)\n- no review of the structure of the implementation considerations section was done yet; this will follow later\n\n\nAlso note that I already created a first editorial PR for the intro. However, we might first want to land all other PRs and submit another revision and then start the rest of the editorial work.",
       "createdAt": "2025-02-04T16:50:57Z",
-      "updatedAt": "2025-02-04T16:50:57Z",
+      "updatedAt": "2025-02-11T15:29:44Z",
       "closedAt": null,
       "comments": []
     }
@@ -53118,6 +53118,59 @@
           "body": "",
           "createdAt": "2025-02-06T13:39:49Z",
           "updatedAt": "2025-02-06T13:39:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 491,
+      "id": "PR_kwDOGNtpaM6Kz5d0",
+      "title": "replace remnant PATH_STANDBY + fix minor typos",
+      "url": "https://github.com/quicwg/multipath/pull/491",
+      "state": "OPEN",
+      "author": "bastienvty",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-02-11T14:12:33Z",
+      "updatedAt": "2025-02-11T18:33:50Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "bastienvty/multipath",
+      "headRefName": "fix-standby",
+      "headRefOid": "b8d895954946cf42897be91840029c82d42f7f21",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6bhBNv",
+          "commit": {
+            "abbreviatedOid": "b8d8959"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks!",
+          "createdAt": "2025-02-11T15:29:16Z",
+          "updatedAt": "2025-02-11T15:29:16Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6bjBzV",
+          "commit": {
+            "abbreviatedOid": "b8d8959"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-11T18:33:50Z",
+          "updatedAt": "2025-02-11T18:33:50Z",
           "comments": []
         }
       ]
