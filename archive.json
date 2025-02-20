@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-18T00:54:28.116762+00:00",
+  "timestamp": "2025-02-20T00:55:17.443965+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12706,11 +12706,11 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "no-action-needed"
+        "has PR"
       ],
       "body": "Section 4.1:\n`If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the size of the IV.`\n \nI think the \"If the IV is larger ...\" should rather be \"If the Nonce field for the used AEAD algorithm is larger ...\"\n \nSecondly I think this section should bring up that AEAD algorithms that uses an nonce that are shorter than 96 bits MUST NOT be used. Currently this limitation appear to only be mentioned in a paragraph in Section 2.\n \nNote that I think is this part of the text you are talking about the nonce as specified by the AEAD interface as defined by RFC 5116.",
       "createdAt": "2025-01-31T12:28:07Z",
-      "updatedAt": "2025-02-06T13:39:29Z",
+      "updatedAt": "2025-02-19T14:20:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -12757,7 +12757,7 @@
       ],
       "body": "Suppose that the packet carrying a PATH_CID_BLOCKED frame is lost. How does the implementation decide whether that frame should be repeated?\n\nFor the paths blocked frame, we have a good logic: if a the packet containing a path blocked frame is lost, compared the \"pax path id\" in the blocked frame to the highest value of the max path id in a PATHS_BLOCKED frame acknowledged by the peer. If the value is higher than the retained value, repeat. Otherwise, don't. But we don't have anything like that for the PATH_CID_BLOCKED blocked frame.\n\nOne possibility is to repeat it no matter what, but this may create extra traffic. Another is to never repeat it, but that means losing the signal. Yet another would be to remember if the PATH_CID_BLOCKED frame for that path was already acknowledged, but what if we need to send several such frames for the same path over time? We could also test whether the path is still blocked.\n\nI think this is a bit under-specified.",
       "createdAt": "2025-02-02T21:43:29Z",
-      "updatedAt": "2025-02-06T13:38:26Z",
+      "updatedAt": "2025-02-19T14:19:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -12787,6 +12787,13 @@
           "body": "I can see that one could trip over the uncertainty with Path_CID_BLOCKED. I would think that including in addition to the path ID also the highest current CID sequence number would resolve the uncertainty for the receiver.",
           "createdAt": "2025-02-06T13:38:25Z",
           "updatedAt": "2025-02-06T13:38:25Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I also created PR #492 to add a Maximum Sequence Number field. In case people think this is a good idea.\n\nHowever, I also discussed this a bit further with Magnus and we were less sure if this frame is really needed. Any other thought on this after people have implemented it?",
+          "createdAt": "2025-02-19T14:19:21Z",
+          "updatedAt": "2025-02-19T14:19:21Z"
         }
       ]
     },
@@ -53172,6 +53179,121 @@
           "createdAt": "2025-02-11T18:33:50Z",
           "updatedAt": "2025-02-11T18:33:50Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 492,
+      "id": "PR_kwDOGNtpaM6Lwg_Y",
+      "title": "Add Maximum Sequence Number to PATH_CIDS_BLOCKED",
+      "url": "https://github.com/quicwg/multipath/pull/492",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-02-19T14:15:57Z",
+      "updatedAt": "2025-02-20T00:50:21Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-30",
+      "headRefOid": "e26c2ef3ec1331b9f5af5d838af5cb267c8f5ed9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Note that this would be a wire-breaking change, therefore this PR also updates the transport parameter.",
+          "createdAt": "2025-02-19T14:17:58Z",
+          "updatedAt": "2025-02-19T14:17:58Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6cnIWX",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-19T17:24:07Z",
+          "updatedAt": "2025-02-19T17:24:07Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "What if the peer has not yet sent any CID?",
+              "createdAt": "2025-02-19T17:24:07Z",
+              "updatedAt": "2025-02-19T17:24:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6cndJO",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-19T17:59:09Z",
+          "updatedAt": "2025-02-19T17:59:09Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Okay, we would make this the next expected CID sequence number. So effectively the largest+1 or 0 if no CID was issued yet?",
+              "createdAt": "2025-02-19T17:59:09Z",
+              "updatedAt": "2025-02-19T17:59:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6cqPLB",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-20T00:44:11Z",
+          "updatedAt": "2025-02-20T00:44:11Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Yes. But then, what is supposed to happen if the peer receives a fanciful number?",
+              "createdAt": "2025-02-20T00:44:11Z",
+              "updatedAt": "2025-02-20T00:44:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6cqQqa",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-20T00:50:21Z",
+          "updatedAt": "2025-02-20T00:50:21Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Notice that having a sequence number does not by itself solve the repetition problem. Suppose the peer has not sent a CID yet. I observe that the packet has not been acked. Should I repeat the frame? What if this is a spurious repeat. Will I repeat the spurious repeat as long as the number has not increased?\r\n\r\nIn the end, I think I will have to keep the workaround that I had in the code -- a flag that says \"there is an unacked CID blocked frame for this path\", cleared when the frame is acked or when new CIDs arrive. But if I have that flag, the number of CID in the frame is just informational. The value is mostly to be nice with the receiver, as in \"if the number expected is lower than what you have sent, don't bother.\" Kinda nice to have.",
+              "createdAt": "2025-02-20T00:50:21Z",
+              "updatedAt": "2025-02-20T00:50:21Z"
+            }
+          ]
         }
       ]
     }
