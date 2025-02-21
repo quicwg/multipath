@@ -1500,7 +1500,7 @@ The connection ID of a packet binds the packet to a path identifier, and therefo
 to a packet number space.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>, PATH_STANDBY <a href="#path-backup-available-frame" class="auto internal xref">Section 7.3</a>},
+such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 7.2</a>, PATH_BACKUP <a href="#path-backup-available-frame" class="auto internal xref">Section 7.3</a>,
 PATH_AVAILABLE <a href="#path-backup-available-frame" class="auto internal xref">Section 7.3</a> as well as PATH_ACK <a href="#mp-ack-frame" class="auto internal xref">Section 7.1</a>.
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 7.4</a>).
@@ -2667,7 +2667,7 @@ or PATH_AVAILABLE frame for the same Path ID with a Path Status sequence number
 equal to or higher than the Path Status sequence number of the incoming frame.<a href="#section-7.3-8" class="pilcrow">¶</a></p>
 <p id="section-7.3-9">The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
-same sequence number for PATH_AVAILABLE or PATH_STANDBY Frames
+same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
 on different paths. The receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
 separately for each Path ID.<a href="#section-7.3-9" class="pilcrow">¶</a></p>
@@ -2787,7 +2787,7 @@ the sequence number in the PATH_RETIRE_CONNECTION_ID frame is also per
 path. The PATH_RETIRE_CONNECTION_ID frame retires the Connection ID with
 the specified Path ID and sequence number.<a href="#section-7.5-7" class="pilcrow">¶</a></p>
 <p id="section-7.5-8">The processing of an incoming RETIRE_CONNECTION_ID frame
-is described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.17" class="relref">Section 19.17</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. The same processing
+is described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
 processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-7.5-8" class="pilcrow">¶</a></p>
 </section>
@@ -3154,7 +3154,7 @@ and therefore only one path migration at the time should be validated,
 this extension allows for multiple open paths, that could in theory be migrated
 all at the same time, and it allows for multiple paths that could be initialized
 simultaneously. Therefore, each path could be used to further amplify an attack.
-Endpoints needs limit the number of maximum paths and might consider
+Endpoints need to limit the number of maximum paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
