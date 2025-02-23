@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-20T00:55:17.443965+00:00",
+  "timestamp": "2025-02-23T00:59:24.217900+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -52793,24 +52793,26 @@
       "id": "PR_kwDOGNtpaM6JM3x-",
       "title": "[=] fix typo for PATH_CIDS_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/pull/479",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "Yanmei-Liu",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-01-28T10:16:43Z",
-      "updatedAt": "2025-01-31T16:14:05Z",
+      "updatedAt": "2025-02-21T17:18:23Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "dev/typo-2",
       "headRefOid": "fee5dc36ae04a32e94199c385080a709e72452d0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-21T17:18:22Z",
+      "mergedAt": "2025-02-21T17:18:22Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "403572f38e1ae2eb122a15eaa588d87c1a7f2c53"
+      },
       "comments": [],
       "reviews": [
         {
@@ -52837,10 +52839,12 @@
       "author": "gloinul",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "It is the loss detection that is reused as is. MTU is on the QUIC packet level. Wrong plural on some frame section headers.",
       "createdAt": "2025-01-31T12:19:26Z",
-      "updatedAt": "2025-01-31T16:13:47Z",
+      "updatedAt": "2025-02-21T17:22:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -52877,10 +52881,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "fixes #481",
       "createdAt": "2025-01-31T16:16:32Z",
-      "updatedAt": "2025-02-03T14:59:01Z",
+      "updatedAt": "2025-02-21T17:22:43Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -52917,10 +52923,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "fixes #485",
       "createdAt": "2025-02-04T13:10:45Z",
-      "updatedAt": "2025-02-04T13:11:34Z",
+      "updatedAt": "2025-02-21T17:22:58Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -52943,10 +52951,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "fixes #482",
       "createdAt": "2025-02-04T13:19:43Z",
-      "updatedAt": "2025-02-04T13:58:55Z",
+      "updatedAt": "2025-02-21T17:23:12Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -53058,10 +53068,12 @@
       "author": "emanjon",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "#483",
       "createdAt": "2025-02-05T07:12:20Z",
-      "updatedAt": "2025-02-06T13:39:49Z",
+      "updatedAt": "2025-02-21T17:23:27Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -53134,24 +53146,26 @@
       "id": "PR_kwDOGNtpaM6Kz5d0",
       "title": "replace remnant PATH_STANDBY + fix minor typos",
       "url": "https://github.com/quicwg/multipath/pull/491",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bastienvty",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-02-11T14:12:33Z",
-      "updatedAt": "2025-02-11T18:33:50Z",
+      "updatedAt": "2025-02-21T17:19:50Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "bastienvty/multipath",
       "headRefName": "fix-standby",
       "headRefOid": "b8d895954946cf42897be91840029c82d42f7f21",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-21T17:19:50Z",
+      "mergedAt": "2025-02-21T17:19:50Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "010de80d203b39549529a39323d0c277754616a1"
+      },
       "comments": [],
       "reviews": [
         {
@@ -53194,7 +53208,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-02-19T14:15:57Z",
-      "updatedAt": "2025-02-20T00:50:21Z",
+      "updatedAt": "2025-02-20T10:11:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -53292,6 +53306,26 @@
               "body": "Notice that having a sequence number does not by itself solve the repetition problem. Suppose the peer has not sent a CID yet. I observe that the packet has not been acked. Should I repeat the frame? What if this is a spurious repeat. Will I repeat the spurious repeat as long as the number has not increased?\r\n\r\nIn the end, I think I will have to keep the workaround that I had in the code -- a flag that says \"there is an unacked CID blocked frame for this path\", cleared when the frame is acked or when new CIDs arrive. But if I have that flag, the number of CID in the frame is just informational. The value is mostly to be nice with the receiver, as in \"if the number expected is lower than what you have sent, don't bother.\" Kinda nice to have.",
               "createdAt": "2025-02-20T00:50:21Z",
               "updatedAt": "2025-02-20T00:50:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6cuNos",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-20T10:11:33Z",
+          "updatedAt": "2025-02-20T10:11:33Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Exactly this change is to help the receive to figure what to do.",
+              "createdAt": "2025-02-20T10:11:33Z",
+              "updatedAt": "2025-02-20T10:11:33Z"
             }
           ]
         }
