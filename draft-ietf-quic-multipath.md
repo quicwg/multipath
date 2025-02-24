@@ -1109,7 +1109,7 @@ the application protocol to decide which paths should be closed.
 All frames defined in this document MUST only be sent in 1-RTT packets.
 
 If an endpoint receives a multipath-specific frame in a different packet type,
-it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
+it MUST close the connection with an error of type PROTOCOL_VIOLATION.
 
 Receipt of multipath-specific frames
 that use a Path ID that is greater than the announced Maximum Paths value
