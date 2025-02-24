@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 8 August 2025                            Uber Technologies Inc.
+Expires: 28 August 2025                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 8 August 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         4 February 2025
+                                                        24 February 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 August 2025.
+   This Internet-Draft will expire on 28 August 2025.
 
 Copyright Notice
 
@@ -1465,8 +1465,9 @@ Table of Contents
    previously received.  MAX_PATH_ID frames that do not increase the
    path limit MUST be ignored.
 
-   MAX_PATH_ID frames are ack-elicting and SHOULD be retransmitted when
-   lost.
+   MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when
+   lost and no more recent MAX_PATH_ID frame has been sent in the mean
+   time.
 
 7.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
 
