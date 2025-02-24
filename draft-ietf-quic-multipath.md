@@ -1376,7 +1376,8 @@ Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
-MAX_PATH_ID frames are ack-elicting and SHOULD be retransmitted when lost.
+MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost
+and no more recent MAX_PATH_ID frame has been sent in the mean time.
 
 ## PATHS_BLOCKED and PATH_CIDS_BLOCKED frames {#paths-and-cids-blocked-frame}
 
