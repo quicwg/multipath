@@ -90,7 +90,7 @@ This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
 to enable the simultaneous usage of multiple paths for a single
 connection. This contrasts with
 the base QUIC protocol {{QUIC-TRANSPORT}} that includes a connection migration mechanism that
-selects only one path at a time to exchange such packets.
+selects only one path at a time to exchange QUIC packets.
 
 The path management specified in {{Section 9 of QUIC-TRANSPORT}}
 fulfills multiple goals: it directs a peer to switch sending through
@@ -331,7 +331,7 @@ Path ID 0.
 # Path Management {#path-management}
 
 After completing the handshake, endpoints have agreed to enable
-multipath support. They can also start using multiple paths when both endpoints
+multipath support. They can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused Path ID.
 If an endpoint receives a disable_active_migration transport parameter
 provided by the peer, it is forbidden to use a new local address
@@ -599,7 +599,7 @@ sent by the peer will not cause the closure of the QUIC connection.
 ### Handling PATH_ACK for abandoned paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
-still be some unacknowledged packets. Some other packets may well
+still be some unacknowledged packets. Some of these packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
 send PATH_ACK frames promptly, to avoid unnecessary data
@@ -1097,7 +1097,7 @@ migrations. For example:
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint will want to close one of them.
-Uncoordinated Abandon from both ends of the connection may result in deleting
+Uncoordinated abandon from both ends of the connection may result in deleting
 two paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
