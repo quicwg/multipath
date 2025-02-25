@@ -852,7 +852,7 @@ In this example, the client wants to close the path with Path ID 0.
 It sends the PATH_ABANDON frame to terminate the path with Path ID 0
 on the path with Path ID 1 using the connection ID S1. After receiving
 the PATH_ABANDON frame for Path ID 0, the server also send a
-PATH_ABANDON frame with Path ID 0 together with an ACK frame
+PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
 on the same path using connection ID C1.
 
 ~~~
@@ -867,10 +867,10 @@ Client                                                      Server
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
-Note that if the ABANDON frame is instead sent on the to-be-abandoned path,
+Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
 the last acknowledgment still needs to be send on a different path
 as no further packets can be sent on the abandoned path after the
-ABANDON frame.
+PATH_ABANDON frame.
 
 
 # Implementation Considerations
