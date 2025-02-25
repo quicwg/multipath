@@ -1465,6 +1465,10 @@ Table of Contents
    previously received.  MAX_PATH_ID frames that do not increase the
    path limit MUST be ignored.
 
+   MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when
+   lost and no more recent MAX_PATH_ID frame has been sent in the
+   meantime.
+
 7.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
 
    A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when it
@@ -1514,6 +1518,10 @@ Table of Contents
    Receipt of a value of Maximum Path Identifier or Path Identifier that
    is higher than the local maximum value MUST be treated as a
    connection error of type PROTOCOL_VIOLATION.
+
+   PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY
+   be retransmitted if the path is still blocked when the lost is
+   detected.
 
 8.  Error Codes
 

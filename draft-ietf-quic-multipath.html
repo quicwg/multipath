@@ -2831,6 +2831,8 @@ connection error of type PROTOCOL_VIOLATION.<a href="#section-7.6-6" class="pilc
 <p id="section-7.6-7">Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.<a href="#section-7.6-7" class="pilcrow">¶</a></p>
+<p id="section-7.6-8">MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost
+and no more recent MAX_PATH_ID frame has been sent in the meantime.<a href="#section-7.6-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="paths-and-cids-blocked-frame">
@@ -2898,6 +2900,8 @@ PATH_CIDS_BLOCKED Frame {
 </dl>
 <p id="section-7.7-11">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-7.7-11" class="pilcrow">¶</a></p>
+<p id="section-7.7-12">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
+if the path is still blocked when the lost is detected.<a href="#section-7.7-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
