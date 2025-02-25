@@ -1241,8 +1241,8 @@ on different paths. The receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
 separately for each Path ID.
 
-PATH_BACKUP frames are ack-eliciting. If a packet containing a
-PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame
+PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
+PATH_BACKUP or PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
