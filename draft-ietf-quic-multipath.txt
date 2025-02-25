@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 25 August 2025                           Uber Technologies Inc.
+Expires: 29 August 2025                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 25 August 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                        21 February 2025
+                                                        25 February 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 August 2025.
+   This Internet-Draft will expire on 29 August 2025.
 
 Copyright Notice
 
@@ -107,9 +107,9 @@ Table of Contents
      7.1.  PATH_ACK Frame
      7.2.  PATH_ABANDON Frame
      7.3.  PATH_BACKUP and PATH_AVAILABLE frames
-     7.4.  PATH_NEW_CONNECTION_ID frames
-     7.5.  PATH_RETIRE_CONNECTION_ID frames
-     7.6.  MAX_PATH_ID frames
+     7.4.  PATH_NEW_CONNECTION_ID frame
+     7.5.  PATH_RETIRE_CONNECTION_ID frame
+     7.6.  MAX_PATH_ID frame
      7.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
    8.  Error Codes
    9.  IANA Considerations
@@ -270,9 +270,9 @@ Table of Contents
    This extension uses multiple packet number spaces, one for each path.
    As such, each path maintains distinct packet number states for
    sending and receiving packets, as in [QUIC-TRANSPORT].  Using
-   multiple packet number spaces enables direct use of the loss recovery
-   and congestion control mechanisms defined in [QUIC-RECOVERY] on a
-   per-path basis.
+   multiple packet number spaces enables direct use of the loss
+   detection and congestion control mechanisms defined in
+   [QUIC-RECOVERY] on a per-path basis.
 
    Each Path ID-specific packet number space starts at packet number 0.
    When following the packet number encoding algorithm described in
@@ -467,10 +467,10 @@ Table of Contents
    contain a path challenge.  Such packets are valid if they can be
    properly decrypted and if they contain a valid connection ID.
 
-   Each endpoint MUST also validate that a minimum MTU of 1200 bytes is
-   supported on the path.  This can be done during initial path
-   validation or separately later if the amplification limit prevents it
-   initially, as specified in Section 8.2.1 of RFC9000.
+   Each endpoint MUST also validate that a minimum QUIC packet MTU of
+   1200 bytes is supported on the path.  This can be done during initial
+   path validation or separately later if the amplification limit
+   prevents it initially, as specified in Section 8.2.1 of RFC9000.
 
    An endpoint that receives packets on a new path and does not want to
    establish this path is expected to close the path by sending a
@@ -1340,7 +1340,7 @@ Table of Contents
    PATH_NEW_CONNECTION_ID frame or a PATH_RESPONSE frame in order to
    indicate the preferred path usage before or during path initiation.
 
-7.4.  PATH_NEW_CONNECTION_ID frames
+7.4.  PATH_NEW_CONNECTION_ID frame
 
    The PATH_NEW_CONNECTION_ID frame (type=0x15228c09) is an extension of
    the NEW_CONNECTION_ID frame specified in Section 19.15 of
@@ -1391,7 +1391,7 @@ Table of Contents
    successfully, the rule for RETIRE_CONNECTION_ID frame is only applied
    for Path ID 0.
 
-7.5.  PATH_RETIRE_CONNECTION_ID frames
+7.5.  PATH_RETIRE_CONNECTION_ID frame
 
    The PATH_RETIRE_CONNECTION_ID frame (type=0x15228c0a) is an extension
    of the RETIRE_CONNECTION_ID frame specified in Section 19.16 of
@@ -1434,7 +1434,7 @@ Table of Contents
    for PATH_RETIRE_CONNECTION_ID frames per path, while the processing
    of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
-7.6.  MAX_PATH_ID frames
+7.6.  MAX_PATH_ID frame
 
    A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum
    path identifier it is permitted to use.
