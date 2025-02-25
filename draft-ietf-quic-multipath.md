@@ -161,7 +161,7 @@ to a packet number space.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON {{path-abandon-frame}}, PATH_STANDBY {{path-backup-available-frame}}},
+such as PATH_ABANDON {{path-abandon-frame}}, PATH_BACKUP {{path-backup-available-frame}},
 PATH_AVAILABLE {{path-backup-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
@@ -180,7 +180,7 @@ that does not change the Path ID.
 This extension uses multiple packet number spaces, one for each path.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in {{QUIC-TRANSPORT}}.
 Using multiple packet number spaces enables direct use of the
-loss recovery and congestion control mechanisms defined in
+loss detection and congestion control mechanisms defined in
 {{QUIC-RECOVERY}} on a per-path basis.
 
 Each Path ID-specific packet number space starts at packet number 0. When following
@@ -296,7 +296,7 @@ Path ID 0.
 # Path Management {#path-management}
 
 After completing the handshake, endpoints have agreed to enable
-multipath support. They can also start using multiple paths when both endpoints
+multipath support. They can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused Path ID.
 If an endpoint receives a disable_active_migration transport parameter
 provided by the peer, it is forbidden to use a new local address
@@ -331,7 +331,7 @@ This proposal adds six multipath control frames for path management:
 in path usage (see {{path-backup-available-frame}}), and
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
 path identifiers,
-- PATHS_BLOCKED and PATH_CID_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
+- PATHS_BLOCKED and PATH_CIDS_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
 to notify the peer of being blocked to open new paths as
 the limit of active paths set by the peer has been reached
 or there are no unused connection IDs available
@@ -370,7 +370,7 @@ The server may receive packets for a yet unused Path ID that do not
 contain a path challenge. Such packets are valid if they can be properly decrypted
 and if they contain a valid connection ID.
 
-Each endpoint MUST also validate that a minimum MTU of 1200 bytes is supported
+Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
 on the path. This can be done during initial path validation or separately later if
 the amplification limit prevents it initially, as specified in Section 8.2.1 of RFC9000.
 
@@ -564,7 +564,7 @@ sent by the peer will not cause the closure of the QUIC connection.
 ### Handling PATH_ACK for abandoned paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
-still be some unacknowledged packets. Some other packets may well
+still be some unacknowledged packets. Some of these packets may well
 be in transit, and could be received shortly after sending the
 PATH_ABANDON frame. As specified above, the endpoints SHOULD
 send PATH_ACK frames promptly, to avoid unnecessary data
@@ -723,9 +723,10 @@ is limited to a max value of 2^32-1.
 To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
 significant 32 bits of the Path ID in network byte order,
 two zero bits, and the 62 bits of the reconstructed QUIC packet number in
-network byte order. If the IV is larger than 96 bits, the path-and-packet-number
+network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
-packet number and the IV forms the AEAD nonce.
+packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
+is less than 12 bytes MUST NOT be used with the QUIC multipath extension.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the Path ID is `3`, and the packet number is `aead`,
@@ -813,24 +814,29 @@ as the Destination Connection ID of the new path.
 
 {{fig-example-path-close1}} illustrates an example of path closure.
 
-In this example, the client wants to close the path with Path ID 1.
-It sends the PATH_ABANDON frame to terminate the path. After receiving
-the PATH_ABANDON frame with Path ID 1, the server also send a
-PATH_ABANDON frame with Path ID 1.
+In this example, the client wants to close the path with Path ID 0.
+It sends the PATH_ABANDON frame to terminate the path with Path ID 0
+on the path with Path ID 1 using the connection ID S1. After receiving
+the PATH_ABANDON frame for Path ID 0, the server also send a
+PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
+on the same path using connection ID C1.
 
 ~~~
 Client                                                      Server
 
-(client tells server to abandon a path with Path ID 1)
-1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->
+(client tells server to abandon a path with Path ID 0)
+1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=0]->
                            (server tells client to abandon a path)
-                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
+                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=0],
                                            PATH_ACK[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] ->
+1-RTT[U]: DCID=S1 PATH_ACK[Path ID=1, PN=Y] ->
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
-Note that the last acknowledgment needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
+Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
+the last acknowledgment still needs to be send on a different path
+as no further packets can be sent on the abandoned path after the
+PATH_ABANDON frame.
 
 
 # Implementation Considerations {#impl-consideration}
@@ -1062,7 +1068,7 @@ migrations. For example:
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint will want to close one of them.
-Uncoordinated Abandon from both ends of the connection may result in deleting
+Uncoordinated abandon from both ends of the connection may result in deleting
 two paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
@@ -1074,7 +1080,7 @@ the application protocol to decide which paths should be closed.
 All frames defined in this document MUST only be sent in 1-RTT packets.
 
 If an endpoint receives a multipath-specific frame in a different packet type,
-it MUST close the connection with an error of type FRAME_ENCODING_ERROR.
+it MUST close the connection with an error of type PROTOCOL_VIOLATION.
 
 Receipt of multipath-specific frames
 that use a Path ID that is greater than the announced Maximum Paths value
@@ -1201,13 +1207,13 @@ equal to or higher than the Path Status sequence number of the incoming frame.
 
 The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
-same sequence number for PATH_AVAILABLE or PATH_STANDBY Frames
+same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
 on different paths. The receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
 separately for each Path ID.
 
-PATH_BACKUP frames are ack-eliciting. If a packet containing a
-PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame
+PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
+PATH_BACKUP or PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
@@ -1215,7 +1221,7 @@ A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTIO
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
-## PATH_NEW_CONNECTION_ID frames {#mp-new-conn-id-frame}
+## PATH_NEW_CONNECTION_ID frame {#mp-new-conn-id-frame}
 
 The PATH_NEW_CONNECTION_ID frame (type=0x15228c09)
 is an extension of the NEW_CONNECTION_ID frame specified in
@@ -1266,7 +1272,7 @@ applies for PATH_RETIRE_CONNECTION_ID frames, but it applies per path. After the
 multipath extension is negotiated successfully, the rule
 for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
-## PATH_RETIRE_CONNECTION_ID frames {#mp-retire-conn-id-frame}
+## PATH_RETIRE_CONNECTION_ID frame {#mp-retire-conn-id-frame}
 
 The PATH_RETIRE_CONNECTION_ID frame (type=0x15228c0a)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
@@ -1306,11 +1312,11 @@ path. The PATH_RETIRE_CONNECTION_ID frame retires the Connection ID with
 the specified Path ID and sequence number.
 
 The processing of an incoming RETIRE_CONNECTION_ID frame
-is described in {{Section 19.17 of QUIC-TRANSPORT}}. The same processing
+is described in {{Section 19.16 of QUIC-TRANSPORT}}. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
 processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
-## MAX_PATH_ID frames {#max-paths-frame}
+## MAX_PATH_ID frame {#max-paths-frame}
 
 A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
 it is permitted to use.
@@ -1340,6 +1346,9 @@ connection error of type PROTOCOL_VIOLATION.
 Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
+
+MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost
+and no more recent MAX_PATH_ID frame has been sent in the meantime.
 
 ## PATHS_BLOCKED and PATH_CIDS_BLOCKED frames {#paths-and-cids-blocked-frame}
 
@@ -1391,6 +1400,8 @@ Path Identifier:
 Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
+PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
+if the path is still blocked when the lost is detected.
 
 # Error Codes {#error-codes}
 
@@ -1506,7 +1517,7 @@ and therefore only one path migration at the time should be validated,
 this extension allows for multiple open paths, that could in theory be migrated
 all at the same time, and it allows for multiple paths that could be initialized
 simultaneously. Therefore, each path could be used to further amplify an attack.
-Endpoints needs limit the number of maximum paths and might consider
+Endpoints need to limit the number of maximum paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
