@@ -1416,7 +1416,7 @@ PATH_CIDS_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-
 PATH_CIDS_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
   Path Identifier (i),
-  Max Sequence Number (i),
+  Next Sequence Number (i),
 }
 ~~~
 {: #fig-path-cid-blocked-frame-format title="PATH_CIDS_BLOCKED Frame Format"}
@@ -1424,14 +1424,14 @@ PATH_CIDS_BLOCKED Frame {
 Path Identifier:
 : Identifier of the path for which unused connection IDs are not available.
 
-Maximum Sequence Number:
-: The largest sequence number issued for a connection ID for this path by the peer.
+Next Sequence Number:
+: The next sequence number that is expected to be issued for a connection ID for this path by the peer.
 
 Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
-Receipt of a value of Maximum Sequence Number that is higher than
-the sequence number of the last issued connection ID for this path
+Receipt of a value of Next Sequence Number that is higher than
+the sequence number of the next expected to be issued connection ID for this path
 MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
 # Error Codes {#error-codes}
