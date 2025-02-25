@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 8 August 2025                            Uber Technologies Inc.
+Expires: 29 August 2025                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 8 August 2025                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         4 February 2025
+                                                        25 February 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 August 2025.
+   This Internet-Draft will expire on 29 August 2025.
 
 Copyright Notice
 
@@ -930,8 +930,8 @@ Table of Contents
    It sends the PATH_ABANDON frame to terminate the path with Path ID 0
    on the path with Path ID 1 using the connection ID S1.  After
    receiving the PATH_ABANDON frame for Path ID 0, the server also send
-   a PATH_ABANDON frame with Path ID 0 together with an ACK frame on the
-   same path using connection ID C1.
+   a PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
+   on the same path using connection ID C1.
 
    Client                                                      Server
 
@@ -944,10 +944,10 @@ Table of Contents
 
                     Figure 2: Example of closing a path.
 
-   Note that if the ABANDON frame is instead sent on the to-be-abandoned
-   path, the last acknowledgment still needs to be send on a different
-   path as no further packets can be sent on the abandoned path after
-   the ABANDON frame.
+   Note that if the PATH_ABANDON frame is instead sent on the to-be-
+   abandoned path, the last acknowledgment still needs to be send on a
+   different path as no further packets can be sent on the abandoned
+   path after the PATH_ABANDON frame.
 
 6.  Implementation Considerations
 
