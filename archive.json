@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-23T00:59:24.217900+00:00",
+  "timestamp": "2025-02-25T00:56:42.863120+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12757,7 +12757,7 @@
       ],
       "body": "Suppose that the packet carrying a PATH_CID_BLOCKED frame is lost. How does the implementation decide whether that frame should be repeated?\n\nFor the paths blocked frame, we have a good logic: if a the packet containing a path blocked frame is lost, compared the \"pax path id\" in the blocked frame to the highest value of the max path id in a PATHS_BLOCKED frame acknowledged by the peer. If the value is higher than the retained value, repeat. Otherwise, don't. But we don't have anything like that for the PATH_CID_BLOCKED blocked frame.\n\nOne possibility is to repeat it no matter what, but this may create extra traffic. Another is to never repeat it, but that means losing the signal. Yet another would be to remember if the PATH_CID_BLOCKED frame for that path was already acknowledged, but what if we need to send several such frames for the same path over time? We could also test whether the path is still blocked.\n\nI think this is a bit under-specified.",
       "createdAt": "2025-02-02T21:43:29Z",
-      "updatedAt": "2025-02-19T14:19:22Z",
+      "updatedAt": "2025-02-24T11:40:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -12794,6 +12794,13 @@
           "body": "I also created PR #492 to add a Maximum Sequence Number field. In case people think this is a good idea.\n\nHowever, I also discussed this a bit further with Magnus and we were less sure if this frame is really needed. Any other thought on this after people have implemented it?",
           "createdAt": "2025-02-19T14:19:21Z",
           "updatedAt": "2025-02-19T14:19:21Z"
+        },
+        {
+          "author": "michael-eriksson",
+          "authorAssociation": "NONE",
+          "body": "FWIW, I think the frame is completely useless. An endpoint already knows how many CIDs the peer has available (since it has to recognise all of them in incoming packets).\n\nThe Rask implementation only logs the frame and never sends it.",
+          "createdAt": "2025-02-24T11:40:10Z",
+          "updatedAt": "2025-02-24T11:40:10Z"
         }
       ]
     },
@@ -52928,19 +52935,74 @@
       ],
       "body": "fixes #485",
       "createdAt": "2025-02-04T13:10:45Z",
-      "updatedAt": "2025-02-21T17:22:58Z",
+      "updatedAt": "2025-02-24T16:26:30Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-27",
-      "headRefOid": "749e561dca6febb23cb3c9643d5ae6d97aa663d7",
+      "headRefOid": "65f55b8d0cfe74e3ffd83bdfa8380e528350264c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema I added another half sentence to address your comment! Please check!",
+          "createdAt": "2025-02-24T13:27:16Z",
+          "updatedAt": "2025-02-24T13:27:16Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6dGd70",
+          "commit": {
+            "abbreviatedOid": "749e561"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "One minor nit: there is no point retransmitting a frame that will be ignored by the peer. There is no point retransmitting an old MAX_PATH_ID frame if a new one has already been sent.",
+          "createdAt": "2025-02-23T19:01:11Z",
+          "updatedAt": "2025-02-23T19:02:43Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dLsd7",
+          "commit": {
+            "abbreviatedOid": "749e561"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-24T13:26:23Z",
+          "updatedAt": "2025-02-24T13:26:24Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\nMAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost\r\nand no more recent MAX_PATH_ID frame has been sent in the mean time.\r\n```",
+              "createdAt": "2025-02-24T13:26:23Z",
+              "updatedAt": "2025-02-24T13:26:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dOJOC",
+          "commit": {
+            "abbreviatedOid": "65f55b8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Works for me. Thanks.",
+          "createdAt": "2025-02-24T16:26:30Z",
+          "updatedAt": "2025-02-24T16:26:30Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 487,
@@ -53208,7 +53270,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-02-19T14:15:57Z",
-      "updatedAt": "2025-02-20T10:11:33Z",
+      "updatedAt": "2025-02-24T19:56:02Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
@@ -53226,6 +53288,13 @@
           "body": "Note that this would be a wire-breaking change, therefore this PR also updates the transport parameter.",
           "createdAt": "2025-02-19T14:17:58Z",
           "updatedAt": "2025-02-19T14:17:58Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema I prosed changes to rename to \"Next Sequence Number\". Does that work?",
+          "createdAt": "2025-02-24T13:44:51Z",
+          "updatedAt": "2025-02-24T13:44:51Z"
         }
       ],
       "reviews": [
@@ -53328,8 +53397,187 @@
               "updatedAt": "2025-02-20T10:11:33Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dGec4",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "We have to resolve what `MAX_PATH_ID_BLOCKED (path=1, sequence=0)` actually means. Is it \"the sender has received number 0 and expects number 1\" or \"the sender has not received number 0 and expects it\"?",
+          "createdAt": "2025-02-23T19:12:57Z",
+          "updatedAt": "2025-02-23T19:15:29Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "OK. I think this is overall a good change, because it aligns the syntax of `PATH_CIDS_BLOCKED` with that of the very similar `STREAM_DATA_BLOCKED`. It helps processing at the receivers: they can ignore `PATH_CIDS_BLOCKED` if they have already sent more CIDs for this path than indicated by the sequence number.\r\n\r\nThe change does not completely solve the retransmission problem. It helps a bit -- no point repeating if the peer has already sent more CIDs. Endpoints still need to track acknowledgements if they want to avoid spurious retransmissions -- but then, that's true of every frame, so there may not be much need to say that again.",
+              "createdAt": "2025-02-23T19:12:57Z",
+              "updatedAt": "2025-02-23T19:15:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dL2as",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-24T13:39:33Z",
+          "updatedAt": "2025-02-24T13:39:34Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\r\nNext Sequence Number:\r\n: The next sequence number that is expected to be issued for a connection ID for this path by the peer.\r\n```",
+              "createdAt": "2025-02-24T13:39:33Z",
+              "updatedAt": "2025-02-24T13:39:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dL42w",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-24T13:43:22Z",
+          "updatedAt": "2025-02-24T13:43:22Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nReceipt of a value of Next Sequence Number that is higher than\r\nthe sequence number of the next expected to be issued connection ID for this path\r\nMUST be treated as a connection error of type PROTOCOL_VIOLATION.\r\n```",
+              "createdAt": "2025-02-24T13:43:22Z",
+              "updatedAt": "2025-02-24T13:43:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dQU9w",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-24T19:55:36Z",
+          "updatedAt": "2025-02-24T19:55:36Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Yes, that works.",
+              "createdAt": "2025-02-24T19:55:36Z",
+              "updatedAt": "2025-02-24T19:55:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dQVLJ",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-24T19:56:02Z",
+          "updatedAt": "2025-02-24T19:56:02Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Yes, that works.",
+              "createdAt": "2025-02-24T19:56:02Z",
+              "updatedAt": "2025-02-24T19:56:02Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 493,
+      "id": "PR_kwDOGNtpaM6MQW9R",
+      "title": "Error code for receiving MP specific frame in other than 1-RTT packet",
+      "url": "https://github.com/quicwg/multipath/pull/493",
+      "state": "OPEN",
+      "author": "jalume",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Aligning error code with RFC 9000. \r\nRFC 9000 states: \"An endpoint MUST treat receipt of a frame in a packet type that is not permitted as a connection error of type PROTOCOL_VIOLATION.\"",
+      "createdAt": "2025-02-24T09:31:49Z",
+      "updatedAt": "2025-02-24T18:59:51Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "010de80d203b39549529a39323d0c277754616a1",
+      "headRepository": "jalume/multipath",
+      "headRefName": "jalume-patch-1",
+      "headRefOid": "8af368f65b46ec75ca4d2a845f58130c0e940b33",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6dLuON",
+          "commit": {
+            "abbreviatedOid": "8af368f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Yes, I believe this is right to just use PROTOCOL_VIOLATION instead",
+          "createdAt": "2025-02-24T13:28:39Z",
+          "updatedAt": "2025-02-24T13:28:39Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dPxvP",
+          "commit": {
+            "abbreviatedOid": "8af368f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-24T18:59:51Z",
+          "updatedAt": "2025-02-24T18:59:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 494,
+      "id": "PR_kwDOGNtpaM6MTfR0",
+      "title": "Editorial proposals",
+      "url": "https://github.com/quicwg/multipath/pull/494",
+      "state": "OPEN",
+      "author": "jalume",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I have some editorial proposals.\r\n\r\n1. Introduction\r\n'packets' have not been mentioned before. --> 'QUIC packets' instead of 'such packets'\r\n\r\n3. Path Management\r\nNo other way to start using multiple paths was presented before. --> Removing 'also'\r\n\r\n3.3.2. Handling PATH_ACK for abandoned paths\r\nAs far as I understand the 'other packets' are a subset of the unacknowledged packets. --> 'Some of these' instead of 'Some other'",
+      "createdAt": "2025-02-24T14:53:15Z",
+      "updatedAt": "2025-02-24T14:53:15Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "010de80d203b39549529a39323d0c277754616a1",
+      "headRepository": "jalume/multipath",
+      "headRefName": "jalume-patch-2",
+      "headRefOid": "c1eb70f53893dd05a5aef3f31386427599cd203b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
