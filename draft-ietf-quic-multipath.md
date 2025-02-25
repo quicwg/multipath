@@ -848,24 +848,29 @@ as the Destination Connection ID of the new path.
 
 {{fig-example-path-close1}} illustrates an example of path closure.
 
-In this example, the client wants to close the path with Path ID 1.
-It sends the PATH_ABANDON frame to terminate the path. After receiving
-the PATH_ABANDON frame with Path ID 1, the server also send a
-PATH_ABANDON frame with Path ID 1.
+In this example, the client wants to close the path with Path ID 0.
+It sends the PATH_ABANDON frame to terminate the path with Path ID 0
+on the path with Path ID 1 using the connection ID S1. After receiving
+the PATH_ABANDON frame for Path ID 0, the server also send a
+PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
+on the same path using connection ID C1.
 
 ~~~
 Client                                                      Server
 
-(client tells server to abandon a path with Path ID 1)
-1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->
+(client tells server to abandon a path with Path ID 0)
+1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=0]->
                            (server tells client to abandon a path)
-                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
+                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=0],
                                            PATH_ACK[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] ->
+1-RTT[U]: DCID=S1 PATH_ACK[Path ID=1, PN=Y] ->
 ~~~
 {: #fig-example-path-close1 title="Example of closing a path."}
 
-Note that the last acknowledgment needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.
+Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
+the last acknowledgment still needs to be send on a different path
+as no further packets can be sent on the abandoned path after the
+PATH_ABANDON frame.
 
 
 # Implementation Considerations
