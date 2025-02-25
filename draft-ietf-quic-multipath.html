@@ -2168,29 +2168,34 @@ as the Destination Connection ID of the new path.<a href="#section-5.1-5" class=
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-path-closure" class="section-name selfRef">Path Closure</a>
         </h3>
 <p id="section-5.2-1"><a href="#fig-example-path-close1" class="auto internal xref">Figure 2</a> illustrates an example of path closure.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">In this example, the client wants to close the path with Path ID 1.
-It sends the PATH_ABANDON frame to terminate the path. After receiving
-the PATH_ABANDON frame with Path ID 1, the server also send a
-PATH_ABANDON frame with Path ID 1.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">In this example, the client wants to close the path with Path ID 0.
+It sends the PATH_ABANDON frame to terminate the path with Path ID 0
+on the path with Path ID 1 using the connection ID S1. After receiving
+the PATH_ABANDON frame for Path ID 0, the server also send a
+PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
+on the same path using connection ID C1.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 <span id="name-example-of-closing-a-path"></span><div id="fig-example-path-close1">
 <figure id="figure-2">
           <div class="alignLeft art-text artwork" id="section-5.2-3.1">
 <pre>
 Client                                                      Server
 
-(client tells server to abandon a path with Path ID 1)
-1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]-&gt;
+(client tells server to abandon a path with Path ID 0)
+1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=0]-&gt;
                            (server tells client to abandon a path)
-                    &lt;-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],
+                    &lt;-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=0],
                                            PATH_ACK[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] -&gt;
+1-RTT[U]: DCID=S1 PATH_ACK[Path ID=1, PN=Y] -&gt;
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-example-of-closing-a-path" class="selfRef">Example of closing a path.</a>
           </figcaption></figure>
 </div>
-<p id="section-5.2-4">Note that the last acknowledgment needs to be send on a different path. This examples assumes another path which uses connection ID S2 exists.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
+the last acknowledgment still needs to be send on a different path
+as no further packets can be sent on the abandoned path after the
+PATH_ABANDON frame.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
