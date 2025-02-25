@@ -1376,6 +1376,9 @@ Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
 MAX_PATH_ID frames that do not increase the path limit MUST be ignored.
 
+MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost
+and no more recent MAX_PATH_ID frame has been sent in the meantime.
+
 ## PATHS_BLOCKED and PATH_CIDS_BLOCKED frames {#paths-and-cids-blocked-frame}
 
 A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
@@ -1426,6 +1429,8 @@ Path Identifier:
 Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
+PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
+if the path is still blocked when the lost is detected.
 
 # Error Codes {#error-codes}
 
