@@ -1211,7 +1211,7 @@ Table of Contents
 
    If an endpoint receives a multipath-specific frame in a different
    packet type, it MUST close the connection with an error of type
-   FRAME_ENCODING_ERROR.
+   PROTOCOL_VIOLATION.
 
    Receipt of multipath-specific frames that use a Path ID that is
    greater than the announced Maximum Paths value in the MAX_PATH_ID

@@ -2509,7 +2509,7 @@ the application protocol to decide which paths should be closed.<a href="#sectio
       </h2>
 <p id="section-7-1">All frames defined in this document MUST only be sent in 1-RTT packets.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">If an endpoint receives a multipath-specific frame in a different packet type,
-it MUST close the connection with an error of type FRAME_ENCODING_ERROR.<a href="#section-7-2" class="pilcrow">¶</a></p>
+it MUST close the connection with an error of type PROTOCOL_VIOLATION.<a href="#section-7-2" class="pilcrow">¶</a></p>
 <p id="section-7-3">Receipt of multipath-specific frames
 that use a Path ID that is greater than the announced Maximum Paths value
 in the MAX_PATH_ID frame or in the initial_max_path_id transport parameter,
