@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-25T00:56:42.863120+00:00",
+  "timestamp": "2025-02-27T00:56:12.766865+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -5027,7 +5027,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "So I think one issue that is not clear enough in the document in relation to this is how to peer A that transmit packets that goes through a network and arrives a B with a different 5-tuple for this CID than previous. Based on RFC 9000 connection migration this will cause a path validation being sent by B to A. However, I think the multipath document needs to be clearer on how this is dealt with in A as it is not a connection migration like it would be in single path QUIC. So there is a clear difference here. \r\n\r\nAlso maybe I haven't read the text back and forth, but it is not clear to me if the above scenario A will change its CID, or if will continue to use the CID it was using?  This appears relevant for the reason in that A can't determine if this path change only results was the result of a basic NAT binding with a source port change from B's perspective. But, I think there are a couple of corner cases, like two layer NATs with some failover where the packet could actually exit through a different NAT closest to B than previous and more substantially be a different route. So there might be some question here if one should ensure a CID change and discard any path congestion state. ",
           "createdAt": "2023-07-25T23:06:21Z",
           "updatedAt": "2023-07-25T23:06:21Z"
@@ -7295,7 +7295,7 @@
       "url": "https://github.com/quicwg/multipath/issues/266",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "question",
@@ -7336,7 +7336,7 @@
       "url": "https://github.com/quicwg/multipath/issues/267",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "mirjak"
       ],
@@ -7358,7 +7358,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Because your key-limit tracking implementation may not have been implemented to support the usage of multiple Nonces and could therefore easily fail. Therefore an informational statement in the security consideration would be good to help ensure that implementors verify that their implementation count invocations independent of nonce for a key.  ",
           "createdAt": "2023-10-23T08:55:30Z",
           "updatedAt": "2023-10-23T08:55:30Z"
@@ -7372,7 +7372,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Sure, pointing to that the limits in RFC 9001 B.1.1 applies to all the paths is likely all that is needed. And it is not really a conflict, just clarification that with \"connection\" we mean the sum of all transmitted on all paths. ",
           "createdAt": "2023-10-23T14:00:07Z",
           "updatedAt": "2023-10-23T14:00:07Z"
@@ -8082,7 +8082,7 @@
       "url": "https://github.com/quicwg/multipath/issues/290",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "huitema"
       ],
@@ -8111,7 +8111,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "So I think this is a problem that is not expected to be experienced in real-world usage. Our interop testing move this to be way more aggressive than would otherwise ever be used. However, the main point is that 3*PTO might not be sufficient security margin, even if it would generally work. Documenting that a risk could exist that could result in decryption failures if the RTT estimates in PTO are wrong. ",
           "createdAt": "2024-07-10T14:18:12Z",
           "updatedAt": "2024-07-10T14:18:12Z"
@@ -8478,7 +8478,7 @@
       "url": "https://github.com/quicwg/multipath/issues/301",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "Yanmei-Liu"
       ],
@@ -8506,14 +8506,14 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> > Max paths allowed to be open gives the size for what amount of traffic an attacker can cause towards an attack target by having the server send path_validate + path_challenge.\r\n> \r\n> @gloinul do you mean if I have N open paths, an attacker can cause me to send N path validation packets instead of one to a victim as described in [21.5.4.](https://www.rfc-editor.org/rfc/rfc9000.html#section-21.5.4)?\r\n\r\nYes",
           "createdAt": "2024-06-11T07:24:58Z",
           "updatedAt": "2024-06-11T07:24:58Z"
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> > Having path resource control opens up for similar errors as have been found in QUIC.\r\n> \r\n> @gloinul not sure what you mean by this?\r\n\r\nSo we touched on this in the interim. In regards to if the peer can remove agency for ones implementation to control its resources, like opening up paths in a legal way. So that is design issue. But, we have to ensure that one are clear that there are parts that an implementation have to put in its limits otherwise the peer might spiral resources out of control.\r\n I think what I might have referenced was the retry attack (I think) that was discussed back in March. ",
           "createdAt": "2024-06-11T07:31:10Z",
           "updatedAt": "2024-06-11T07:31:10Z"
@@ -8534,7 +8534,7 @@
       "url": "https://github.com/quicwg/multipath/issues/302",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "editorial",
@@ -8561,7 +8561,7 @@
       "url": "https://github.com/quicwg/multipath/issues/303",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "editorial",
@@ -8602,7 +8602,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "@huitema maybe the action here is to clarify that this paragraph talks about the long term address validation token that can be used for future connections. For such tokens, maybe the address valdidation token the server provides the client should contain all currently validated client addresses. So that the client actually can get a benefit from the address validation when establishing a new connection. ",
           "createdAt": "2024-07-10T14:46:04Z",
           "updatedAt": "2024-07-10T14:46:04Z"
@@ -8630,7 +8630,7 @@
       "url": "https://github.com/quicwg/multipath/issues/304",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -8644,7 +8644,7 @@
       "comments": [
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Another example where the spec is a bit confused on if a path is unidirectional or not. \r\n\r\nSection 4.4:\r\n\r\n\"The endhost can use all the paths in the \"Active\" state, provided that the congestion control and flow control currently allow sending of new data on a path. Note that if a path became idle due to a timeout, endpoints SHOULD send PATH_ABANDON frame before closing the path.\" \r\n",
           "createdAt": "2024-03-16T06:34:37Z",
           "updatedAt": "2024-03-16T06:34:37Z"
@@ -8672,7 +8672,7 @@
       "url": "https://github.com/quicwg/multipath/issues/305",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "editorial"
@@ -8698,7 +8698,7 @@
       "url": "https://github.com/quicwg/multipath/issues/306",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "design",
@@ -8746,7 +8746,7 @@
       "url": "https://github.com/quicwg/multipath/issues/307",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -8801,7 +8801,7 @@
       "url": "https://github.com/quicwg/multipath/issues/308",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -8820,7 +8820,7 @@
       "url": "https://github.com/quicwg/multipath/issues/309",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -8847,7 +8847,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I think it would be good to add some text in the specification that sender MAY do this and receiver MUST be able to accept refragmentation done in retransmissions. ",
           "createdAt": "2024-03-18T06:35:42Z",
           "updatedAt": "2024-03-18T06:35:42Z"
@@ -8868,7 +8868,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I don't think it is different. It is just more likely to occur. In RFC 9000 an MTU change is most likely to occur due to a connection migration event. Thus you may have some outstanding stream data ranges that needs to be retransmitted. In MP-QUIC you might attempt to send retransmission for a 1400 byte block over the other path that can only fit a 1200 byte data block. Thus, you will be forced to create two stream frames and send them in two packets if you are going to retransmitt. ",
           "createdAt": "2024-03-18T07:00:08Z",
           "updatedAt": "2024-03-18T07:00:08Z"
@@ -8896,7 +8896,7 @@
       "url": "https://github.com/quicwg/multipath/issues/310",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "editorial"
@@ -8922,7 +8922,7 @@
       "url": "https://github.com/quicwg/multipath/issues/311",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -8942,7 +8942,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Yes, I can create an PR. ",
           "createdAt": "2024-03-18T06:22:54Z",
           "updatedAt": "2024-03-18T06:22:54Z"
@@ -8970,7 +8970,7 @@
       "url": "https://github.com/quicwg/multipath/issues/312",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -9018,7 +9018,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I will note that -10 still are unclear in regards to the sequence number. I understand that implementation wise one is expected to record the sequence number set the status currently applied, and before changing check that the incoming frames sequence number is higher. But, that is not clear from the text. ",
           "createdAt": "2024-07-10T14:20:10Z",
           "updatedAt": "2024-07-10T14:20:10Z"
@@ -9069,14 +9069,14 @@
       "comments": [
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "To my understanding is that how it is currently specified is that each endpoint need to close the path in the direction towards  itself by first sending the path_abandon then wait the 3*PTO, then send the retire CID for all the CIDs used by that path. And if the peer don't send a path_abandon back to you when you have sent one, this results in a path that is open in only one direction. That is probably not what we want the situation to be in. \r\n",
           "createdAt": "2024-03-17T00:24:08Z",
           "updatedAt": "2024-03-17T00:24:08Z"
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I would suggest that we ensure that we have when it comes to the path close scenarion, that one says first stop sending, i.e. path_abandon. Then a path_close that retires the path in this direction and all related CIDs. This could actually be a frame that says path_closed which references a path Index. \r\n\r\nThen when it comes to cycle CIDs used by a path one need MP_NEW_CONNECTION_ID frame to add new CIDs to a path. This can retire older ones when one moved forward. A question is if one need a MP_RETIRE_CONNECTION_ID that can deal with path + CID addressing properly as the single path sequence number assumption does not hold when one have explicit path IDs. ",
           "createdAt": "2024-03-17T02:14:02Z",
           "updatedAt": "2024-03-17T02:14:02Z"
@@ -9341,7 +9341,7 @@
       "comments": [
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I don't understand how this happens I think you may have to make event diagram to explain how one would draw the wrong conlcusion. To my understanding you are talking about this case:\r\n\r\nSo for path 1 the server has announced DCIDs X, Y, Z to the client\r\n\r\nA (Client) -> NAT -> B (server):\r\nIP_A:port_A ->IP_B:Port_B: DCID:X  -> arrive as IP_N:Port_N1 -> IP_B:Port_B DCID:X\r\nThen the client decides to cycle DCID\r\nIP_A:port_A ->IP_B:Port_B: DCID:Y  -> arrive as IP_N:Port_N2 -> IP_B:Port_B DCID:Y\r\nThis triggers a path challenge by the server on the related reverse path. \r\nSo if the client correctly associates the reverse path the path challenge is what should indicate to the client that something have occurred that require client to reset its path state. But, as the client's forward path will continue to be correctly acked by server I don't see this is case which likely have significant transport impact. A port rebinding would not affect the client to NAT path conditions. It could possibly affect ECMP etc betwen NAT and server. \r\nThe server will clearly know that the path changed and if it is larger than just a port change or not. \r\n\r\n",
           "createdAt": "2024-03-18T01:31:21Z",
           "updatedAt": "2024-03-18T01:31:21Z"
@@ -9369,7 +9369,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "> I think we should say something like \"An endpoint MUST NOT reuse a path ID when sending from more than one local address\".\r\n\r\nMaybe saying this is part of the clarification of what is path. To my understanding if one changes anything in the 5-tuple one is forced to use a new path and a CID that indicates this path. \r\n\r\n> The issue is NAT. Suppose the client has path[1] from address 10.0.0.1:1234, and path[2] from address 10.0.0.2:4567. Suppose that the NAT intercepts a packet send on path[1] and re-sends it from address 10.0.0.2:4567. The CID will still say \"path[1]\", but the IP addresses will end up being exactly the same.\r\n\r\nSo, the NAT would be totally broken if it collapse both these UDP flows to one external port on the same IP address, Thus, I would suggest two flows through one NAT would still get differnet ports, and thus be the receiver be handled as two different paths. Also for the client as they have different destination ports for incoming packet flows they will be treated differently. \r\n",
           "createdAt": "2024-03-18T06:57:08Z",
           "updatedAt": "2024-03-18T06:57:08Z"
@@ -10294,7 +10294,7 @@
       "comments": [
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "This would be part of resolving #412.",
           "createdAt": "2024-07-10T14:59:56Z",
           "updatedAt": "2024-07-10T14:59:56Z"
@@ -11031,7 +11031,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I think one aspect of multiple paths over the same 4-tuple is that they may actually not be equal. For example one could have two paths, where the packets for one path is using a different DSCP than the other, or enable L4S. These two packets can thus see significant different forwarding behaviours. So it is not necessary true that they are equivalent.",
           "createdAt": "2024-07-10T15:05:34Z",
           "updatedAt": "2024-07-10T15:05:34Z"
@@ -11123,7 +11123,7 @@
       "comments": [
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I would note that usage of PATH_CHALLENGE is optional if the path already have been validated. See Section 3.1: \r\n\r\nWhen the multipath extension is negotiated, a client that wants to use an additional path MUST first initiate the Address Validation procedure with PATH_CHALLENGE and PATH_RESPONSE frames as described in [Section 8.2](https://rfc-editor.org/rfc/rfc9000#section-8.2) of [[QUIC-TRANSPORT](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-10.html#QUIC-TRANSPORT)], unless it has previously validated that address.\r\n\r\nThus, I think ignoring it is wrong. It is okay to send a PC to validate it in the other direction. I guess the question boils down to if the endpoint have any say in the peer considering the path validated towards itself. I would think no. Thus, an endpoint would need to create a path and send ACKs to confirm reception if the packet contain non-probing frames. \r\n",
           "createdAt": "2024-07-10T15:11:56Z",
           "updatedAt": "2024-07-10T15:11:56Z"
@@ -11288,7 +11288,7 @@
       "url": "https://github.com/quicwg/multipath/issues/404",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -11315,7 +11315,7 @@
       "url": "https://github.com/quicwg/multipath/issues/405",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -11363,7 +11363,7 @@
       "url": "https://github.com/quicwg/multipath/issues/406",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Section 3: \r\n\" In such a case, the receiver reacts as specified in Section 9.3 of [QUIC-TRANSPORT] by initiating path validation but MUST use a new connection ID for the same Path ID.\"\r\n\r\nWhat happens if there are no new CID available for that path ID? Does the MUST statement come with an exception? \r\n",
@@ -11387,7 +11387,7 @@
       "url": "https://github.com/quicwg/multipath/issues/407",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -11406,7 +11406,7 @@
       "url": "https://github.com/quicwg/multipath/issues/408",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
@@ -11432,7 +11432,7 @@
       "url": "https://github.com/quicwg/multipath/issues/409",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "mirjak"
       ],
@@ -11461,7 +11461,7 @@
       "url": "https://github.com/quicwg/multipath/issues/410",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -11481,7 +11481,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Use of respectively when not actually enumerating appears to not match the word use. \r\n\r\nIndependently the PR #420 looks good to solve this. ",
           "createdAt": "2024-07-18T11:48:43Z",
           "updatedAt": "2024-07-18T11:48:43Z"
@@ -11495,7 +11495,7 @@
       "url": "https://github.com/quicwg/multipath/issues/411",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "editorial",
@@ -11515,7 +11515,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Even if it is the client that needs to send a path challenge, the server can block open new paths by not increasing the Maximum Path ID limit. And it is that this sentence refer to my understanding. Thus, due to the client initiating, this text is applying to the server role. The client when it want to open a path it would in case of max_path_Id limited increase it. I think this text would anyway be touched if the proposal in #342 for MAX_PATHS_BLOCKED.",
           "createdAt": "2024-07-18T11:46:39Z",
           "updatedAt": "2024-07-18T11:46:39Z"
@@ -11536,7 +11536,7 @@
       "url": "https://github.com/quicwg/multipath/issues/412",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Section 3.5:\r\n\"Receipt of a frame with a greater Path ID is a connection error as specified in Section Section 7. When an endpoint finds it has not enough available unused path identifiers, it SHOULD send a MAX_PATH_ID frame to inform the peer that it could use new active path identifiers.\"\r\n\r\nEven if it already have given the peer a higher limit? Is just repeating it having the meaning of a request, or is the sentence poorly formulated?\r\n\r\nAlso note that reference to Section 7 includes extra \"section\".\r\n",
@@ -11560,7 +11560,7 @@
       "url": "https://github.com/quicwg/multipath/issues/413",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "no-action-needed"
@@ -11579,7 +11579,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Ok, in that case I think the quoted text from Section 3.3 needs to be changed. I at least interpret that the recommendation is applying in general, not only to cases where one think the path being abandon is broken or poorly functioning. So I would suggest rewording this, and use another word than \"respectively\" also. \r\n\r\n",
           "createdAt": "2024-07-12T08:02:42Z",
           "updatedAt": "2024-07-12T08:02:42Z"
@@ -11600,7 +11600,7 @@
       "url": "https://github.com/quicwg/multipath/issues/414",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "yfmascgy"
       ],
@@ -12236,7 +12236,7 @@
       "url": "https://github.com/quicwg/multipath/issues/457",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "Yanmei-Liu"
       ],
@@ -12258,7 +12258,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "So fine with not being overly prescriptive. However, the issue I have is that if one just point an implementor that a path shall follow RFC 9000+9002 on a per path basis the handling of transmitted data can suffer significantly. This will need a bit of warning, especially as RFC 9002 says: \r\n\r\nSection 6.2:\r\n`A PTO timer expiration event does not indicate packet loss and MUST NOT cause prior unacknowledged packets to be marked as lost. When an acknowledgment is received that newly acknowledges packets, loss detection proceeds as dictated by the packet and time threshold mechanisms; see [Section 6.1](https://www.rfc-editor.org/rfc/rfc9002.html#ack-loss-detection).`\r\n\r\nIf one follows this MUST one will not declare the outstanding data as lost. Not declaring it lost I would say is considered correct for the path congestion controller aspect, however from the data handling perspective it is significantly sub-optimal if the path is unavailable a long time, or completely broken. I think there is a point here to include an implementation consideration on that this issue exists. ",
           "createdAt": "2024-11-03T10:43:46Z",
           "updatedAt": "2024-11-03T10:44:29Z"
@@ -12272,7 +12272,7 @@
       "url": "https://github.com/quicwg/multipath/issues/458",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -12320,7 +12320,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I think you made some errors in the table above @huitema. I think an important difference is if the packet contain a Path Challenge or not. And in addition shouldn't the NAT rebinding have \"Different 4-tuple\"? So I think my version of this table is the following: \r\n\r\nEvent | Observation | Verification needed | If verification fails\r\n-- | -- | -- | --\r\nCID rotation | Different CID but matching this path, same 4-tuple | No | Cannot fail\r\nNAT rebinding | Same CID, different 4-tuple | Yes | retain old 4 tuple\r\nNAT rebinding with simultaneous CID rotation | Different CID, different 4-tuple | Yes | retain old 4 tuple, use new CID\r\nMigration | PC + new CID for existing path, different 4-tuple | Yes | retain old 4 tuple, use old CID (per RFC 9000). In case of success, wait for validating frames before using the new 4-tuple\r\nNew PATH | PC + CID for new Path ID | Yes | Path failed to be established, PC can be retried with the same CID. \r\n\r\nSo I think another aspect here are what would you do if one gets a Migration even if we recommend against it or would consider forbidding it. Protocol violation? And can we really take things to that state considering what RFC 9000 says?",
           "createdAt": "2024-11-05T11:28:33Z",
           "updatedAt": "2024-11-05T11:28:33Z"
@@ -12383,7 +12383,7 @@
       "url": "https://github.com/quicwg/multipath/issues/459",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR",
@@ -12403,7 +12403,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "So picoquiche had the off-by-one issue. QUICHE does not provide CIDs period up to the level of max_initial_path_ids. Thus, I think we need to think about how to deal with this situation. I agree that there are reasons for delaying provisioning CIDs for Paths, but what a peer can expect needs to be made clear. ",
           "createdAt": "2024-11-04T13:29:38Z",
           "updatedAt": "2024-11-04T13:29:38Z"
@@ -12627,7 +12627,7 @@
       "url": "https://github.com/quicwg/multipath/issues/472",
       "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Currently all the other multipath frame types are PATH_ except PATHS_BLOCKED. And really the description for PATHS_BLOCKED really just indicates that one path was blocked from being established. There might be more, but we anyway don't have any field in the frame to indicate how many paths the endpoint would like to establish. So I propose that we rename it PATH_BLOCKED for consistency reason. ",
@@ -12649,17 +12649,17 @@
       "id": "I_kwDOGNtpaM6oR_nZ",
       "title": "PATH_AVAILABLE is not ack-eliciting",
       "url": "https://github.com/quicwg/multipath/issues/481",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
       ],
       "body": "I noted in PATH_AVAILABLE frame definition that it is not ack-eliciting when PATH_BACKUP is:\n\n`PATH_BACKUP frames are ack-eliciting. If a packet containing a PATH_BACKUP frame is considered lost, the peer SHOULD resend the frame only if it contains the last status sent for that path -- as indicated by the sequence number.`\n\nI think also PATH_AVAILABLE should be ack-eliciting. ",
       "createdAt": "2025-01-31T12:22:48Z",
-      "updatedAt": "2025-01-31T16:17:11Z",
-      "closedAt": null,
+      "updatedAt": "2025-02-25T08:10:32Z",
+      "closedAt": "2025-02-25T08:10:32Z",
       "comments": [
         {
           "author": "mirjak",
@@ -12675,17 +12675,17 @@
       "id": "I_kwDOGNtpaM6oSCyJ",
       "title": "Section 5.2 Example in Figure 2 on closing path does use same path ID",
       "url": "https://github.com/quicwg/multipath/issues/482",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
       ],
       "body": "I noted that the example in Figure 2 likely should be updated:  \n\n`Client                                                      Server\n\n(client tells server to abandon a path with Path ID 1)\n1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=1]->\n                           (server tells client to abandon a path)\n                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=1],\n                                           PATH_ACK[PATH ID=1, PN=X]\n1-RTT[U]: DCID=S2 PATH_ACK[Path ID=1, PN=Y] ->`\n\nWith the new recommendation to send PATH_ABANDON on the other path than the one being closed this example should be updated:\n\n- Send PATH_ABANDON on DCID = S0 or S2\n- Make corresponding update on which path the message being ACKED was received on. \n",
       "createdAt": "2025-01-31T12:26:25Z",
-      "updatedAt": "2025-02-04T13:20:17Z",
-      "closedAt": null,
+      "updatedAt": "2025-02-25T08:15:34Z",
+      "closedAt": "2025-02-25T08:15:34Z",
       "comments": [
         {
           "author": "mirjak",
@@ -12701,17 +12701,17 @@
       "id": "I_kwDOGNtpaM6oSEM6",
       "title": "Improve text on IV creation and cipher algorithm restrictions in Section 4.1",
       "url": "https://github.com/quicwg/multipath/issues/483",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
       ],
       "body": "Section 4.1:\n`If the IV is larger than 96 bits, the path-and-packet-number is left-padded with zeros to the size of the IV.`\n \nI think the \"If the IV is larger ...\" should rather be \"If the Nonce field for the used AEAD algorithm is larger ...\"\n \nSecondly I think this section should bring up that AEAD algorithms that uses an nonce that are shorter than 96 bits MUST NOT be used. Currently this limitation appear to only be mentioned in a paragraph in Section 2.\n \nNote that I think is this part of the text you are talking about the nonce as specified by the AEAD interface as defined by RFC 5116.",
       "createdAt": "2025-01-31T12:28:07Z",
-      "updatedAt": "2025-02-19T14:20:03Z",
-      "closedAt": null,
+      "updatedAt": "2025-02-25T08:35:23Z",
+      "closedAt": "2025-02-25T08:35:20Z",
       "comments": [
         {
           "author": "mirjak",
@@ -12722,24 +12722,31 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "So I was partially wrong in my issue. I realize thanks to your citations here. But, I think there are still an issue. So per RFC 9001 Section 5.1 the IV is derived using a key derivation function using the label \"quic iv\". But that resulting IVs length is to my understanding depending on the selected cipher hash functions and what length it outputs:\n\nSection 5.1 of RFC 9001:\n`  The keys used for packet protection are computed from the TLS secrets\n   using the KDF provided by TLS.  In TLS 1.3, the HKDF-Expand-Label\n   function described in Section 7.1 of [TLS13] is used with the hash\n   function from the negotiated cipher suite.  All uses of HKDF-Expand-\n   Label in QUIC use a zero-length Context.`\n\nThe IV length appears cipher dependent, thus it is possible that if one would arrive at a cipher that has an IV that is shorter than 96 bits the behavior is undefined. However, I agree that the text I complained about is necessary to define the behavior when the IV is longer than 96-bits so the path+pn is defined in those cases. \n",
           "createdAt": "2025-02-04T14:22:27Z",
           "updatedAt": "2025-02-04T14:26:15Z"
         },
         {
           "author": "emanjon",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I think the reader can be helped by adding \"The IV length is equal to the nonce length.\" , which is always true in both TLS 1.3 and QUIC.\n\nI think the relevant text for this discussion is this part of RFC 8446\n\n```\nThe length of the TLS per-record nonce (iv_length) is set to the\n   larger of 8 bytes and N_MIN for the AEAD algorithm (see [RFC5116],\n   Section 4).  An AEAD algorithm where N_MAX is less than 8 bytes\n   MUST NOT be used with TLS.\n\n```\nThe QUIC multipath extension does not seem to work for nonce lengths less than 96 bits. This needs to be described similar to how TLS 1.3 states that AEAD algorithms with nonces less than 8 bytes MUST NOT be used. Suggestion:\n\n\"An AEAD algorithm where N_MIN is less than 12 bytes MUST NOT be used with the QUIC multipath extension.\"\n\nI made a PR with these suggestions #490 ",
           "createdAt": "2025-02-05T07:16:26Z",
           "updatedAt": "2025-02-05T07:17:29Z"
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks from my perspective the suggested fixes in #490 do resolve the issue for me. ",
           "createdAt": "2025-02-06T13:39:28Z",
           "updatedAt": "2025-02-06T13:39:28Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Closing as #490 has been merged.",
+          "createdAt": "2025-02-25T08:35:20Z",
+          "updatedAt": "2025-02-25T08:35:20Z"
         }
       ]
     },
@@ -12748,7 +12755,7 @@
       "id": "I_kwDOGNtpaM6ocdCA",
       "title": "Managing ACK and repeat of PATH_CID_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/issues/485",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -12757,8 +12764,8 @@
       ],
       "body": "Suppose that the packet carrying a PATH_CID_BLOCKED frame is lost. How does the implementation decide whether that frame should be repeated?\n\nFor the paths blocked frame, we have a good logic: if a the packet containing a path blocked frame is lost, compared the \"pax path id\" in the blocked frame to the highest value of the max path id in a PATHS_BLOCKED frame acknowledged by the peer. If the value is higher than the retained value, repeat. Otherwise, don't. But we don't have anything like that for the PATH_CID_BLOCKED blocked frame.\n\nOne possibility is to repeat it no matter what, but this may create extra traffic. Another is to never repeat it, but that means losing the signal. Yet another would be to remember if the PATH_CID_BLOCKED frame for that path was already acknowledged, but what if we need to send several such frames for the same path over time? We could also test whether the path is still blocked.\n\nI think this is a bit under-specified.",
       "createdAt": "2025-02-02T21:43:29Z",
-      "updatedAt": "2025-02-24T11:40:13Z",
-      "closedAt": null,
+      "updatedAt": "2025-02-25T08:12:47Z",
+      "closedAt": "2025-02-25T08:12:46Z",
       "comments": [
         {
           "author": "huitema",
@@ -12783,7 +12790,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I can see that one could trip over the uncertainty with Path_CID_BLOCKED. I would think that including in addition to the path ID also the highest current CID sequence number would resolve the uncertainty for the receiver.",
           "createdAt": "2025-02-06T13:38:25Z",
           "updatedAt": "2025-02-06T13:38:25Z"
@@ -34011,7 +34018,7 @@
             "abbreviatedOid": "5b85733"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-03-16T07:13:39Z",
@@ -43754,7 +43761,7 @@
             "abbreviatedOid": "bccc1e6"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-07-08T07:11:05Z",
@@ -43787,7 +43794,7 @@
             "abbreviatedOid": "c36bd5b"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-07-08T10:17:44Z",
@@ -44594,7 +44601,7 @@
         },
         {
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I don't think there is a need to change the status sequence number to be per path. However, there need to be a text update that clarifies how it is used when it is per endpoint in a connection. The fact that one will increment it with one per frame included, and that the comparision action is to compare before changing the latest updating sequence number with the current, and if higher change the status and record the sequence number that change this paths status. So another text changes are needed. ",
           "createdAt": "2024-07-10T14:50:46Z",
           "updatedAt": "2024-07-10T14:50:46Z"
@@ -45622,7 +45629,7 @@
             "abbreviatedOid": "f70f04e"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-07-10T14:56:25Z",
@@ -45943,7 +45950,7 @@
             "abbreviatedOid": "9153f02"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-07-11T07:20:19Z",
@@ -46013,7 +46020,7 @@
             "abbreviatedOid": "5242f8b"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-07-11T08:46:57Z",
@@ -46053,7 +46060,7 @@
             "abbreviatedOid": "daf95dc"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-07-11T11:09:26Z",
@@ -46149,7 +46156,7 @@
             "abbreviatedOid": "4db487a"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-07-11T13:34:27Z",
@@ -46367,7 +46374,7 @@
             "abbreviatedOid": "8f675c4"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-07-18T11:59:17Z",
@@ -46465,7 +46472,7 @@
             "abbreviatedOid": "d7a4a6a"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-07-18T11:47:38Z",
@@ -50076,7 +50083,7 @@
             "abbreviatedOid": "c53c189"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-13T13:25:29Z",
@@ -50379,7 +50386,7 @@
             "abbreviatedOid": "de543f4"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-13T13:27:35Z",
@@ -50437,7 +50444,7 @@
             "abbreviatedOid": "8feafa1"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-13T13:28:21Z",
@@ -50490,7 +50497,7 @@
             "abbreviatedOid": "df454f4"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "There are a minor gramatical issue: \"a per-path idle timeouts\" so either \"per-path idle timeouts\" or \"a per-path idle timeout\". ",
           "createdAt": "2024-11-13T13:30:08Z",
@@ -50536,7 +50543,7 @@
             "abbreviatedOid": "4c56103"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-18T12:04:50Z",
@@ -50580,7 +50587,7 @@
             "abbreviatedOid": "6231ad8"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-11-13T13:32:33Z",
@@ -50646,7 +50653,7 @@
             "abbreviatedOid": "21a5076"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-11-29T08:27:13Z",
@@ -50799,7 +50806,7 @@
             "abbreviatedOid": "0601c1c"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-12-06T09:34:53Z",
@@ -50812,7 +50819,7 @@
             "abbreviatedOid": "21a5076"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-12-06T09:56:04Z",
@@ -50952,7 +50959,7 @@
             "abbreviatedOid": "53189b9"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-11-11T15:30:47Z",
@@ -50992,7 +50999,7 @@
             "abbreviatedOid": "53189b9"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2024-11-13T12:00:03Z",
@@ -51012,7 +51019,7 @@
             "abbreviatedOid": "d691073"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-13T12:00:25Z",
@@ -51078,7 +51085,7 @@
             "abbreviatedOid": "0af05a0"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "Some language adjustments needed, but otherwise fine. ",
           "createdAt": "2024-11-18T11:55:30Z",
@@ -51137,7 +51144,7 @@
             "abbreviatedOid": "72ccaa1"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-25T15:36:37Z",
@@ -51611,7 +51618,7 @@
             "abbreviatedOid": "7f7d4b1"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-11-29T08:20:46Z",
@@ -51767,7 +51774,7 @@
             "abbreviatedOid": "8a3966d"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-12-04T16:14:58Z",
@@ -52842,26 +52849,28 @@
       "id": "PR_kwDOGNtpaM6JoNFW",
       "title": "Editorial fixes",
       "url": "https://github.com/quicwg/multipath/pull/480",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "gloinul",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "ready-to-merge"
       ],
       "body": "It is the loss detection that is reused as is. MTU is on the QUIC packet level. Wrong plural on some frame section headers.",
       "createdAt": "2025-01-31T12:19:26Z",
-      "updatedAt": "2025-02-21T17:22:33Z",
+      "updatedAt": "2025-02-25T08:09:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "gloinul/multipath",
       "headRefName": "mw-edits",
       "headRefOid": "7d982743af01160fe815049c1531d968906c091a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-25T08:09:38Z",
+      "mergedAt": "2025-02-25T08:09:38Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "eb20d445ed948869ba3e04cde4c8753163547887"
+      },
       "comments": [],
       "reviews": [
         {
@@ -52876,6 +52885,19 @@
           "createdAt": "2025-01-31T16:13:27Z",
           "updatedAt": "2025-01-31T16:13:27Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWMbw",
+          "commit": {
+            "abbreviatedOid": "7d98274"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-25T07:33:18Z",
+          "updatedAt": "2025-02-25T07:33:18Z",
+          "comments": []
         }
       ]
     },
@@ -52884,7 +52906,7 @@
       "id": "PR_kwDOGNtpaM6JqZAs",
       "title": "PATH_AVAILABLE is ack-eliciting",
       "url": "https://github.com/quicwg/multipath/pull/484",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -52893,17 +52915,19 @@
       ],
       "body": "fixes #481",
       "createdAt": "2025-01-31T16:16:32Z",
-      "updatedAt": "2025-02-21T17:22:43Z",
+      "updatedAt": "2025-02-25T08:10:31Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-26",
       "headRefOid": "44000e84849061b210e132fd5dfe3f77391dba3f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-25T08:10:31Z",
+      "mergedAt": "2025-02-25T08:10:31Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "b5fbcabcc25d9b4d439249643a6b3fdd4e304d7d"
+      },
       "comments": [],
       "reviews": [
         {
@@ -52912,11 +52936,24 @@
             "abbreviatedOid": "44000e8"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2025-02-03T14:59:01Z",
           "updatedAt": "2025-02-03T14:59:01Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWM_d",
+          "commit": {
+            "abbreviatedOid": "44000e8"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-25T07:33:43Z",
+          "updatedAt": "2025-02-25T07:33:43Z",
           "comments": []
         }
       ]
@@ -52926,7 +52963,7 @@
       "id": "PR_kwDOGNtpaM6J_rNA",
       "title": "ack-eliciting/retrans of PATHS_BLOCKED, PATH_ID_BLOCKED, MAX_PATHS",
       "url": "https://github.com/quicwg/multipath/pull/486",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -52935,17 +52972,19 @@
       ],
       "body": "fixes #485",
       "createdAt": "2025-02-04T13:10:45Z",
-      "updatedAt": "2025-02-24T16:26:30Z",
+      "updatedAt": "2025-02-25T08:12:45Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-27",
-      "headRefOid": "65f55b8d0cfe74e3ffd83bdfa8380e528350264c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "67669d94ce728a4454a0e97da7bf833426086808",
+      "closedAt": "2025-02-25T08:12:45Z",
+      "mergedAt": "2025-02-25T08:12:45Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "3eb6c61489c4de38c3e5e4fb03c4e062646e3258"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -53001,6 +53040,26 @@
           "createdAt": "2025-02-24T16:26:30Z",
           "updatedAt": "2025-02-24T16:26:30Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWNtP",
+          "commit": {
+            "abbreviatedOid": "65f55b8"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Minor nit.",
+          "createdAt": "2025-02-25T07:34:25Z",
+          "updatedAt": "2025-02-25T07:34:47Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nand no more recent MAX_PATH_ID frame has been sent in the meantime.\r\n```",
+              "createdAt": "2025-02-25T07:34:26Z",
+              "updatedAt": "2025-02-25T07:34:47Z"
+            }
+          ]
         }
       ]
     },
@@ -53009,7 +53068,7 @@
       "id": "PR_kwDOGNtpaM6J_w0a",
       "title": "Update closure example",
       "url": "https://github.com/quicwg/multipath/pull/487",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -53018,17 +53077,19 @@
       ],
       "body": "fixes #482",
       "createdAt": "2025-02-04T13:19:43Z",
-      "updatedAt": "2025-02-21T17:23:12Z",
+      "updatedAt": "2025-02-25T08:15:33Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-28",
-      "headRefOid": "f4581f934b447d61ce1c5b77b1e4c0801b614210",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "91c4d7c22785b617d5759dda8735ac22763c854e",
+      "closedAt": "2025-02-25T08:15:33Z",
+      "mergedAt": "2025-02-25T08:15:33Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "05f58f190e9627104a55c3688dd60a5136ad2dc7"
+      },
       "comments": [],
       "reviews": [
         {
@@ -53057,12 +53118,44 @@
             "abbreviatedOid": "f4581f9"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2025-02-04T13:58:55Z",
           "updatedAt": "2025-02-04T13:58:55Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWVCo",
+          "commit": {
+            "abbreviatedOid": "f4581f9"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Good for me, small fixes related to the name of the frames.",
+          "createdAt": "2025-02-25T07:40:53Z",
+          "updatedAt": "2025-02-25T07:41:32Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\nPATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame\r\n```",
+              "createdAt": "2025-02-25T07:40:53Z",
+              "updatedAt": "2025-02-25T07:41:32Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\r\nNote that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,\r\n```",
+              "createdAt": "2025-02-25T07:41:03Z",
+              "updatedAt": "2025-02-25T07:41:32Z"
+            },
+            {
+              "originalPosition": 35,
+              "body": "```suggestion\r\nPATH_ABANDON frame.\r\n```",
+              "createdAt": "2025-02-25T07:41:12Z",
+              "updatedAt": "2025-02-25T07:41:32Z"
+            }
+          ]
         }
       ]
     },
@@ -53078,13 +53171,13 @@
       "labels": [],
       "body": "This PR is an editorial pass of the intro. The aim is to provide a shorter, more clear text. This PR does not (really) modify the subsections of the intro, however, we could consider if sec 1.1. and maybe also the others should simply be removed...?",
       "createdAt": "2025-02-04T14:22:22Z",
-      "updatedAt": "2025-02-04T14:28:15Z",
+      "updatedAt": "2025-02-25T08:41:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "baseRefOid": "0fd421236fdc1f7a6091910cefd4782b533866f4",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-29",
-      "headRefOid": "7ebd8540e8a4bfa52207107e8e9f8e59b18b77b6",
+      "headRefOid": "a9596cfe57461cd30e51bb8eabe2d1c3ee643947",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -53118,6 +53211,19 @@
               "updatedAt": "2025-02-04T14:26:24Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWjXX",
+          "commit": {
+            "abbreviatedOid": "7ebd854"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Having compared side-by-side the current version and this PR, I think this text nicely summarises the previous text without losing any relevant information. It also now clearly states that paths are created by the client, which was somewhat unclear in the previous draft. I see that the introduction assumes the proposed ToC of #489 -- which is fine for me.",
+          "createdAt": "2025-02-25T07:54:58Z",
+          "updatedAt": "2025-02-25T07:54:58Z",
+          "comments": []
         }
       ]
     },
@@ -53126,26 +53232,28 @@
       "id": "PR_kwDOGNtpaM6KGICr",
       "title": "Improve text on IV and nonce",
       "url": "https://github.com/quicwg/multipath/pull/490",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "emanjon",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "ready-to-merge"
       ],
       "body": "#483",
       "createdAt": "2025-02-05T07:12:20Z",
-      "updatedAt": "2025-02-21T17:23:27Z",
+      "updatedAt": "2025-02-25T08:28:25Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "emanjon/multipath",
       "headRefName": "patch-1",
       "headRefOid": "2702dc7f003e2f5fd1b92d0c08055b612c6421c6",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-25T08:28:25Z",
+      "mergedAt": "2025-02-25T08:28:25Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "18f833d7200b06e58ba77cabba8e8d0f7dc301c4"
+      },
       "comments": [],
       "reviews": [
         {
@@ -53174,7 +53282,7 @@
             "abbreviatedOid": "39780e1"
           },
           "author": "emanjon",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-02-05T11:44:51Z",
@@ -53194,11 +53302,24 @@
             "abbreviatedOid": "2702dc7"
           },
           "author": "gloinul",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2025-02-06T13:39:49Z",
           "updatedAt": "2025-02-06T13:39:49Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWYa0",
+          "commit": {
+            "abbreviatedOid": "2702dc7"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-25T07:43:45Z",
+          "updatedAt": "2025-02-25T07:43:45Z",
           "comments": []
         }
       ]
@@ -53261,7 +53382,7 @@
     {
       "number": 492,
       "id": "PR_kwDOGNtpaM6Lwg_Y",
-      "title": "Add Maximum Sequence Number to PATH_CIDS_BLOCKED",
+      "title": "Add next Sequence Number to PATH_CIDS_BLOCKED",
       "url": "https://github.com/quicwg/multipath/pull/492",
       "state": "OPEN",
       "author": "mirjak",
@@ -53270,13 +53391,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-02-19T14:15:57Z",
-      "updatedAt": "2025-02-24T19:56:02Z",
+      "updatedAt": "2025-02-25T09:02:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-30",
-      "headRefOid": "e26c2ef3ec1331b9f5af5d838af5cb267c8f5ed9",
+      "headRefOid": "dc040545ba3fedbcf28969a62127c95fbb09b6da",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -53497,6 +53618,26 @@
               "updatedAt": "2025-02-24T19:56:02Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dWvim",
+          "commit": {
+            "abbreviatedOid": "e26c2ef"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "If the semantic of PATHS_BLOCKED is \"I cannot open a new Path ID because of the peer limit\" and PATH_CIDS_BLOCKED is \"I cannot use a (valid) path with Path ID because there is no usable CID\", then I agree with the suggestion to advertise the expected next sequence number -- receiving Next Seq Num 0 would be a clear indication that the host is willing to open a new path with a valid Path ID.",
+          "createdAt": "2025-02-25T08:03:54Z",
+          "updatedAt": "2025-02-25T08:08:35Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Depending on whether we agree on the \"Next Sequence Number\" field, this should be updated as well.\r\n```suggestion\r\n  Next Sequence Number (i),\r\n```",
+              "createdAt": "2025-02-25T08:03:54Z",
+              "updatedAt": "2025-02-25T08:08:35Z"
+            }
+          ]
         }
       ]
     },
@@ -53505,24 +53646,28 @@
       "id": "PR_kwDOGNtpaM6MQW9R",
       "title": "Error code for receiving MP specific frame in other than 1-RTT packet",
       "url": "https://github.com/quicwg/multipath/pull/493",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "jalume",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "Aligning error code with RFC 9000. \r\nRFC 9000 states: \"An endpoint MUST treat receipt of a frame in a packet type that is not permitted as a connection error of type PROTOCOL_VIOLATION.\"",
       "createdAt": "2025-02-24T09:31:49Z",
-      "updatedAt": "2025-02-24T18:59:51Z",
+      "updatedAt": "2025-02-25T08:34:27Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "010de80d203b39549529a39323d0c277754616a1",
       "headRepository": "jalume/multipath",
       "headRefName": "jalume-patch-1",
       "headRefOid": "8af368f65b46ec75ca4d2a845f58130c0e940b33",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-25T08:34:27Z",
+      "mergedAt": "2025-02-25T08:34:27Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "8f6f24139664ae3adda25646907fb67a4627dd40"
+      },
       "comments": [],
       "reviews": [
         {
@@ -53550,6 +53695,19 @@
           "createdAt": "2025-02-24T18:59:51Z",
           "updatedAt": "2025-02-24T18:59:51Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dXKqr",
+          "commit": {
+            "abbreviatedOid": "8af368f"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-25T08:34:17Z",
+          "updatedAt": "2025-02-25T08:34:17Z",
+          "comments": []
         }
       ]
     },
@@ -53558,26 +53716,72 @@
       "id": "PR_kwDOGNtpaM6MTfR0",
       "title": "Editorial proposals",
       "url": "https://github.com/quicwg/multipath/pull/494",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "jalume",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "I have some editorial proposals.\r\n\r\n1. Introduction\r\n'packets' have not been mentioned before. --> 'QUIC packets' instead of 'such packets'\r\n\r\n3. Path Management\r\nNo other way to start using multiple paths was presented before. --> Removing 'also'\r\n\r\n3.3.2. Handling PATH_ACK for abandoned paths\r\nAs far as I understand the 'other packets' are a subset of the unacknowledged packets. --> 'Some of these' instead of 'Some other'",
       "createdAt": "2025-02-24T14:53:15Z",
-      "updatedAt": "2025-02-24T14:53:15Z",
+      "updatedAt": "2025-02-25T08:40:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "010de80d203b39549529a39323d0c277754616a1",
       "headRepository": "jalume/multipath",
       "headRefName": "jalume-patch-2",
       "headRefOid": "c1eb70f53893dd05a5aef3f31386427599cd203b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "closedAt": "2025-02-25T08:40:57Z",
+      "mergedAt": "2025-02-25T08:40:57Z",
+      "mergedBy": "qdeconinck",
+      "mergeCommit": {
+        "oid": "0fd421236fdc1f7a6091910cefd4782b533866f4"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That's fine I can update #488 later.",
+          "createdAt": "2025-02-25T08:36:02Z",
+          "updatedAt": "2025-02-25T08:36:02Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Alright, let's merge then.",
+          "createdAt": "2025-02-25T08:40:51Z",
+          "updatedAt": "2025-02-25T08:40:51Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6dXFP_",
+          "commit": {
+            "abbreviatedOid": "c1eb70f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-25T08:27:14Z",
+          "updatedAt": "2025-02-25T08:27:14Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6dXKQ3",
+          "commit": {
+            "abbreviatedOid": "c1eb70f"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Overall good for me, but this would conflict with #488.",
+          "createdAt": "2025-02-25T08:33:45Z",
+          "updatedAt": "2025-02-25T08:33:45Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
