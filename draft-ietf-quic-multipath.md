@@ -1447,7 +1447,6 @@ MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
 if the path is still blocked when the lost is detected.
 
-
 # Error Codes {#error-codes}
 
 QUIC transport error codes are 62-bit unsigned integers
