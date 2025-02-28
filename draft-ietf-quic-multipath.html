@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 29 August 2025</td>
+<td class="center">Expires 1 September 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-02-25" class="published">25 February 2025</time>
+<time datetime="2025-02-28" class="published">28 February 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-29">29 August 2025</time></dd>
+<dd class="expires"><time datetime="2025-09-01">1 September 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2890,6 +2890,7 @@ the currently allowed maximum value, this frame can be ignored.<a href="#section
 PATH_CIDS_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
   Path Identifier (i),
+  Next Sequence Number (i),
 }
 </pre>
 </div>
@@ -2902,12 +2903,20 @@ PATH_CIDS_BLOCKED Frame {
           <dd style="margin-left: 1.5em" id="section-7.7-10.2">
             <p id="section-7.7-10.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-7.7-10.2.1" class="pilcrow">¶</a></p>
 </dd>
+          <dd class="break"></dd>
+<dt id="section-7.7-10.3">Next Sequence Number:</dt>
+          <dd style="margin-left: 1.5em" id="section-7.7-10.4">
+            <p id="section-7.7-10.4.1">The next sequence number that is expected to be issued for a connection ID for this path by the peer.<a href="#section-7.7-10.4.1" class="pilcrow">¶</a></p>
+</dd>
         <dd class="break"></dd>
 </dl>
 <p id="section-7.7-11">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-7.7-11" class="pilcrow">¶</a></p>
-<p id="section-7.7-12">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
-if the path is still blocked when the lost is detected.<a href="#section-7.7-12" class="pilcrow">¶</a></p>
+<p id="section-7.7-12">Receipt of a value of Next Sequence Number that is higher than
+the sequence number of the next expected to be issued connection ID for this path
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-7.7-12" class="pilcrow">¶</a></p>
+<p id="section-7.7-13">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
+if the path is still blocked when the lost is detected.<a href="#section-7.7-13" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2965,7 +2974,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a hr
         </thead>
         <tbody>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">TBD (current version uses 0x0f739bbc1b666d0c)</td>
+            <td class="text-left" rowspan="1" colspan="1">TBD (current version uses 0x0f739bbc1b666d0d)</td>
             <td class="text-left" rowspan="1" colspan="1">initial_max_path_id</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#nego" class="auto internal xref">Section 2</a>
