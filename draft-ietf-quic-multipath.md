@@ -1425,6 +1425,7 @@ PATH_CIDS_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-
 PATH_CIDS_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
   Path Identifier (i),
+  Next Sequence Number (i),
 }
 ~~~
 {: #fig-path-cid-blocked-frame-format title="PATH_CIDS_BLOCKED Frame Format"}
@@ -1432,8 +1433,16 @@ PATH_CIDS_BLOCKED Frame {
 Path Identifier:
 : Identifier of the path for which unused connection IDs are not available.
 
+Next Sequence Number:
+: The next sequence number that is expected to be issued for a connection ID for this path by the peer.
+
 Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
+
+
+Receipt of a value of Next Sequence Number that is higher than
+the sequence number of the next expected to be issued connection ID for this path
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
 PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
 if the path is still blocked when the lost is detected.
@@ -1478,7 +1487,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d0c) | initial_max_path_id | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d0d) | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
