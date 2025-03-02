@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-27T00:56:12.766865+00:00",
+  "timestamp": "2025-03-02T00:59:46.621116+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12826,6 +12826,62 @@
       "updatedAt": "2025-02-11T15:29:44Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 496,
+      "id": "I_kwDOGNtpaM6sEnaH",
+      "title": "Provide more guidance when to send PATH_CID_BLOCKED frame",
+      "url": "https://github.com/quicwg/multipath/issues/496",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We do specify the PATH_CID_BLOCKED in the frame section but we actually don't mention it at all in the CID management section. We should provide a bit more guidance when/how to actually use this frame.",
+      "createdAt": "2025-02-28T11:20:06Z",
+      "updatedAt": "2025-02-28T11:20:06Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 498,
+      "id": "I_kwDOGNtpaM6sEzf8",
+      "title": "Should PATHS_BLOCKED and PATH_CIDS_BLOCKED frames be repeated if no actions follows?",
+      "url": "https://github.com/quicwg/multipath/issues/498",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This was discussed in the interop call today and we believe the answer is no. This could be further clarified in the draft.",
+      "createdAt": "2025-02-28T11:45:45Z",
+      "updatedAt": "2025-02-28T11:45:45Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 500,
+      "id": "I_kwDOGNtpaM6sE3N3",
+      "title": "Is PATH_CIDS_BLOCKED frame really needed?",
+      "url": "https://github.com/quicwg/multipath/issues/500",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We discussed today in the interop call if the PATH_CIDS_BLOCKED frame is really needed because usually the peer should provide at least one unused CID for all active paths, otherwise this seems to be rather an implementation error. Also there is no really good reason to not just provide at least one CID for all paths up to the max path id limit. If you want to limit the number of paths, just set a lower may path id limit. This could be clarified in the draft.\n\nHowever, the use case to send PATH_CIDS_BLOCKED frame when you want to open a new path but are not blocked by the max path id but instead by the fact that you didn't get any CID for an unused path ID seemed still relevant as this behaviour is allowed and therefore might not be an implementation error.\n\nAlso as we have now already specified it, there is no real harm in keeping it. A client can choose to not implement and a server can choose to ignore the frame.",
+      "createdAt": "2025-02-28T11:53:29Z",
+      "updatedAt": "2025-02-28T11:54:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #495 to at least hint at the point that it's good to issue CIDs for all paths up to the max path id limit.",
+          "createdAt": "2025-02-28T11:54:32Z",
+          "updatedAt": "2025-02-28T11:54:32Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -53168,10 +53224,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "This PR is an editorial pass of the intro. The aim is to provide a shorter, more clear text. This PR does not (really) modify the subsections of the intro, however, we could consider if sec 1.1. and maybe also the others should simply be removed...?",
       "createdAt": "2025-02-04T14:22:22Z",
-      "updatedAt": "2025-02-25T08:41:59Z",
+      "updatedAt": "2025-02-28T15:40:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "0fd421236fdc1f7a6091910cefd4782b533866f4",
@@ -53340,7 +53398,7 @@
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
-      "headRepository": "bastienvty/multipath",
+      "headRepository": null,
       "headRefName": "fix-standby",
       "headRefOid": "b8d895954946cf42897be91840029c82d42f7f21",
       "closedAt": "2025-02-21T17:19:50Z",
@@ -53384,24 +53442,26 @@
       "id": "PR_kwDOGNtpaM6Lwg_Y",
       "title": "Add next Sequence Number to PATH_CIDS_BLOCKED",
       "url": "https://github.com/quicwg/multipath/pull/492",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-02-19T14:15:57Z",
-      "updatedAt": "2025-02-25T09:02:14Z",
+      "updatedAt": "2025-02-28T09:41:40Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "1cd0896d19833d5e2390366c607702c19a577561",
+      "baseRefOid": "0fd421236fdc1f7a6091910cefd4782b533866f4",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-30",
-      "headRefOid": "dc040545ba3fedbcf28969a62127c95fbb09b6da",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3d27ba8c7fbae371f2df09f691dee9ce2d6dc691",
+      "closedAt": "2025-02-28T09:41:40Z",
+      "mergedAt": "2025-02-28T09:41:40Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "6d87ad963690b70c16dcf8645bacf470d8bcf981"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -53638,6 +53698,39 @@
               "updatedAt": "2025-02-25T08:08:35Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6d9vSm",
+          "commit": {
+            "abbreviatedOid": "dc04054"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-28T09:25:58Z",
+          "updatedAt": "2025-02-28T09:25:58Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6d95PY",
+          "commit": {
+            "abbreviatedOid": "87ecb1f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-28T09:40:28Z",
+          "updatedAt": "2025-02-28T09:40:29Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2025-02-28T09:40:28Z",
+              "updatedAt": "2025-02-28T09:40:29Z"
+            }
+          ]
         }
       ]
     },
@@ -53780,6 +53873,239 @@
           "createdAt": "2025-02-25T08:33:45Z",
           "updatedAt": "2025-02-25T08:33:45Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 495,
+      "id": "PR_kwDOGNtpaM6M7Ljz",
+      "title": "Note that issuing CIDs for all paths might be beneficial",
+      "url": "https://github.com/quicwg/multipath/pull/495",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "Based on the discussion in the interop call today, it was not clear why an endpoint would not want to issue CIDs for all path IDs up to the max path idea. If an endpoint wants to limit the number of paths, it should rather do it by limiting the max path ID explicitly. Therefore I propose this additional sentence to hind at doing this.",
+      "createdAt": "2025-02-28T11:15:22Z",
+      "updatedAt": "2025-03-01T16:48:43Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-31",
+      "headRefOid": "68a939c72619f37e1c2a89ebe5d0b074a795b2dc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6eAc_W",
+          "commit": {
+            "abbreviatedOid": "68a939c"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "This is fine stating this, but why relying on normative MAY?",
+          "createdAt": "2025-02-28T14:30:23Z",
+          "updatedAt": "2025-02-28T14:30:56Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Do we need normative MAY here?",
+              "createdAt": "2025-02-28T14:30:23Z",
+              "updatedAt": "2025-02-28T14:30:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eAn1b",
+          "commit": {
+            "abbreviatedOid": "68a939c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-28T14:47:06Z",
+          "updatedAt": "2025-02-28T14:47:06Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "We don't. I just thought because we have a normative RECOMMENDED in the previous sentence this would make sense here...?",
+              "createdAt": "2025-02-28T14:47:06Z",
+              "updatedAt": "2025-02-28T14:47:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eGlEJ",
+          "commit": {
+            "abbreviatedOid": "68a939c"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I am proposing an alternate text,",
+          "createdAt": "2025-03-01T16:47:59Z",
+          "updatedAt": "2025-03-01T16:48:43Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "I would replace all that text by:\r\n\r\n```\r\nIn order to let the peer open new paths, it is RECOMMENDED to proactively\r\nissue at least one connection ID for all path IDs up to the minimum of the peer's Maximum Path ID\r\nand the locally advertised Maximum Path ID.\r\n```\r\n\r\nRationale: we are going to create confusion by recommending to allocate CID on only one path. The recommended way to not send too many CIDs is to lower the local path ID limit. ",
+              "createdAt": "2025-03-01T16:47:59Z",
+              "updatedAt": "2025-03-01T16:48:43Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 497,
+      "id": "PR_kwDOGNtpaM6M7Utf",
+      "title": "Clarify use of PATH_CIDS_BLOCKED",
+      "url": "https://github.com/quicwg/multipath/pull/497",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "fixes #496",
+      "createdAt": "2025-02-28T11:36:31Z",
+      "updatedAt": "2025-02-28T15:40:19Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-32",
+      "headRefOid": "e49debfa7e67c7e571156a2a401a3d2aee54c02e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6eAe3o",
+          "commit": {
+            "abbreviatedOid": "e49debf"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Sounds good.",
+          "createdAt": "2025-02-28T14:33:15Z",
+          "updatedAt": "2025-02-28T14:33:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 499,
+      "id": "PR_kwDOGNtpaM6M7Y4b",
+      "title": "Don't send PATHS_BLOCKED/PATH_CIDS_BLOCKED frequently",
+      "url": "https://github.com/quicwg/multipath/pull/499",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "fixes #498",
+      "createdAt": "2025-02-28T11:46:30Z",
+      "updatedAt": "2025-02-28T15:40:43Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-33",
+      "headRefOid": "b1018904c2838ce8fa9658c47735493b3c313a18",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6eAgCP",
+          "commit": {
+            "abbreviatedOid": "22b164f"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Good, suggestions to avoid plural issue in the sentence.",
+          "createdAt": "2025-02-28T14:34:58Z",
+          "updatedAt": "2025-02-28T14:35:44Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\nIf the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but\r\n```",
+              "createdAt": "2025-02-28T14:34:58Z",
+              "updatedAt": "2025-02-28T14:35:44Z"
+            },
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nrepeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.\r\n```",
+              "createdAt": "2025-02-28T14:35:14Z",
+              "updatedAt": "2025-02-28T14:35:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 501,
+      "id": "PR_kwDOGNtpaM6NCbnS",
+      "title": "recommend one CID for each unused path",
+      "url": "https://github.com/quicwg/multipath/pull/501",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "alternative to #495",
+      "createdAt": "2025-03-01T16:35:29Z",
+      "updatedAt": "2025-03-01T16:52:25Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-34",
+      "headRefOid": "3f2e9b1df505cff1f6e4fda0d9b638bfc05d365f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6eGlOj",
+          "commit": {
+            "abbreviatedOid": "3f2e9b1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Yes, that's the right way to say it. But we need to mention the local path ID limit.",
+          "createdAt": "2025-03-01T16:52:02Z",
+          "updatedAt": "2025-03-01T16:52:25Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Should be:\r\n\r\n```\r\nup to the minimum of the peer's and the local Maximum Path ID limits.\r\n```\r\n\r\nThis reinforces the desired behavior: do not increase the path ID limit if you are not going to make the paths usable.",
+              "createdAt": "2025-03-01T16:52:02Z",
+              "updatedAt": "2025-03-01T16:52:25Z"
+            }
+          ]
         }
       ]
     }
