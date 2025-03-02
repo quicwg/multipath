@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 2 September 2025                         Uber Technologies Inc.
+Expires: 3 September 2025                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 2 September 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            1 March 2025
+                                                            2 March 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2025.
+   This Internet-Draft will expire on 3 September 2025.
 
 Copyright Notice
 
@@ -728,7 +728,8 @@ Table of Contents
    PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for
    all paths.  In order to let the peer open new paths, it is
    RECOMMENDED to proactively issue at least one Connection ID for each
-   unused Path ID up to the peer's Maximum Path ID limit.
+   unused Path ID up to the minimum of the peer's and the local Maximum
+   Path ID limits.
 
    When issuing path-specific connection IDs, an endpoint associates a
    sequence number as specified in Section 5.1.1 of [QUIC-TRANSPORT].
