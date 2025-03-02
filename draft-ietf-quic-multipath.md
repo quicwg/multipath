@@ -657,8 +657,9 @@ Respectively, the connection IDs used during the handshake belong to the initial
 with Path ID 0.
 The PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
 In order to let the peer open new paths, it is RECOMMENDED to proactively
-issue at least one Connection ID for each unused Path ID up to the peer's
-Maximum Path ID limit.
+issue at least one Connection ID for each unused Path ID up to the
+minimum of the peer's and the local
+Maximum Path ID limits.
 
 When issuing path-specific connection IDs, an endpoint associates a sequence number
 as specified in {{Section 5.1.1 of QUIC-TRANSPORT}}. Each Path ID has its own
