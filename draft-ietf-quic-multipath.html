@@ -2026,7 +2026,16 @@ those that are not used anymore, and the server is supposed to provide
 replacements for that path, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
 will not be used anymore. In response, if the path is still open, the peer
-SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
+While it it expected that the peer provides at least one unused connection ID
+for all active paths using the PATH_NEW_CONNECTION_ID after retirement
+of an old connection ID, an endpoint MAY send
+a PATH_CIDS_BLOCKED if it wants to change the connection ID but no
+unused connection ID for a certain path is available. Further, an
+endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
+open a new path and has no connection IDs available for an unused
+path ID even though the Maximum Path Identifier value would allow
+for more paths.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
 <p id="section-3.4-9">Retirement of connection IDs will not retire the Path ID
 that corresponds to the connection ID or any other path resources
 as the packet number space is associated with a path.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
