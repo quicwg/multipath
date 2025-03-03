@@ -1490,7 +1490,11 @@ Table of Contents
    does not imply a particular action from the peer like updating the
    new Max Path ID value, but informs the peer that the maximum path
    identifier limit or the absence of unused connection IDs prevented
-   the creation or the usage of paths.
+   the creation or the usage of paths.  If the successful reception of a
+   PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but no action
+   is taken by the peer, this is likely a deliberate decision by the
+   peer and repeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not
+   change that.
 
    PATHS_BLOCKED frames are formatted as shown in Figure 10.
 

@@ -2857,7 +2857,10 @@ for the corresponding Path ID.<a href="#section-7.7-2" class="pilcrow">¶</a></p
 <p id="section-7.7-3">Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
 like updating the new Max Path ID value, but informs the peer that the maximum path identifier limit
-or the absence of unused connection IDs prevented the creation or the usage of paths.<a href="#section-7.7-3" class="pilcrow">¶</a></p>
+or the absence of unused connection IDs prevented the creation or the usage of paths.
+If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
+no action is taken by the peer, this is likely a deliberate decision by the peer and
+repeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.<a href="#section-7.7-3" class="pilcrow">¶</a></p>
 <p id="section-7.7-4">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-7.7-4" class="pilcrow">¶</a></p>
 <span id="name-max_path_id_blocked-frame-f"></span><div id="fig-paths-blocked-frame-format">
 <figure id="figure-10">
