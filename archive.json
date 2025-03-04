@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-02T00:59:46.621116+00:00",
+  "timestamp": "2025-03-04T00:57:11.507987+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12820,10 +12820,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "It's time for a full editorial pass on the doc and some clean ups. Before we start I would like to propose the following new structure:\n\n1.\u00a0\u00a0Introduction\n\t1.1.\u00a0\u00a0Basic Design Points (move to appendix or remove)\n\t1.2.\u00a0\u00a0Introduction of an Explicit Path Identifier (needed?)\n\t1.3.\u00a0\u00a0Use of Multiple Packet Number Spaces (needed?)\n\t1.4.\u00a0\u00a0Conventions and Definitions\t\t\n2. Handshake Negotiation (or maybe: Cryptographic and Transport Handshake -> title of sec 7. In RFC9000)\n\t2.1. New Transport Parameter\n\t2.2 Relation to other Transport Parameters\n\t2.3 Handling ACK and PATH_ACK in 0-RTT and 1-RTT\n\t2.4 \u00a0Packet Protection\n\t\t2.4.1.\u00a0Nonce Calculation\n\t\t2.4.2.\u00a0Key Update\n3.\u00a0\u00a0Path Management\n\t3.1.\u00a0\u00a0Path Initiation and Validation\n\t\t3.1.1. Example Path Establishment\n\t\t3.1.2 Relation to Migration and Probing\n\t\t3.1.3 Address Validation Token\n        3.2.\u00a0\u00a0Connection ID Handling\n\t\t3.2.1 Issuing New Connection IDs\n\t\t3.2.2 Retiring Connection IDs\n\t3.3.\u00a0\u00a0Path Status Management\n\t3.4.\u00a0\u00a0Path Close\n\t\t3.4.1  Example Path Closure\n\t        3.4.2.\u00a0\u00a0Avoiding Spurious Stateless Resets\n\t        3.4.3.\u00a0\u00a0Handling PATH_ACK for abandoned paths (remove/merge into 3.4?)\n\t        3.3.4.\u00a0\u00a0Idle Timeout (move to implementation guidance? -> no normative reqs here\u2026)\n\t        3.3.5.\u00a0\u00a0Early Abandon (is this important enough for a separate subsection or merge into 3.4?)\n4.\u00a0\u00a0New Frames\n\t4.1.\u00a0\u00a0PATH_ACK Frame\n\t4.2.\u00a0\u00a0PATH_ABANDON Frame\n\t4.3.\u00a0\u00a0PATH_BACKUP and PATH_AVAILABLE frames\n\t4.4.\u00a0\u00a0PATH_NEW_CONNECTION_ID frames\n\t4.5.\u00a0\u00a0PATH_RETIRE_CONNECTION_ID frames\n\t4.6.\u00a0\u00a0MAX_PATH_ID frames\n\t4.7.\u00a0\u00a0PATHS_BLOCKED and PATH_CIDS_BLOCKED frames\n5.\u00a0\u00a0Error Codes\n6.\u00a0\u00a0Implementation Considerations (review order of subsections to be done later)\n\t6.1.\u00a0\u00a0Number Spaces\n\t6.2.\u00a0\u00a0Congestion Control\n\t6.3.\u00a0\u00a0Computing Path RTT\n\t6.4.\u00a0\u00a0Packet Scheduling\n\t6.5.\u00a0\u00a0Retransmissions\n\t6.6.\u00a0\u00a0Handling PTO\n\t6.7.\u00a0\u00a0Handling different PMTU sizes\n\t6.8.\u00a0\u00a0Keep Alive\n\t6.9.\u00a0\u00a0Connection ID Changes\n\t6.10.\u00a0Migration and NAT Rebindings\n\t6.11.\u00a0Using multiple paths on the same 4-tuple\n7.\u00a0\u00a0IANA Considerations\n8.\u00a0Security Considerations\n\t8.1.\u00a0\u00a0Memory Allocation for Per-Path Resources\n\t8.2.\u00a0\u00a0Request Forgery with Spoofed Address\n\t8.3.\u00a0\u00a0Use of Transport Layer Security and the AEAD Encryption Nonce\n\n\nSome of the main changes are:\n- Move key protection into section 2. The idea is to handle everything related to the handshake here which includes the packet protection when negotiation is succeeded. Maybe there is a better title for this section to reflect that?\n- Further also create subsections in section 2 but the content would be the same.\n- Sec 3 includes the examples, path initiation would be splitted up in subsections (again same content as now), CID handling is moved up/renamed + subsection added (no new content).\n- I have some open questions about moving some of the content from the path closure section...? (see above)\n- No changes on frames and error codes\n- Implementation considerations moved further to the back after frames and error codes (but this is optional; we can also keep it where it is now but I thought we have all normative things first)\n- no review of the structure of the implementation considerations section was done yet; this will follow later\n\n\nAlso note that I already created a first editorial PR for the intro. However, we might first want to land all other PRs and submit another revision and then start the rest of the editorial work.",
       "createdAt": "2025-02-04T16:50:57Z",
-      "updatedAt": "2025-02-11T15:29:44Z",
+      "updatedAt": "2025-03-03T18:09:57Z",
       "closedAt": null,
       "comments": []
     },
@@ -12832,15 +12834,15 @@
       "id": "I_kwDOGNtpaM6sEnaH",
       "title": "Provide more guidance when to send PATH_CID_BLOCKED frame",
       "url": "https://github.com/quicwg/multipath/issues/496",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We do specify the PATH_CID_BLOCKED in the frame section but we actually don't mention it at all in the CID management section. We should provide a bit more guidance when/how to actually use this frame.",
       "createdAt": "2025-02-28T11:20:06Z",
-      "updatedAt": "2025-02-28T11:20:06Z",
-      "closedAt": null,
+      "updatedAt": "2025-03-03T18:04:58Z",
+      "closedAt": "2025-03-03T18:04:58Z",
       "comments": []
     },
     {
@@ -12848,15 +12850,15 @@
       "id": "I_kwDOGNtpaM6sEzf8",
       "title": "Should PATHS_BLOCKED and PATH_CIDS_BLOCKED frames be repeated if no actions follows?",
       "url": "https://github.com/quicwg/multipath/issues/498",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This was discussed in the interop call today and we believe the answer is no. This could be further clarified in the draft.",
       "createdAt": "2025-02-28T11:45:45Z",
-      "updatedAt": "2025-02-28T11:45:45Z",
-      "closedAt": null,
+      "updatedAt": "2025-03-03T18:03:53Z",
+      "closedAt": "2025-03-03T18:03:53Z",
       "comments": []
     },
     {
@@ -12871,7 +12873,7 @@
       "labels": [],
       "body": "We discussed today in the interop call if the PATH_CIDS_BLOCKED frame is really needed because usually the peer should provide at least one unused CID for all active paths, otherwise this seems to be rather an implementation error. Also there is no really good reason to not just provide at least one CID for all paths up to the max path id limit. If you want to limit the number of paths, just set a lower may path id limit. This could be clarified in the draft.\n\nHowever, the use case to send PATH_CIDS_BLOCKED frame when you want to open a new path but are not blocked by the max path id but instead by the fact that you didn't get any CID for an unused path ID seemed still relevant as this behaviour is allowed and therefore might not be an implementation error.\n\nAlso as we have now already specified it, there is no real harm in keeping it. A client can choose to not implement and a server can choose to ignore the frame.",
       "createdAt": "2025-02-28T11:53:29Z",
-      "updatedAt": "2025-02-28T11:54:33Z",
+      "updatedAt": "2025-03-03T11:51:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -12880,6 +12882,13 @@
           "body": "I created PR #495 to at least hint at the point that it's good to issue CIDs for all paths up to the max path id limit.",
           "createdAt": "2025-02-28T11:54:32Z",
           "updatedAt": "2025-02-28T11:54:32Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "NONE",
+          "body": "I landed here while wondering what to do with PATH_CIDS_BLOCKED...  I've tried to read the previous information about this in the issues here [0].  Receiving this frame doesn't really help you in practice I think.  I'd rather REQUIRE that at least one CID is issued for each un-opened path up the max PathId limit.  And maybe even REQUIRE to issue up to max_connection_id_limit CIDs for those unopened paths, at least RECOMMEND.\n\nThis mostly because I don't see the value of limiting those: you can already limit the number of paths.  Keeping track of a few more CIDs really doesn't bring much value.\n\nOn the other hand I could see that the number of round-trips required to open a new path would be increased if implementations could hold off issuing more CIDs.\n\n\n[0] references I found:\n- original issue: https://github.com/quicwg/multipath/issues/459\n- introduced: https://github.com/quicwg/multipath/pull/468/files\n- a proposed clarification: https://github.com/quicwg/multipath/pull/468/files (issue: https://github.com/quicwg/multipath/issues/496)\n- another proposed tweak: https://github.com/quicwg/multipath/pull/495",
+          "createdAt": "2025-03-03T11:51:27Z",
+          "updatedAt": "2025-03-03T11:51:27Z"
         }
       ]
     }
@@ -53881,7 +53890,7 @@
       "id": "PR_kwDOGNtpaM6M7Ljz",
       "title": "Note that issuing CIDs for all paths might be beneficial",
       "url": "https://github.com/quicwg/multipath/pull/495",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -53890,18 +53899,26 @@
       ],
       "body": "Based on the discussion in the interop call today, it was not clear why an endpoint would not want to issue CIDs for all path IDs up to the max path idea. If an endpoint wants to limit the number of paths, it should rather do it by limiting the max path ID explicitly. Therefore I propose this additional sentence to hind at doing this.",
       "createdAt": "2025-02-28T11:15:22Z",
-      "updatedAt": "2025-03-01T16:48:43Z",
+      "updatedAt": "2025-03-03T18:05:16Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-31",
       "headRefOid": "68a939c72619f37e1c2a89ebe5d0b074a795b2dc",
-      "closedAt": null,
+      "closedAt": "2025-03-03T18:05:16Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "merged #501 instead",
+          "createdAt": "2025-03-03T18:05:16Z",
+          "updatedAt": "2025-03-03T18:05:16Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6eAc_W",
@@ -53970,7 +53987,7 @@
       "id": "PR_kwDOGNtpaM6M7Utf",
       "title": "Clarify use of PATH_CIDS_BLOCKED",
       "url": "https://github.com/quicwg/multipath/pull/497",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -53979,17 +53996,19 @@
       ],
       "body": "fixes #496",
       "createdAt": "2025-02-28T11:36:31Z",
-      "updatedAt": "2025-02-28T15:40:19Z",
+      "updatedAt": "2025-03-03T18:04:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-32",
       "headRefOid": "e49debfa7e67c7e571156a2a401a3d2aee54c02e",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-03-03T18:04:57Z",
+      "mergedAt": "2025-03-03T18:04:57Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "1ee52c798ee64c8c32d4f1e034dd34aff3e6d876"
+      },
       "comments": [],
       "reviews": [
         {
@@ -54012,7 +54031,7 @@
       "id": "PR_kwDOGNtpaM6M7Y4b",
       "title": "Don't send PATHS_BLOCKED/PATH_CIDS_BLOCKED frequently",
       "url": "https://github.com/quicwg/multipath/pull/499",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -54021,17 +54040,19 @@
       ],
       "body": "fixes #498",
       "createdAt": "2025-02-28T11:46:30Z",
-      "updatedAt": "2025-02-28T15:40:43Z",
+      "updatedAt": "2025-03-03T18:03:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-33",
       "headRefOid": "b1018904c2838ce8fa9658c47735493b3c313a18",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-03-03T18:03:51Z",
+      "mergedAt": "2025-03-03T18:03:51Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "38ab1ddb8da3ed35cb28d0b134aaa6db339866f0"
+      },
       "comments": [],
       "reviews": [
         {
@@ -54059,6 +54080,19 @@
               "updatedAt": "2025-02-28T14:35:44Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eIRS-",
+          "commit": {
+            "abbreviatedOid": "b101890"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-03-03T03:03:19Z",
+          "updatedAt": "2025-03-03T03:03:19Z",
+          "comments": []
         }
       ]
     },
@@ -54067,24 +54101,26 @@
       "id": "PR_kwDOGNtpaM6NCbnS",
       "title": "recommend one CID for each unused path",
       "url": "https://github.com/quicwg/multipath/pull/501",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "alternative to #495",
       "createdAt": "2025-03-01T16:35:29Z",
-      "updatedAt": "2025-03-01T16:52:25Z",
+      "updatedAt": "2025-03-03T18:03:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "6d87ad963690b70c16dcf8645bacf470d8bcf981",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-34",
-      "headRefOid": "3f2e9b1df505cff1f6e4fda0d9b638bfc05d365f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "d7d7afba1c25d8fed10a0313f36300269f366f23",
+      "closedAt": "2025-03-03T18:03:32Z",
+      "mergedAt": "2025-03-03T18:03:32Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "6990fbf11a026222eae9ff911291bb8f92bbd000"
+      },
       "comments": [],
       "reviews": [
         {
@@ -54106,6 +54142,92 @@
               "updatedAt": "2025-03-01T16:52:25Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eHQUt",
+          "commit": {
+            "abbreviatedOid": "3f2e9b1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-02T11:48:47Z",
+          "updatedAt": "2025-03-02T11:48:48Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nissue at least one Connection ID for each unused Path ID up to the\r\nminimum of the peer's and the local\r\n```",
+              "createdAt": "2025-03-02T11:48:48Z",
+              "updatedAt": "2025-03-02T11:48:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eHQVj",
+          "commit": {
+            "abbreviatedOid": "3f2e9b1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-02T11:49:03Z",
+          "updatedAt": "2025-03-02T11:49:03Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\nMaximum Path ID limits.\r\n```",
+              "createdAt": "2025-03-02T11:49:03Z",
+              "updatedAt": "2025-03-02T11:49:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eHQYh",
+          "commit": {
+            "abbreviatedOid": "d7d7afb"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-02T11:49:49Z",
+          "updatedAt": "2025-03-02T11:49:49Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Done.",
+              "createdAt": "2025-03-02T11:49:49Z",
+              "updatedAt": "2025-03-02T11:49:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eIQ83",
+          "commit": {
+            "abbreviatedOid": "d7d7afb"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2025-03-03T03:01:22Z",
+          "updatedAt": "2025-03-03T03:01:22Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6eJWtt",
+          "commit": {
+            "abbreviatedOid": "d7d7afb"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-03-03T07:22:45Z",
+          "updatedAt": "2025-03-03T07:22:45Z",
+          "comments": []
         }
       ]
     }
