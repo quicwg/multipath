@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-04T00:57:11.507987+00:00",
+  "timestamp": "2025-03-06T00:57:05.816200+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -54227,6 +54227,46 @@
           "body": "",
           "createdAt": "2025-03-03T07:22:45Z",
           "updatedAt": "2025-03-03T07:22:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 502,
+      "id": "PR_kwDOGNtpaM6NZEKq",
+      "title": "Make initial_max_path_id transport parameter consistent.",
+      "url": "https://github.com/quicwg/multipath/pull/502",
+      "state": "OPEN",
+      "author": "johnthacker",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The tranport parameter was updated in the entry for the Quic Transport Parameters registry in  e26c2ef3ec1331b9f5af5d838af5cb267c8f5ed9 without updating the corresponding entry in the Handshake Negotiation and Transport Parameter section.",
+      "createdAt": "2025-03-05T00:10:49Z",
+      "updatedAt": "2025-03-05T12:44:09Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "1ee52c798ee64c8c32d4f1e034dd34aff3e6d876",
+      "headRepository": "johnthacker/multipath",
+      "headRefName": "initial_max_path_id_current_version",
+      "headRefOid": "10f74380cfb0ebb7e05d278bdb0752f592c7348f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6em5-T",
+          "commit": {
+            "abbreviatedOid": "10f7438"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks! I missed that.",
+          "createdAt": "2025-03-05T12:44:09Z",
+          "updatedAt": "2025-03-05T12:44:09Z",
           "comments": []
         }
       ]
