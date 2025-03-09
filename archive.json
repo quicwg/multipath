@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-06T00:57:05.816200+00:00",
+  "timestamp": "2025-03-09T00:50:02.444765+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12870,10 +12870,12 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "needs-discussion"
+      ],
       "body": "We discussed today in the interop call if the PATH_CIDS_BLOCKED frame is really needed because usually the peer should provide at least one unused CID for all active paths, otherwise this seems to be rather an implementation error. Also there is no really good reason to not just provide at least one CID for all paths up to the max path id limit. If you want to limit the number of paths, just set a lower may path id limit. This could be clarified in the draft.\n\nHowever, the use case to send PATH_CIDS_BLOCKED frame when you want to open a new path but are not blocked by the max path id but instead by the fact that you didn't get any CID for an unused path ID seemed still relevant as this behaviour is allowed and therefore might not be an implementation error.\n\nAlso as we have now already specified it, there is no real harm in keeping it. A client can choose to not implement and a server can choose to ignore the frame.",
       "createdAt": "2025-02-28T11:53:29Z",
-      "updatedAt": "2025-03-03T11:51:28Z",
+      "updatedAt": "2025-03-06T18:31:33Z",
       "closedAt": null,
       "comments": [
         {
