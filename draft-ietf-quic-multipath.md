@@ -740,8 +740,14 @@ does not indicate path abandonment (see further {{consume-retire-cid}}).
 This is true whether the decision to close the path results
 from implicit signals such as idle time or packet losses
 (see {{idle-time-close}}) or for any other reason, such as management
-of local resources. It is also possible to abandon a path for which no
-packet has been sent (see {{abandon-early}}).
+of local resources.
+
+It is also possible that an endpoint will receive a PATH_ABANDON frame
+before receiving or sending any traffic on a path. For example, if the client
+tries to initiate a path and the path cannot be established, it will send a
+PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
+to abandon a path for any reason, for example, removing a hole from
+the sequence of path IDs in use. This is not an error.
 
 When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding
 PATH_ABANDON frame if it has not already done so. It MUST stop sending
@@ -789,13 +795,7 @@ the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
-There are scenarios in which an endpoint will receive a PATH_ABANDON frame
-before receiving or sending any traffic on a path. For example, if the client
-tries to initiate a path and the path cannot be established, it will send a
-PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
-to abandon a path for any reason, for example, removing a hole from
-the sequence of path IDs in use. This is not an error. An endpoint that
-receives such a PATH_ABANDON frame must treat it as specified above.
+
 
 ### Path Closure Example
 
