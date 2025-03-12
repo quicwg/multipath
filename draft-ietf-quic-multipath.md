@@ -196,8 +196,8 @@ to a packet number space.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON {{path-abandon-frame}}, PATH_BACKUP {{path-backup-available-frame}},
-PATH_AVAILABLE {{path-backup-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
+such as PATH_ABANDON (see {{path-abandon-frame}}), PATH_BACKUP (see {{path-backup-available-frame}}),
+PATH_AVAILABLE (see {{path-backup-available-frame}}) as well as PATH_ACK (see {{mp-ack-frame}}).
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
 That means each connection ID is associated with exactly one path identifier
@@ -319,7 +319,7 @@ contained in this parameter can be simultaneously used for multipath
 
 ## Handling ACK and PATH_ACK in 0-RTT and 1-RTT
 
-The PATH_ACK frame, as specified in {{mp-ack-frame}}, is used to
+The PATH_ACK frame (see {{mp-ack-frame}}) is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the PATH_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.
@@ -417,24 +417,7 @@ should not cause linkability issue.
 After completing the handshake, endpoints have agreed to enable
 multipath support. They can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused Path ID.
-This document does not discuss when a client decides to initiate a new path. We
-delegate such discussion to separate documents.
-
-This proposal adds six multipath control frames for path management (see Section {{frames}}):
-
-- PATH_ABANDON frame for the receiver side to abandon the path
-(see {{path-abandon-frame}}),
-- PATH_BACKUP and PATH_AVAILABLE frames to express a preference
-in path usage (see {{path-backup-available-frame}}),
-- MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-path identifiers,
-- PATHS_BLOCKED and PATH_CIDS_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
-to notify the peer of being blocked to open new paths as
-the limit of active paths set by the peer has been reached
-or there are no unused connection IDs available
-for the corresponding Path ID.
-
-All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
+This document does not discuss when a client decides to initiate a new path.
 
 ## Path Initiation and Validation {#path-initiation}
 
@@ -663,7 +646,8 @@ SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
 While it it expected that the peer provides at least one unused connection ID
 for all active paths using the PATH_NEW_CONNECTION_ID after retirement
 of an old connection ID, an endpoint MAY send
-a PATH_CIDS_BLOCKED if it wants to change the connection ID but no
+a PATH_CIDS_BLOCKED (see {{paths-and-cids-blocked-frame}})
+if it wants to change the connection ID but no
 unused connection ID for a certain path is available. Further, an
 endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
 open a new path and has no connection IDs available for an unused
@@ -680,7 +664,8 @@ to use a different connection ID for the same Path ID when doing so.
 
 ## Path Status Management
 
-An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform the peer that it should
+An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
+{{path-backup-available-frame}}) to inform the peer that it should
 send packets with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
@@ -733,7 +718,7 @@ CONNECTION_CLOSE ({{Section 10.2 of QUIC-TRANSPORT}}) or a Stateless
 Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
 An endpoint that wants to close a path MUST explicitly
-terminate the path by sending a PATH_ABANDON frame.
+terminate the path by sending a PATH_ABANDON frame (see {{path-abandon-frame}}).
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
 does not indicate path abandonment (see further {{consume-retire-cid}}).
@@ -794,8 +779,6 @@ or a CONNECTION_CLOSE frame is received from the server. Similarly
 the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
-
-
 
 ### Path Closure Example
 
