@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 4 September 2025                         Uber Technologies Inc.
+Expires: 13 September 2025                        Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 4 September 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            3 March 2025
+                                                           12 March 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2025.
+   This Internet-Draft will expire on 13 September 2025.
 
 Copyright Notice
 
@@ -307,7 +307,7 @@ Table of Contents
    as specified in [QUIC-TRANSPORT].  The new transport parameter is
    defined as follows:
 
-   *  initial_max_path_id (current version uses 0x0f739bbc1b666d0c): a
+   *  initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a
       variable-length integer specifying the maximum path identifier an
       endpoint is willing to maintain at connection initiation.  This
       value MUST NOT exceed 2^32-1, the maximum allowed value for the
