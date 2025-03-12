@@ -500,7 +500,7 @@ Table of Contents
       Section 4.2),
 
    *  PATH_BACKUP and PATH_AVAILABLE frames to express a preference in
-      path usage (see Section 4.3), and
+      path usage (see Section 4.3),
 
    *  MAX_PATH_ID frame (see Section 4.6) for increasing the limit of
       path identifiers,
