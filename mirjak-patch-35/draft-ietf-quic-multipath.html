@@ -1521,8 +1521,8 @@ The connection ID of a packet binds the packet to a path identifier, and therefo
 to a packet number space.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>, PATH_BACKUP <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>,
-PATH_AVAILABLE <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a> as well as PATH_ACK <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>.
+such as PATH_ABANDON (see <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>), PATH_BACKUP (see <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>),
+PATH_AVAILABLE (see <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>) as well as PATH_ACK (see <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>).
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>).
 That means each connection ID is associated with exactly one path identifier
@@ -1657,7 +1657,7 @@ contained in this parameter can be simultaneously used for multipath
         <h3 id="name-handling-ack-and-path_ack-i">
 <a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-handling-ack-and-path_ack-i" class="section-name selfRef">Handling ACK and PATH_ACK in 0-RTT and 1-RTT</a>
         </h3>
-<p id="section-2.2-1">The PATH_ACK frame, as specified in <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>, is used to
+<p id="section-2.2-1">The PATH_ACK frame (see <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>) is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the PATH_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
@@ -1764,31 +1764,7 @@ should not cause linkability issue.<a href="#section-2.3.2-5" class="pilcrow">¶
 <p id="section-3-1">After completing the handshake, endpoints have agreed to enable
 multipath support. They can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused Path ID.
-This document does not discuss when a client decides to initiate a new path. We
-delegate such discussion to separate documents.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">This proposal adds six multipath control frames for path management (see Section <a href="#frames" class="auto internal xref">Section 4</a>):<a href="#section-3-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3-3.1">
-          <p id="section-3-3.1.1">PATH_ABANDON frame for the receiver side to abandon the path
-(see <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>),<a href="#section-3-3.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-3.2">
-          <p id="section-3-3.2.1">PATH_BACKUP and PATH_AVAILABLE frames to express a preference
-in path usage (see <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>),<a href="#section-3-3.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-3.3">
-          <p id="section-3-3.3.1">MAX_PATH_ID frame (see <a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>) for increasing the limit of
-path identifiers,<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-3.4">
-          <p id="section-3-3.4.1">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>)
-to notify the peer of being blocked to open new paths as
-the limit of active paths set by the peer has been reached
-or there are no unused connection IDs available
-for the corresponding Path ID.<a href="#section-3-3.4.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-3-4">All new frames are sent in 1-RTT packets <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3-4" class="pilcrow">¶</a></p>
+This document does not discuss when a client decides to initiate a new path.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <div id="path-initiation">
 <section id="section-3.1">
         <h3 id="name-path-initiation-and-validat">
@@ -2027,7 +2003,8 @@ SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
 While it it expected that the peer provides at least one unused connection ID
 for all active paths using the PATH_NEW_CONNECTION_ID after retirement
 of an old connection ID, an endpoint MAY send
-a PATH_CIDS_BLOCKED if it wants to change the connection ID but no
+a PATH_CIDS_BLOCKED (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>)
+if it wants to change the connection ID but no
 unused connection ID for a certain path is available. Further, an
 endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
 open a new path and has no connection IDs available for an unused
@@ -2048,7 +2025,8 @@ to use a different connection ID for the same Path ID when doing so.<a href="#se
         <h3 id="name-path-status-management">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-path-status-management" class="section-name selfRef">Path Status Management</a>
         </h3>
-<p id="section-3.3-1">An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform the peer that it should
+<p id="section-3.3-1">An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
+<a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>) to inform the peer that it should
 send packets with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
@@ -2098,7 +2076,7 @@ apply on the whole connection. In particular, the reception of either a
 CONNECTION_CLOSE (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.2" class="relref">Section 10.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) or a Stateless
 Reset (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) closes the connection.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <p id="section-3.4-3">An endpoint that wants to close a path MUST explicitly
-terminate the path by sending a PATH_ABANDON frame.
+terminate the path by sending a PATH_ABANDON frame (see <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>).
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
 does not indicate path abandonment (see further <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>).
