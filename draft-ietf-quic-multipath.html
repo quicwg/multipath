@@ -1381,82 +1381,36 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
       </h2>
 <p id="section-1-1">This document specifies an extension to QUIC version 1 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 to enable the simultaneous usage of multiple paths for a single
-connection. This contrasts with
-the base QUIC protocol <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> that includes a connection migration mechanism that
-selects only one path at a time to exchange QUIC packets.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">The path management specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
-fulfills multiple goals: it directs a peer to switch sending through
-a new preferred path, and it allows the peer to release resources
-associated with the old path. The multipath extension specified in this document requires
-several changes to that mechanism:<a href="#section-1-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-3.1">
-          <p id="section-1-3.1.1">Simultaneous transmission on multiple paths.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-3.2">
-          <p id="section-1-3.2.1">Introduction of a path identifier to manage connection IDs and
-packet number spaces per path.<a href="#section-1-3.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-3.3">
-          <p id="section-1-3.3.1">Removal of paths that have been abandoned.<a href="#section-1-3.3.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-1-4">As such, this extension specifies a departure from the specification of
+connection, using the same or different 4-tuples.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Connection migration as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
+directs a peer to switch sending through
+a new preferred path, and, if successful, to release resources
+associated with the old path. The multipath extension specified in this document
+builds on this mechanism but introduces a path identifier (see <a href="#explicit-path-id" class="auto internal xref">Section 1.2</a>)
+to manage connection IDs and packet number spaces per path (see <a href="#num-spaces" class="auto internal xref">Section 1.3</a>).<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">As such, this extension specifies a departure from the specification of
 path management in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and therefore
 requires negotiation between the two endpoints using a new transport
 parameter, as specified in <a href="#nego" class="auto internal xref">Section 2.1</a>. Further, as different packet number
 spaces are used for each path, this specification requires the use of
-non-zero connection IDs in order to identify the path and respective
-packet number space.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">To add a new path to an existing QUIC connection with multipath support,
-a client sends a packet with a connection ID belonging to a so-far unused Path ID on
-the chosen path, as further described in <a href="#path-initiation" class="auto internal xref">Section 3.1</a>.
-A new path can only be used once the associated 4-tuple has been validated
-by ensuring that the peer is able to receive packets at that address
-(see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
-In this version of the document, a QUIC server does not initiate the creation
-of a path, but it can validate a new path created by a client.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">Each endpoint may use several IP addresses for the connection. In
-particular, the multipath extension supports the following scenarios.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-7.1">
-          <p id="section-1-7.1.1">The client uses multiple IP addresses and the server listens on only
-one.<a href="#section-1-7.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-7.2">
-          <p id="section-1-7.2.1">The client uses only one IP address and the server listens on
-several ones.<a href="#section-1-7.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-7.3">
-          <p id="section-1-7.3.1">The client uses multiple IP addresses and the server listens on
-several ones.<a href="#section-1-7.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-7.4">
-          <p id="section-1-7.4.1">The client uses only one IP address and the server
-listens on only one.<a href="#section-1-7.4.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-1-8">Note that in the last scenario, it still remains possible to have
-multiple paths over the connection, given that a path is not only
-defined by the IP addresses being used, but also the port numbers.
-In particular, the client can use one or several ports per IP
-address and the server can listen on one or several ports per IP
-address.<a href="#section-1-8" class="pilcrow">¶</a></p>
-<p id="section-1-9">In addition to these core features, an application using the multipath extension will typically
-need additional algorithms to handle multiple, simultaneously open paths and how they are used to
-send packets. As these differ depending on the application's requirements,
-this proposal only specifies a simple basic packet
-scheduling algorithm (see <a href="#packet-scheduling" class="auto internal xref">Section 6.4</a>),
-in order to provide some basic implementation
-guidance. However, more advanced algorithms as well as potential
-extensions to enhance signaling of the current path status are expected
-as future work.<a href="#section-1-9" class="pilcrow">¶</a></p>
-<p id="section-1-10">Further, this proposal does also not cover address discovery and management. Addresses
+non-zero connection IDs in order to identify the path as well as the respective
+packet number space and specifies a modified AEAD calculation including the
+Path ID <a href="#multipath-key-update" class="auto internal xref">Section 2.3.2</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This document specifies the needed path management mechanisms for path
+initiation <a href="#path-initiation" class="auto internal xref">Section 3.1</a>, handling of per-path connection IDs <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>,
+signaling of preferred path usage <a href="#path-state" class="auto internal xref">Section 3.3</a>, and explicit
+removal of paths that have been abandoned <a href="#path-close" class="auto internal xref">Section 3.4</a>.
+However, this document does not specify detailed algorithms that define
+how multiple, simultaneously open paths are used to send packets.
+As these differ depending on the application requirements,
+only some basic implementation guidance is discussed in <a href="#impl-consideration" class="auto internal xref">Section 6</a>.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Further, this proposal does also not cover address discovery and management. Addresses
 and the actual decision process to setup or tear down paths are assumed
 to be handled by the application that is using the QUIC multipath
-extension. This is sufficient to address the first aforementioned
-scenario. However, this document does not prevent future extensions from
-defining mechanisms to address the remaining scenarios.<a href="#section-1-10" class="pilcrow">¶</a></p>
+extension. However, this document does not prevent future extensions from
+defining mechanisms to address the remaining scenarios.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">In this extention, a QUIC server does not initiate the creation
+of a path, but it has to validate a new path created by a client.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <div id="basic-design-points">
 <section id="section-1.1">
         <h3 id="name-basic-design-points">
@@ -1505,8 +1459,6 @@ pointing to an existing path ID, but the connection ID and/or the
 Each of these paths can be closed at any time, like any other path.<a href="#section-1.1-2.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-1.1-3">Further the design of this extension introduces an explicit path identifier
-and use of multiple packet number spaces as further explained in the next sections.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="explicit-path-id">
@@ -1535,7 +1487,7 @@ Use of the "preferred address" is considered as a migration event
 that does not change the Path ID.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="use-of-multiple-packet-number-spaces">
+<div id="num-spaces">
 <section id="section-1.3">
         <h3 id="name-use-of-multiple-packet-numb">
 <a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-use-of-multiple-packet-numb" class="section-name selfRef">Use of Multiple Packet Number Spaces</a>
@@ -2020,7 +1972,7 @@ to use a different connection ID for the same Path ID when doing so.<a href="#se
 </div>
 </section>
 </div>
-<div id="path-status-management">
+<div id="path-state">
 <section id="section-3.3">
         <h3 id="name-path-status-management">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-path-status-management" class="section-name selfRef">Path Status Management</a>
@@ -2660,7 +2612,7 @@ but has not provided a corresponding connection ID for the path ID
 (or the packet containing the connection IDs has not arrived yet).<a href="#section-5-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="implementation-considerations">
+<div id="impl-consideration">
 <section id="section-6">
       <h2 id="name-implementation-consideratio">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-implementation-consideratio" class="section-name selfRef">Implementation Considerations</a>
