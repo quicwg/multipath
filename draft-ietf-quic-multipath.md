@@ -1347,7 +1347,7 @@ address.
 
 ## Using multiple paths on the same 4-tuple
 
-As noted in {{basic-design-points}}, it is possible to create paths that
+It is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service {{?RFC2475}} markings.
 This could be done in conjunction with scheduling algorithms
