@@ -425,7 +425,7 @@ This proposal adds six multipath control frames for path management (see Section
 - PATH_ABANDON frame for the receiver side to abandon the path
 (see {{path-abandon-frame}}),
 - PATH_BACKUP and PATH_AVAILABLE frames to express a preference
-in path usage (see {{path-backup-available-frame}}), and
+in path usage (see {{path-backup-available-frame}}),
 - MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
 path identifiers,
 - PATHS_BLOCKED and PATH_CIDS_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
