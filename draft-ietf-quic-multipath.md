@@ -161,8 +161,8 @@ to a packet number space.
 
 The same Path ID is used in both directions to
 address a path in the new multipath control frames,
-such as PATH_ABANDON {{path-abandon-frame}}, PATH_BACKUP {{path-backup-available-frame}},
-PATH_AVAILABLE {{path-backup-available-frame}} as well as PATH_ACK {{mp-ack-frame}}.
+such as PATH_ABANDON (see {{path-abandon-frame}}), PATH_BACKUP (see {{path-backup-available-frame}}),
+PATH_AVAILABLE (see {{path-backup-available-frame}}) as well as PATH_ACK (see {{mp-ack-frame}}).
 Further, connection IDs are issued per Path ID using the
 PATH_NEW_CONNECTION_ID frame (see {{mp-new-conn-id-frame}}).
 That means each connection ID is associated with exactly one path identifier
@@ -209,15 +209,16 @@ We assume that the reader is familiar with the terminology used in
 {{QUIC-TRANSPORT}}. When this document uses the term "path", it refers
 to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
+# Cryptographic and Transport Handshake
 
-# Handshake Negotiation and Transport Parameter {#nego}
+## Handshake Negotiation and Transport Parameter {#nego}
 
 This extension defines a new transport parameter, used to negotiate
 the use of the multipath extension during the connection handshake,
 as specified in {{QUIC-TRANSPORT}}. The new transport parameter is
 defined as follows:
 
-- initial_max_path_id (current version uses 0x0f739bbc1b666d0c): a
+- initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a
   variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
   This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
@@ -258,6 +259,8 @@ defined in {{Section 18.2. of QUIC-TRANSPORT}}.
 The initial_max_path_id transport parameter limits the initial maximum number of open paths
 that can be used during a connection.
 
+### Relation to Other Transport Parameters
+
 The active_connection_id_limit transport parameter
 {{QUIC-TRANSPORT}} limits the maximum number of active connection IDs per path when the
 initial_max_path_id parameter is negotiated successfully.
@@ -265,12 +268,23 @@ As defined in {{Section 5.1.1 of QUIC-TRANSPORT}} connection IDs that are issued
 Endpoints might prefer to retain spare connection IDs so that they can
 respond to unintentional migration events ({{Section 9.5 of QUIC-TRANSPORT}}).
 
-Cipher suites with a nonce shorter than 12 bytes cannot be used together with
-the multipath extension. If such a cipher suite is selected and the use of the
-multipath extension is negotiated, endpoints MUST abort the handshake with a
-an error of type TRANSPORT_PARAMETER_ERROR.
+If an endpoint receives a disable_active_migration transport parameter
+provided by the peer, it is forbidden to use a new local address
+to establish new paths to the peer's handshake address. However,
+establishment of additional paths from any local address to other peer addresses
+(e.g carried by peer’s preferred_address) is immediately valid.
 
-The PATH_ACK frame, as specified in {{mp-ack-frame}}, is used to
+This document
+does not specify how an endpoint that is reachable via several addresses
+announces these addresses to the other endpoint. In particular, if the
+server uses the preferred_address transport parameter, clients
+cannot assume that the initial server address and the addresses
+contained in this parameter can be simultaneously used for multipath
+({{Section 9.6.2 of QUIC-TRANSPORT}}).
+
+## Handling ACK and PATH_ACK in 0-RTT and 1-RTT
+
+The PATH_ACK frame (see {{mp-ack-frame}}) is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the PATH_ACK frame additionally
 contains the receiver's Path ID to identify the path-specific packet number space.
@@ -293,56 +307,87 @@ the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and
 respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
 Path ID 0.
 
+## Packet Protection {#multipath-aead}
+
+Packet protection for QUIC version 1 is specified in {{Section 5 of QUIC-TLS}}.
+The general principles of packet protection are not changed for
+the multipath extension specified in this document.
+No changes are needed for setting packet protection keys,
+initial secrets, header protection, use of 0-RTT keys, receiving
+out-of-order protected packets, receiving protected packets,
+or retry packet integrity. However, the use of multiple number spaces
+for 1-RTT packets requires changes in AEAD usage.
+
+Cipher suites with a nonce shorter than 12 bytes cannot be used together with
+the multipath extension. If such a cipher suite is selected and the use of the
+multipath extension is negotiated, endpoints MUST abort the handshake with a
+an error of type TRANSPORT_PARAMETER_ERROR.
+
+### Nonce Calculation
+
+{{Section 5.3 of QUIC-TLS}} specifies AEAD usage, and in particular
+the use of a nonce, N, formed by combining the packet protection IV
+with the packet number. When multiple packet number spaces are used,
+the packet number alone would not guarantee the uniqueness of the nonce.
+Therefore, the nonce N is calculated by combining the packet protection
+IV with the packet number and with the least significant 32 bits of the
+Path ID. In order to guarantee the uniqueness of the nonce, the Path ID
+is limited to a max value of 2^32-1.
+
+To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
+significant 32 bits of the Path ID in network byte order,
+two zero bits, and the 62 bits of the reconstructed QUIC packet number in
+network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
+is left-padded with zeros to the size of the IV. The exclusive OR of the padded
+packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
+is less than 12 bytes MUST NOT be used with the QUIC multipath extension.
+
+For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
+the Path ID is `3`, and the packet number is `aead`,
+the nonce will be set to `6b2611489cba2b63a9e873e2`.
+
+### Key Update {#multipath-key-update}
+
+The Key Phase bit update process is specified in
+{{Section 6 of QUIC-TLS}}. The general principles of key update
+are not changed in this specification. Following {{QUIC-TLS}}, the Key Phase bit is used to
+indicate which packet protection keys are used to protect the packet.
+The Key Phase bit is toggled to signal each subsequent key update.
+
+Because of network delays, packets protected with the older key might
+arrive later than the packets protected with the new key, however receivers
+can solely rely on the Key Phase bit to determine the corresponding packet
+protection key, assuming that there is sufficient interval between two
+consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
+
+When this specification is used, endpoints SHOULD wait for at least three times
+the largest PTO among all the paths before initiating a new key update
+after receiving an acknowledgment that confirms the receipt of the previous key
+update. This interval is different from that in {{QUIC-TLS}}
+which used three times the PTO of the sole single path.
+
+The choice of three times the largest PTO is a trade-off.
+Packets that arrive after their decryption key has been discarded will be dropped.
+Longer delays reduce the probability of losing packets but keeping old keys
+longer can negatively impact the security of the protocol.
+The use of three times the largest PTO aims to minimize packet lost for all paths
+and therefore limits the impact on performance.
+
+Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
+so sending multiple packets with Key Phase bit flipping at the same time
+should not cause linkability issue.
+
 # Path Management {#path-management}
 
 After completing the handshake, endpoints have agreed to enable
 multipath support. They can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused Path ID.
-If an endpoint receives a disable_active_migration transport parameter
-provided by the peer, it is forbidden to use a new local address
-to establish new paths to the peer's handshake address. However,
-establishment of additional paths from any local address to other peer addresses
-(e.g carried by peer’s preferred_address) is valid immediately.
+This document does not discuss when a client decides to initiate a new path.
 
-This document
-does not specify how an endpoint that is reachable via several addresses
-announces these addresses to the other endpoint. In particular, if the
-server uses the preferred_address transport parameter, clients
-cannot assume that the initial server address and the addresses
-contained in this parameter can be simultaneously used for multipath
-({{Section 9.6.2 of QUIC-TRANSPORT}}).
-Furthermore, this document
-does not discuss when a client decides to initiate a new path. We
-delegate such discussion to separate documents.
+## Path Initiation and Validation {#path-initiation}
 
-To open a new path, an endpoint MUST use a connection ID associated with
-a new, unused Path ID. To let the peer open a new path, an endpoint needs
-to provide its peer with connection IDs for at least one unused path identifier.
-Still, the receiver may observe a connection ID associated with a used Path ID
-on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
-as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
-but MUST use a new connection ID for the same Path ID.
-
-This proposal adds six multipath control frames for path management:
-
-- PATH_ABANDON frame for the receiver side to abandon the path
-(see {{path-abandon-frame}}),
-- PATH_BACKUP and PATH_AVAILABLE frames to express a preference
-in path usage (see {{path-backup-available-frame}}), and
-- MAX_PATH_ID frame (see {{max-paths-frame}}) for increasing the limit of
-path identifiers,
-- PATHS_BLOCKED and PATH_CIDS_BLOCKED frames (see {{paths-and-cids-blocked-frame}})
-to notify the peer of being blocked to open new paths as
-the limit of active paths set by the peer has been reached
-or there are no unused connection IDs available
-for the corresponding Path ID.
-
-All new frames are sent in 1-RTT packets {{QUIC-TRANSPORT}}.
-
-## Path Initiation {#path-initiation}
-
-Opening a new path requires the use of a new connection ID (see {{Section 9.5 of QUIC-TRANSPORT}})
-mapped to an unused Path ID (see {{explicit-path-id}}).
+To open a new path, an endpoint MUST use a connection ID (see {{Section 9.5 of QUIC-TRANSPORT}}) associated with
+a new, unused Path ID  (see {{explicit-path-id}}).
 Instead of NEW_CONNECTION_ID frame as specified in {{Section 19.15 of QUIC-TRANSPORT}},
 each endpoint uses the PATH_NEW_CONNECTION_ID frame as specified in this extension
 to issue Path ID-specific connections IDs.
@@ -398,6 +443,52 @@ However, as the used Path ID is anyway consumed,
 the endpoint MUST explicitly close the path as specified in
 {{path-close}}.
 
+### Path Establishment Example
+
+{{fig-example-new-path}} illustrates an example of new path establishment
+using multiple packet number spaces.
+
+In this example it is assumed that both endpoints have
+indicated an initial_max_path_id value of at least 2, which means
+both endpoints can use Path IDs 0, 1, and 2. Note that
+Path ID 0 is already used for the initial path.
+
+~~~
+   Client                                                  Server
+
+   (Exchanges start on default path)
+   1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
+             <-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
+             <-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
+   ...
+   (starts new path)
+   1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] -->
+                           Checks AEAD using nonce(Path ID 1, PN 0)
+        <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
+                                             PATH_ACK[PathID=1, PN=0]
+   Checks AEAD using nonce(Path ID 1, PN 0)
+   1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
+            PATH_ACK[PathID=1, PN=0], ... -->
+
+~~~
+{: #fig-example-new-path title="Example of new path establishment"}
+
+In {{fig-example-new-path}}, the endpoints first exchange
+new available connection IDs with the PATH_NEW_CONNECTION_ID frame.
+In this example, the client provides one connection ID (C1 with
+Path ID 1), and server provides two connection IDs
+(S1 with Path ID 1, and S2 with Path ID 2).
+
+Before the client opens a new path by sending a packet on that path
+with a PATH_CHALLENGE frame, it has to check whether there is
+an unused connection IDs for the same unused Path ID available for each side.
+In this example the Path ID 1 is used which is the smallest unused Path ID available
+as recommended in {{consume-retire-cid}}.
+Respectively, the client chooses the connection ID S1
+as the Destination Connection ID of the new path.
+
+### Relation to Migration and Probing
+
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
@@ -417,6 +508,13 @@ in this draft, endpoints have to consider the reception of
 a packet with a connection ID associated to an
 so far unused Path ID as an attempt to establish a new path.
 
+The receiver may observe a connection ID associated with a used Path ID
+on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
+as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
+but MUST use a new connection ID for the same Path ID.
+
+### Address Validation Token
+
 As specified in {{Section 9.3 of QUIC-TRANSPORT}}, the server is expected to send a new
 address validation token to a client following the successful validation of a
 new client address. The client will receive several tokens. When considering using a token
@@ -428,9 +526,111 @@ a server should issue a token that is capable of validating
 any of the previously validated addresses. Further guidance on token usage can be
 found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
+## Handling Connection IDs {#consume-retire-cid}
+
+With the multipath extension, each connection ID is associated with one path
+that is identified by the Path ID that is specified in the Path Identifier field of
+the PATH_NEW_CONNECTION_ID frame {{mp-new-conn-id-frame}}.
+The Path ID 0 indicates the initial path of the connection.
+Respectively, the connection IDs used during the handshake belong to the initial path
+with Path ID 0.
+
+### Issuing New Connection IDs
+
+The PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
+In order to let the peer open new paths, it is RECOMMENDED to proactively
+issue at least one Connection ID for each unused Path ID up to the
+minimum of the peer's and the local Maximum Path ID limits.
+
+When issuing path-specific connection IDs, an endpoint associates a sequence number
+as specified in {{Section 5.1.1 of QUIC-TRANSPORT}}. Each Path ID has its own
+connection ID sequence number space whose initial value is 0. On non-initial paths
+(i.e., Path ID different from 0), the initial path connection ID is provided by a
+PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
+
+Each endpoint maintains the set of connection IDs received from its peer for each path,
+any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
+Usually, it is desired to provide at least one additional connection ID for
+all used paths, to allow for migration.
+
+As further specified in {{Section 5.1 of QUIC-TRANSPORT}} connection IDs
+cannot be issued more than once on the same connection
+and therefore are unique for the scope of the connection,
+regardless of the associated Path ID.
+
+Over a given path, both endpoints use connection IDs associated to a given Path
+ID. To initiate a path, each endpoint needs to advertise at least one connection ID
+for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
+in the issuing of Path IDs through their connection ID advertisements as path initiation
+requires available connection IDs for the same Path ID on both sides. For instance,
+if the maximum Path ID limit is 2 and the endpoint wants to provide connection IDs
+for only one Path ID inside range \[1, 2\], it should select Path ID 1 (and not Path
+ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
+creating paths. However, endpoints cannot expect to receive new connection IDs
+or path initiation attempts with in order use of Path IDs
+due to out-of-order delivery or path validation failure.
+
+Endpoints MUST NOT issue new connection IDs with Path IDs greater than
+the Maximum Path Identifier field in MAX_PATH_ID frames (see {{max-paths-frame}})
+or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
+Receipt of a frame with a greater Path ID is a connection error as specified
+in {{frames}}.
+When an endpoint finds it has not enough available unused path identifiers,
+it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
+(when limited by the sender) or a PATHS_BLOCKED frame
+(see Section {{paths-and-cids-blocked-frame}}) to inform the peer that a new path
+identifier was needed but the current limit set by the peer prevented the
+creation of the new path.
+
+### Rotating and Retiring Connection IDs
+
+{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the connection ID it uses to another available one
+at any time during the connection. For the extension specified in
+this draft, endpoints MUST only rotate to another connection IDs associated
+to the same Path ID. Use of a connection ID associated with
+another Path ID will be considered as an attempt to open a new path instead.
+
+{{Section 5.1.2. of QUIC-TRANSPORT}} specifies the retirement of connection IDs.
+In order to identify a connection ID correctly when the multipath extension is used,
+endpoints have to use the PATH_RETIRE_CONNECTION_ID frame instead
+of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
+connection ID sequence number, at least for all paths with a Path ID other than 0.
+Endpoints can also use PATH_NEW_CONNECTION_ID and
+PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
+however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
+is still valid as well and endpoints need to process these frames accordingly
+as corresponding to Path ID 0.
+
+If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
+those that are not used anymore, and the server is supposed to provide
+replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
+Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
+will not be used anymore. In response, if the path is still open, the peer
+SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
+While it it expected that the peer provides at least one unused connection ID
+for all active paths using the PATH_NEW_CONNECTION_ID after retirement
+of an old connection ID, an endpoint MAY send
+a PATH_CIDS_BLOCKED (see {{paths-and-cids-blocked-frame}})
+if it wants to change the connection ID but no
+unused connection ID for a certain path is available. Further, an
+endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
+open a new path and has no connection IDs available for an unused
+path ID even though the Maximum Path Identifier value would allow
+for more paths.
+
+Retirement of connection IDs will not retire the Path ID
+that corresponds to the connection ID or any other path resources
+as the packet number space is associated with a path.
+
+The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
+on the path that the retired connection ID was used on but has
+to use a different connection ID for the same Path ID when doing so.
+
 ## Path Status Management {#path-state}
 
-An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames to inform the peer that it should
+An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
+{{path-backup-available-frame}}) to inform the peer that it should
 send packets with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
@@ -483,15 +683,21 @@ CONNECTION_CLOSE ({{Section 10.2 of QUIC-TRANSPORT}}) or a Stateless
 Reset ({{Section 10.3 of QUIC-TRANSPORT}}) closes the connection.
 
 An endpoint that wants to close a path MUST explicitly
-terminate the path by sending a PATH_ABANDON frame.
+terminate the path by sending a PATH_ABANDON frame (see {{path-abandon-frame}}).
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
 does not indicate path abandonment (see further {{consume-retire-cid}}).
 This is true whether the decision to close the path results
 from implicit signals such as idle time or packet losses
 (see {{idle-time-close}}) or for any other reason, such as management
-of local resources. It is also possible to abandon a path for which no
-packet has been sent (see {{abandon-early}}).
+of local resources.
+
+It is also possible that an endpoint will receive a PATH_ABANDON frame
+before receiving or sending any traffic on a path. For example, if the client
+tries to initiate a path and the path cannot be established, it will send a
+PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
+to abandon a path for any reason, for example, removing a hole from
+the sequence of path IDs in use. This is not an error.
 
 When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding
 PATH_ABANDON frame if it has not already done so. It MUST stop sending
@@ -539,6 +745,34 @@ the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
+### Path Closure Example
+
+{{fig-example-path-close1}} illustrates an example of path closure.
+
+In this example, the client wants to close the path with Path ID 0.
+It sends the PATH_ABANDON frame to terminate the path with Path ID 0
+on the path with Path ID 1 using the connection ID S1. After receiving
+the PATH_ABANDON frame for Path ID 0, the server also sends a
+PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
+on the same path using connection ID C1.
+
+~~~
+Client                                                      Server
+
+(client tells server to abandon a path with Path ID 0)
+1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=0]->
+                           (server tells client to abandon a path)
+                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=0],
+                                           PATH_ACK[PATH ID=1, PN=X]
+1-RTT[U]: DCID=S1 PATH_ACK[Path ID=1, PN=Y] ->
+~~~
+{: #fig-example-path-close1 title="Example of closing a path."}
+
+Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
+the last acknowledgment still needs to be send on a different path
+as no further packets can be sent on the abandoned path after the
+PATH_ABANDON frame.
+
 ### Avoiding Spurious Stateless Resets {#spurious-stateless-reset}
 
 The peers that send a PATH_ABANDON frame MUST treat all connection
@@ -561,7 +795,7 @@ The immediate retirement of connection identifiers received for the
 path guarantees that spurious stateless reset packets
 sent by the peer will not cause the closure of the QUIC connection.
 
-### Handling PATH_ACK for abandoned paths {#ack-after-abandon}
+### Handling PATH_ACK for Abandoned Paths {#ack-after-abandon}
 
 When an endpoint decides to send a PATH_ABANDON frame, there may
 still be some unacknowledged packets. Some of these packets may well
@@ -575,505 +809,6 @@ path being abandoned.
 
 PATH_ACK frames received after the endpoint has entirely deleted
 a path MUST be silently discarded.
-
-### Idle Timeout {#idle-time-close}
-
-{{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
-for too long. The connection idle timeout when using the multipath extension is defined
-as "no packet received on any path for the duration of the idle timeout".
-When only one path is available, servers MUST follow the specifications
-in {{QUIC-TRANSPORT}}.
-
-This document does not specify per-path idle timeouts. An endpoint
-can decide to close a path at any time, whether the path is in active
-use or not, by sending a PATH_ABANDON frame. It is not required
-to send a PATH_ABANDON frame at any specific point in time.
-For example, an endpoint may wait until it will anyway send another frame.
-
-If a path is not actively used for a while, it might not be usable anymore,
-e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
-can send ack-eliciting packets such as packets containing PING frames
-({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
-As discussed in
-{{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval depends
-on the timeout in the middlebox.
-
-If a path was not actively used for a while, an endpoint can
-probe it before switching to active use if there are still other paths
-that are currently usable.
-
-### Early Abandon {#abandon-early}
-
-There are scenarios in which an endpoint will receive a PATH_ABANDON frame
-before receiving or sending any traffic on a path. For example, if the client
-tries to initiate a path and the path cannot be established, it will send a
-PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
-to abandon a path for any reason, for example, removing a hole from
-the sequence of path IDs in use. This is not an error. An endpoint that
-receives such a PATH_ABANDON frame must treat it as specified in {{path-close}}.
-
-## Allocating, Consuming, and Retiring Connection IDs {#consume-retire-cid}
-
-With the multipath extension, each connection ID is associated with one path
-that is identified by the Path ID that is specified in the Path Identifier field of
-the PATH_NEW_CONNECTION_ID frame {{mp-new-conn-id-frame}}.
-The Path ID 0 indicates the initial path of the connection.
-Respectively, the connection IDs used during the handshake belong to the initial path
-with Path ID 0.
-The PATH_NEW_CONNECTION_ID frame is used to issue new connection IDs for all paths.
-In order to let the peer open new paths, it is RECOMMENDED to proactively
-issue a Connection ID for at least one unused Path ID, as long as it remains
-compatible with the peer's Maximum Path ID limit.
-
-When issuing path-specific connection IDs, an endpoint associates a sequence number
-as specified in {{Section 5.1.1 of QUIC-TRANSPORT}}. Each Path ID has its own
-connection ID sequence number space whose initial value is 0. On non-initial paths
-(i.e., Path ID different from 0), the initial path connection ID is provided by a
-PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
-
-Each endpoint maintains the set of connection IDs received from its peer for each path,
-any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
-Usually, it is desired to provide at least one additional connection ID for
-all used paths, to allow for migration.
-As further specified in {{Section 5.1 of QUIC-TRANSPORT}} connection IDs
-cannot be issued more than once on the same connection
-and therefore are unique for the scope of the connection,
-regardless of the associated Path ID.
-
-{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
-can change the connection ID it uses to another available one
-at any time during the connection. For the extension specified in
-this draft, endpoints MUST only rotate to another connection IDs associated
-to the same Path ID. Use of a connection ID associated with
-another Path ID will be considered as an attempt to open a new path instead.
-
-Over a given path, both endpoints use connection IDs associated to a given Path
-ID. To initiate a path, each endpoint needs to advertise at least one connection ID
-for a given Path ID to its peer. Endpoints SHOULD NOT introduce discontinuity
-in the issuing of Path IDs through their connection ID advertisements as path initiation
-requires available connection IDs for the same Path ID on both sides. For instance,
-if the maximum Path ID limit is 2 and the endpoint wants to provide connection IDs
-for only one Path ID inside range \[1, 2\], it should select Path ID 1 (and not Path
-ID 2). Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
-creating paths. However, endpoints cannot expect to receive new connection IDs
-or path initiation attempts with in order use of Path IDs
-due to out-of-order delivery or path validation failure.
-
-{{Section 5.1.2. of QUIC-TRANSPORT}} specifies the retirement of connection IDs.
-In order to identify a connection ID correctly when the multipath extension is used,
-endpoints have to use the PATH_RETIRE_CONNECTION_ID frame instead
-of the RETIRE_CONNECTION_ID frame to indicate the respective Path ID together with the
-connection ID sequence number, at least for all paths with a Path ID other than 0.
-Endpoints can also use PATH_NEW_CONNECTION_ID and
-PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
-however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
-is still valid as well and endpoints need to process these frames accordingly
-as corresponding to Path ID 0.
-
-Endpoints MUST NOT issue new connection IDs with Path IDs greater than
-the Maximum Path Identifier field in MAX_PATH_ID frames (see {{max-paths-frame}})
-or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
-Receipt of a frame with a greater Path ID is a connection error as specified
-in {{frames}}.
-When an endpoint finds it has not enough available unused path identifiers,
-it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
-(when limited by the sender) or a PATHS_BLOCKED frame
-(see Section {{paths-and-cids-blocked-frame}}) to inform the peer that a new path
-identifier was needed but the current limit set by the peer prevented the
-creation of the new path.
-
-If the client has consumed all the allocated connection IDs for a path, it is supposed to retire
-those that are not used anymore, and the server is supposed to provide
-replacements for that path, see {{Section 5.1.2. of QUIC-TRANSPORT}}.
-Sending a PATH_RETIRE_CONNECTION_ID frame indicates that the connection ID
-will not be used anymore. In response, if the path is still open, the peer
-SHOULD provide new connection IDs using PATH_NEW_CONNECTION_ID frames.
-
-Retirement of connection IDs will not retire the Path ID
-that corresponds to the connection ID or any other path resources
-as the packet number space is associated with a path.
-
-The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
-on the path that the retired connection ID was used on but has
-to use a different connection ID for the same Path ID when doing so.
-
-
-# Packet Protection {#multipath-aead}
-
-Packet protection for QUIC version 1 is specified in {{Section 5 of QUIC-TLS}}.
-The general principles of packet protection are not changed for
-the multipath extension specified in this document.
-No changes are needed for setting packet protection keys,
-initial secrets, header protection, use of 0-RTT keys, receiving
-out-of-order protected packets, receiving protected packets,
-or retry packet integrity. However, the use of multiple number spaces
-for 1-RTT packets requires changes in AEAD usage.
-
-## Nonce Calculation
-
-{{Section 5.3 of QUIC-TLS}} specifies AEAD usage, and in particular
-the use of a nonce, N, formed by combining the packet protection IV
-with the packet number. When multiple packet number spaces are used,
-the packet number alone would not guarantee the uniqueness of the nonce.
-Therefore, the nonce N is calculated by combining the packet protection
-IV with the packet number and with the least significant 32 bits of the
-Path ID. In order to guarantee the uniqueness of the nonce, the Path ID
-is limited to a max value of 2^32-1.
-
-To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
-significant 32 bits of the Path ID in network byte order,
-two zero bits, and the 62 bits of the reconstructed QUIC packet number in
-network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
-is left-padded with zeros to the size of the IV. The exclusive OR of the padded
-packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
-is less than 12 bytes MUST NOT be used with the QUIC multipath extension.
-
-For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
-the Path ID is `3`, and the packet number is `aead`,
-the nonce will be set to `6b2611489cba2b63a9e873e2`.
-
-## Key Update {#multipath-key-update}
-
-The Key Phase bit update process is specified in
-{{Section 6 of QUIC-TLS}}. The general principles of key update
-are not changed in this specification. Following {{QUIC-TLS}}, the Key Phase bit is used to
-indicate which packet protection keys are used to protect the packet.
-The Key Phase bit is toggled to signal each subsequent key update.
-
-Because of network delays, packets protected with the older key might
-arrive later than the packets protected with the new key, however receivers
-can solely rely on the Key Phase bit to determine the corresponding packet
-protection key, assuming that there is sufficient interval between two
-consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
-
-When this specification is used, endpoints SHOULD wait for at least three times
-the largest PTO among all the paths before initiating a new key update
-after receiving an acknowledgment that confirms the receipt of the previous key
-update. This interval is different from that in {{QUIC-TLS}}
-which used three times the PTO of the sole single path.
-
-The choice of three times the largest PTO is a trade-off:
-Packets that arrive after their decryption key has been discarded will be dropped.
-Longer delays reduce the probability of losing packets but keeping old keys
-longer can negatively impact the security of the protocol.
-The use of three times the largest PTO aims to minimize packet lost for all paths
-and therefore limits the impact on performance.
-
-Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
-so sending multiple packets with Key Phase bit flipping at the same time
-should not cause linkability issue.
-
-# Examples
-
-## Path Establishment
-
-{{fig-example-new-path}} illustrates an example of new path establishment
-using multiple packet number spaces.
-
-In this example it is assumed that both endpoints have
-indicated an initial_max_path_id value of at least 2, which means
-both endpoints can use Path IDs 0, 1, and 2. Note that
-Path ID 0 is already used for the initial path.
-
-~~~
-   Client                                                  Server
-
-   (Exchanges start on default path)
-   1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
-             <-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
-             <-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
-   ...
-   (starts new path)
-   1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] -->
-                           Checks AEAD using nonce(Path ID 1, PN 0)
-        <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
-                                             PATH_ACK[PathID=1, PN=0]
-   Checks AEAD using nonce(Path ID 1, PN 0)
-   1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
-            PATH_ACK[PathID=1, PN=0], ... -->
-
-~~~
-{: #fig-example-new-path title="Example of new path establishment"}
-
-In {{fig-example-new-path}}, the endpoints first exchange
-new available connection IDs with the NEW_CONNECTION_ID frame.
-In this example, the client provides one connection ID (C1 with
-Path ID 1), and server provides two connection IDs
-(S1 with Path ID 1, and S2 with Path ID 2).
-
-Before the client opens a new path by sending a packet on that path
-with a PATH_CHALLENGE frame, it has to check whether there is
-an unused connection IDs for the same unused Path ID available for each side.
-In this example the Path ID 1 is used which is the smallest unused Path ID available
-as recommended in {{consume-retire-cid}}.
-Respectively, the client chooses the connection ID S1
-as the Destination Connection ID of the new path.
-
-
-## Path Closure
-
-{{fig-example-path-close1}} illustrates an example of path closure.
-
-In this example, the client wants to close the path with Path ID 0.
-It sends the PATH_ABANDON frame to terminate the path with Path ID 0
-on the path with Path ID 1 using the connection ID S1. After receiving
-the PATH_ABANDON frame for Path ID 0, the server also send a
-PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
-on the same path using connection ID C1.
-
-~~~
-Client                                                      Server
-
-(client tells server to abandon a path with Path ID 0)
-1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=0]->
-                           (server tells client to abandon a path)
-                    <-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=0],
-                                           PATH_ACK[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S1 PATH_ACK[Path ID=1, PN=Y] ->
-~~~
-{: #fig-example-path-close1 title="Example of closing a path."}
-
-Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
-the last acknowledgment still needs to be send on a different path
-as no further packets can be sent on the abandoned path after the
-PATH_ABANDON frame.
-
-
-# Implementation Considerations {#impl-consideration}
-
-## Number Spaces
-
-As stated in {{introduction}}, when the multipath extension is negotiated, each
-path uses a separate packet number space.
-This is a major difference from
-{{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
-Handshake and Application packets).
-
-The relation between packet number spaces and paths is fixed.
-Connection IDs are separately allocated for each Path ID.
-Rotating the connection ID on a path does not change the Path ID.
-NAT rebinding, though it changes the 4-tuple of the path,
-also does not change the path identifier.
-The packet number space does not change when connection ID
-rotation happens within a given Path ID.
-
-Data associated with the transmission and reception such RTT measurements,
-congestion control state, or loss recovery are maintained per packet number
-space and as such per Path ID.
-
-
-## Congestion Control {#congestion-control}
-
-When the QUIC multipath extension is used, senders manage per-path
-congestion status as required in {{Section 9.4 of QUIC-TRANSPORT}}.
-However, in {{QUIC-TRANSPORT}} only one path is assumed and as such
-the requirement is to reset the congestion control status on path migration.
-With the multipath extension, multiple paths can be used simultaneously,
-therefore separate congestion control state is maintained for each path.
-This means a sender is not allowed to send more data on a given path
-than congestion control for that path indicates.
-
-When a Multipath QUIC connection uses two or more paths, there is no
-guarantee that these paths are fully disjoint. When two (or more paths)
-share the same bottleneck, using a standard congestion control scheme
-could result in an unfair distribution of the bandwidth with
-the multipath connection getting more bandwidth than competing single
-paths connections. Multipath TCP uses the linked increased algorithm (LIA)
-congestion control scheme
-specified in {{RFC6356}} to solve this problem.  This scheme can
-immediately be adapted to Multipath QUIC. Other coupled congestion
-control schemes have been proposed for Multipath TCP such as {{OLIA}}.
-
-## Computing Path RTT {#compute-rtt}
-
-Acknowledgment delays are the sum of two one-way delays, the delay
-on the packet sending path and the delay on the return path chosen
-for the acknowledgments.  When different paths have different
-characteristics, this can cause acknowledgment delays to vary
-widely.  Consider for example a multipath transmission using both a
-terrestrial path, with a latency of 50ms in each direction, and a
-geostationary satellite path, with a latency of 300ms in both
-directions.  The acknowledgment delay will depend on the combination
-of paths used for the packet transmission and the ACK transmission,
-as shown in {{fig-example-ack-delay}}.
-
-
-ACK Path \ Data path         | Terrestrial   | Satellite
------------------------------|-------------------|-----------------
-Terrestrial | 100ms  | 350ms
-Satellite   | 350ms  | 600ms
-{: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
-
-The PATH_ACK frames describe packets that were sent on the specified path,
-but they may be received through any available path. There is an
-understandable concern that if successive acknowledgments are received
-on different paths, the measured RTT samples will fluctuate widely,
-and that might result in poor performance. While this may be a concern,
-the actual behavior is complex.
-
-The computed values reflect both the state of the network path and the
-scheduling decisions by the sender of the PATH_ACK frames. In the example
-above, we may assume that the PATH_ACK will be sent over the terrestrial
-link, because that provides the best response time. In that case, the
-computed RTT value for the satellite path will be about 350ms. This
-lower than the 600ms that would be measured if the PATH_ACK came over
-the satellite channel, but it is still the right value for computing
-for example the PTO timeout: if a PATH_ACK is not received after more
-than 350ms, either the data packet or its PATH_ACK were probably lost.
-
-The simplest implementation is to compute smoothed_rtt and rttvar per
-{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
-received. This algorithm will provide good results,
-except if the set of paths changes and the PATH_ACK sender
-revisits its sending preferences. This is not very
-different from what happens on a single path if the routing changes.
-The RTT, RTT variance and PTO estimates will rapidly converge to
-reflect the new conditions.
-There is however an exception: some congestion
-control functions rely on estimates of the minimum RTT. It might be prudent
-for nodes to remember the path over which the PATH_ACK that produced
-the minimum RTT was received, and to restart the minimum RTT computation
-if that path is abandoned.
-
-## Packet Scheduling {#packet-scheduling}
-
-The transmission of QUIC packets on a regular QUIC connection is regulated
-by the arrival of data from the application and the congestion control
-scheme. QUIC packets that increase the number of bytes in flight can only be sent
-when the congestion window allows it.
-Multipath QUIC implementations also need to include a packet scheduler
-that decides, among the paths whose congestion window is open, the path
-over which the next QUIC packet will be sent. Most frames, including
-control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
-exceptions), can be sent and received on any open path. The scheduling
-is a local decision, based on the preferences of the application and the
-implementation.
-
-Note that this implies that an endpoint may send and receive PATH_ACK
-frames on a path different from the one that carried the acknowledged
-packets. As noted in {{compute-rtt}} the values computed using
-the standard algorithm reflect both the characteristics of the
-path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
-faster if the scheduling strategy is stable, but besides that
-implementations can choose between multiple strategies such as sending
-PATH_ACK frames on the path they acknowledge packets, or sending
-PATH_ACK frames on the shortest path, which results in shorter control loops
-and thus better performance. However, since packets that only carry PATH_ACK frames
-are not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),
-senders should carefully consider the load induced
-by these packets, especially if the capacity is unknown on that path.
-
-## Retransmissions
-
-Simultaneous use of multiple paths enables different
-retransmission strategies to cope with losses such as:
-a) retransmitting lost frames over the
-same path, b) retransmitting lost frames on a different or
-dedicated path, and c) duplicate lost frames on several paths (not
-recommended for general purpose use due to the network
-overhead). While this document does not preclude a specific
-strategy, more detailed specification is out of scope.
-
-As noted in {{Section 2.2 of QUIC-TRANSPORT}}, STREAM frame boundaries are not
-expected to be preserved when data is retransmitted. Especially when STREAM
-frames have to be retransmitted over a different path with a smaller MTU limit,
-new smaller STREAM frames might need to be sent instead.
-
-## Handling PTO
-
-An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
-for detecting packet loss on each individual path. A special case happens when
-the PTO timer expires. According to {{QUIC-RECOVERY}}, no packet will be declared
-lost until either the packet sender receives a new acknowledgement for this path,
-or the path itself is finally declared broken. This cautious process minimizes
-the risk of spurious retransmissions, but it may cause significant delivery delay
-for the frames contained in these "lost packets".
-
-Endpoints could take advantage of the multipath extension, and retransmit the content
-of the delayed packets on other available paths if the congestion control window on these
-paths allows.
-
-## Handling different PMTU sizes
-
-An implementation should take care to handle different PMTU sizes across
-multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
-DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
-One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to
-each path. The benefit of such an approach is to simplify retransmission
-processing as the content of lost packets initially sent on one path can be sent
-on another path without further frame scheduling adaptations.
-
-## Keep Alive
-
-The QUIC specification defines an optional keep alive process, see {{Section 5.3 of QUIC-TRANSPORT}}.
-Implementations of the multipath extension should map this keep alive process to a number of paths.
-Some applications may keep only one path alive, while others could prefer to maintain
-liveliness on two or more paths during the connection lifetime.
-Different applications will likely require different strategies.
-Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
-on each of these paths before the idle timeout expires.
-
-## Connection ID Changes
-
-{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
-can change the connection ID it uses to another available one
-at any time during the connection. As such a sole change of the Connection
-ID without any change in the address does not indicate a path change and
-the endpoint can keep the same congestion control and RTT measurement state.
-
-## Migration and NAT Rebindings {#migration}
-
-While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. Servers observing a 4-tuple change will
-perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
-If path validation process succeeds, the endpoints set
-the path's congestion controller and round-trip time
-estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
-
-{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
-a peer address if that address has been seen recently. However, when the
-multipath extension is used and an endpoint has multiple addresses that
-could lead to switching between different paths, it should rather maintain
-multiple open paths instead.
-
-More generally, while migration cannot be avoided in case of network-based
-NAT rebindings, opening a new path instead of active client migration
-should be strongly preferred when the multipath extension is supported.
-This enables a smoother handover and allows a simplified migration
-handling at the server as NAT rebindings imply immediate loss of the old
-address.
-
-## Using multiple paths on the same 4-tuple
-
-As noted in {{basic-design-points}}, it is possible to create paths that
-refer to the same 4-tuple. For example, the endpoints may want
-to create paths that use different Differentiated Service {{?RFC2475}} markings.
-This could be done in conjunction with scheduling algorithms
-that match streams to paths, so that for example data frames for
-low priority streams are sent over low priority paths.
-Since these paths use different path IDs, they can be managed
-independently to suit the needs of the application.
-
-There may be cases in which paths are created with different 4-tuples,
-but end up using the same 4-tuples as a consequence of path
-migrations. For example:
-
-* Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
-* Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
-* both paths are used for a while.
-* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
-* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
-
-Such unintentional use of the same 4-tuple on different paths ought to
-be rare. When they happen, the two paths would be redundant, and the
-endpoint will want to close one of them.
-Uncoordinated abandon from both ends of the connection may result in deleting
-two paths instead of just one. To avoid this pitfall, endpoints could
-adopt a simple coordination rule, such as only letting the client
-initiate closure of duplicate paths, or perhaps relying on
-the application protocol to decide which paths should be closed.
-
 
 # New Frames {#frames}
 
@@ -1156,7 +891,7 @@ a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 Use of the PATH_ABANDON frame is specified in section {{path-close}}.
 
-## PATH_BACKUP and PATH_AVAILABLE frames {#path-backup-available-frame}
+## PATH_AVAILABLE and PATH_BACKUP frames {#path-backup-available-frame}
 
 PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
@@ -1184,7 +919,7 @@ PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 ~~~
 {: #fig-path-backup-format title="PATH_BACKUP Frame Format"}
 
-Both PATH_AVAILABLE and PATH_BACKUP Frames contain the following fields:
+Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:
 
 Path Identifier:
 : The Path ID the status update corresponds to.
@@ -1365,6 +1100,9 @@ Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
 like updating the new Max Path ID value, but informs the peer that the maximum path identifier limit
 or the absence of unused connection IDs prevented the creation or the usage of paths.
+If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
+no action is taken by the peer, this is likely a deliberate decision by the peer and
+repeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.
 
 PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}}.
 
@@ -1390,6 +1128,7 @@ PATH_CIDS_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-
 PATH_CIDS_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
   Path Identifier (i),
+  Next Sequence Number (i),
 }
 ~~~
 {: #fig-path-cid-blocked-frame-format title="PATH_CIDS_BLOCKED Frame Format"}
@@ -1397,8 +1136,16 @@ PATH_CIDS_BLOCKED Frame {
 Path Identifier:
 : Identifier of the path for which unused connection IDs are not available.
 
+Next Sequence Number:
+: The next sequence number that is expected to be issued for a connection ID for this path by the peer.
+
 Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
+
+
+Receipt of a value of Next Sequence Number that is higher than
+the sequence number of the next expected to be issued connection ID for this path
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
 PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
 if the path is still blocked when the lost is detected.
@@ -1431,6 +1178,267 @@ but has not provided a corresponding connection ID for the path ID
 (or the packet containing the connection IDs has not arrived yet).
 
 
+# Implementation Considerations {#impl-consideration}
+
+## Number Spaces
+
+As stated in {{introduction}}, when the multipath extension is negotiated, each
+path uses a separate packet number space.
+This is a major difference from
+{{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
+Handshake and Application packets).
+
+The relation between packet number spaces and paths is fixed.
+Connection IDs are separately allocated for each Path ID.
+Rotating the connection ID on a path does not change the Path ID.
+NAT rebinding, though it changes the 4-tuple of the path,
+also does not change the path identifier.
+The packet number space does not change when connection ID
+rotation happens within a given Path ID.
+
+Data associated with the transmission and reception such RTT measurements,
+congestion control state, or loss recovery are maintained per packet number
+space and as such per Path ID.
+
+## Congestion Control {#congestion-control}
+
+When the QUIC multipath extension is used, senders manage per-path
+congestion status as required in {{Section 9.4 of QUIC-TRANSPORT}}.
+However, in {{QUIC-TRANSPORT}} only one path is assumed and as such
+the requirement is to reset the congestion control status on path migration.
+With the multipath extension, multiple paths can be used simultaneously,
+therefore separate congestion control state is maintained for each path.
+This means a sender is not allowed to send more data on a given path
+than congestion control for that path indicates.
+
+When a Multipath QUIC connection uses two or more paths, there is no
+guarantee that these paths are fully disjoint. When two (or more paths)
+share the same bottleneck, using a standard congestion control scheme
+could result in an unfair distribution of the bandwidth with
+the multipath connection getting more bandwidth than competing single
+paths connections. Multipath TCP uses the linked increased algorithm (LIA)
+congestion control scheme
+specified in {{RFC6356}} to solve this problem.  This scheme can
+immediately be adapted to Multipath QUIC. Other coupled congestion
+control schemes have been proposed for Multipath TCP such as {{OLIA}}.
+
+## Computing Path RTT {#compute-rtt}
+
+Acknowledgment delays are the sum of two one-way delays, the delay
+on the packet sending path and the delay on the return path chosen
+for the acknowledgments.  When different paths have different
+characteristics, this can cause acknowledgment delays to vary
+widely.  Consider for example a multipath transmission using both a
+terrestrial path, with a latency of 50ms in each direction, and a
+geostationary satellite path, with a latency of 300ms in both
+directions.  The acknowledgment delay will depend on the combination
+of paths used for the packet transmission and the ACK transmission,
+as shown in {{fig-example-ack-delay}}.
+
+
+ACK Path \ Data path         | Terrestrial   | Satellite
+-----------------------------|-------------------|-----------------
+Terrestrial | 100ms  | 350ms
+Satellite   | 350ms  | 600ms
+{: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
+
+The PATH_ACK frames describe packets that were sent on the specified path,
+but they may be received through any available path. There is an
+understandable concern that if successive acknowledgments are received
+on different paths, the measured RTT samples will fluctuate widely,
+and that might result in poor performance. While this may be a concern,
+the actual behavior is complex.
+
+The computed values reflect both the state of the network path and the
+scheduling decisions by the sender of the PATH_ACK frames. In the example
+above, we may assume that the PATH_ACK will be sent over the terrestrial
+link, because that provides the best response time. In that case, the
+computed RTT value for the satellite path will be about 350ms. This
+lower than the 600ms that would be measured if the PATH_ACK came over
+the satellite channel, but it is still the right value for computing
+for example the PTO timeout: if a PATH_ACK is not received after more
+than 350ms, either the data packet or its PATH_ACK were probably lost.
+
+The simplest implementation is to compute smoothed_rtt and rttvar per
+{{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
+received. This algorithm will provide good results,
+except if the set of paths changes and the PATH_ACK sender
+revisits its sending preferences. This is not very
+different from what happens on a single path if the routing changes.
+The RTT, RTT variance and PTO estimates will rapidly converge to
+reflect the new conditions.
+There is however an exception: some congestion
+control functions rely on estimates of the minimum RTT. It might be prudent
+for nodes to remember the path over which the PATH_ACK that produced
+the minimum RTT was received, and to restart the minimum RTT computation
+if that path is abandoned.
+
+## Packet Scheduling {#packet-scheduling}
+
+The transmission of QUIC packets on a regular QUIC connection is regulated
+by the arrival of data from the application and the congestion control
+scheme. QUIC packets that increase the number of bytes in flight can only be sent
+when the congestion window allows it.
+Multipath QUIC implementations also need to include a packet scheduler
+that decides, among the paths whose congestion window is open, the path
+over which the next QUIC packet will be sent. Most frames, including
+control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
+exceptions), can be sent and received on any open path. The scheduling
+is a local decision, based on the preferences of the application and the
+implementation.
+
+Note that this implies that an endpoint may send and receive PATH_ACK
+frames on a path different from the one that carried the acknowledged
+packets. As noted in {{compute-rtt}} the values computed using
+the standard algorithm reflect both the characteristics of the
+path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
+faster if the scheduling strategy is stable, but besides that
+implementations can choose between multiple strategies such as sending
+PATH_ACK frames on the path they acknowledge packets, or sending
+PATH_ACK frames on the shortest path, which results in shorter control loops
+and thus better performance. However, since packets that only carry PATH_ACK frames
+are not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),
+senders should carefully consider the load induced
+by these packets, especially if the capacity is unknown on that path.
+
+## Retransmissions
+
+Simultaneous use of multiple paths enables different
+retransmission strategies to cope with losses such as:
+a) retransmitting lost frames over the
+same path, b) retransmitting lost frames on a different or
+dedicated path, and c) duplicate lost frames on several paths (not
+recommended for general purpose use due to the network
+overhead). While this document does not preclude a specific
+strategy, more detailed specification is out of scope.
+
+As noted in {{Section 2.2 of QUIC-TRANSPORT}}, STREAM frame boundaries are not
+expected to be preserved when data is retransmitted. Especially when STREAM
+frames have to be retransmitted over a different path with a smaller MTU limit,
+new smaller STREAM frames might need to be sent instead.
+
+## Handling PTO
+
+An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
+for detecting packet loss on each individual path. A special case happens when
+the PTO timer expires. According to {{QUIC-RECOVERY}}, no packet will be declared
+lost until either the packet sender receives a new acknowledgement for this path,
+or the path itself is finally declared broken. This cautious process minimizes
+the risk of spurious retransmissions, but it may cause significant delivery delay
+for the frames contained in these "lost packets".
+
+Endpoints could take advantage of the multipath extension, and retransmit the content
+of the delayed packets on other available paths if the congestion control window on these
+paths allows.
+
+## Handling Different PMTU Sizes
+
+An implementation should take care to handle different PMTU sizes across
+multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
+DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
+One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to
+each path. The benefit of such an approach is to simplify retransmission
+processing as the content of lost packets initially sent on one path can be sent
+on another path without further frame scheduling adaptations.
+
+## Connection ID Changes
+
+{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the connection ID it uses to another available one
+at any time during the connection. As such a sole change of the Connection
+ID without any change in the address does not indicate a path change and
+the endpoint can keep the same congestion control and RTT measurement state.
+
+## Migration and NAT Rebindings {#migration}
+
+While endpoints assign a connection ID to a specific sending 4-tuple,
+networks events such as NAT rebinding may make the packet's receiver
+observe a different 4-tuple. Servers observing a 4-tuple change will
+perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
+
+{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
+a peer address if that address has been seen recently. However, when the
+multipath extension is used and an endpoint has multiple addresses that
+could lead to switching between different paths, it should rather maintain
+multiple open paths instead.
+
+More generally, while migration cannot be avoided in case of network-based
+NAT rebindings, opening a new path instead of active client migration
+should be strongly preferred when the multipath extension is supported.
+This enables a smoother handover and allows a simplified migration
+handling at the server as NAT rebindings imply immediate loss of the old
+address.
+
+## Using multiple paths on the same 4-tuple
+
+As noted in {{basic-design-points}}, it is possible to create paths that
+refer to the same 4-tuple. For example, the endpoints may want
+to create paths that use different Differentiated Service {{?RFC2475}} markings.
+This could be done in conjunction with scheduling algorithms
+that match streams to paths, so that for example data frames for
+low priority streams are sent over low priority paths.
+Since these paths use different path IDs, they can be managed
+independently to suit the needs of the application.
+
+There may be cases in which paths are created with different 4-tuples,
+but end up using the same 4-tuples as a consequence of path
+migrations. For example:
+
+* Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
+* Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
+* both paths are used for a while.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
+* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
+
+Such unintentional use of the same 4-tuple on different paths ought to
+be rare. When they happen, the two paths would be redundant, and the
+endpoint will want to close one of them.
+Uncoordinated abandon from both ends of the connection may result in deleting
+two paths instead of just one. To avoid this pitfall, endpoints could
+adopt a simple coordination rule, such as only letting the client
+initiate closure of duplicate paths, or perhaps relying on
+the application protocol to decide which paths should be closed.
+
+## Keep Alive
+
+The QUIC specification defines an optional keep alive process, see {{Section 5.3 of QUIC-TRANSPORT}}.
+Implementations of the multipath extension should map this keep alive process to a number of paths.
+Some applications may keep only one path alive, while others could prefer to maintain
+liveliness on two or more paths during the connection lifetime.
+Different applications will likely require different strategies.
+Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
+on each of these paths before the idle timeout expires.
+
+## Idle Timeout {#idle-time-close}
+
+{{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
+for too long. The connection idle timeout when using the multipath extension is defined
+as "no packet received on any path for the duration of the idle timeout".
+When only one path is available, servers follow the specifications
+in {{QUIC-TRANSPORT}}.
+
+This document does not specify per-path idle timeouts. An endpoint
+can decide to close a path at any time, whether the path is in active
+use or not, by sending a PATH_ABANDON frame. It is not required
+to send a PATH_ABANDON frame at any specific point in time.
+For example, an endpoint may wait until it will anyway send another frame.
+
+If a path is not actively used for a while, it might not be usable anymore,
+e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
+can send ack-eliciting packets such as packets containing PING frames
+({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
+As discussed in
+{{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval depends
+on the timeout in the middlebox.
+
+If a path was not actively used for a while, an endpoint can
+probe it before switching to active use if there are still other paths
+that are currently usable.
+
+
 # IANA Considerations
 
 This document defines a new transport parameter for the negotiation of
@@ -1443,7 +1451,7 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
 Value                                         | Parameter Name.   | Specification
 ----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d0c) | initial_max_path_id | {{nego}}
+TBD (current version uses 0x0f739bbc1b666d0d) | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
