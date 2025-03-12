@@ -307,7 +307,7 @@ If an endpoint receives a disable_active_migration transport parameter
 provided by the peer, it is forbidden to use a new local address
 to establish new paths to the peer's handshake address. However,
 establishment of additional paths from any local address to other peer addresses
-(e.g carried by peer’s preferred_address) is valid immediately.
+(e.g carried by peer’s preferred_address) is immediately valid.
 
 This document
 does not specify how an endpoint that is reachable via several addresses
@@ -401,7 +401,7 @@ after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
 which used three times the PTO of the sole single path.
 
-The choice of three times the largest PTO is a trade-off:
+The choice of three times the largest PTO is a trade-off.
 Packets that arrive after their decryption key has been discarded will be dropped.
 Longer delays reduce the probability of losing packets but keeping old keys
 longer can negatively impact the security of the protocol.
@@ -526,7 +526,7 @@ Path ID 0 is already used for the initial path.
 {: #fig-example-new-path title="Example of new path establishment"}
 
 In {{fig-example-new-path}}, the endpoints first exchange
-new available connection IDs with the NEW_CONNECTION_ID frame.
+new available connection IDs with the PATH_NEW_CONNECTION_ID frame.
 In this example, the client provides one connection ID (C1 with
 Path ID 1), and server provides two connection IDs
 (S1 with Path ID 1, and S2 with Path ID 2).
@@ -804,7 +804,7 @@ CONNECTION_CLOSE frame.
 In this example, the client wants to close the path with Path ID 0.
 It sends the PATH_ABANDON frame to terminate the path with Path ID 0
 on the path with Path ID 1 using the connection ID S1. After receiving
-the PATH_ABANDON frame for Path ID 0, the server also send a
+the PATH_ABANDON frame for Path ID 0, the server also sends a
 PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
 on the same path using connection ID C1.
 
@@ -943,7 +943,7 @@ a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 Use of the PATH_ABANDON frame is specified in section {{path-close}}.
 
-## PATH_BACKUP and PATH_AVAILABLE frames {#path-backup-available-frame}
+## PATH_AVAILABLE and PATH_BACKUP frames {#path-backup-available-frame}
 
 PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
@@ -971,7 +971,7 @@ PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 ~~~
 {: #fig-path-backup-format title="PATH_BACKUP Frame Format"}
 
-Both PATH_AVAILABLE and PATH_BACKUP Frames contain the following fields:
+Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:
 
 Path Identifier:
 : The Path ID the status update corresponds to.
@@ -1469,7 +1469,7 @@ on each of these paths before the idle timeout expires.
 {{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
 for too long. The connection idle timeout when using the multipath extension is defined
 as "no packet received on any path for the duration of the idle timeout".
-When only one path is available, servers follows the specifications
+When only one path is available, servers follow the specifications
 in {{QUIC-TRANSPORT}}.
 
 This document does not specify per-path idle timeouts. An endpoint
