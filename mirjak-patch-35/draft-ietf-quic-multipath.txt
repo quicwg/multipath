@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 12 September 2025                        Uber Technologies Inc.
+Expires: 13 September 2025                        Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 12 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           11 March 2025
+                                                           12 March 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 September 2025.
+   This Internet-Draft will expire on 13 September 2025.
 
 Copyright Notice
 
@@ -98,7 +98,7 @@ Table of Contents
    4.  New Frames
      4.1.  PATH_ACK Frame
      4.2.  PATH_ABANDON Frame
-     4.3.  PATH_BACKUP and PATH_AVAILABLE frames
+     4.3.  PATH_AVAILABLE and PATH_BACKUP frames
      4.4.  PATH_NEW_CONNECTION_ID frame
      4.5.  PATH_RETIRE_CONNECTION_ID frame
      4.6.  MAX_PATH_ID frame
@@ -372,7 +372,7 @@ Table of Contents
    address to establish new paths to the peer's handshake address.
    However, establishment of additional paths from any local address to
    other peer addresses (e.g carried by peer’s preferred_address) is
-   valid immediately.
+   immediately valid.
 
    This document does not specify how an endpoint that is reachable via
    several addresses announces these addresses to the other endpoint.
@@ -472,7 +472,7 @@ Table of Contents
    that in [QUIC-TLS] which used three times the PTO of the sole single
    path.
 
-   The choice of three times the largest PTO is a trade-off: Packets
+   The choice of three times the largest PTO is a trade-off.  Packets
    that arrive after their decryption key has been discarded will be
    dropped.  Longer delays reduce the probability of losing packets but
    keeping old keys longer can negatively impact the security of the
@@ -600,9 +600,10 @@ Table of Contents
                 Figure 1: Example of new path establishment
 
    In Figure 1, the endpoints first exchange new available connection
-   IDs with the NEW_CONNECTION_ID frame.  In this example, the client
-   provides one connection ID (C1 with Path ID 1), and server provides
-   two connection IDs (S1 with Path ID 1, and S2 with Path ID 2).
+   IDs with the PATH_NEW_CONNECTION_ID frame.  In this example, the
+   client provides one connection ID (C1 with Path ID 1), and server
+   provides two connection IDs (S1 with Path ID 1, and S2 with Path ID
+   2).
 
    Before the client opens a new path by sending a packet on that path
    with a PATH_CHALLENGE frame, it has to check whether there is an
@@ -891,7 +892,7 @@ Table of Contents
    In this example, the client wants to close the path with Path ID 0.
    It sends the PATH_ABANDON frame to terminate the path with Path ID 0
    on the path with Path ID 1 using the connection ID S1.  After
-   receiving the PATH_ABANDON frame for Path ID 0, the server also send
+   receiving the PATH_ABANDON frame for Path ID 0, the server also sends
    a PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
    on the same path using connection ID C1.
 
@@ -1028,7 +1029,7 @@ Table of Contents
 
    Use of the PATH_ABANDON frame is specified in section Section 3.4.
 
-4.3.  PATH_BACKUP and PATH_AVAILABLE frames
+4.3.  PATH_AVAILABLE and PATH_BACKUP frames
 
    PATH_AVAILABLE frames are used by endpoints to inform the peer that
    the indicated path is available for sending.  PATH_AVAILABLE frames
@@ -1054,7 +1055,7 @@ Table of Contents
 
                      Figure 6: PATH_BACKUP Frame Format
 
-   Both PATH_AVAILABLE and PATH_BACKUP Frames contain the following
+   Both PATH_AVAILABLE and PATH_BACKUP frames contain the following
    fields:
 
    Path Identifier:  The Path ID the status update corresponds to.  All
@@ -1573,7 +1574,7 @@ Table of Contents
    for too long.  The connection idle timeout when using the multipath
    extension is defined as "no packet received on any path for the
    duration of the idle timeout".  When only one path is available,
-   servers follows the specifications in [QUIC-TRANSPORT].
+   servers follow the specifications in [QUIC-TRANSPORT].
 
    This document does not specify per-path idle timeouts.  An endpoint
    can decide to close a path at any time, whether the path is in active
