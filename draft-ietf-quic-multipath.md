@@ -1158,14 +1158,10 @@ NO_ERROR(0x0), the following QUIC error codes are defined
 for use in the PATH_ABANDON frame:
 
 APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
-request of the application. The application has determined that it no
-longer needs this path. This error is used when the application layer
-decides to stop using a specific path.
+request of the application.
 
 RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
-it cannot allocate sufficient resources to maintain it. This is due to
-limitations in the transport layer's capacity. This error indicates that
-resource constraints prevent the continuation of the path.
+it cannot allocate sufficient resources to maintain it.
 
 UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
 the used interface is considered to be unstable. This condition can occur, e.g.,
