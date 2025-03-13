@@ -658,8 +658,8 @@ connectivity or local preferences.
 An endpoint that wants to abandon a path MUST explicitly
 close the path by sending a PATH_ABANDON frame (see {{path-abandon-frame}}).
 This is true whether the decision to close the path results
-from implicit signals such as an idle time-out or packet losses
-(see {{idle-time-close}}) or for any other reason, such as management
+from implicit signals such as an idle time-out (see {{idle-time-close}})
+or packet losses as well as for any other reason such as management
 of local resources.
 
 The peers that send a PATH_ABANDON frame MUST treat all connection
@@ -686,7 +686,7 @@ of the number space associated to the path SHOULD be retained for
 3 PTO after the PATH_ABANDON frame has been received.
 This avoids generating spurious stateless packets, as discussed in
 {{spurious-stateless-reset}}, and helps to acknowledge any
-potentially reordered, outstanding packets from the peer (see Section {abandoned-ack}).
+potentially reordered, outstanding packets from the peer (see Section {ack-after-abandon}).
 
 It is also possible that an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
@@ -746,7 +746,7 @@ the last acknowledgment still needs to be send on a different path
 as no further packets can be sent on the abandoned path after the
 PATH_ABANDON frame.
 
-### Handling PATH_ACK for Abandoned Paths {#abandoned-ack}
+### Handling PATH_ACK for Abandoned Paths {#ack-after-abandon}
 
 When an endpoint sends a PATH_ABANDON frame, there may
 still be some packets in transit from the peer.
