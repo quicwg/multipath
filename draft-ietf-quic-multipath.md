@@ -1180,9 +1180,9 @@ but has not provided a corresponding connection ID for the path ID
 
 # Implementation Considerations {#impl-consideration}
 
-## Number Spaces
+## CID Changes, Migration, and NAT Rebindings {#migration}
 
-As stated in {{introduction}}, when the multipath extension is negotiated, each
+With the multipath extension each
 path uses a separate packet number space.
 This is a major difference from
 {{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
@@ -1190,21 +1190,67 @@ Handshake and Application packets).
 
 The relation between packet number spaces and paths is fixed.
 Connection IDs are separately allocated for each Path ID.
-Rotating the connection ID on a path does not change the Path ID.
-NAT rebinding, though it changes the 4-tuple of the path,
-also does not change the path identifier.
-The packet number space does not change when connection ID
-rotation happens within a given Path ID.
+Rotating the connection ID on a path does not change the Path ID
+nor packet number space.
 
-Data associated with the transmission and reception such RTT measurements,
-congestion control state, or loss recovery are maintained per packet number
-space and as such per Path ID.
+While endpoints assign a connection ID to a specific sending 4-tuple,
+networks events such as NAT rebinding may make the packet's receiver
+observe a different 4-tuple. Though it changes the 4-tuple of the path,
+also does not change connection ID and as such also not the path identifier.
+Servers observing a 4-tuple change will
+perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
+
+{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
+a peer address if that address has been seen recently. However, when the
+multipath extension is used and an endpoint has multiple addresses that
+could lead to switching between different paths, it should rather maintain
+multiple open paths instead.
+
+More generally, while migration cannot be avoided in case of network-based
+NAT rebindings, opening a new path instead of active client migration
+should be strongly preferred when the multipath extension is supported.
+This enables a smoother handover and allows a simplified migration
+handling at the server as NAT rebindings imply immediate loss of the old
+address.
+
+## Using multiple paths on the same 4-tuple
+
+It is possible to create paths that
+refer to the same 4-tuple. For example, the endpoints may want
+to create paths that use different Differentiated Service {{?RFC2475}} markings.
+This could be done in conjunction with scheduling algorithms
+that match streams to paths, so that for example data frames for
+low priority streams are sent over low priority paths.
+Since these paths use different path IDs, they can be managed
+independently to suit the needs of the application.
+
+There may be cases in which paths are created with different 4-tuples,
+but end up using the same 4-tuples as a consequence of path
+migrations. For example:
+
+* Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
+* Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
+* both paths are used for a while.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
+* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
+
+Such unintentional use of the same 4-tuple on different paths ought to
+be rare. When they happen, the two paths would be redundant, and the
+endpoint will want to close one of them.
+Uncoordinated abandon from both ends of the connection may result in deleting
+two paths instead of just one. To avoid this pitfall, endpoints could
+adopt a simple coordination rule, such as only letting the client
+initiate closure of duplicate paths, or perhaps relying on
+the application protocol to decide which paths should be closed.
 
 ## Congestion Control {#congestion-control}
 
 When the QUIC multipath extension is used, senders manage per-path
 congestion status as required in {{Section 9.4 of QUIC-TRANSPORT}}.
-However, in {{QUIC-TRANSPORT}} only one path is assumed and as such
+However, in {{QUIC-TRANSPORT}} only one active path is assumed and as such
 the requirement is to reset the congestion control status on path migration.
 With the multipath extension, multiple paths can be used simultaneously,
 therefore separate congestion control state is maintained for each path.
@@ -1221,6 +1267,12 @@ congestion control scheme
 specified in {{RFC6356}} to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
 control schemes have been proposed for Multipath TCP such as {{OLIA}}.
+
+{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
+can change the connection ID it uses to another available one
+at any time during the connection. As such a sole change of the Connection
+ID without any change in the address does not indicate a path change and
+the endpoint can keep the same congestion control and RTT measurement state.
 
 ## Computing Path RTT {#compute-rtt}
 
@@ -1340,67 +1392,6 @@ One simple option, if the PMTUs are relatively similar, is to apply the minimum 
 each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.
-
-## Connection ID Changes
-
-{{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
-can change the connection ID it uses to another available one
-at any time during the connection. As such a sole change of the Connection
-ID without any change in the address does not indicate a path change and
-the endpoint can keep the same congestion control and RTT measurement state.
-
-## Migration and NAT Rebindings {#migration}
-
-While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. Servers observing a 4-tuple change will
-perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
-If path validation process succeeds, the endpoints set
-the path's congestion controller and round-trip time
-estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
-
-{{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
-a peer address if that address has been seen recently. However, when the
-multipath extension is used and an endpoint has multiple addresses that
-could lead to switching between different paths, it should rather maintain
-multiple open paths instead.
-
-More generally, while migration cannot be avoided in case of network-based
-NAT rebindings, opening a new path instead of active client migration
-should be strongly preferred when the multipath extension is supported.
-This enables a smoother handover and allows a simplified migration
-handling at the server as NAT rebindings imply immediate loss of the old
-address.
-
-## Using multiple paths on the same 4-tuple
-
-As noted in {{basic-design-points}}, it is possible to create paths that
-refer to the same 4-tuple. For example, the endpoints may want
-to create paths that use different Differentiated Service {{?RFC2475}} markings.
-This could be done in conjunction with scheduling algorithms
-that match streams to paths, so that for example data frames for
-low priority streams are sent over low priority paths.
-Since these paths use different path IDs, they can be managed
-independently to suit the needs of the application.
-
-There may be cases in which paths are created with different 4-tuples,
-but end up using the same 4-tuples as a consequence of path
-migrations. For example:
-
-* Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
-* Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
-* both paths are used for a while.
-* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
-* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
-
-Such unintentional use of the same 4-tuple on different paths ought to
-be rare. When they happen, the two paths would be redundant, and the
-endpoint will want to close one of them.
-Uncoordinated abandon from both ends of the connection may result in deleting
-two paths instead of just one. To avoid this pitfall, endpoints could
-adopt a simple coordination rule, such as only letting the client
-initiate closure of duplicate paths, or perhaps relying on
-the application protocol to decide which paths should be closed.
 
 ## Keep Alive
 
