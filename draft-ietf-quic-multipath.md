@@ -386,8 +386,8 @@ as the same Path ID is used in both directions.
 
 This documents specfies path initiation (see Section {{path-initiation}}),
 issuing and retirement of per-path connection IDs (see Section
-{{consume-retire-cid}}), path status management (see Section {{}}) and
-path closure (see Section {{}}).
+{{consume-retire-cid}}), path status management (see Section {{path-state}}) and
+path closure (see Section {{path-close}}).
 However, this document does not specify when a client decides to initiate or close a path,
 or how multiple active paths are used for packet sending.
 
