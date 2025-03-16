@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-13T00:57:54.736673+00:00",
+  "timestamp": "2025-03-16T01:01:58.666576+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12893,6 +12893,22 @@
           "updatedAt": "2025-03-03T11:51:27Z"
         }
       ]
+    },
+    {
+      "number": 505,
+      "id": "I_kwDOGNtpaM6uG33L",
+      "title": "Abandon path, 3*PTO and idle timer",
+      "url": "https://github.com/quicwg/multipath/issues/505",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Reading the draft-13 more closely, I see a bit of a contradiction between 3.3.3 and 3.4.\n\nSection 3.3.3 on \"idle timeout\" says: \"_An endpoint can decide to close a path at any time, whether the path is in active use or not, by sending a PATH_ABANDON frame.  It is not required to send a PATH_ABANDON frame at any specific point in time.  For example, an endpoint may wait until it will anyway send another frame._\"\n\nSection 3.4 on \"Path Close\" says: \"_If a peer sends a PATH_ABANDON frame but never receives a corresponding PATH_ABANDON frame, it might not be able to remove path state. It is left to the implementation to handle this unexpected behavior as it does not impact interoperability. If the endpoint is no longer willing to process the issued connection IDs for the abandoned path, it MAY close the connection, but SHOULD wait at least 3 PTOs after sending the PATH_ABANDON frame._\"\n\nThe text in 3.3.3 is motivated in part by radio management. On a mobile device, sending any packet requires powering up the radio, which consumes energy. It is better to power the radio once and send a few packets in a batch than to power the radio multiple time. But if the endpoint waits until \"something else has to be sent\", it may wait more than 3*PTO, and the peer MAY close the connection. Not good.",
+      "createdAt": "2025-03-14T18:46:03Z",
+      "updatedAt": "2025-03-14T18:46:03Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
