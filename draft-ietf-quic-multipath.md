@@ -379,7 +379,7 @@ should not cause linkability issue.
 
 # Path Management {#path-management}
 
-After completing the handshake indicating 
+After completing the handshake indicating
 multipath support, endpoints can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused, common Path ID,
 as the same Path ID is used in both directions.
@@ -387,7 +387,7 @@ as the same Path ID is used in both directions.
 This documents specfies path initiation (see Section {{path-initiation}}),
 issuing and retirement of per-path connection IDs (see Section
 {{consume-retire-cid}}), path status management (see Section {{}}) and
-path closure (see Section {{}}). 
+path closure (see Section {{}}).
 However, this document does not specify when a client decides to initiate or close a path,
 or how multiple active paths are used for packet sending.
 
