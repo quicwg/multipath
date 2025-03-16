@@ -678,7 +678,7 @@ When an endpoint finally deletes all resource associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
 
 After a path is abandoned, the Path ID MUST NOT be reused
-for new paths, as the Path ID is part of the nonce calculation {{multipath-aead}}.
+for new paths, as the Path ID is part of the nonce calculation {{nonce}}.
 
 PATH_ABANDON frames can be sent on any path,
 not only the path that is intended to be closed.
@@ -1022,7 +1022,7 @@ MAX_PATH_ID frames contain the following field:
 Maximum Path Identifier:
 : The maximum path identifier that the sending endpoint is willing to accept.
   This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
-  restrictions on the nonce calculation (see {{multipath-aead}}).
+  restrictions on the nonce calculation (see {{nonce}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
   advertised in the initial_max_path_id transport parameter.
 
@@ -1497,7 +1497,7 @@ Further note, that the limits as discussed on Appendix B of {{QUIC-TLS}}
 apply to the total number of packets sent on all paths.
 
 This specification changes the AEAD calculation by using the path identifier as part of
-AEAD encryption nonce (see {{multipath-aead}}). To ensure a unique nonce, path identifiers
+AEAD encryption nonce (see {{nonce}}). To ensure a unique nonce, path identifiers
 are limited to 32 bits and cannot be reused for another path in the same connection.
 
 
