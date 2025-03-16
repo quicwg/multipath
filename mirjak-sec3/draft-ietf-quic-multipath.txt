@@ -93,8 +93,8 @@ Table of Contents
      3.3.  Path Status Management
      3.4.  Path Close
        3.4.1.  Path Closure Example
-       3.4.2.  Handling PATH_ACK for Abandoned Paths
-       3.4.3.  Avoiding Spurious Stateless Resets
+       3.4.2.  Avoiding Spurious Stateless Resets
+       3.4.3.  Handling PATH_ACK for Abandoned Paths
    4.  New Frames
      4.1.  PATH_ACK Frame
      4.2.  PATH_ABANDON Frame
@@ -763,7 +763,7 @@ Table of Contents
    connection IDs issued to the peer and of the state of the number
    space associated to the path SHOULD be retained for 3 PTO after the
    PATH_ABANDON frame has been received.  This avoids generating
-   spurious stateless packets, as discussed in Section 3.4.3, and helps
+   spurious stateless packets, as discussed in Section 3.4.2, and helps
    to acknowledge any potentially reordered, outstanding packets from
    the peer (see Section {ack-after-abandon}).
 
@@ -826,7 +826,24 @@ Table of Contents
    different path as no further packets can be sent on the abandoned
    path after the PATH_ABANDON frame.
 
-3.4.2.  Handling PATH_ACK for Abandoned Paths
+3.4.2.  Avoiding Spurious Stateless Resets
+
+   Due to network delays, packets sent on an abandoned path can arrive
+   well after the connection IDs have been retired.  If not recognized
+   as bound to the local connection, such packet trigger the peer to
+   send a Stateless Reset packet.  The rule to "retain knowledge of
+   connection ID for 3 PTO after receiving a PATH_ABANDON" is intended
+   to reduce the risk of sending such spurious stateless packets, but it
+   cannot completely avoid that risk.
+
+   Section 10.3 of [QUIC-TRANSPORT] specified that the Stateless Reset
+   Tokens associated with retired connection IDs cannot be used to
+   identify Stateless Reset packets.  The immediate retirement of
+   connection IDs received from the peer for an abandoned path
+   guarantees that spurious Stateless Reset packets sent by the peer
+   will not cause the closure of the QUIC connection.
+
+3.4.3.  Handling PATH_ACK for Abandoned Paths
 
    When an endpoint sends a PATH_ABANDON frame, there may still be some
    packets in transit from the peer.  Further, if an endpoint receives a
@@ -843,23 +860,6 @@ Table of Contents
    the packets sent over the path and not yet acknowledged MUST be
    considered lost.  PATH_ACK frames received with an abandoned Path ID
    are silently ignored, as specified in Section Section 4.
-
-3.4.3.  Avoiding Spurious Stateless Resets
-
-   Due to network delays, packets sent on an abandoned path can arrive
-   well after the connection IDs have been retired.  If not recognized
-   as bound to the local connection, such packet trigger the peer to
-   send a Stateless Reset packet.  The rule to "retain knowledge of
-   connection ID for 3 PTO after receiving a PATH_ABANDON" is intended
-   to reduce the risk of sending such spurious stateless packets, but it
-   cannot completely avoid that risk.
-
-   Section 10.3 of [QUIC-TRANSPORT] specified that the Stateless Reset
-   Tokens associated with retired connection IDs cannot be used to
-   identify Stateless Reset packets.  The immediate retirement of
-   connection IDs received from the peer for an abandoned path
-   guarantees that spurious Stateless Reset packets sent by the peer
-   will not cause the closure of the QUIC connection.
 
 4.  New Frames
 

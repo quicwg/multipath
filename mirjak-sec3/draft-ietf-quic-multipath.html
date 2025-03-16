@@ -1254,10 +1254,10 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                     <p id="section-toc.1-1.3.2.4.2.1.1"><a href="#section-3.4.1" class="auto internal xref">3.4.1</a>.  <a href="#name-path-closure-example" class="internal xref">Path Closure Example</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.2">
-                    <p id="section-toc.1-1.3.2.4.2.2.1"><a href="#section-3.4.2" class="auto internal xref">3.4.2</a>.  <a href="#name-handling-path_ack-for-aband" class="internal xref">Handling PATH_ACK for Abandoned Paths</a></p>
+                    <p id="section-toc.1-1.3.2.4.2.2.1"><a href="#section-3.4.2" class="auto internal xref">3.4.2</a>.  <a href="#name-avoiding-spurious-stateless" class="internal xref">Avoiding Spurious Stateless Resets</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.3">
-                    <p id="section-toc.1-1.3.2.4.2.3.1"><a href="#section-3.4.3" class="auto internal xref">3.4.3</a>.  <a href="#name-avoiding-spurious-stateless" class="internal xref">Avoiding Spurious Stateless Resets</a></p>
+                    <p id="section-toc.1-1.3.2.4.2.3.1"><a href="#section-3.4.3" class="auto internal xref">3.4.3</a>.  <a href="#name-handling-path_ack-for-aband" class="internal xref">Handling PATH_ACK for Abandoned Paths</a></p>
 </li>
                 </ul>
 </li>
@@ -2028,7 +2028,7 @@ connection IDs issued to the peer and of the state
 of the number space associated to the path SHOULD be retained for
 3 PTO after the PATH_ABANDON frame has been received.
 This avoids generating spurious stateless packets, as discussed in
-<a href="#spurious-stateless-reset" class="auto internal xref">Section 3.4.3</a>, and helps to acknowledge any
+<a href="#spurious-stateless-reset" class="auto internal xref">Section 3.4.2</a>, and helps to acknowledge any
 potentially reordered, outstanding packets from the peer (see Section {ack-after-abandon}).<a href="#section-3.4-4" class="pilcrow">¶</a></p>
 <p id="section-3.4-5">It is also possible that an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
@@ -2092,43 +2092,43 @@ as no further packets can be sent on the abandoned path after the
 PATH_ABANDON frame.<a href="#section-3.4.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="ack-after-abandon">
-<section id="section-3.4.2">
-          <h4 id="name-handling-path_ack-for-aband">
-<a href="#section-3.4.2" class="section-number selfRef">3.4.2. </a><a href="#name-handling-path_ack-for-aband" class="section-name selfRef">Handling PATH_ACK for Abandoned Paths</a>
-          </h4>
-<p id="section-3.4.2-1">When an endpoint sends a PATH_ABANDON frame, there may
-still be some packets in transit from the peer.
-Further, if an endpoint receives a PATH_ABANDON frame, it may still receive
-reordered packets on the abanded path. Endpoints SHOULD
-promptly send PATH_ACK frames for all unacknowledge packets received on
-an abondoned path if path state is still retained to do so.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.4.2-2">PATH_ACK frames have to be sent on a different path than the path being abandoned
-after sending the PATH_ABANDON frame as connection IDs are immediately retired.<a href="#section-3.4.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.4.2-3">When an endpoint finally deletes all state associated with the path,
-the packets sent over the path and not yet acknowledged MUST be considered lost.
-PATH_ACK frames received with an abandoned Path ID are silently ignored,
-as specified in Section <a href="#frames" class="auto internal xref">Section 4</a>.<a href="#section-3.4.2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="spurious-stateless-reset">
-<section id="section-3.4.3">
+<section id="section-3.4.2">
           <h4 id="name-avoiding-spurious-stateless">
-<a href="#section-3.4.3" class="section-number selfRef">3.4.3. </a><a href="#name-avoiding-spurious-stateless" class="section-name selfRef">Avoiding Spurious Stateless Resets</a>
+<a href="#section-3.4.2" class="section-number selfRef">3.4.2. </a><a href="#name-avoiding-spurious-stateless" class="section-name selfRef">Avoiding Spurious Stateless Resets</a>
           </h4>
-<p id="section-3.4.3-1">Due to network delays, packets sent on an abandoned path can
+<p id="section-3.4.2-1">Due to network delays, packets sent on an abandoned path can
 arrive well after the connection IDs have been retired.
 If not recognized as bound to the local
 connection, such packet trigger the peer to send a Stateless Reset
 packet. The rule to "retain knowledge of connection ID for 3 PTO
 after receiving a PATH_ABANDON"
 is intended to reduce the risk of sending such spurious stateless
-packets, but it cannot completely avoid that risk.<a href="#section-3.4.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.4.3-2"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specified that the Stateless Reset Tokens
+packets, but it cannot completely avoid that risk.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.2-2"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specified that the Stateless Reset Tokens
 associated with retired connection IDs cannot be used to identify Stateless Reset packets.
 The immediate retirement of connection IDs received from the peer for an abandoned
 path guarantees that spurious Stateless Reset packets
-sent by the peer will not cause the closure of the QUIC connection.<a href="#section-3.4.3-2" class="pilcrow">¶</a></p>
+sent by the peer will not cause the closure of the QUIC connection.<a href="#section-3.4.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ack-after-abandon">
+<section id="section-3.4.3">
+          <h4 id="name-handling-path_ack-for-aband">
+<a href="#section-3.4.3" class="section-number selfRef">3.4.3. </a><a href="#name-handling-path_ack-for-aband" class="section-name selfRef">Handling PATH_ACK for Abandoned Paths</a>
+          </h4>
+<p id="section-3.4.3-1">When an endpoint sends a PATH_ABANDON frame, there may
+still be some packets in transit from the peer.
+Further, if an endpoint receives a PATH_ABANDON frame, it may still receive
+reordered packets on the abanded path. Endpoints SHOULD
+promptly send PATH_ACK frames for all unacknowledge packets received on
+an abondoned path if path state is still retained to do so.<a href="#section-3.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.3-2">PATH_ACK frames have to be sent on a different path than the path being abandoned
+after sending the PATH_ABANDON frame as connection IDs are immediately retired.<a href="#section-3.4.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.4.3-3">When an endpoint finally deletes all state associated with the path,
+the packets sent over the path and not yet acknowledged MUST be considered lost.
+PATH_ACK frames received with an abandoned Path ID are silently ignored,
+as specified in Section <a href="#frames" class="auto internal xref">Section 4</a>.<a href="#section-3.4.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
