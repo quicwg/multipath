@@ -186,7 +186,7 @@ If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 If the use of the multipath extension is agreed after handshake completion,
-a new AEAD usage applies to all 1-RTT packets, as specified in Section {{multipath-aead}}
+a new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}}
 and new paths can be used, as specified in Section {{path-management}}.
 
 ## initial_max_path_id Transport Parameter {#nego}
@@ -197,7 +197,7 @@ The new transport parameter is defined as follows:
   variable-length integer specifying the maximum path identifier
   an endpoint is willing to maintain at connection initiation.
   This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
-  restrictions on the nonce calculation (see {{multipath-aead}}).
+  restrictions on the nonce calculation (see {{nonce}}).
 
 The initial_max_path_id transport parameter limits the initial
 maximum number of open paths that can be used during a connection.
