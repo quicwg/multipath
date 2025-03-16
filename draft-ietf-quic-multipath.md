@@ -180,14 +180,14 @@ to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
 # Cryptographic and Transport Handshake
 
-This document defines a new transport parameter initial_max_path_id 
+This document defines a new transport parameter initial_max_path_id
 to indicate the support of the multipath extension.
 If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
-mechanism defined in this document. 
+mechanism defined in this document.
 If the use of the multipath extension is agreed after handshake completion,
 a new AEAD usage applies to all 1-RTT packets, as specified in Section {{multipath-aead}}
-and new paths can be used, as specified in Section {{path-management}}. 
+and new paths can be used, as specified in Section {{path-management}}.
 
 ## initial_max_path_id Transport Parameter {#nego}
 
@@ -502,7 +502,7 @@ PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
 Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also {{Section 5.1 of QUIC-TRANSPORT}}.
 Usually, it is desired to provide at least one additional connection ID for
-all used paths, to allow for (unintentional) migration events ({{Section 9.5 of QUIC-TRANSPORT}}). 
+all used paths, to allow for (unintentional) migration events ({{Section 9.5 of QUIC-TRANSPORT}}).
 
 As further specified in {{Section 5.1 of QUIC-TRANSPORT}} connection IDs
 cannot be issued more than once on the same connection
