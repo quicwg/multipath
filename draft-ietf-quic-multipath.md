@@ -746,23 +746,6 @@ the last acknowledgment still needs to be send on a different path
 as no further packets can be sent on the abandoned path after the
 PATH_ABANDON frame.
 
-### Handling PATH_ACK for Abandoned Paths {#ack-after-abandon}
-
-When an endpoint sends a PATH_ABANDON frame, there may
-still be some packets in transit from the peer.
-Further, if an endpoint receives a PATH_ABANDON frame, it may still receive
-reordered packets on the abanded path. Endpoints SHOULD
-promptly send PATH_ACK frames for all unacknowledge packets received on
-an abondoned path if path state is still retained to do so.
-
-PATH_ACK frames have to be sent on a different path than the path being abandoned
-after sending the PATH_ABANDON frame as connection IDs are immediately retired.
-
-When an endpoint finally deletes all state associated with the path,
-the packets sent over the path and not yet acknowledged MUST be considered lost.
-PATH_ACK frames received with an abandoned Path ID are silently ignored,
-as specified in Section {{frames}}.
-
 ### Avoiding Spurious Stateless Resets {#spurious-stateless-reset}
 
 Due to network delays, packets sent on an abandoned path can
@@ -779,6 +762,23 @@ associated with retired connection IDs cannot be used to identify Stateless Rese
 The immediate retirement of connection IDs received from the peer for an abandoned
 path guarantees that spurious Stateless Reset packets
 sent by the peer will not cause the closure of the QUIC connection.
+
+### Handling PATH_ACK for Abandoned Paths {#ack-after-abandon}
+
+When an endpoint sends a PATH_ABANDON frame, there may
+still be some packets in transit from the peer.
+Further, if an endpoint receives a PATH_ABANDON frame, it may still receive
+reordered packets on the abanded path. Endpoints SHOULD
+promptly send PATH_ACK frames for all unacknowledge packets received on
+an abondoned path if path state is still retained to do so.
+
+PATH_ACK frames have to be sent on a different path than the path being abandoned
+after sending the PATH_ABANDON frame as connection IDs are immediately retired.
+
+When an endpoint finally deletes all state associated with the path,
+the packets sent over the path and not yet acknowledged MUST be considered lost.
+PATH_ACK frames received with an abandoned Path ID are silently ignored,
+as specified in Section {{frames}}.
 
 
 # New Frames {#frames}
