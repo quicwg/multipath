@@ -1305,7 +1305,7 @@ The computed values reflect both the state of the network path and the
 scheduling decisions by the sender of the PATH_ACK frames. In the example
 above, we may assume that the PATH_ACK will be sent over the terrestrial
 link, because that provides the best response time. In that case, the
-computed RTT value for the satellite path will be about 350ms. This
+computed RTT value for the satellite path will be about 350ms. This is
 lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
