@@ -1180,6 +1180,7 @@ but has not provided a corresponding connection ID for the path ID
 
 # Implementation Considerations {#impl-consideration}
 
+This section provides informational guidance for implementors.
 ## CID Changes, Migration, and NAT Rebindings {#migration}
 
 With the multipath extension each
