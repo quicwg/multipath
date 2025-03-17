@@ -1296,31 +1296,34 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-implementation-consideratio" class="internal xref">Implementation Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-using-multiple-paths-on-the" class="internal xref">Using multiple paths on the same 4-tuple</a></p>
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-cid-changes-migration-and-n" class="internal xref">CID Changes, Migration, and NAT Rebindings</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-congestion-control" class="internal xref">Congestion Control</a></p>
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-using-multiple-paths-on-the" class="internal xref">Using multiple paths on the same 4-tuple</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
-                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-computing-path-rtt" class="internal xref">Computing Path RTT</a></p>
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-congestion-control" class="internal xref">Congestion Control</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
-                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-packet-scheduling" class="internal xref">Packet Scheduling</a></p>
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-computing-path-rtt" class="internal xref">Computing Path RTT</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
-                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-retransmissions" class="internal xref">Retransmissions</a></p>
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-packet-scheduling" class="internal xref">Packet Scheduling</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.6">
-                <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-handling-pto" class="internal xref">Handling PTO</a></p>
+                <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-retransmissions" class="internal xref">Retransmissions</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.7">
-                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-handling-different-pmtu-siz" class="internal xref">Handling Different PMTU Sizes</a></p>
+                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-handling-pto" class="internal xref">Handling PTO</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.8">
-                <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-keep-alive" class="internal xref">Keep Alive</a></p>
+                <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-handling-different-pmtu-siz" class="internal xref">Handling Different PMTU Sizes</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.9">
-                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-idle-timeout" class="internal xref">Idle Timeout</a></p>
+                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-keep-alive" class="internal xref">Keep Alive</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.10">
+                <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-idle-timeout" class="internal xref">Idle Timeout</a></p>
 </li>
             </ul>
 </li>
@@ -1752,7 +1755,7 @@ send a PATH_ABANDON, in which case the procedures specified in
 Section <a href="#path-close" class="auto internal xref">Section 3.4</a> apply.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 <p id="section-3.1-8">PATH_ACK frames (defined in <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
-packet (see <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> for further guidance), it can be beneficial
+packet (see <a href="#compute-rtt" class="auto internal xref">Section 6.4</a> for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
 path validation.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
 <p id="section-3.1-9">If validation succeeds, the client can continue to use the path.
@@ -2025,7 +2028,7 @@ connection ID retirement, the inverse is not true: retiring the associated conne
 does not indicate path abandonment (see further <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>).
 This is true whether the decision to close the path results
 from implicit signals such as idle time or packet losses
-(see <a href="#idle-time-close" class="auto internal xref">Section 6.9</a>) or for any other reason, such as management
+(see <a href="#idle-time-close" class="auto internal xref">Section 6.10</a>) or for any other reason, such as management
 of local resources.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 <p id="section-3.4-4">It is also possible that an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
@@ -2608,18 +2611,22 @@ but has not provided a corresponding connection ID for the path ID
       <h2 id="name-implementation-consideratio">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-implementation-consideratio" class="section-name selfRef">Implementation Considerations</a>
       </h2>
-<p id="section-6-1">This section provides informational guidance for implementors.
-## CID Changes, Migration, and NAT Rebindings {#migration}<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">With the multipath extension each
+<p id="section-6-1">This section provides informational guidance for implementors.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<div id="migration">
+<section id="section-6.1">
+        <h3 id="name-cid-changes-migration-and-n">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-cid-changes-migration-and-n" class="section-name selfRef">CID Changes, Migration, and NAT Rebindings</a>
+        </h3>
+<p id="section-6.1-1">With the multipath extension each
 path uses a separate packet number space.
 This is a major difference from
 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, which only defines three number spaces (Initial,
-Handshake and Application packets).<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">The relation between packet number spaces and paths is fixed.
+Handshake and Application packets).<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">The relation between packet number spaces and paths is fixed.
 Connection IDs are separately allocated for each Path ID.
 Rotating the connection ID on a path does not change the Path ID
-nor packet number space.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">While endpoints assign a connection ID to a specific sending 4-tuple,
+nor packet number space.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">While endpoints assign a connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Though it changes the 4-tuple of the path,
 also does not change connection ID and as such also not the path identifier.
@@ -2627,75 +2634,77 @@ Servers observing a 4-tuple change will
 perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
 If path validation process succeeds, the endpoints set
 the path's congestion controller and round-trip time
-estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows an endpoint to skip validation of
+estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-4"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows an endpoint to skip validation of
 a peer address if that address has been seen recently. However, when the
 multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
-multiple open paths instead.<a href="#section-6-5" class="pilcrow">¶</a></p>
-<p id="section-6-6">More generally, while migration cannot be avoided in case of network-based
+multiple open paths instead.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-5">More generally, while migration cannot be avoided in case of network-based
 NAT rebindings, opening a new path instead of active client migration
 should be strongly preferred when the multipath extension is supported.
 This enables a smoother handover and allows a simplified migration
 handling at the server as NAT rebindings imply immediate loss of the old
-address.<a href="#section-6-6" class="pilcrow">¶</a></p>
+address.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
 <div id="using-multiple-paths-on-the-same-4-tuple">
-<section id="section-6.1">
+<section id="section-6.2">
         <h3 id="name-using-multiple-paths-on-the">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using multiple paths on the same 4-tuple</a>
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using multiple paths on the same 4-tuple</a>
         </h3>
-<p id="section-6.1-1">It is possible to create paths that
+<p id="section-6.2-1">It is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service <span>[<a href="#RFC2475" class="cite xref">RFC2475</a>]</span> markings.
 This could be done in conjunction with scheduling algorithms
 that match streams to paths, so that for example data frames for
 low priority streams are sent over low priority paths.
 Since these paths use different path IDs, they can be managed
-independently to suit the needs of the application.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">There may be cases in which paths are created with different 4-tuples,
+independently to suit the needs of the application.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-2">There may be cases in which paths are created with different 4-tuples,
 but end up using the same 4-tuples as a consequence of path
-migrations. For example:<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+migrations. For example:<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-3.1">
-            <p id="section-6.1-3.1.1">Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1<a href="#section-6.1-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.2-3.1">
+            <p id="section-6.2-3.1.1">Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1<a href="#section-6.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-3.2">
-            <p id="section-6.1-3.2.1">Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1<a href="#section-6.1-3.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.2-3.2">
+            <p id="section-6.2-3.2.1">Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1<a href="#section-6.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-3.3">
-            <p id="section-6.1-3.3.1">both paths are used for a while.<a href="#section-6.1-3.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.2-3.3">
+            <p id="section-6.2-3.3.1">both paths are used for a while.<a href="#section-6.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-3.4">
-            <p id="section-6.1-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.<a href="#section-6.1-3.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.2-3.4">
+            <p id="section-6.2-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.<a href="#section-6.2-3.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-3.5">
-            <p id="section-6.1-3.5.1">Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.<a href="#section-6.1-3.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.2-3.5">
+            <p id="section-6.2-3.5.1">Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.<a href="#section-6.2-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-6.1-4">Such unintentional use of the same 4-tuple on different paths ought to
+<p id="section-6.2-4">Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint will want to close one of them.
 Uncoordinated abandon from both ends of the connection may result in deleting
 two paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
-the application protocol to decide which paths should be closed.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+the application protocol to decide which paths should be closed.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="congestion-control">
-<section id="section-6.2">
+<section id="section-6.3">
         <h3 id="name-congestion-control">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-congestion-control" class="section-name selfRef">Congestion Control</a>
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-congestion-control" class="section-name selfRef">Congestion Control</a>
         </h3>
-<p id="section-6.2-1">When the QUIC multipath extension is used, senders manage per-path
+<p id="section-6.3-1">When the QUIC multipath extension is used, senders manage per-path
 congestion status as required in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 However, in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only one active path is assumed and as such
 the requirement is to reset the congestion control status on path migration.
 With the multipath extension, multiple paths can be used simultaneously,
 therefore separate congestion control state is maintained for each path.
 This means a sender is not allowed to send more data on a given path
-than congestion control for that path indicates.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">When a Multipath QUIC connection uses two or more paths, there is no
+than congestion control for that path indicates.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">When a Multipath QUIC connection uses two or more paths, there is no
 guarantee that these paths are fully disjoint. When two (or more paths)
 share the same bottleneck, using a standard congestion control scheme
 could result in an unfair distribution of the bandwidth with
@@ -2704,20 +2713,20 @@ paths connections. Multipath TCP uses the linked increased algorithm (LIA)
 congestion control scheme
 specified in <span>[<a href="#RFC6356" class="cite xref">RFC6356</a>]</span> to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
-control schemes have been proposed for Multipath TCP such as <span>[<a href="#OLIA" class="cite xref">OLIA</a>]</span>.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-<p id="section-6.2-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
+control schemes have been proposed for Multipath TCP such as <span>[<a href="#OLIA" class="cite xref">OLIA</a>]</span>.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.3-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. As such a sole change of the Connection
 ID without any change in the address does not indicate a path change and
-the endpoint can keep the same congestion control and RTT measurement state.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+the endpoint can keep the same congestion control and RTT measurement state.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="compute-rtt">
-<section id="section-6.3">
+<section id="section-6.4">
         <h3 id="name-computing-path-rtt">
-<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-computing-path-rtt" class="section-name selfRef">Computing Path RTT</a>
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-computing-path-rtt" class="section-name selfRef">Computing Path RTT</a>
         </h3>
-<p id="section-6.3-1">Acknowledgment delays are the sum of two one-way delays, the delay
+<p id="section-6.4-1">Acknowledgment delays are the sum of two one-way delays, the delay
 on the packet sending path and the delay on the return path chosen
 for the acknowledgments.  When different paths have different
 characteristics, this can cause acknowledgment delays to vary
@@ -2726,7 +2735,7 @@ terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in both
 directions.  The acknowledgment delay will depend on the combination
 of paths used for the packet transmission and the ACK transmission,
-as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1</a>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1</a>.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 <span id="name-example-of-ack-delays-using"></span><div id="fig-example-ack-delay">
 <table class="center" id="table-1">
           <caption>
@@ -2754,13 +2763,13 @@ as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1<
           </tbody>
         </table>
 </div>
-<p id="section-6.3-3">The PATH_ACK frames describe packets that were sent on the specified path,
+<p id="section-6.4-3">The PATH_ACK frames describe packets that were sent on the specified path,
 but they may be received through any available path. There is an
 understandable concern that if successive acknowledgments are received
 on different paths, the measured RTT samples will fluctuate widely,
 and that might result in poor performance. While this may be a concern,
-the actual behavior is complex.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
-<p id="section-6.3-4">The computed values reflect both the state of the network path and the
+the actual behavior is complex.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
+<p id="section-6.4-4">The computed values reflect both the state of the network path and the
 scheduling decisions by the sender of the PATH_ACK frames. In the example
 above, we may assume that the PATH_ACK will be sent over the terrestrial
 link, because that provides the best response time. In that case, the
@@ -2768,8 +2777,8 @@ computed RTT value for the satellite path will be about 350ms. This is
 lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
-than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
-<p id="section-6.3-5">The simplest implementation is to compute smoothed_rtt and rttvar per
+than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-6.4-4" class="pilcrow">¶</a></p>
+<p id="section-6.4-5">The simplest implementation is to compute smoothed_rtt and rttvar per
 <span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which PATH_ACK frames are
 received. This algorithm will provide good results,
 except if the set of paths changes and the PATH_ACK sender
@@ -2781,15 +2790,15 @@ There is however an exception: some congestion
 control functions rely on estimates of the minimum RTT. It might be prudent
 for nodes to remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and to restart the minimum RTT computation
-if that path is abandoned.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
+if that path is abandoned.<a href="#section-6.4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="packet-scheduling">
-<section id="section-6.4">
+<section id="section-6.5">
         <h3 id="name-packet-scheduling">
-<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-packet-scheduling" class="section-name selfRef">Packet Scheduling</a>
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-packet-scheduling" class="section-name selfRef">Packet Scheduling</a>
         </h3>
-<p id="section-6.4-1">The transmission of QUIC packets on a regular QUIC connection is regulated
+<p id="section-6.5-1">The transmission of QUIC packets on a regular QUIC connection is regulated
 by the arrival of data from the application and the congestion control
 scheme. QUIC packets that increase the number of bytes in flight can only be sent
 when the congestion window allows it.
@@ -2799,10 +2808,10 @@ over which the next QUIC packet will be sent. Most frames, including
 control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
 exceptions), can be sent and received on any open path. The scheduling
 is a local decision, based on the preferences of the application and the
-implementation.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
-<p id="section-6.4-2">Note that this implies that an endpoint may send and receive PATH_ACK
+implementation.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<p id="section-6.5-2">Note that this implies that an endpoint may send and receive PATH_ACK
 frames on a path different from the one that carried the acknowledged
-packets. As noted in <a href="#compute-rtt" class="auto internal xref">Section 6.3</a> the values computed using
+packets. As noted in <a href="#compute-rtt" class="auto internal xref">Section 6.4</a> the values computed using
 the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
 faster if the scheduling strategy is stable, but besides that
@@ -2812,98 +2821,98 @@ PATH_ACK frames on the shortest path, which results in shorter control loops
 and thus better performance. However, since packets that only carry PATH_ACK frames
 are not congestion controlled (see <span><a href="https://rfc-editor.org/rfc/rfc9002#section-7" class="relref">Section 7</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>),
 senders should carefully consider the load induced
-by these packets, especially if the capacity is unknown on that path.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
+by these packets, especially if the capacity is unknown on that path.<a href="#section-6.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="retransmissions">
-<section id="section-6.5">
+<section id="section-6.6">
         <h3 id="name-retransmissions">
-<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-retransmissions" class="section-name selfRef">Retransmissions</a>
+<a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-retransmissions" class="section-name selfRef">Retransmissions</a>
         </h3>
-<p id="section-6.5-1">Simultaneous use of multiple paths enables different
+<p id="section-6.6-1">Simultaneous use of multiple paths enables different
 retransmission strategies to cope with losses such as:
 a) retransmitting lost frames over the
 same path, b) retransmitting lost frames on a different or
 dedicated path, and c) duplicate lost frames on several paths (not
 recommended for general purpose use due to the network
 overhead). While this document does not preclude a specific
-strategy, more detailed specification is out of scope.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
-<p id="section-6.5-2">As noted in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-2.2" class="relref">Section 2.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, STREAM frame boundaries are not
+strategy, more detailed specification is out of scope.<a href="#section-6.6-1" class="pilcrow">¶</a></p>
+<p id="section-6.6-2">As noted in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-2.2" class="relref">Section 2.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, STREAM frame boundaries are not
 expected to be preserved when data is retransmitted. Especially when STREAM
 frames have to be retransmitted over a different path with a smaller MTU limit,
-new smaller STREAM frames might need to be sent instead.<a href="#section-6.5-2" class="pilcrow">¶</a></p>
+new smaller STREAM frames might need to be sent instead.<a href="#section-6.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-pto">
-<section id="section-6.6">
+<section id="section-6.7">
         <h3 id="name-handling-pto">
-<a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-handling-pto" class="section-name selfRef">Handling PTO</a>
+<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-handling-pto" class="section-name selfRef">Handling PTO</a>
         </h3>
-<p id="section-6.6-1">An implementation should follow the mechanism specified in <span>[<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>
+<p id="section-6.7-1">An implementation should follow the mechanism specified in <span>[<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>
 for detecting packet loss on each individual path. A special case happens when
 the PTO timer expires. According to <span>[<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>, no packet will be declared
 lost until either the packet sender receives a new acknowledgement for this path,
 or the path itself is finally declared broken. This cautious process minimizes
 the risk of spurious retransmissions, but it may cause significant delivery delay
-for the frames contained in these "lost packets".<a href="#section-6.6-1" class="pilcrow">¶</a></p>
-<p id="section-6.6-2">Endpoints could take advantage of the multipath extension, and retransmit the content
+for the frames contained in these "lost packets".<a href="#section-6.7-1" class="pilcrow">¶</a></p>
+<p id="section-6.7-2">Endpoints could take advantage of the multipath extension, and retransmit the content
 of the delayed packets on other available paths if the congestion control window on these
-paths allows.<a href="#section-6.6-2" class="pilcrow">¶</a></p>
+paths allows.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-different-pmtu-sizes">
-<section id="section-6.7">
+<section id="section-6.8">
         <h3 id="name-handling-different-pmtu-siz">
-<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-handling-different-pmtu-siz" class="section-name selfRef">Handling Different PMTU Sizes</a>
+<a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-handling-different-pmtu-siz" class="section-name selfRef">Handling Different PMTU Sizes</a>
         </h3>
-<p id="section-6.7-1">An implementation should take care to handle different PMTU sizes across
+<p id="section-6.8-1">An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-14.3" class="relref">Section 14.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> the
 DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
 One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to
 each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
-on another path without further frame scheduling adaptations.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
+on another path without further frame scheduling adaptations.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="keep-alive">
-<section id="section-6.8">
+<section id="section-6.9">
         <h3 id="name-keep-alive">
-<a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-keep-alive" class="section-name selfRef">Keep Alive</a>
+<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-keep-alive" class="section-name selfRef">Keep Alive</a>
         </h3>
-<p id="section-6.8-1">The QUIC specification defines an optional keep alive process, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
+<p id="section-6.9-1">The QUIC specification defines an optional keep alive process, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Implementations of the multipath extension should map this keep alive process to a number of paths.
 Some applications may keep only one path alive, while others could prefer to maintain
 liveliness on two or more paths during the connection lifetime.
 Different applications will likely require different strategies.
 Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
-on each of these paths before the idle timeout expires.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
+on each of these paths before the idle timeout expires.<a href="#section-6.9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="idle-time-close">
-<section id="section-6.9">
+<section id="section-6.10">
         <h3 id="name-idle-timeout">
-<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-idle-timeout" class="section-name selfRef">Idle Timeout</a>
+<a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-idle-timeout" class="section-name selfRef">Idle Timeout</a>
         </h3>
-<p id="section-6.9-1"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows for closing of connections if they stay idle
+<p id="section-6.10-1"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows for closing of connections if they stay idle
 for too long. The connection idle timeout when using the multipath extension is defined
 as "no packet received on any path for the duration of the idle timeout".
 When only one path is available, servers follow the specifications
-in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.9-1" class="pilcrow">¶</a></p>
-<p id="section-6.9-2">This document does not specify per-path idle timeouts. An endpoint
+in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
+<p id="section-6.10-2">This document does not specify per-path idle timeouts. An endpoint
 can decide to close a path at any time, whether the path is in active
 use or not, by sending a PATH_ABANDON frame. It is not required
 to send a PATH_ABANDON frame at any specific point in time.
-For example, an endpoint may wait until it will anyway send another frame.<a href="#section-6.9-2" class="pilcrow">¶</a></p>
-<p id="section-6.9-3">If a path is not actively used for a while, it might not be usable anymore,
+For example, an endpoint may wait until it will anyway send another frame.<a href="#section-6.10-2" class="pilcrow">¶</a></p>
+<p id="section-6.10-3">If a path is not actively used for a while, it might not be usable anymore,
 e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.
 As discussed in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the keep-alive interval depends
-on the timeout in the middlebox.<a href="#section-6.9-3" class="pilcrow">¶</a></p>
-<p id="section-6.9-4">If a path was not actively used for a while, an endpoint can
+on the timeout in the middlebox.<a href="#section-6.10-3" class="pilcrow">¶</a></p>
+<p id="section-6.10-4">If a path was not actively used for a while, an endpoint can
 probe it before switching to active use if there are still other paths
-that are currently usable.<a href="#section-6.9-4" class="pilcrow">¶</a></p>
+that are currently usable.<a href="#section-6.10-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

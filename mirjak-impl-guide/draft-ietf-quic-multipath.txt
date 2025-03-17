@@ -105,15 +105,16 @@ Table of Contents
      4.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
    5.  Error Codes
    6.  Implementation Considerations
-     6.1.  Using multiple paths on the same 4-tuple
-     6.2.  Congestion Control
-     6.3.  Computing Path RTT
-     6.4.  Packet Scheduling
-     6.5.  Retransmissions
-     6.6.  Handling PTO
-     6.7.  Handling Different PMTU Sizes
-     6.8.  Keep Alive
-     6.9.  Idle Timeout
+     6.1.  CID Changes, Migration, and NAT Rebindings
+     6.2.  Using multiple paths on the same 4-tuple
+     6.3.  Congestion Control
+     6.4.  Computing Path RTT
+     6.5.  Packet Scheduling
+     6.6.  Retransmissions
+     6.7.  Handling PTO
+     6.8.  Handling Different PMTU Sizes
+     6.9.  Keep Alive
+     6.10. Idle Timeout
    7.  IANA Considerations
    8.  Security Considerations
      8.1.  Memory Allocation for Per-Path Resources
@@ -499,7 +500,7 @@ Table of Contents
 
    PATH_ACK frames (defined in Section 4.1) can be returned on any path.
    If the PATH_ACK is preferred to be sent on the same path as the
-   acknowledged packet (see Section 6.3 for further guidance), it can be
+   acknowledged packet (see Section 6.4 for further guidance), it can be
    beneficial to bundle a PATH_ACK frame with the PATH_RESPONSE frame
    during path validation.
 
@@ -766,8 +767,8 @@ Table of Contents
    inverse is not true: retiring the associated connection IDs does not
    indicate path abandonment (see further Section 3.2).  This is true
    whether the decision to close the path results from implicit signals
-   such as idle time or packet losses (see Section 6.9) or for any other
-   reason, such as management of local resources.
+   such as idle time or packet losses (see Section 6.10) or for any
+   other reason, such as management of local resources.
 
    It is also possible that an endpoint will receive a PATH_ABANDON
    frame before receiving or sending any traffic on a path.  For
@@ -1255,8 +1256,9 @@ Table of Contents
 
 6.  Implementation Considerations
 
-   This section provides informational guidance for implementors. ## CID
-   Changes, Migration, and NAT Rebindings {#migration}
+   This section provides informational guidance for implementors.
+
+6.1.  CID Changes, Migration, and NAT Rebindings
 
    With the multipath extension each path uses a separate packet number
    space.  This is a major difference from [QUIC-TRANSPORT], which only
@@ -1291,7 +1293,7 @@ Table of Contents
    simplified migration handling at the server as NAT rebindings imply
    immediate loss of the old address.
 
-6.1.  Using multiple paths on the same 4-tuple
+6.2.  Using multiple paths on the same 4-tuple
 
    It is possible to create paths that refer to the same 4-tuple.  For
    example, the endpoints may want to create paths that use different
@@ -1329,7 +1331,7 @@ Table of Contents
    closure of duplicate paths, or perhaps relying on the application
    protocol to decide which paths should be closed.
 
-6.2.  Congestion Control
+6.3.  Congestion Control
 
    When the QUIC multipath extension is used, senders manage per-path
    congestion status as required in Section 9.4 of [QUIC-TRANSPORT].
@@ -1359,7 +1361,7 @@ Table of Contents
    the endpoint can keep the same congestion control and RTT measurement
    state.
 
-6.3.  Computing Path RTT
+6.4.  Computing Path RTT
 
    Acknowledgment delays are the sum of two one-way delays, the delay on
    the packet sending path and the delay on the return path chosen for
@@ -1414,7 +1416,7 @@ Table of Contents
    the minimum RTT was received, and to restart the minimum RTT
    computation if that path is abandoned.
 
-6.4.  Packet Scheduling
+6.5.  Packet Scheduling
 
    The transmission of QUIC packets on a regular QUIC connection is
    regulated by the arrival of data from the application and the
@@ -1430,7 +1432,7 @@ Table of Contents
 
    Note that this implies that an endpoint may send and receive PATH_ACK
    frames on a path different from the one that carried the acknowledged
-   packets.  As noted in Section 6.3 the values computed using the
+   packets.  As noted in Section 6.4 the values computed using the
    standard algorithm reflect both the characteristics of the path and
    the scheduling algorithm of PATH_ACK frames.  The estimates will
    converge faster if the scheduling strategy is stable, but besides
@@ -1443,7 +1445,7 @@ Table of Contents
    the load induced by these packets, especially if the capacity is
    unknown on that path.
 
-6.5.  Retransmissions
+6.6.  Retransmissions
 
    Simultaneous use of multiple paths enables different retransmission
    strategies to cope with losses such as: a) retransmitting lost frames
@@ -1459,7 +1461,7 @@ Table of Contents
    different path with a smaller MTU limit, new smaller STREAM frames
    might need to be sent instead.
 
-6.6.  Handling PTO
+6.7.  Handling PTO
 
    An implementation should follow the mechanism specified in
    [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
@@ -1475,7 +1477,7 @@ Table of Contents
    retransmit the content of the delayed packets on other available
    paths if the congestion control window on these paths allows.
 
-6.7.  Handling Different PMTU Sizes
+6.8.  Handling Different PMTU Sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
@@ -1487,7 +1489,7 @@ Table of Contents
    initially sent on one path can be sent on another path without
    further frame scheduling adaptations.
 
-6.8.  Keep Alive
+6.9.  Keep Alive
 
    The QUIC specification defines an optional keep alive process, see
    Section 5.3 of [QUIC-TRANSPORT].  Implementations of the multipath
@@ -1499,7 +1501,7 @@ Table of Contents
    paths to keep alive, it can do so by sending Ping frames on each of
    these paths before the idle timeout expires.
 
-6.9.  Idle Timeout
+6.10.  Idle Timeout
 
    [QUIC-TRANSPORT] allows for closing of connections if they stay idle
    for too long.  The connection idle timeout when using the multipath
