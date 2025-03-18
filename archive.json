@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-16T01:01:58.666576+00:00",
+  "timestamp": "2025-03-18T00:57:53.737182+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12871,11 +12871,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "needs-discussion"
+        "needs-discussion",
+        "no-action-needed"
       ],
-      "body": "We discussed today in the interop call if the PATH_CIDS_BLOCKED frame is really needed because usually the peer should provide at least one unused CID for all active paths, otherwise this seems to be rather an implementation error. Also there is no really good reason to not just provide at least one CID for all paths up to the max path id limit. If you want to limit the number of paths, just set a lower may path id limit. This could be clarified in the draft.\n\nHowever, the use case to send PATH_CIDS_BLOCKED frame when you want to open a new path but are not blocked by the max path id but instead by the fact that you didn't get any CID for an unused path ID seemed still relevant as this behaviour is allowed and therefore might not be an implementation error.\n\nAlso as we have now already specified it, there is no real harm in keeping it. A client can choose to not implement and a server can choose to ignore the frame.",
+      "body": "We discussed today in the interop call if the PATH_CIDS_BLOCKED frame is really needed because usually the peer should provide at least one unused CID for all active paths, otherwise this seems to be rather an implementation error. Also there is no really good reason to not just provide at least one CID for all paths up to the max path id limit. If you want to limit the number of paths, just set a lower max path id limit. This could be clarified in the draft.\n\nHowever, the use case to send PATH_CIDS_BLOCKED frame when you want to open a new path but are not blocked by the max path id but instead by the fact that you didn't get any CID for an unused path ID seemed still relevant as this behaviour is allowed and therefore might not be an implementation error.\n\nAlso as we have now already specified it, there is no real harm in keeping it. A client can choose to not implement and a server can choose to ignore the frame.",
       "createdAt": "2025-02-28T11:53:29Z",
-      "updatedAt": "2025-03-06T18:31:33Z",
+      "updatedAt": "2025-03-17T04:27:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -12903,10 +12904,52 @@
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "clarification"
+      ],
       "body": "Reading the draft-13 more closely, I see a bit of a contradiction between 3.3.3 and 3.4.\n\nSection 3.3.3 on \"idle timeout\" says: \"_An endpoint can decide to close a path at any time, whether the path is in active use or not, by sending a PATH_ABANDON frame.  It is not required to send a PATH_ABANDON frame at any specific point in time.  For example, an endpoint may wait until it will anyway send another frame._\"\n\nSection 3.4 on \"Path Close\" says: \"_If a peer sends a PATH_ABANDON frame but never receives a corresponding PATH_ABANDON frame, it might not be able to remove path state. It is left to the implementation to handle this unexpected behavior as it does not impact interoperability. If the endpoint is no longer willing to process the issued connection IDs for the abandoned path, it MAY close the connection, but SHOULD wait at least 3 PTOs after sending the PATH_ABANDON frame._\"\n\nThe text in 3.3.3 is motivated in part by radio management. On a mobile device, sending any packet requires powering up the radio, which consumes energy. It is better to power the radio once and send a few packets in a batch than to power the radio multiple time. But if the endpoint waits until \"something else has to be sent\", it may wait more than 3*PTO, and the peer MAY close the connection. Not good.",
       "createdAt": "2025-03-14T18:46:03Z",
-      "updatedAt": "2025-03-14T18:46:03Z",
+      "updatedAt": "2025-03-17T04:27:49Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "These pieces of text were suppose to address two different cases (which I see now might not be super clear or at least could be clarified):\n\nThe peer sending the initial path_abandon may or may not do that at any point in time. However if you receive a path abandon you should reply immediately. ",
+          "createdAt": "2025-03-16T08:33:47Z",
+          "updatedAt": "2025-03-16T08:33:47Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How about this:\n\nOLD\n\"It is not required to send a PATH_ABANDON frame at any specific point in time.\"\n\nNew\n\"For the initial PATH_ABANDON frame to close a path, it is not required to send a PATH_ABANDON frame at any specific point in time.\"\n\nGood enough?",
+          "createdAt": "2025-03-17T04:17:01Z",
+          "updatedAt": "2025-03-17T04:17:01Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, that's probably enough. ",
+          "createdAt": "2025-03-17T04:27:47Z",
+          "updatedAt": "2025-03-17T04:27:47Z"
+        }
+      ]
+    },
+    {
+      "number": 510,
+      "id": "I_kwDOGNtpaM6uSddM",
+      "title": "Double-check use of path identifier and Path ID",
+      "url": "https://github.com/quicwg/multipath/issues/510",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "We tried to use \"path identifier\" as the term and \"Path ID\" as the field name, however, maybe it more clear to only use Path ID? In any case we need to check again if used constantly. ",
+      "createdAt": "2025-03-17T07:51:50Z",
+      "updatedAt": "2025-03-17T07:51:50Z",
       "closedAt": null,
       "comments": []
     }
@@ -54544,6 +54587,246 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 506,
+      "id": "PR_kwDOGNtpaM6Ozr38",
+      "title": "editorial pass on sec 2 and merge of subsections in intro",
+      "url": "https://github.com/quicwg/multipath/pull/506",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-03-16T05:34:25Z",
+      "updatedAt": "2025-03-17T04:26:10Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "4ae64fb9646383a242720aee769764d0bfc1b009",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-sec2",
+      "headRefOid": "d949bb4aa94d2e3da6ac02efc9004f0530bc2741",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6gP5Z5",
+          "commit": {
+            "abbreviatedOid": "d949bb4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-16T05:51:54Z",
+          "updatedAt": "2025-03-16T05:51:54Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "I removed the subsections in the intro and moved these two paragraphs here because of work on section 2 there were only one paragraph left in each of the subsection.",
+              "createdAt": "2025-03-16T05:51:54Z",
+              "updatedAt": "2025-03-16T05:51:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6gP5sR",
+          "commit": {
+            "abbreviatedOid": "d949bb4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-16T05:53:38Z",
+          "updatedAt": "2025-03-16T05:53:38Z",
+          "comments": [
+            {
+              "originalPosition": 121,
+              "body": "I not super happy with the heading of this section but also unsure of a better heading. Proposals are welcome.",
+              "createdAt": "2025-03-16T05:53:38Z",
+              "updatedAt": "2025-03-16T05:53:38Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 507,
+      "id": "PR_kwDOGNtpaM6Ozr88",
+      "title": "editorial pass on section 3 (path management)",
+      "url": "https://github.com/quicwg/multipath/pull/507",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Please have a careful review as there have been some thing were old text was redundant or needed to be adopted/clarified based on newer text",
+      "createdAt": "2025-03-16T05:35:48Z",
+      "updatedAt": "2025-03-17T04:26:11Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "4ae64fb9646383a242720aee769764d0bfc1b009",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-sec3",
+      "headRefOid": "addb7de1880d220001650462a25147e20fdae22f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 508,
+      "id": "PR_kwDOGNtpaM6Ozsnc",
+      "title": "shorter error code definition",
+      "url": "https://github.com/quicwg/multipath/pull/508",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "I also wonder if we should move this section into a subsection of the Abandon frame because this is only for this frame...?",
+      "createdAt": "2025-03-16T05:44:26Z",
+      "updatedAt": "2025-03-17T04:26:11Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "4ae64fb9646383a242720aee769764d0bfc1b009",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-error-codes",
+      "headRefOid": "46fa8e50cbc47a3cec9dd28b0a441b12e29b55c8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 509,
+      "id": "PR_kwDOGNtpaM6OztIL",
+      "title": "initial pass - (re)move subsections in impl guidance sec",
+      "url": "https://github.com/quicwg/multipath/pull/509",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "This is not a full path on the implementation guidance section but it removes/merges one subsection and moves some sections around to align content better. However, there might be some editorial improvement needed on the rest of the text still.",
+      "createdAt": "2025-03-16T05:50:58Z",
+      "updatedAt": "2025-03-17T07:56:07Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "4ae64fb9646383a242720aee769764d0bfc1b009",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-impl-guide",
+      "headRefOid": "290de3241898ade35ed20717f2ef6aaadc818a71",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6gTWf8",
+          "commit": {
+            "abbreviatedOid": "5e4833f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-17T07:54:24Z",
+          "updatedAt": "2025-03-17T07:54:24Z",
+          "comments": [
+            {
+              "originalPosition": 3,
+              "body": "```suggestion\r\n\r\nThis section provides informational guidance for implementors.\r\n```",
+              "createdAt": "2025-03-17T07:54:24Z",
+              "updatedAt": "2025-03-17T07:54:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6gTXX3",
+          "commit": {
+            "abbreviatedOid": "bd983ab"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-17T07:55:09Z",
+          "updatedAt": "2025-03-17T07:55:09Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nThis section provides informational guidance for implementors.\r\n\r\n```",
+              "createdAt": "2025-03-17T07:55:09Z",
+              "updatedAt": "2025-03-17T07:55:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6gTYBG",
+          "commit": {
+            "abbreviatedOid": "290de32"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-03-17T07:56:06Z",
+          "updatedAt": "2025-03-17T07:56:07Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Added this proposed by Gorry but we could also add a few more words here what this section is about.",
+              "createdAt": "2025-03-17T07:56:07Z",
+              "updatedAt": "2025-03-17T07:56:07Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 511,
+      "id": "PR_kwDOGNtpaM6O38wS",
+      "title": "clarification about when to send path-abandon",
+      "url": "https://github.com/quicwg/multipath/pull/511",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #505",
+      "createdAt": "2025-03-17T08:10:59Z",
+      "updatedAt": "2025-03-17T08:10:59Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "4ae64fb9646383a242720aee769764d0bfc1b009",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-2",
+      "headRefOid": "2f57be3cebd266ecae53e20d24f0934d7aac8799",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
