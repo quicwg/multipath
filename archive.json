@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-18T00:57:53.737182+00:00",
+  "timestamp": "2025-03-20T00:57:25.379427+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12866,7 +12866,7 @@
       "id": "I_kwDOGNtpaM6sE3N3",
       "title": "Is PATH_CIDS_BLOCKED frame really needed?",
       "url": "https://github.com/quicwg/multipath/issues/500",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -12876,8 +12876,8 @@
       ],
       "body": "We discussed today in the interop call if the PATH_CIDS_BLOCKED frame is really needed because usually the peer should provide at least one unused CID for all active paths, otherwise this seems to be rather an implementation error. Also there is no really good reason to not just provide at least one CID for all paths up to the max path id limit. If you want to limit the number of paths, just set a lower max path id limit. This could be clarified in the draft.\n\nHowever, the use case to send PATH_CIDS_BLOCKED frame when you want to open a new path but are not blocked by the max path id but instead by the fact that you didn't get any CID for an unused path ID seemed still relevant as this behaviour is allowed and therefore might not be an implementation error.\n\nAlso as we have now already specified it, there is no real harm in keeping it. A client can choose to not implement and a server can choose to ignore the frame.",
       "createdAt": "2025-02-28T11:53:29Z",
-      "updatedAt": "2025-03-17T04:27:40Z",
-      "closedAt": null,
+      "updatedAt": "2025-03-19T06:49:07Z",
+      "closedAt": "2025-03-19T06:49:06Z",
       "comments": [
         {
           "author": "mirjak",
@@ -12892,6 +12892,13 @@
           "body": "I landed here while wondering what to do with PATH_CIDS_BLOCKED...  I've tried to read the previous information about this in the issues here [0].  Receiving this frame doesn't really help you in practice I think.  I'd rather REQUIRE that at least one CID is issued for each un-opened path up the max PathId limit.  And maybe even REQUIRE to issue up to max_connection_id_limit CIDs for those unopened paths, at least RECOMMEND.\n\nThis mostly because I don't see the value of limiting those: you can already limit the number of paths.  Keeping track of a few more CIDs really doesn't bring much value.\n\nOn the other hand I could see that the number of round-trips required to open a new path would be increased if implementations could hold off issuing more CIDs.\n\n\n[0] references I found:\n- original issue: https://github.com/quicwg/multipath/issues/459\n- introduced: https://github.com/quicwg/multipath/pull/468/files\n- a proposed clarification: https://github.com/quicwg/multipath/pull/468/files (issue: https://github.com/quicwg/multipath/issues/496)\n- another proposed tweak: https://github.com/quicwg/multipath/pull/495",
           "createdAt": "2025-03-03T11:51:27Z",
           "updatedAt": "2025-03-03T11:51:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was discussed at IETF-122 and decided to keep it. BLOCKED frames are also useful for debugging.",
+          "createdAt": "2025-03-19T06:49:06Z",
+          "updatedAt": "2025-03-19T06:49:06Z"
         }
       ]
     },
@@ -12950,6 +12957,42 @@
       "body": "We tried to use \"path identifier\" as the term and \"Path ID\" as the field name, however, maybe it more clear to only use Path ID? In any case we need to check again if used constantly. ",
       "createdAt": "2025-03-17T07:51:50Z",
       "updatedAt": "2025-03-17T07:51:50Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 512,
+      "id": "I_kwDOGNtpaM6urlJ8",
+      "title": "Text about use cases in Intro",
+      "url": "https://github.com/quicwg/multipath/issues/512",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Maybe also add a bit of a warning that general purpose use needs more logic that is not specified in this draft.",
+      "createdAt": "2025-03-19T06:52:13Z",
+      "updatedAt": "2025-03-19T06:52:13Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 513,
+      "id": "I_kwDOGNtpaM6urqfg",
+      "title": "Double-check recommendation on minRTT and cc",
+      "url": "https://github.com/quicwg/multipath/issues/513",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "Indicated by Gorry that more discussion in the implementation guidance section might be useful. Especially as ACK might not be sent on the same than the data.",
+      "createdAt": "2025-03-19T07:03:25Z",
+      "updatedAt": "2025-03-19T07:03:25Z",
       "closedAt": null,
       "comments": []
     }
