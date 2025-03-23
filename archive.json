@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-20T00:57:25.379427+00:00",
+  "timestamp": "2025-03-23T01:02:23.554690+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12993,6 +12993,24 @@
       "body": "Indicated by Gorry that more discussion in the implementation guidance section might be useful. Especially as ACK might not be sent on the same than the data.",
       "createdAt": "2025-03-19T07:03:25Z",
       "updatedAt": "2025-03-19T07:03:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 514,
+      "id": "I_kwDOGNtpaM6vFa53",
+      "title": "Address feedback from IANA",
+      "url": "https://github.com/quicwg/multipath/issues/514",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "See email",
+      "createdAt": "2025-03-21T06:24:55Z",
+      "updatedAt": "2025-03-21T06:25:00Z",
       "closedAt": null,
       "comments": []
     }
