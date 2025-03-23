@@ -1275,7 +1275,7 @@ different from route changes on a single path.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
 There is however one exception: the minimum RTT. But this is also
-a known challenge when route changes ocurrs on a single path.  
+a known challenge when route changes occurs on a single path.
 Other than for in-network route change, the acknowledgement receiver
 can, however,  remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
