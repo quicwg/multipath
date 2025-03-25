@@ -163,7 +163,7 @@ Table of Contents
    This extension does not cover address discovery and management.
    Addresses and the actual decision to setup or tear down paths are
    assumed to be handled by the application.  But this document does not
-   prevent future extensions from defining mechanisms to address the
+   prevent future extensions from defining mechanisms to cope with the
    remaining scenarios.
 
    Further, this document does not specify detailed algorithms that
@@ -171,7 +171,7 @@ Table of Contents
    packets.  As these differ depending on the application requirements,
    only some basic implementation guidance is discussed in Section 6.
 
-   Specifically, while failover between WiFi and mobile networks is a
+   Specifically, while failover between Wi-Fi and mobile networks is a
    well-known multipath use case, it only uses two paths at the same
    time temporarily in order to avoid transmission pauses.  Simultaneous
    path usage generally, however, needs more consideration than
