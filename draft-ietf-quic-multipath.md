@@ -1498,15 +1498,15 @@ but requires some additional consideration regarding:
 ## Memory Allocation for Per-Path Resources
 
 The maximum Path ID limit in initial_max_path_id or MAX_PATH_ID frame
-limit the number of paths an endpoint is willing
-to maintain and accordingly thereby also limit the associated path resources.
+limits the number of paths an endpoint is willing
+to maintain and thereby also limits the associated path resources.
 Furthermore, as connection IDs have to be issued by both endpoints for the
 same Path ID before an endpoint can open a path, each endpoint could also
 control the per-path resource usage by only
 issuing connection IDs for a limited number of paths. However, using
 the maximum Path ID limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.
 
-To avoid unnecessarily resource usage, that potentially could be exploited
+To avoid unnecessary resource usage that could be exploited
 in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
 such as e.g. for packet number handling, only after path validation has successfully completed.
 
@@ -1521,7 +1521,7 @@ Similarly, the anti-amplification limits as specified in {{Section 8 of QUIC-TRA
 followed to limit the amplification risk.
 
 {{QUIC-TRANSPORT}} only allows the use of one path
-and as auch there can be only one path validation at a time.
+and as such only one path validation at a time.
 This extension, however, allows for multiple open paths that could in theory be migrated
 all at the same time. Further multiple paths could be initialized
 simultaneously. Each open path could be used to further amplify an attack.
@@ -1538,7 +1538,7 @@ successful handshake when both endpoints indicate support for this extension.
 Respectively, all new frames defined in this extension are only used in 1-RTT packets.
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication,
-remain unchanged. As such also the respective security considerations in {{QUIC-TLS}} apply unaltered. However, note that the limits as discussed on Appendix B of {{QUIC-TLS}}
+remain unchanged. As such, the respective security considerations in {{QUIC-TLS}} apply unaltered. However, note that the limits as discussed on Appendix B of {{QUIC-TLS}}
 apply to the total number of packets sent on all paths.
 
 This specification changes the AEAD calculation by using the path identifier as part of
