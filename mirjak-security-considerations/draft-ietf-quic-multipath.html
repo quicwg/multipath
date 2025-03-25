@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 24 September 2025</td>
+<td class="center">Expires 26 September 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-03-23" class="published">23 March 2025</time>
+<time datetime="2025-03-25" class="published">25 March 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-09-24">24 September 2025</time></dd>
+<dd class="expires"><time datetime="2025-09-26">26 September 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3136,14 +3136,14 @@ but requires some additional consideration regarding:<a href="#section-8-1" clas
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-memory-allocation-for-per-p" class="section-name selfRef">Memory Allocation for Per-Path Resources</a>
         </h3>
 <p id="section-8.1-1">The maximum Path ID limit in initial_max_path_id or MAX_PATH_ID frame
-limit the number of paths an endpoint is willing
-to maintain and accordingly thereby also limit the associated path resources.
+limits the number of paths an endpoint is willing
+to maintain and thereby also limits the associated path resources.
 Furthermore, as connection IDs have to be issued by both endpoints for the
 same Path ID before an endpoint can open a path, each endpoint could also
 control the per-path resource usage by only
 issuing connection IDs for a limited number of paths. However, using
 the maximum Path ID limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">To avoid unnecessarily resource usage, that potentially could be exploited
+<p id="section-8.1-2">To avoid unnecessary resource usage that could be exploited
 in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
 such as e.g. for packet number handling, only after path validation has successfully completed.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 </section>
@@ -3160,7 +3160,7 @@ on source address spoofing as outlined in <span><a href="https://rfc-editor.org/
 Similarly, the anti-amplification limits as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> need to be
 followed to limit the amplification risk.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.2-2"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path
-and as auch there can be only one path validation at a time.
+and as such only one path validation at a time.
 This extension, however, allows for multiple open paths that could in theory be migrated
 all at the same time. Further multiple paths could be initialized
 simultaneously. Each open path could be used to further amplify an attack.
@@ -3180,7 +3180,7 @@ successful handshake when both endpoints indicate support for this extension.
 Respectively, all new frames defined in this extension are only used in 1-RTT packets.
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, such as encryption key exchange and peer authentication,
-remain unchanged. As such also the respective security considerations in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span> apply unaltered. However, note that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
+remain unchanged. As such, the respective security considerations in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span> apply unaltered. However, note that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
 apply to the total number of packets sent on all paths.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <p id="section-8.3-2">This specification changes the AEAD calculation by using the path identifier as part of
 AEAD nonce (see <a href="#multipath-aead" class="auto internal xref">Section 2.3</a>). To ensure a unique nonce, path identifiers

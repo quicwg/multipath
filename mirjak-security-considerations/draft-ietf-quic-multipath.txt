@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 24 September 2025                        Uber Technologies Inc.
+Expires: 26 September 2025                        Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 24 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           23 March 2025
+                                                           25 March 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2025.
+   This Internet-Draft will expire on 26 September 2025.
 
 Copyright Notice
 
@@ -1645,19 +1645,18 @@ Table of Contents
 8.1.  Memory Allocation for Per-Path Resources
 
    The maximum Path ID limit in initial_max_path_id or MAX_PATH_ID frame
-   limit the number of paths an endpoint is willing to maintain and
-   accordingly thereby also limit the associated path resources.
-   Furthermore, as connection IDs have to be issued by both endpoints
-   for the same Path ID before an endpoint can open a path, each
-   endpoint could also control the per-path resource usage by only
-   issuing connection IDs for a limited number of paths.  However, using
-   the maximum Path ID limit in initial_max_path_id or the MAX_PATH_ID
-   frame is preferred.
+   limits the number of paths an endpoint is willing to maintain and
+   thereby also limits the associated path resources.  Furthermore, as
+   connection IDs have to be issued by both endpoints for the same Path
+   ID before an endpoint can open a path, each endpoint could also
+   control the per-path resource usage by only issuing connection IDs
+   for a limited number of paths.  However, using the maximum Path ID
+   limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.
 
-   To avoid unnecessarily resource usage, that potentially could be
-   exploited in a resource exhaustion attack, endpoints SHOULD allocate
-   additional path resources, such as e.g. for packet number handling,
-   only after path validation has successfully completed.
+   To avoid unnecessary resource usage that could be exploited in a
+   resource exhaustion attack, endpoints SHOULD allocate additional path
+   resources, such as e.g. for packet number handling, only after path
+   validation has successfully completed.
 
 8.2.  Request Forgery with Spoofed Address
 
@@ -1668,16 +1667,15 @@ Table of Contents
    Similarly, the anti-amplification limits as specified in Section 8 of
    [QUIC-TRANSPORT] need to be followed to limit the amplification risk.
 
-   [QUIC-TRANSPORT] only allows the use of one path and as auch there
-   can be only one path validation at a time.  This extension, however,
-   allows for multiple open paths that could in theory be migrated all
-   at the same time.  Further multiple paths could be initialized
-   simultaneously.  Each open path could be used to further amplify an
-   attack.  Therefore, endpoints need to limit the maximum number of
-   paths and might consider additional measures to limit the number of
-   concurrent path validation processes e.g. by pacing them out or
-   limiting the number of path initiation attempts over a certain time
-   period.
+   [QUIC-TRANSPORT] only allows the use of one path and as such only one
+   path validation at a time.  This extension, however, allows for
+   multiple open paths that could in theory be migrated all at the same
+   time.  Further multiple paths could be initialized simultaneously.
+   Each open path could be used to further amplify an attack.
+   Therefore, endpoints need to limit the maximum number of paths and
+   might consider additional measures to limit the number of concurrent
+   path validation processes e.g. by pacing them out or limiting the
+   number of path initiation attempts over a certain time period.
 
 8.3.  Cryptographic handshake and AEAD Nonce
 
@@ -1687,10 +1685,10 @@ Table of Contents
    extension are only used in 1-RTT packets.  As the handshake is not
    changed by this extension, the transport security mechanisms as
    specified in [QUIC-TLS], such as encryption key exchange and peer
-   authentication, remain unchanged.  As such also the respective
-   security considerations in [QUIC-TLS] apply unaltered.  However, note
-   that the limits as discussed on Appendix B of [QUIC-TLS] apply to the
-   total number of packets sent on all paths.
+   authentication, remain unchanged.  As such, the respective security
+   considerations in [QUIC-TLS] apply unaltered.  However, note that the
+   limits as discussed on Appendix B of [QUIC-TLS] apply to the total
+   number of packets sent on all paths.
 
    This specification changes the AEAD calculation by using the path
    identifier as part of AEAD nonce (see Section 2.3).  To ensure a
