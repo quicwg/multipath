@@ -110,10 +110,10 @@ This document specifies the needed path management mechanisms for path
 initiation {{path-initiation}}, handling of per-path connection IDs {{consume-retire-cid}},
 signaling of preferred path usage {{path-state}}, and explicit
 removal of paths that have been abandoned {{path-close}}.
-Note that in this extention, a QUIC server does not initiate the creation
+Note that in this extension, a QUIC server does not initiate the creation
 of a path, but it has to validate a new path created by a client.
 
-This proposal does not cover address discovery and management. Addresses
+This extension does not cover address discovery and management. Addresses
 and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
 defining mechanisms to address the remaining scenarios.
@@ -125,7 +125,7 @@ only some basic implementation guidance is discussed in {{impl-consideration}}.
 
 Specifically, while failover between WiFi
 and mobile networks is a well-known multipath use case,
-it only uses two paths at the same time temporily in order
+it only uses two paths at the same time temporarily in order
 to avoid transmission pauses.
 Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
