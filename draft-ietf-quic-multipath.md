@@ -116,14 +116,14 @@ of a path, but it has to validate a new path created by a client.
 This extension does not cover address discovery and management. Addresses
 and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
-defining mechanisms to address the remaining scenarios.
+defining mechanisms to cope with the remaining scenarios.
 
 Further, this document does not specify detailed algorithms that define
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on the application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
 
-Specifically, while failover between WiFi
+Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
 it only uses two paths at the same time temporarily in order
 to avoid transmission pauses.
