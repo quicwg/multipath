@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 24 September 2025                        Uber Technologies Inc.
+Expires: 26 September 2025                        Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 24 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           23 March 2025
+                                                           25 March 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 September 2025.
+   This Internet-Draft will expire on 26 September 2025.
 
 Copyright Notice
 
@@ -1301,7 +1301,7 @@ Table of Contents
 
 6.3.  Computing Path RTT
 
-   PATH_ACK frames indicates which path the acknowledged packets were
+   PATH_ACK frames indicate which path the acknowledged packets were
    sent on, but they may be received through any open path.  If
    successive acknowledgments are received on different paths, the
    measured RTT samples can fluctuate widely, which could result in poor
@@ -1309,8 +1309,8 @@ Table of Contents
 
    Congestion control state as defined in [QUIC-RECOVERY] is kept per
    Path ID.  However, depending on which path acknowledgements are sent,
-   the actually RTT of a path cannot be calculated or may not be the
-   right value to be used.
+   the actual RTT of a path cannot be calculated or may not be the right
+   value to be used.
 
    Instead of using RTT, we define the acknowledgment delays as the sum
    of two one-way delays: the delay on the packet sending path and the
@@ -1319,7 +1319,7 @@ Table of Contents
    can vary widely.  Consider for example a multipath transmission using
    both a terrestrial path, with a latency of 50ms in each direction,
    and a geostationary satellite path, with a latency of 300ms in each
-   directions.  The acknowledgment delay will depend on the combination
+   direction.  The acknowledgment delay will depend on the combination
    of paths used for the packet transmission and the acknowledgement
    transmission, as shown in Table 1.
 
@@ -1345,7 +1345,7 @@ Table of Contents
    than 350ms, either the data packet or its PATH_ACK were probably
    lost.
 
-   The simplest implementation is to used the acknowledgment delay to
+   The simplest implementation is to use the acknowledgment delay to
    compute smoothed_rtt and rttvar per Section 5.3 of [QUIC-RECOVERY]
    regardless of the path through which PATH_ACK frames are received.
    This approach will provide good results as long as acknowledgements
