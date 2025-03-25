@@ -1224,14 +1224,14 @@ control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
 ## Computing Path RTT {#compute-rtt}
 
-PATH_ACK frames indicates which path the acknowledged packets were sent on,
+PATH_ACK frames indicate which path the acknowledged packets were sent on,
 but they may be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
 which could result in poor performance depending e.g. on the usd connection control.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
 per Path ID. However, depending on which path acknowledgements are
-sent, the actually RTT of a path cannot be calculated or may not be
+sent, the actual RTT of a path cannot be calculated or may not be
 the right value to be used.
 
 Instead of using RTT, we define the acknowledgment delays as
@@ -1242,7 +1242,7 @@ characteristics, acknowledgment delays can vary
 widely. Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in each
-directions.  The acknowledgment delay will depend on the combination
+direction.  The acknowledgment delay will depend on the combination
 of paths used for the packet transmission and the acknowledgement transmission,
 as shown in {{fig-example-ack-delay}}.
 
@@ -1264,7 +1264,7 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to used the acknowledgment delay
+The simplest implementation is to use the acknowledgment delay
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
