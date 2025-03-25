@@ -1227,7 +1227,7 @@ control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 PATH_ACK frames indicate which path the acknowledged packets were sent on,
 but they may be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
-which could result in poor performance depending e.g. on the usd connection control.
+which could result in poor performance depending e.g. on the used connection control.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
 per Path ID. However, depending on which path acknowledgements are
@@ -1257,7 +1257,7 @@ Satellite   | 350ms  | 600ms
 The computed values reflect both the state of the network path and the
 scheduling decisions of the acknowledgement sender. If we
 assume that the PATH_ACK will be sent over the terrestrial
-link, because that provides the best response time, the
+link, because this decision provides the best response time, the
 computed RTT value for the satellite path will be about 350ms. This is
 lower than the maximum of 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
@@ -1268,7 +1268,7 @@ The simplest implementation is to use the acknowledgment delay
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
-as long as acknowledgements are sent consistently over the same path.
+as long as acknowledgements are sent consistently over the same paths.
 If the acknowledgement sender
 revisits its sending preferences, the set of paths can change. However, this is not very
 different from route changes on a single path.
@@ -1277,7 +1277,7 @@ reflect the new conditions.
 There is however one exception: the minimum RTT. But this is also
 a known challenge when route changes occurs on a single path.
 Other than for in-network route change, the acknowledgement receiver
-can, however,  remember the path over which the PATH_ACK that produced
+can, however, remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
 if that acknowledgement path changes or is abandoned.
 
