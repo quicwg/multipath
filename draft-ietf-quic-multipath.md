@@ -1184,7 +1184,7 @@ This section provides informational guidance for implementors.
 
 ## CID Changes, Migration, and NAT Rebindings {#migration}
 
-With the multipath extension each
+With the multipath extension, each
 path uses a separate packet number space.
 This is a major difference from
 {{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
@@ -1193,12 +1193,12 @@ Handshake and Application packets).
 The relation between packet number spaces and paths is fixed.
 Connection IDs are separately allocated for each Path ID.
 Rotating the connection ID on a path does not change the Path ID
-nor packet number space.
+nor the packet number space.
 
 While endpoints assign a connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
 observe a different 4-tuple. Though it changes the 4-tuple of the path,
-also does not change connection ID and as such also not the path identifier.
+the connection ID remains the same, and so the related path identifier.
 Servers observing a 4-tuple change will
 perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
 If path validation process succeeds, the endpoints set
@@ -1215,7 +1215,7 @@ More generally, while migration cannot be avoided in case of network-based
 NAT rebindings, opening a new path instead of active client migration
 should be strongly preferred when the multipath extension is supported.
 This enables a smoother handover and allows a simplified migration
-handling at the server as NAT rebindings imply immediate loss of the old
+handling at the server side as NAT rebindings imply immediate loss of the old
 address.
 
 ## Using multiple paths on the same 4-tuple
@@ -1235,7 +1235,7 @@ migrations. For example:
 
 * Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
 * Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
-* both paths are used for a while.
+* Both paths are used for a while.
 * Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
 * Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
 
@@ -1272,7 +1272,7 @@ control schemes have been proposed for Multipath TCP such as {{OLIA}}.
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses to another available one
-at any time during the connection. As such a sole change of the Connection
+at any time during the connection. As such, a sole change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.
 
