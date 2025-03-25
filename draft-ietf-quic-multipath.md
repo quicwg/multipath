@@ -864,7 +864,7 @@ Path Identifier:
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
 The PATH_ABANDON frame informs the peer to abandon a path.
-After the PATH_ABANDON frame is sent on a path, the path cannot be used for sending anymore.
+After the PATH_ABANDON frame is sent on a path, the path can no longer be used for sending.
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
