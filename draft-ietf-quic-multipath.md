@@ -104,12 +104,12 @@ parameter, as specified in {{nego}}. Further, as different packet number
 spaces are used for each path, this specification requires the use of
 non-zero connection IDs in order to identify the path as well as the respective
 packet number space and specifies a modified AEAD calculation including the
-Path ID {{multipath-key-update}}.
+Path ID in {{multipath-key-update}}.
 
 This document specifies the needed path management mechanisms for path
-initiation {{path-initiation}}, handling of per-path connection IDs {{consume-retire-cid}},
-signaling of preferred path usage {{path-state}}, and explicit
-removal of paths that have been abandoned {{path-close}}.
+initiation in {{path-initiation}}, handling of per-path connection IDs in {{consume-retire-cid}},
+signaling of preferred path usage in {{path-state}}, and explicit
+removal of paths that have been abandoned in {{path-close}}.
 However, this document does not specify detailed algorithms that define
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on the application requirements,
