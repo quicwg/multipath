@@ -384,19 +384,19 @@ multipath support, endpoints can start using multiple paths when both endpoints
 have issued available connection IDs for at least one unused, common Path ID,
 as the same Path ID is used in both directions.
 
-This documents specfies path initiation (see Section {{path-initiation}}),
-issuing and retirement of per-path connection IDs (see Section
-{{consume-retire-cid}}), path status management (see Section {{path-state}}) and
-path closure (see Section {{path-close}}).
+This documents specfies path initiation (see {{path-initiation}}),
+issuing and retirement of per-path connection IDs (see
+{{consume-retire-cid}}), path status management (see {{path-state}}) and
+path closure (see {{path-close}}).
 However, this document does not specify when a client decides to initiate or close a path,
 or how multiple active paths are used for packet sending.
 
 ## Path Initiation and Validation {#path-initiation}
 
-To open a new path, an endpoint MUST use a new connection ID associated
-with unused Path ID.
+to open a new path, an endpoint MUST use a new connection ID associated
+with an unused Path ID.
 When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to
-the same Path ID as used in packet that contained the PATH_CHALLENGE frame.
+the same Path ID as used in the packet that contained the PATH_CHALLENGE frame.
 
 A client that wants to use an
 additional path MUST validate the peer's address before sending any data packets
@@ -422,7 +422,7 @@ the amplification limit prevents it initially, as specified in {{Section 8.2.1 o
 
 An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
-on another path, as specified in Section {{path-close}}.
+on another path, as specified in {{path-close}}.
 
 An endpoint that has no active connection ID for this path or
 lacks other resource to immediately configure a new path could
@@ -433,7 +433,7 @@ Section {{path-close}} apply.
 
 Any frames can be sent on any open path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
-packet (see Section {{compute-rtt}} for further guidance), it can be beneficial
+packet (see {{compute-rtt}} for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
 path validation.
 
@@ -442,7 +442,7 @@ If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
 As the used Path ID is anyway consumed,
 the endpoint MUST explicitly close the path, as specified in
-Section {{path-close}}.
+{{path-close}}.
 
 ### Path Establishment Example
 
@@ -542,7 +542,7 @@ In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue at least one Connection ID for each unused Path ID up to the
 minimum of the peer's and the local Maximum Path ID limits.
 
-If for any reasons an endpoints does not want to issue connection IDs for all
+If for any reason an endpoint does not want to issue connection IDs for all
 unused Path ID, it SHOULD NOT introduce discontinuity
 in the issuing of Path IDs as path initiation
 requires available connection IDs for the same Path ID on both sides. For instance,
@@ -552,7 +552,7 @@ ID 2).
 
 Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
-or path initiation attempts with in order use of Path IDs
+or path initiation attempts with in-order use of Path IDs
 due to out-of-order delivery or path validation failure.
 
 Each endpoint maintains the set of connection IDs received from its peer for each path,
@@ -569,12 +569,12 @@ Endpoints MUST NOT issue new connection IDs with Path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see {{max-paths-frame}})
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater Path ID is a connection error as specified
-in Section {{frames}}.
+in {{frames}}.
 
 When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
-(see Section {{paths-and-cids-blocked-frame}}) to inform the peer that
+(see {{paths-and-cids-blocked-frame}}) to inform the peer that
 its current limit prevented the creation of the new path.
 
 ### Rotating and Retiring Connection IDs
@@ -586,16 +586,16 @@ this document, endpoints MUST only rotate to another connection IDs associated
 to the same Path ID. Use of a connection ID associated with
 another Path ID will be considered as an attempt to open a new path instead.
 
-An endpoints is supposed to retire connection ID that are not used anymore,
+An endpoint is supposed to retire connection ID that are not used anymore,
 and the server is supposed to provide
 replacements, as specified in {{Section 5.1.2. of QUIC-TRANSPORT}}.
-As such when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint
+As such, when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint
 SHOULD provide new connection IDs for that path, if still open, using PATH_NEW_CONNECTION_ID frames.
 
 While it it expected that the peer provides at least one unused connection ID
 for all active paths using the PATH_NEW_CONNECTION_ID after retirement
 of an old connection ID, an endpoint MAY send
-a PATH_CIDS_BLOCKED (see Section {{paths-and-cids-blocked-frame}})
+a PATH_CIDS_BLOCKED (see {{paths-and-cids-blocked-frame}})
 if it wants to change the connection ID but no
 unused connection ID for a that path is available. Further, an
 endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
@@ -605,7 +605,7 @@ for more paths.
 
 Retirement of connection IDs will not retire the Path ID
 that corresponds to the connection ID or any other path resources
-as the packet number space is associated with to the Path ID.
+as the packet number space is associated to the Path ID.
 
 The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
@@ -627,7 +627,7 @@ PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
 
 PATH_BACKUP suggests that a path should only be used as backup i.e. that no traffic
-should be sent on that path if another path is avaialble and usable.
+should be sent on that path if another path is available and usable.
 If all established paths are indicated as backup paths, no guidance is provided about
 which path should be used.
 
@@ -639,7 +639,7 @@ If an endpoint starts using a backup path
 because it has detected issues on the paths marked as "available", it is RECOMMENDED
 to update its own path state signaling such that the peer avoids using the broken path.
 An endpoint that detects a path breakage can also explicitly close the path
-by sending a PATH_ABANDON frame (see Setion {{path-close}}) in order to avoid
+by sending a PATH_ABANDON frame (see {{path-close}}) in order to avoid
 that its peer keeps using it and enable faster switch over to a backup path.
 If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, PING frames can potentially be used to quickly detect
@@ -647,13 +647,13 @@ connectivity changes and switch back in a timely way.
 
 The PATH_AVAILABLE and PATH_BACKUP frames share a common, per-path sequence number space
 to detect and ignore outdated information, as further described in {{path-backup-available-frame}}.
-This is needed as they might arrives in different orders,
-e.g if sent via different paths.
+This is needed as they might arrive out-of-order,
+e.g., if sent using different paths.
 
 ## Path Close {#path-close}
 
 At any time in the connection, each endpoint can decide to
-abandon a paths, for example following changes in local
+abandon a path, for example following changes in local
 connectivity or local preferences.
 An endpoint that wants to abandon a path MUST explicitly
 close the path by sending a PATH_ABANDON frame (see {{path-abandon-frame}}).
@@ -664,13 +664,13 @@ of local resources.
 
 The peers that send a PATH_ABANDON frame MUST treat all connection
 IDs received from the peer for the Path ID indicated in the PATH_ABANDON as immediately
-retired, and subsequently cannot send any packets on that path anymore.
+retired, and subsequently cannot send any packet on that path anymore.
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
-does not indicate path abandonment (see further Section {{consume-retire-cid}}).
+does not indicate path abandonment (see further {{consume-retire-cid}}).
 
 PATH_ABANDON frames can be sent on any path,
-not only the path that is intended to be closed.
+not only on the path that is intended to be closed.
 It is RECOMMENDED to send the PATH_ABANDON frames on another path,
 especially if connectivity on the to-be-abandoned path
 is expected to be broken.
@@ -680,18 +680,18 @@ PATH_ABANDON frame, if it has not already done so, and respectively treat all
 connection IDs received from the peer for that path as immediately
 retired. While that means retired connection IDs received from the peer cannot be used
 for sending anymore, packets from the peer might still be in transit.
-Therefore knowledge of the
+Therefore, knowledge of the
 connection IDs issued to the peer and of the state
 of the number space associated to the path SHOULD be retained for
 3 PTO after the PATH_ABANDON frame has been received.
 This avoids generating spurious stateless packets, as discussed in
-{{spurious-stateless-reset}}, and helps to acknowledge any
-potentially reordered, outstanding packets from the peer (see Section {ack-after-abandon}).
+{{spurious-stateless-reset}}, and helps acknowledge any
+potentially reordered, outstanding packets from the peer (see {{ack-after-abandon}}).
 
 It is also possible that an endpoint will receive a PATH_ABANDON frame
 before receiving or sending any traffic on a path. For example, if the client
 tries to initiate a path and the path cannot be established, it will send a
-PATH_ABANDON frame (see Section {{path-initiation}}). An endpoint may also decide
+PATH_ABANDON frame (see {{path-initiation}}). An endpoint may also decide
 to abandon an unused path for any other reason, for example, removing a hole from
 the sequence of path IDs in use. This is not an error.
 
@@ -710,7 +710,7 @@ If a PATH_ABANDON frame is received for the only open path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. Alternatively, a client MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails
-or a CONNECTION_CLOSE frame is received from the server. Similarly
+or a CONNECTION_CLOSE frame is received from the server. Similarly,
 the server MAY wait for a short, limited time such as one PTO if a path
 probing packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
@@ -751,7 +751,7 @@ PATH_ABANDON frame.
 Due to network delays, packets sent on an abandoned path can
 arrive well after the connection IDs have been retired.
 If not recognized as bound to the local
-connection, such packet trigger the peer to send a Stateless Reset
+connection, such packet triggers the peer to send a Stateless Reset
 packet. The rule to "retain knowledge of connection ID for 3 PTO
 after receiving a PATH_ABANDON"
 is intended to reduce the risk of sending such spurious stateless
@@ -768,9 +768,9 @@ sent by the peer will not cause the closure of the QUIC connection.
 When an endpoint sends a PATH_ABANDON frame, there may
 still be some packets in transit from the peer.
 Further, if an endpoint receives a PATH_ABANDON frame, it may still receive
-reordered packets on the abanded path. Endpoints SHOULD
-promptly send PATH_ACK frames for all unacknowledge packets received on
-an abondoned path if path state is still retained to do so.
+reordered packets on the abandoned path. Endpoints SHOULD
+promptly send PATH_ACK frames for all unacknowledged packets received on
+an abandoned path if path state is still retained to do so.
 
 PATH_ACK frames have to be sent on a different path than the path being abandoned
 after sending the PATH_ABANDON frame as connection IDs are immediately retired.
@@ -778,7 +778,7 @@ after sending the PATH_ABANDON frame as connection IDs are immediately retired.
 When an endpoint finally deletes all state associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
 PATH_ACK frames received with an abandoned Path ID are silently ignored,
-as specified in Section {{frames}}.
+as specified in {{frames}}.
 
 
 # New Frames {#frames}
