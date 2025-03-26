@@ -380,7 +380,8 @@ should not cause linkability issue.
 # Path Management {#path-management}
 
 After completing the handshake indicating
-multipath support, endpoints can start using multiple paths when both endpoints
+multipath support, endpoints can start using multiple paths.
+An endpoint can open a new path when both endpoints
 have issued available connection IDs for at least one unused, common Path ID,
 as the same Path ID is used in both directions.
 
