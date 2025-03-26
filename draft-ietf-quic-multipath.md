@@ -1197,7 +1197,7 @@ nor the packet number space.
 
 While endpoints assign a connection ID to a specific sending 4-tuple,
 networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. Though it changes the 4-tuple of the path,
+observe a different 4-tuple. This changes the 4-tuple of the path but
 the connection ID remains the same, and so the related path identifier.
 Servers observing a 4-tuple change will
 perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
