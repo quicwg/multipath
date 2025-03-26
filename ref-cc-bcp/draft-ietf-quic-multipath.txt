@@ -1262,7 +1262,7 @@ Table of Contents
    Other coupled congestion control schemes have been proposed for
    Multipath TCP such as [OLIA].  Designers of congestion control
    algorithms specialized for Multipath QUIC are advised to follow BCP
-   133 [RFC9743].
+   133; see Section 7.10 of [RFC9743].
 
 6.3.  Computing Path RTT
 
