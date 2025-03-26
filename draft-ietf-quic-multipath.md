@@ -1194,6 +1194,8 @@ congestion control scheme
 specified in {{RFC6356}} to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
 control schemes have been proposed for Multipath TCP such as {{OLIA}}.
+Designers of congestion control algorithms specialized for Multipath QUIC
+are advised to follow BCP 133 {{?RFC9743}}.
 
 ## Computing Path RTT {#compute-rtt}
 
