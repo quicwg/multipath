@@ -1241,7 +1241,7 @@ migrations. For example:
 
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
-endpoint will want to close one of them.
+endpoint could want to close one of them.
 Uncoordinated abandon from both ends of the connection may result in deleting
 two paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
