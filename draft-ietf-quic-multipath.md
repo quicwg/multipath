@@ -415,7 +415,7 @@ applies.
 
 The server may receive packets for a yet unused Path ID that do not
 contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted
-based on a valid connection ID.
+given a valid connection ID.
 
 Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
 on the path. This can be done during initial path validation or separately later if
