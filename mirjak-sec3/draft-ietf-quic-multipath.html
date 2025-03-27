@@ -1747,7 +1747,7 @@ validated, the anti-amplification limit from <span><a href="https://rfc-editor.o
 applies.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">The server may receive packets for a yet unused Path ID that do not
 contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted
-based on a valid connection ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+given a valid connection ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.1-5">Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
 on the path. This can be done during initial path validation or separately later if
 the amplification limit prevents it initially, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
