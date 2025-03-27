@@ -536,9 +536,6 @@ as corresponding to Path ID 0.
 
 ### Issuing New Connection IDs
 
-On non-initial paths
-(i.e., Path ID different from 0), the initial path connection ID is provided by a
-PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
 In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue at least one Connection ID for each unused Path ID up to the
 minimum of the peer's and the local Maximum Path ID limits.
