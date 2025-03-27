@@ -1883,10 +1883,7 @@ as corresponding to Path ID 0.<a href="#section-3.2-2" class="pilcrow">¶</a></p
           <h4 id="name-issuing-new-connection-ids">
 <a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-issuing-new-connection-ids" class="section-name selfRef">Issuing New Connection IDs</a>
           </h4>
-<p id="section-3.2.1-1">On non-initial paths
-(i.e., Path ID different from 0), the initial path connection ID is provided by a
-PATH_NEW_CONNECTION_ID frame with a sequence number value of 0.
-In order to let the peer open new paths, it is RECOMMENDED to proactively
+<p id="section-3.2.1-1">In order to let the peer open new paths, it is RECOMMENDED to proactively
 issue at least one Connection ID for each unused Path ID up to the
 minimum of the peer's and the local Maximum Path ID limits.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-2">If for any reason an endpoint does not want to issue connection IDs for all
