@@ -432,7 +432,7 @@ Long delays may cause the peer to repeat the PATH_CHALLENGE and eventually
 send a PATH_ABANDON, in which case the procedures specified in
 Section {{path-close}} apply.
 
-Any frames can be sent on any open path.
+PATH_ACK frames (see {{mp-ack-frame}}) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see {{compute-rtt}} for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
