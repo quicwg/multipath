@@ -749,7 +749,7 @@ PATH_ACK frame is formatted as shown in {{fig-mp-ack-format}}.
 {: #fig-mp-ack-format title="PATH_ACK Frame Format"}
 
 Compared to the ACK frame specified in {{QUIC-TRANSPORT}}, the following
-field is added.
+field is added:
 
 Path Identifier:
 : The Path ID associated with the packet number space of the 0-RTT and 1-RTT packets
@@ -758,6 +758,7 @@ Path Identifier:
 ## PATH_ABANDON Frame {#path-abandon-frame}
 
 The PATH_ABANDON frame informs the peer to abandon a path.
+After the PATH_ABANDON frame is sent on a path, the path can no longer be used for sending.
 
 PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
@@ -773,7 +774,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 PATH_ABANDON frames contain the following fields:
 
 Path Identifier:
-: The Path ID to abandon.
+: The Path ID associated to the to-be-abandoned path.
 
 Error Code:
 : A variable-length integer that indicates the reason for abandoning
@@ -816,9 +817,9 @@ PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:
 
 Path Identifier:
-: The Path ID the status update corresponds to.
-  All Path IDs that have been issued
-  MAY be specified, even if they are not yet in use over a path.
+: The Path ID that the status update corresponds to.
+  All Path IDs below the maximum path ID limit can be indicated,
+  even if the path is not in active use yet.
 
 Path Status Sequence Number:
 : A variable-length integer specifying the per-path sequence number assigned for
@@ -837,7 +838,7 @@ equal to or higher than the Path Status sequence number of the incoming frame.
 The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
 same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
-on different paths. The receiver of
+on different paths. As such, the receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
 separately for each Path ID.
 
@@ -852,7 +853,7 @@ before or during path initiation.
 
 ## PATH_NEW_CONNECTION_ID frame {#mp-new-conn-id-frame}
 
-The PATH_NEW_CONNECTION_ID frame (type=0x15228c09)
+The PATH_NEW_CONNECTION_ID frame (type=TBD-05)
 is an extension of the NEW_CONNECTION_ID frame specified in
 {{Section 19.15 of QUIC-TRANSPORT}}.
 It is used to provide its peer with alternative connection IDs for 1-RTT packets
@@ -889,7 +890,7 @@ sequence number value.
 
 The Retire Prior To field indicates which connection IDs
 should be retired among those that share the Path ID in the Path Identifier field.
-Connection IDs associated with different path IDs are not affected.
+Connection IDs associated with different Path IDs are not affected.
 
 Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
 connection IDs for the initial path with Path ID 0.
@@ -897,16 +898,16 @@ connection IDs for the initial path with Path ID 0.
 The last paragraph of {{Section 5.1.2 of QUIC-TRANSPORT}} specifies how to
 verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
 The same rule
-applies for PATH_RETIRE_CONNECTION_ID frames, but it applies per path. After the
-multipath extension is negotiated successfully, the rule
-for RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
+applies for PATH_NEW_CONNECTION_ID frames, but it applies per path. If the
+multipath extension is used, the rule
+for NEW_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## PATH_RETIRE_CONNECTION_ID frame {#mp-retire-conn-id-frame}
 
-The PATH_RETIRE_CONNECTION_ID frame (type=0x15228c0a)
+The PATH_RETIRE_CONNECTION_ID frame (TBD-06)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
 {{Section 19.16 of QUIC-TRANSPORT}}. It is used
-to indicate that it will no longer use a connection ID for a specific path
+to indicate that an endpoint will no longer use a connection ID for a specific Path ID
 that was issued by its peer. To retire the connection ID used
 during the handshake on the initial path, Path ID 0 is used.
 Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
@@ -942,7 +943,8 @@ the specified Path ID and sequence number.
 
 The processing of an incoming RETIRE_CONNECTION_ID frame
 is described in {{Section 19.16 of QUIC-TRANSPORT}}. The same processing
-applies for PATH_RETIRE_CONNECTION_ID frames per path, while the
+applies for PATH_RETIRE_CONNECTION_ID frames per path, while with use of
+the multipath extension the
 processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.
 
 ## MAX_PATH_ID frame {#max-paths-frame}
@@ -964,7 +966,7 @@ MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
 : The maximum path identifier that the sending endpoint is willing to accept.
-  This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
+  This value MUST NOT exceed 2^32-1, which is the maximum allowed value for the Path ID due to
   restrictions on the nonce calculation (see {{nonce}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
   advertised in the initial_max_path_id transport parameter.
@@ -1035,7 +1037,6 @@ Next Sequence Number:
 
 Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
 the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.
-
 
 Receipt of a value of Next Sequence Number that is higher than
 the sequence number of the next expected to be issued connection ID for this path
