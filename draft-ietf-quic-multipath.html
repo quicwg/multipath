@@ -2442,13 +2442,9 @@ if the path is still blocked when the lost is detected.<a href="#section-4.7-13"
 NO_ERROR(0x0), the following QUIC error codes are defined
 for use in the PATH_ABANDON frame:<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
-request of the application. The application has determined that it no
-longer needs this path. This error is used when the application layer
-decides to stop using a specific path.<a href="#section-5-2" class="pilcrow">¶</a></p>
+request of the application.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <p id="section-5-3">RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
-it cannot allocate sufficient resources to maintain it. This is due to
-limitations in the transport layer's capacity. This error indicates that
-resource constraints prevent the continuation of the path.<a href="#section-5-3" class="pilcrow">¶</a></p>
+it cannot allocate sufficient resources to maintain it.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <p id="section-5-4">UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
 the used interface is considered to be unstable. This condition can occur, e.g.,
 due to a weak wireless signal or frequent handover events during high-speed mobility.<a href="#section-5-4" class="pilcrow">¶</a></p>
