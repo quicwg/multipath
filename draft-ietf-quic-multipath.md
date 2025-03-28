@@ -102,7 +102,7 @@ The connection ID of a packet binds the packet to a path identifier, and therefo
 to a packet number space. That means each connection ID is associated with exactly one path identifier
 but multiple connection IDs are usually issued for each path identifier.
 The same Path ID is used in both directions, starting with 0 for the initial path.
-Path identifies are generated monotonically increasing and cannot be reused.
+Path identifiers are generated monotonically increasing and cannot be reused.
 
 This extension uses multiple packet number spaces, one for each path.
 Each Path ID-specific packet number space starts at packet number 0.
@@ -182,7 +182,7 @@ to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
 This document defines a new transport parameter initial_max_path_id
 to indicate the support of the multipath extension.
-If either of the endpoints does not advertise the initial_max_path_id transport
+If any of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 If the use of the multipath extension is agreed after handshake completion,
@@ -211,7 +211,7 @@ MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
 As such to allow for the use of more paths later,
 endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
-If an initial_max_path_id transport parameter value that is higher than 2^32-1
+If an initial_max_path_id transport parameter value higher than 2^32-1
 is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.
 
@@ -224,7 +224,7 @@ PROTOCOL_VIOLATION and close the connection.
 
 Cipher suites with a nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such a cipher suite is selected and the use of the
-multipath extension is suported, endpoints MUST abort the handshake with a
+multipath extension is supported, endpoints MUST abort the handshake with a
 an error of type TRANSPORT_PARAMETER_ERROR.
 
 The initial_max_path_id parameter MUST NOT be remembered
