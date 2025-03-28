@@ -73,7 +73,7 @@ Table of Contents
    1.  Introduction
      1.1.  Basic Design Points
      1.2.  Conventions and Definitions
-   2.  Cryptographic and Transport Handshake
+   2.  Transport Handshake and Cryptographic Packet Protection
      2.1.  initial_max_path_id Transport Parameter
      2.2.  Relation to Other Transport Parameters
      2.3.  Handling ACK and PATH_ACK in 0-RTT and 1-RTT
@@ -236,7 +236,7 @@ Table of Contents
    [QUIC-TRANSPORT].  When this document uses the term "path", it refers
    to the notion of "network path" used in [QUIC-TRANSPORT].
 
-2.  Cryptographic and Transport Handshake
+2.  Transport Handshake and Cryptographic Packet Protection
 
    This document defines a new transport parameter initial_max_path_id
    to indicate the support of the multipath extension.  If any of the
