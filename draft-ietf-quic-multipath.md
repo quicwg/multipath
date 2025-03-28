@@ -1420,7 +1420,8 @@ Similarly, the anti-amplification limits as specified in {{Section 8 of QUIC-TRA
 followed to limit the amplification risk.
 
 {{QUIC-TRANSPORT}} only allows the use of one path
-and as such only one path validation at a time.
+and the number of concurrent path validation attempts is
+limited by number of issued connection IDs.
 This extension, however, allows for multiple open paths that could in theory be migrated
 all at the same time. Further multiple paths could be initialized
 simultaneously. Each open path could be used to further amplify an attack.
