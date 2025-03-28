@@ -1551,15 +1551,16 @@ Table of Contents
    Similarly, the anti-amplification limits as specified in Section 8 of
    [QUIC-TRANSPORT] need to be followed to limit the amplification risk.
 
-   [QUIC-TRANSPORT] only allows the use of one path and as such only one
-   path validation at a time.  This extension, however, allows for
-   multiple open paths that could in theory be migrated all at the same
-   time.  Further multiple paths could be initialized simultaneously.
-   Each open path could be used to further amplify an attack.
-   Therefore, endpoints need to limit the maximum number of paths and
-   might consider additional measures to limit the number of concurrent
-   path validation processes e.g. by pacing them out or limiting the
-   number of path initiation attempts over a certain time period.
+   [QUIC-TRANSPORT] only allows the use of one path and the number of
+   concurrent path validation attempts is limited by number of issued
+   connection IDs.  This extension, however, allows for multiple open
+   paths that could in theory be migrated all at the same time.  Further
+   multiple paths could be initialized simultaneously.  Each open path
+   could be used to further amplify an attack.  Therefore, endpoints
+   need to limit the maximum number of paths and might consider
+   additional measures to limit the number of concurrent path validation
+   processes e.g. by pacing them out or limiting the number of path
+   initiation attempts over a certain time period.
 
 8.3.  Cryptographic handshake and AEAD Nonce
 

@@ -2993,7 +2993,8 @@ on source address spoofing as outlined in <span><a href="https://rfc-editor.org/
 Similarly, the anti-amplification limits as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> need to be
 followed to limit the amplification risk.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.2-2"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path
-and as such only one path validation at a time.
+and the number of concurrent path validation attempts is
+limited by number of issued connection IDs.
 This extension, however, allows for multiple open paths that could in theory be migrated
 all at the same time. Further multiple paths could be initialized
 simultaneously. Each open path could be used to further amplify an attack.
