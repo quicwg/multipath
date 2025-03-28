@@ -2743,9 +2743,10 @@ When only one path is available, servers follow the specifications
 in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
 <p id="section-6.10-2">This document does not specify per-path idle timeouts. An endpoint
 can decide to close a path at any time, whether the path is in active
-use or not, by sending a PATH_ABANDON frame. It is not required
-to send a PATH_ABANDON frame at any specific point in time.
-For example, an endpoint may wait until it will anyway send another frame.<a href="#section-6.10-2" class="pilcrow">¶</a></p>
+use or not. For example, an endpoint may wait to send
+the initial PATH_ABANDON frame until it anyway sends another frame.
+Note that the receiver of an initial PATH_ABANDON frame is, however,
+required to immediately reply (see <a href="#path-close" class="auto internal xref">Section 3.4</a>).<a href="#section-6.10-2" class="pilcrow">¶</a></p>
 <p id="section-6.10-3">If a path is not actively used for a while, it might not be usable anymore,
 e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
