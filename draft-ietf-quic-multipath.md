@@ -121,9 +121,9 @@ requires a new transport parameter, as specified in {{nego}}, to indicate
 support of the multipath extension specified in this document.
 
 Further, this document specifies the needed path management mechanisms for path
-initiation {{path-initiation}}, handling of per-path connection IDs {{consume-retire-cid}},
-signaling of preferred path usage {{path-state}}, and explicit
-removal of paths that have been abandoned {{path-close}}.
+initiation in {{path-initiation}}, handling of per-path connection IDs in {{consume-retire-cid}},
+signaling of preferred path usage in {{path-state}}, and explicit
+removal of paths that have been abandoned in {{path-close}}.
 
 However, this document does not specify detailed algorithms that define
 how multiple, simultaneously open paths are used to send packets.
@@ -138,33 +138,6 @@ to define address management within the QUIC protocol.
 
 In this extension, a QUIC server cannot initiate the creation
 of a path, but it has to validate a new path created by a client before sending on a new path.
-
-## Basic Design Points
-
-This proposal is based on several basic design points:
-
-  * Re-use as much as possible mechanisms of QUIC version 1. In
-particular, this proposal uses path validation as specified for QUIC
-version 1 and aims to re-use as much as possible of QUIC's connection
-migration.
-  * Use the same packet header formats as QUIC version 1 to minimize
-    the difference between multipath and non-multipath traffic being
-    exposed on wire.
-  * Congestion Control must be per-path (following {{QUIC-TRANSPORT}})
-which usually also requires per-path RTT measurements
-  * PMTU discovery should be performed per-path
-  * The use of this multipath extension requires the use of non-zero
-length connection IDs in both directions.
-  * Connection IDs are associated with a path ID. The path initiation
-associates that path ID with a 4-tuple of source and destination IP
-address as well as source and destination port.
-  * Migration is detected without ambiguity
-when a packet arrives with a connection ID
-pointing to an existing path ID, but the connection ID and/or the
-4-tuple are different from the value currently used for that path.
-  * Paths can be closed at any time, as specified in {{path-close}}.
-  * It is possible to create multiple paths sharing the same 4-tuple.
-Each of these paths can be closed at any time, like any other path.
 
 ## Conventions and Definitions {#definition}
 
@@ -1325,7 +1298,7 @@ address.
 
 ## Using multiple paths on the same 4-tuple
 
-As noted in {{basic-design-points}}, it is possible to create paths that
+It is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service {{?RFC2475}} markings.
 This could be done in conjunction with scheduling algorithms
