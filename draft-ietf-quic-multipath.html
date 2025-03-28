@@ -2569,16 +2569,25 @@ the endpoint can keep the same congestion control and RTT measurement state.<a h
         <h3 id="name-computing-path-rtt">
 <a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-computing-path-rtt" class="section-name selfRef">Computing Path RTT</a>
         </h3>
-<p id="section-6.4-1">Acknowledgment delays are the sum of two one-way delays, the delay
+<p id="section-6.4-1">PATH_ACK frames indicate which path the acknowledged packets were sent on,
+but they may be received through any open path. If successive acknowledgments are received
+on different paths, the measured RTT samples can fluctuate widely,
+which could result in poor performance depending e.g. on the used connection control.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+<p id="section-6.4-2">Congestion control state as defined in <span>[<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> is kept
+per Path ID. However, depending on which path acknowledgements are
+sent, the actual RTT of a path cannot be calculated or may not be
+the right value to be used.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
+<p id="section-6.4-3">Instead of using RTT, we define the acknowledgment delays as
+the sum of two one-way delays: the delay
 on the packet sending path and the delay on the return path chosen
 for the acknowledgments.  When different paths have different
-characteristics, this can cause acknowledgment delays to vary
-widely.  Consider for example a multipath transmission using both a
+characteristics, acknowledgment delays can vary
+widely. Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
-geostationary satellite path, with a latency of 300ms in both
-directions.  The acknowledgment delay will depend on the combination
-of paths used for the packet transmission and the ACK transmission,
-as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1</a>.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+geostationary satellite path, with a latency of 300ms in each
+direction.  The acknowledgment delay will depend on the combination
+of paths used for the packet transmission and the acknowledgement transmission,
+as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1</a>.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
 <span id="name-example-of-ack-delays-using"></span><div id="fig-example-ack-delay">
 <table class="center" id="table-1">
           <caption>
@@ -2606,34 +2615,35 @@ as shown in <a href="#fig-example-ack-delay" class="auto internal xref">Table 1<
           </tbody>
         </table>
 </div>
-<p id="section-6.4-3">The PATH_ACK frames describe packets that were sent on the specified path,
-but they may be received through any available path. There is an
-understandable concern that if successive acknowledgments are received
-on different paths, the measured RTT samples will fluctuate widely,
-and that might result in poor performance. While this may be a concern,
-the actual behavior is complex.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
-<p id="section-6.4-4">The computed values reflect both the state of the network path and the
-scheduling decisions by the sender of the PATH_ACK frames. In the example
-above, we may assume that the PATH_ACK will be sent over the terrestrial
-link, because that provides the best response time. In that case, the
+<p id="section-6.4-5">The computed values reflect both the state of the network path and the
+scheduling decisions of the acknowledgement sender. If we
+assume that the PATH_ACK will be sent over the terrestrial
+link, because this decision provides the best response time, the
 computed RTT value for the satellite path will be about 350ms. This is
 lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
-than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-6.4-4" class="pilcrow">¶</a></p>
-<p id="section-6.4-5">The simplest implementation is to compute smoothed_rtt and rttvar per
+than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-6.4-5" class="pilcrow">¶</a></p>
+<p id="section-6.4-6">The simplest implementation is to use the acknowledgment delay
+to compute smoothed_rtt and rttvar per
 <span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which PATH_ACK frames are
-received. This algorithm will provide good results,
-except if the set of paths changes and the PATH_ACK sender
-revisits its sending preferences. This is not very
-different from what happens on a single path if the routing changes.
+received. This approach will provide good results
+as long as acknowledgements are sent consistently over the same paths.
+If at any time the sender revisits its sending preferences,
+this can also change the paths that are used to send acknowledgements.
+However, this is not very
+different from route changes on a single path.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
-There is however an exception: some congestion
-control functions rely on estimates of the minimum RTT. It might be prudent
-for nodes to remember the path over which the PATH_ACK that produced
-the minimum RTT was received, and to restart the minimum RTT computation
-if that path is abandoned.<a href="#section-6.4-5" class="pilcrow">¶</a></p>
+There is however one exception: the minimum RTT. But this is also
+a known challenge when route changes occurs on a single path.
+Other than for in-network route change, the acknowledgement receiver
+can, however, remember the path over which the PATH_ACK that produced
+the minimum RTT was received, and restart the minimum RTT computation
+if that acknowledgement path changes or is abandoned.<a href="#section-6.4-6" class="pilcrow">¶</a></p>
+<p id="section-6.4-7">Further, congestion control functions that rely on delay estimates needs
+to consider cases where acknowledgements are sent over multiple paths
+with different delays explicitly.<a href="#section-6.4-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="packet-scheduling">
