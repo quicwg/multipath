@@ -1389,18 +1389,25 @@ support of the multipath extension specified in this document.<a href="#section-
 <p id="section-1-6">Further, this document specifies the needed path management mechanisms for path
 initiation in <a href="#path-initiation" class="auto internal xref">Section 3.1</a>, handling of per-path connection IDs in <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>,
 signaling of preferred path usage in <a href="#path-state" class="auto internal xref">Section 3.3</a>, and explicit
-removal of paths that have been abandoned in <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">However, this document does not specify detailed algorithms that define
+removal of paths that have been abandoned in <a href="#path-close" class="auto internal xref">Section 3.4</a>.
+Note that in this extension, a QUIC server does not initiate the creation
+of a path, but it has to validate a new path created by a client.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-7">This extension does not cover address discovery and management. Addresses
+and the actual decision to setup or tear down paths are assumed
+to be handled by the application. But this document does not prevent future extensions from
+defining mechanisms to cope with the remaining scenarios.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-8">Further, this document does not specify detailed algorithms that define
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on the application requirements,
-only some basic implementation guidance is discussed in <a href="#impl-consideration" class="auto internal xref">Section 6</a>.<a href="#section-1-7" class="pilcrow">¶</a></p>
-<p id="section-1-8">Further, this proposal does also not cover address discovery and management. Addresses
-and the actual decision to setup or tear down paths are assumed
-to be handled by the application that is using the QUIC multipath
-extension. However, this document does not prevent future extensions
-to define address management within the QUIC protocol.<a href="#section-1-8" class="pilcrow">¶</a></p>
-<p id="section-1-9">In this extension, a QUIC server cannot initiate the creation
-of a path, but it has to validate a new path created by a client before sending on a new path.<a href="#section-1-9" class="pilcrow">¶</a></p>
+only some basic implementation guidance is discussed in <a href="#impl-consideration" class="auto internal xref">Section 6</a>.<a href="#section-1-8" class="pilcrow">¶</a></p>
+<p id="section-1-9">Specifically, while failover between Wi-Fi
+and mobile networks is a well-known multipath use case,
+it only uses two paths at the same time temporarily in order
+to avoid transmission pauses.
+Simultaneous path usage generally, however, needs more consideration
+than specified in this document to avoid negative performance
+impacts, e.g. when stream data is distributed over multiple paths with
+different delays.<a href="#section-1-9" class="pilcrow">¶</a></p>
 <div id="definition">
 <section id="section-1.1">
         <h3 id="name-conventions-and-definitions">
