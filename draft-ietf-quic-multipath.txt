@@ -101,18 +101,16 @@ Table of Contents
      4.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
    5.  Error Codes
    6.  Implementation Considerations
-     6.1.  Number Spaces
-     6.2.  Congestion Control
-     6.3.  Computing Path RTT
-     6.4.  Packet Scheduling
-     6.5.  Retransmissions
-     6.6.  Handling PTO
-     6.7.  Handling Different PMTU Sizes
-     6.8.  Connection ID Changes
-     6.9.  Migration and NAT Rebindings
-     6.10. Using multiple paths on the same 4-tuple
-     6.11. Keep Alive
-     6.12. Idle Timeout
+     6.1.  CID Changes, Migration, and NAT Rebindings
+     6.2.  Using multiple paths on the same 4-tuple
+     6.3.  Congestion Control
+     6.4.  Computing Path RTT
+     6.5.  Packet Scheduling
+     6.6.  Retransmissions
+     6.7.  Handling PTO
+     6.8.  Handling Different PMTU Sizes
+     6.9.  Keep Alive
+     6.10. Idle Timeout
    7.  IANA Considerations
    8.  Security Considerations
      8.1.  Memory Allocation for Per-Path Resources
@@ -414,7 +412,7 @@ Table of Contents
 
    PATH_ACK frames (see Section 4.1) can be returned on any path.  If
    the PATH_ACK is preferred to be sent on the same path as the
-   acknowledged packet (see Section 6.3 for further guidance), it can be
+   acknowledged packet (see Section 6.4 for further guidance), it can be
    beneficial to bundle a PATH_ACK frame with the PATH_RESPONSE frame
    during path validation.
 
@@ -652,7 +650,7 @@ Table of Contents
    explicitly close the path by sending a PATH_ABANDON frame (see
    Section 4.2).  This is true whether the decision to close the path
    results from implicit signals such as an idle time-out (see
-   Section 6.12) or packet losses as well as for any other reason such
+   Section 6.10) or packet losses as well as for any other reason such
    as management of local resources.
 
    The peers that send a PATH_ABANDON frame MUST treat all connection
@@ -1138,32 +1136,89 @@ Table of Contents
 
 6.  Implementation Considerations
 
-6.1.  Number Spaces
+   This section provides informational guidance for implementors.
 
-   As stated in Section 1, when the multipath extension is negotiated,
-   each path uses a separate packet number space.  This is a major
-   difference from [QUIC-TRANSPORT], which only defines three number
-   spaces (Initial, Handshake and Application packets).
+6.1.  CID Changes, Migration, and NAT Rebindings
+
+   With the multipath extension, each path uses a separate packet number
+   space.  This is a major difference from [QUIC-TRANSPORT], which only
+   defines three number spaces (Initial, Handshake and Application
+   packets).
 
    The relation between packet number spaces and paths is fixed.
    Connection IDs are separately allocated for each Path ID.  Rotating
-   the connection ID on a path does not change the Path ID.  NAT
-   rebinding, though it changes the 4-tuple of the path, also does not
-   change the path identifier.  The packet number space does not change
-   when connection ID rotation happens within a given Path ID.
+   the connection ID on a path does not change the Path ID nor the
+   packet number space.
 
-   Data associated with the transmission and reception such RTT
-   measurements, congestion control state, or loss recovery are
-   maintained per packet number space and as such per Path ID.
+   While endpoints assign a connection ID to a specific sending 4-tuple,
+   networks events such as NAT rebinding may make the packet's receiver
+   observe a different 4-tuple.  This changes the 4-tuple of the path
+   but the connection ID remains the same, and so the related path
+   identifier.  Servers observing a 4-tuple change will perform path
+   validation (see Section 9 of [QUIC-TRANSPORT]).  If path validation
+   process succeeds, the endpoints set the path's congestion controller
+   and round-trip time estimator according to Section 9.4 of
+   [QUIC-TRANSPORT].
 
-6.2.  Congestion Control
+   Section 9.3 of [QUIC-TRANSPORT] allows an endpoint to skip validation
+   of a peer address if that address has been seen recently.  However,
+   when the multipath extension is used and an endpoint has multiple
+   addresses that could lead to switching between different paths, it
+   should rather maintain multiple open paths instead.
+
+   More generally, while migration cannot be avoided in case of network-
+   based NAT rebindings, opening a new path instead of active client
+   migration should be strongly preferred when the multipath extension
+   is supported.  This enables a smoother handover and allows a
+   simplified migration handling at the server side as NAT rebindings
+   imply immediate loss of the old address.
+
+6.2.  Using multiple paths on the same 4-tuple
+
+   It is possible to create paths that refer to the same 4-tuple.  For
+   example, the endpoints may want to create paths that use different
+   Differentiated Service [RFC2475] markings.  This could be done in
+   conjunction with scheduling algorithms that match streams to paths,
+   so that for example data frames for low priority streams are sent
+   over low priority paths.  Since these paths use different path IDs,
+   they can be managed independently to suit the needs of the
+   application.
+
+   There may be cases in which paths are created with different
+   4-tuples, but end up using the same 4-tuples as a consequence of path
+   migrations.  For example:
+
+   *  Client starts path 1 from address 192.0.2.1 to server address
+      198.51.100.1
+
+   *  Client starts path 2 from address 192.0.2.2 to server address
+      198.51.100.1
+
+   *  Both paths are used for a while.
+
+   *  Server sends packet from address 198.51.100.1 to client address
+      192.0.2.1, with CID indicating path=2.
+
+   *  Client receives packet, recognizes a path migration, update source
+      address of path 2 to 192.0.2.1.
+
+   Such unintentional use of the same 4-tuple on different paths ought
+   to be rare.  When they happen, the two paths would be redundant, and
+   the endpoint could want to close one of them.  Uncoordinated abandon
+   from both ends of the connection may result in deleting two paths
+   instead of just one.  To avoid this pitfall, endpoints could adopt a
+   simple coordination rule, such as only letting the client initiate
+   closure of duplicate paths, or perhaps relying on the application
+   protocol to decide which paths should be closed.
+
+6.3.  Congestion Control
 
    When the QUIC multipath extension is used, senders manage per-path
    congestion status as required in Section 9.4 of [QUIC-TRANSPORT].
-   However, in [QUIC-TRANSPORT] only one path is assumed and as such the
-   requirement is to reset the congestion control status on path
-   migration.  With the multipath extension, multiple paths can be used
-   simultaneously, therefore separate congestion control state is
+   However, in [QUIC-TRANSPORT] only one active path is assumed and as
+   such the requirement is to reset the congestion control status on
+   path migration.  With the multipath extension, multiple paths can be
+   used simultaneously, therefore separate congestion control state is
    maintained for each path.  This means a sender is not allowed to send
    more data on a given path than congestion control for that path
    indicates.
@@ -1179,7 +1234,14 @@ Table of Contents
    Other coupled congestion control schemes have been proposed for
    Multipath TCP such as [OLIA].
 
-6.3.  Computing Path RTT
+   Section 5.1.2 of [QUIC-TRANSPORT] indicates that an endpoint can
+   change the connection ID it uses to another available one at any time
+   during the connection.  As such, a sole change of the Connection ID
+   without any change in the address does not indicate a path change and
+   the endpoint can keep the same congestion control and RTT measurement
+   state.
+
+6.4.  Computing Path RTT
 
    Acknowledgment delays are the sum of two one-way delays, the delay on
    the packet sending path and the delay on the return path chosen for
@@ -1215,10 +1277,10 @@ Table of Contents
    the example above, we may assume that the PATH_ACK will be sent over
    the terrestrial link, because that provides the best response time.
    In that case, the computed RTT value for the satellite path will be
-   about 350ms.  This lower than the 600ms that would be measured if the
-   PATH_ACK came over the satellite channel, but it is still the right
-   value for computing for example the PTO timeout: if a PATH_ACK is not
-   received after more than 350ms, either the data packet or its
+   about 350ms.  This is lower than the 600ms that would be measured if
+   the PATH_ACK came over the satellite channel, but it is still the
+   right value for computing for example the PTO timeout: if a PATH_ACK
+   is not received after more than 350ms, either the data packet or its
    PATH_ACK were probably lost.
 
    The simplest implementation is to compute smoothed_rtt and rttvar per
@@ -1234,7 +1296,7 @@ Table of Contents
    the minimum RTT was received, and to restart the minimum RTT
    computation if that path is abandoned.
 
-6.4.  Packet Scheduling
+6.5.  Packet Scheduling
 
    The transmission of QUIC packets on a regular QUIC connection is
    regulated by the arrival of data from the application and the
@@ -1250,7 +1312,7 @@ Table of Contents
 
    Note that this implies that an endpoint may send and receive PATH_ACK
    frames on a path different from the one that carried the acknowledged
-   packets.  As noted in Section 6.3 the values computed using the
+   packets.  As noted in Section 6.4 the values computed using the
    standard algorithm reflect both the characteristics of the path and
    the scheduling algorithm of PATH_ACK frames.  The estimates will
    converge faster if the scheduling strategy is stable, but besides
@@ -1263,7 +1325,7 @@ Table of Contents
    the load induced by these packets, especially if the capacity is
    unknown on that path.
 
-6.5.  Retransmissions
+6.6.  Retransmissions
 
    Simultaneous use of multiple paths enables different retransmission
    strategies to cope with losses such as: a) retransmitting lost frames
@@ -1279,7 +1341,7 @@ Table of Contents
    different path with a smaller MTU limit, new smaller STREAM frames
    might need to be sent instead.
 
-6.6.  Handling PTO
+6.7.  Handling PTO
 
    An implementation should follow the mechanism specified in
    [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
@@ -1295,7 +1357,7 @@ Table of Contents
    retransmit the content of the delayed packets on other available
    paths if the congestion control window on these paths allows.
 
-6.7.  Handling Different PMTU Sizes
+6.8.  Handling Different PMTU Sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
@@ -1307,77 +1369,7 @@ Table of Contents
    initially sent on one path can be sent on another path without
    further frame scheduling adaptations.
 
-6.8.  Connection ID Changes
-
-   Section 5.1.2 of [QUIC-TRANSPORT] indicates that an endpoint can
-   change the connection ID it uses to another available one at any time
-   during the connection.  As such a sole change of the Connection ID
-   without any change in the address does not indicate a path change and
-   the endpoint can keep the same congestion control and RTT measurement
-   state.
-
-6.9.  Migration and NAT Rebindings
-
-   While endpoints assign a connection ID to a specific sending 4-tuple,
-   networks events such as NAT rebinding may make the packet's receiver
-   observe a different 4-tuple.  Servers observing a 4-tuple change will
-   perform path validation (see Section 9 of [QUIC-TRANSPORT]).  If path
-   validation process succeeds, the endpoints set the path's congestion
-   controller and round-trip time estimator according to Section 9.4 of
-   [QUIC-TRANSPORT].
-
-   Section 9.3 of [QUIC-TRANSPORT] allows an endpoint to skip validation
-   of a peer address if that address has been seen recently.  However,
-   when the multipath extension is used and an endpoint has multiple
-   addresses that could lead to switching between different paths, it
-   should rather maintain multiple open paths instead.
-
-   More generally, while migration cannot be avoided in case of network-
-   based NAT rebindings, opening a new path instead of active client
-   migration should be strongly preferred when the multipath extension
-   is supported.  This enables a smoother handover and allows a
-   simplified migration handling at the server as NAT rebindings imply
-   immediate loss of the old address.
-
-6.10.  Using multiple paths on the same 4-tuple
-
-   It is possible to create paths that refer to the same 4-tuple.  For
-   example, the endpoints may want to create paths that use different
-   Differentiated Service [RFC2475] markings.  This could be done in
-   conjunction with scheduling algorithms that match streams to paths,
-   so that for example data frames for low priority streams are sent
-   over low priority paths.  Since these paths use different path IDs,
-   they can be managed independently to suit the needs of the
-   application.
-
-   There may be cases in which paths are created with different
-   4-tuples, but end up using the same 4-tuples as a consequence of path
-   migrations.  For example:
-
-   *  Client starts path 1 from address 192.0.2.1 to server address
-      198.51.100.1
-
-   *  Client starts path 2 from address 192.0.2.2 to server address
-      198.51.100.1
-
-   *  both paths are used for a while.
-
-   *  Server sends packet from address 198.51.100.1 to client address
-      192.0.2.1, with CID indicating path=2.
-
-   *  Client receives packet, recognizes a path migration, update source
-      address of path 2 to 192.0.2.1.
-
-   Such unintentional use of the same 4-tuple on different paths ought
-   to be rare.  When they happen, the two paths would be redundant, and
-   the endpoint will want to close one of them.  Uncoordinated abandon
-   from both ends of the connection may result in deleting two paths
-   instead of just one.  To avoid this pitfall, endpoints could adopt a
-   simple coordination rule, such as only letting the client initiate
-   closure of duplicate paths, or perhaps relying on the application
-   protocol to decide which paths should be closed.
-
-6.11.  Keep Alive
+6.9.  Keep Alive
 
    The QUIC specification defines an optional keep alive process, see
    Section 5.3 of [QUIC-TRANSPORT].  Implementations of the multipath
@@ -1389,7 +1381,7 @@ Table of Contents
    paths to keep alive, it can do so by sending Ping frames on each of
    these paths before the idle timeout expires.
 
-6.12.  Idle Timeout
+6.10.  Idle Timeout
 
    [QUIC-TRANSPORT] allows for closing of connections if they stay idle
    for too long.  The connection idle timeout when using the multipath
