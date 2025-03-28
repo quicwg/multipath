@@ -178,7 +178,7 @@ We assume that the reader is familiar with the terminology used in
 {{QUIC-TRANSPORT}}. When this document uses the term "path", it refers
 to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
-# Transport Handshake and Cryptographic Packet Protection 
+# Transport Handshake and Cryptographic Packet Protection
 
 This document defines a new transport parameter initial_max_path_id
 to indicate the support of the multipath extension.
