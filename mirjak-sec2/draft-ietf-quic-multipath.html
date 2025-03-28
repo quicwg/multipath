@@ -24,7 +24,7 @@ enable the simultaneous usage of multiple paths for a single connection.
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.5
+    Jinja2 3.1.6
     lxml 5.3.0
     platformdirs 4.3.6
     pycountry 24.6.1
@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 17 September 2025</td>
+<td class="center">Expires 29 September 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-03-16" class="published">16 March 2025</time>
+<time datetime="2025-03-28" class="published">28 March 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-09-17">17 September 2025</time></dd>
+<dd class="expires"><time datetime="2025-09-29">29 September 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1380,7 +1380,7 @@ of multiple paths simultaneously.<a href="#section-1-2" class="pilcrow">¶</a></
 to a packet number space. That means each connection ID is associated with exactly one path identifier
 but multiple connection IDs are usually issued for each path identifier.
 The same Path ID is used in both directions, starting with 0 for the initial path.
-Path identifies are generated monotonically increasing and cannot be reused.<a href="#section-1-3" class="pilcrow">¶</a></p>
+Path identifiers are generated monotonically increasing and cannot be reused.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This extension uses multiple packet number spaces, one for each path.
 Each Path ID-specific packet number space starts at packet number 0.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
@@ -1484,7 +1484,7 @@ to the notion of "network path" used in <span>[<a href="#QUIC-TRANSPORT" class="
       </h2>
 <p id="section-2-1">This document defines a new transport parameter initial_max_path_id
 to indicate the support of the multipath extension.
-If either of the endpoints does not advertise the initial_max_path_id transport
+If any of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 If the use of the multipath extension is agreed after handshake completion,
@@ -1515,7 +1515,7 @@ the peer aims to enable the multipath extension without allowing extra paths imm
 MAX_PATH_ID frame (<a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>) with the same value.
 As such to allow for the use of more paths later,
 endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
-<p id="section-2.1-5">If an initial_max_path_id transport parameter value that is higher than 2^32-1
+<p id="section-2.1-5">If an initial_max_path_id transport parameter value higher than 2^32-1
 is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
 <p id="section-2.1-6">When advertising the initial_max_path_id transport parameter, endpoints
@@ -1526,7 +1526,7 @@ connection ID, the receiver MUST treat this as a connection error of type
 PROTOCOL_VIOLATION and close the connection.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
 <p id="section-2.1-7">Cipher suites with a nonce shorter than 12 bytes cannot be used together with
 the multipath extension. If such a cipher suite is selected and the use of the
-multipath extension is suported, endpoints MUST abort the handshake with a
+multipath extension is supported, endpoints MUST abort the handshake with a
 an error of type TRANSPORT_PARAMETER_ERROR.<a href="#section-2.1-7" class="pilcrow">¶</a></p>
 <p id="section-2.1-8">The initial_max_path_id parameter MUST NOT be remembered
 for use in a subsequent connection (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4.1" class="relref">Section 7.4.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).<a href="#section-2.1-8" class="pilcrow">¶</a></p>

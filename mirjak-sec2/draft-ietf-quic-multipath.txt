@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 17 September 2025                        Uber Technologies Inc.
+Expires: 29 September 2025                        Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 17 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           16 March 2025
+                                                           28 March 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 September 2025.
+   This Internet-Draft will expire on 29 September 2025.
 
 Copyright Notice
 
@@ -146,7 +146,7 @@ Table of Contents
    ID is associated with exactly one path identifier but multiple
    connection IDs are usually issued for each path identifier.  The same
    Path ID is used in both directions, starting with 0 for the initial
-   path.  Path identifies are generated monotonically increasing and
+   path.  Path identifiers are generated monotonically increasing and
    cannot be reused.
 
    This extension uses multiple packet number spaces, one for each path.
@@ -239,7 +239,7 @@ Table of Contents
 2.  Cryptographic and Transport Handshake
 
    This document defines a new transport parameter initial_max_path_id
-   to indicate the support of the multipath extension.  If either of the
+   to indicate the support of the multipath extension.  If any of the
    endpoints does not advertise the initial_max_path_id transport
    parameter, then the endpoints MUST NOT use any frame or mechanism
    defined in this document.  If the use of the multipath extension is
@@ -271,9 +271,9 @@ Table of Contents
    allow for the use of more paths later, endpoints can send the
    MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
-   If an initial_max_path_id transport parameter value that is higher
-   than 2^32-1 is received, the receiver MUST close the connection with
-   an error of type TRANSPORT_PARAMETER_ERROR.
+   If an initial_max_path_id transport parameter value higher than
+   2^32-1 is received, the receiver MUST close the connection with an
+   error of type TRANSPORT_PARAMETER_ERROR.
 
    When advertising the initial_max_path_id transport parameter,
    endpoints MUST use non-zero length Source and Destination Connection
@@ -284,7 +284,7 @@ Table of Contents
 
    Cipher suites with a nonce shorter than 12 bytes cannot be used
    together with the multipath extension.  If such a cipher suite is
-   selected and the use of the multipath extension is suported,
+   selected and the use of the multipath extension is supported,
    endpoints MUST abort the handshake with a an error of type
    TRANSPORT_PARAMETER_ERROR.
 
