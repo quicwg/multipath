@@ -1269,8 +1269,9 @@ to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
 as long as acknowledgements are sent consistently over the same paths.
-If the acknowledgement sender
-revisits its sending preferences, the set of paths can change. However, this is not very
+If at any time the sender revisits its sending preferences,
+this can also change the paths that are used to send acknowledgements.
+However, this is not very
 different from route changes on a single path.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
