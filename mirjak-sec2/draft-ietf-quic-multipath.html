@@ -1176,10 +1176,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
-                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-basic-design-points" class="internal xref">Basic Design Points</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
-                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
             </ul>
 </li>
@@ -1187,7 +1184,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-transport-handshake-and-cry" class="internal xref">Transport Handshake and Cryptographic Packet Protection</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-initial_max_path_id-transpo" class="internal xref">initial_max_path_id Transport Parameter</a></p>
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-initial_max_path_id-transpo" class="internal xref">initial_max_path_id Transport Parameter</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-relation-to-other-transport" class="internal xref">Relation to Other Transport Parameters</a></p>
@@ -1396,9 +1393,9 @@ path management in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" 
 requires a new transport parameter, as specified in <a href="#nego" class="auto internal xref">Section 2.1</a>, to indicate
 support of the multipath extension specified in this document.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">Further, this document specifies the needed path management mechanisms for path
-initiation <a href="#path-initiation" class="auto internal xref">Section 3.1</a>, handling of per-path connection IDs <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>,
-signaling of preferred path usage <a href="#path-state" class="auto internal xref">Section 3.3</a>, and explicit
-removal of paths that have been abandoned <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-1-6" class="pilcrow">¶</a></p>
+initiation in <a href="#path-initiation" class="auto internal xref">Section 3.1</a>, handling of per-path connection IDs in <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>,
+signaling of preferred path usage in <a href="#path-state" class="auto internal xref">Section 3.3</a>, and explicit
+removal of paths that have been abandoned in <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <p id="section-1-7">However, this document does not specify detailed algorithms that define
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on the application requirements,
@@ -1410,69 +1407,19 @@ extension. However, this document does not prevent future extensions
 to define address management within the QUIC protocol.<a href="#section-1-8" class="pilcrow">¶</a></p>
 <p id="section-1-9">In this extension, a QUIC server cannot initiate the creation
 of a path, but it has to validate a new path created by a client before sending on a new path.<a href="#section-1-9" class="pilcrow">¶</a></p>
-<div id="basic-design-points">
-<section id="section-1.1">
-        <h3 id="name-basic-design-points">
-<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-basic-design-points" class="section-name selfRef">Basic Design Points</a>
-        </h3>
-<p id="section-1.1-1">This proposal is based on several basic design points:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1.1-2.1">
-            <p id="section-1.1-2.1.1">Re-use as much as possible mechanisms of QUIC version 1. In
-particular, this proposal uses path validation as specified for QUIC
-version 1 and aims to re-use as much as possible of QUIC's connection
-migration.<a href="#section-1.1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.2">
-            <p id="section-1.1-2.2.1">Use the same packet header formats as QUIC version 1 to minimize
-the difference between multipath and non-multipath traffic being
-exposed on wire.<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.3">
-            <p id="section-1.1-2.3.1">Congestion Control must be per-path (following <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>)
-which usually also requires per-path RTT measurements<a href="#section-1.1-2.3.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.4">
-            <p id="section-1.1-2.4.1">PMTU discovery should be performed per-path<a href="#section-1.1-2.4.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.5">
-            <p id="section-1.1-2.5.1">The use of this multipath extension requires the use of non-zero
-length connection IDs in both directions.<a href="#section-1.1-2.5.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.6">
-            <p id="section-1.1-2.6.1">Connection IDs are associated with a path ID. The path initiation
-associates that path ID with a 4-tuple of source and destination IP
-address as well as source and destination port.<a href="#section-1.1-2.6.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.7">
-            <p id="section-1.1-2.7.1">Migration is detected without ambiguity
-when a packet arrives with a connection ID
-pointing to an existing path ID, but the connection ID and/or the
-4-tuple are different from the value currently used for that path.<a href="#section-1.1-2.7.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.8">
-            <p id="section-1.1-2.8.1">Paths can be closed at any time, as specified in <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-1.1-2.8.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-1.1-2.9">
-            <p id="section-1.1-2.9.1">It is possible to create multiple paths sharing the same 4-tuple.
-Each of these paths can be closed at any time, like any other path.<a href="#section-1.1-2.9.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-</section>
-</div>
 <div id="definition">
-<section id="section-1.2">
+<section id="section-1.1">
         <h3 id="name-conventions-and-definitions">
-<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
         </h3>
-<p id="section-1.2-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+<p id="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
 "OPTIONAL" in this document are to be interpreted as described in BCP 14
 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all
-capitals, as shown here.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">We assume that the reader is familiar with the terminology used in
+capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">We assume that the reader is familiar with the terminology used in
 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. When this document uses the term "path", it refers
-to the notion of "network path" used in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+to the notion of "network path" used in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2789,7 +2736,7 @@ address.<a href="#section-6.9-3" class="pilcrow">¶</a></p>
         <h3 id="name-using-multiple-paths-on-the">
 <a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using multiple paths on the same 4-tuple</a>
         </h3>
-<p id="section-6.10-1">As noted in <a href="#basic-design-points" class="auto internal xref">Section 1.1</a>, it is possible to create paths that
+<p id="section-6.10-1">It is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
 to create paths that use different Differentiated Service <span>[<a href="#RFC2475" class="cite xref">RFC2475</a>]</span> markings.
 This could be done in conjunction with scheduling algorithms
