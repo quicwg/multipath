@@ -2467,14 +2467,14 @@ path uses a separate packet number space.
 This is a major difference from
 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, which only defines three number spaces (Initial,
 Handshake and Application packets).<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">For any given path, connection ID rotation, NAT Rebinding or path migration,
+<p id="section-6.1-2">For any given path, connection ID rotation, NAT rebinding, or client initiated migration
 as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> might occur, similar as on a single path.
-These events do not change the path ID,<br> and do not affect the packet number
+These events do not change the Path ID,<br> and do not affect the packet number
 space associated with the path.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.1-3">In case of network-based NAT rebindings path migration cannot be avoided.
-However otherwise, as a general rule, when the multipath extension is supported,
-implementations<br> should strongly prefer opening a new path instead of path migration<br>
-as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
+<p id="section-6.1-3">In case of network-based NAT rebindings, path migration cannot be avoided.
+However, as a general rule, when the multipath extension is supported,
+implementations<br> should otherwise strongly prefer opening a new path instead
+of path migration<br> as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 This enables a smoother handover and allows a simplified migration
 handling at the server side as NAT rebindings imply immediate loss of the old
 address. However, if the server requests migration to a "preferred address",
@@ -2485,15 +2485,11 @@ a peer address if that address has been seen recently. However, when the
 multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
 multiple open paths instead.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
-<p id="section-6.1-5">While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. Though changes the 4-tuple of the path,
-the connection ID remains the same, and so the related path identifier.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
-<p id="section-6.1-6">Servers observing a 4-tuple change will
+<p id="section-6.1-5">Servers observing a 4-tuple change will
 perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
 If path validation process succeeds, the endpoints set
 the path's congestion controller and round-trip time
-estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
+estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="using-multiple-paths-on-the-same-4-tuple">

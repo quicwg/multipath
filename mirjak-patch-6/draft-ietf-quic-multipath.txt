@@ -1147,15 +1147,16 @@ Table of Contents
    defines three number spaces (Initial, Handshake and Application
    packets).
 
-   For any given path, connection ID rotation, NAT Rebinding or path
-   migration, as specified in [QUIC-TRANSPORT] might occur, similar as
-   on a single path.  These events do not change the path ID,
+   For any given path, connection ID rotation, NAT rebinding, or client
+   initiated migration as specified in [QUIC-TRANSPORT] might occur,
+   similar as on a single path.  These events do not change the Path ID,
    and do not affect the packet number space associated with the path.
 
-   In case of network-based NAT rebindings path migration cannot be
-   avoided.  However otherwise, as a general rule, when the multipath
-   extension is supported, implementations
-   should strongly prefer opening a new path instead of path migration
+   In case of network-based NAT rebindings, path migration cannot be
+   avoided.  However, as a general rule, when the multipath extension is
+   supported, implementations
+   should otherwise strongly prefer opening a new path instead of path
+   migration
    as specified in [QUIC-TRANSPORT].  This enables a smoother handover
    and allows a simplified migration handling at the server side as NAT
    rebindings imply immediate loss of the old address.  However, if the
@@ -1168,12 +1169,6 @@ Table of Contents
    when the multipath extension is used and an endpoint has multiple
    addresses that could lead to switching between different paths, it
    should rather maintain multiple open paths instead.
-
-   While endpoints assign a connection ID to a specific sending 4-tuple,
-   networks events such as NAT rebinding may make the packet's receiver
-   observe a different 4-tuple.  Though changes the 4-tuple of the path,
-   the connection ID remains the same, and so the related path
-   identifier.
 
    Servers observing a 4-tuple change will perform path validation (see
    Section 9 of [QUIC-TRANSPORT]).  If path validation process succeeds,
