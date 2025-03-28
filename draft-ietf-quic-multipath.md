@@ -124,20 +124,27 @@ Further, this document specifies the needed path management mechanisms for path
 initiation in {{path-initiation}}, handling of per-path connection IDs in {{consume-retire-cid}},
 signaling of preferred path usage in {{path-state}}, and explicit
 removal of paths that have been abandoned in {{path-close}}.
+Note that in this extension, a QUIC server does not initiate the creation
+of a path, but it has to validate a new path created by a client.
 
-However, this document does not specify detailed algorithms that define
+This extension does not cover address discovery and management. Addresses
+and the actual decision to setup or tear down paths are assumed
+to be handled by the application. But this document does not prevent future extensions from
+defining mechanisms to cope with the remaining scenarios.
+
+Further, this document does not specify detailed algorithms that define
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on the application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
 
-Further, this proposal does also not cover address discovery and management. Addresses
-and the actual decision to setup or tear down paths are assumed
-to be handled by the application that is using the QUIC multipath
-extension. However, this document does not prevent future extensions
-to define address management within the QUIC protocol.
-
-In this extension, a QUIC server cannot initiate the creation
-of a path, but it has to validate a new path created by a client before sending on a new path.
+Specifically, while failover between Wi-Fi
+and mobile networks is a well-known multipath use case,
+it only uses two paths at the same time temporarily in order
+to avoid transmission pauses.
+Simultaneous path usage generally, however, needs more consideration
+than specified in this document to avoid negative performance
+impacts, e.g. when stream data is distributed over multiple paths with
+different delays.
 
 ## Conventions and Definitions {#definition}
 
