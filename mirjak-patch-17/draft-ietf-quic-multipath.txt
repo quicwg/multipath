@@ -102,13 +102,13 @@ Table of Contents
    5.  Error Codes
    6.  Implementation Considerations
      6.1.  CID Changes, Migration, and NAT Rebindings
-     6.2.  Using multiple paths on the same 4-tuple
+     6.2.  Using Multiple Paths on the Same 4-tuple
      6.3.  Congestion Control
      6.4.  Computing Path RTT
      6.5.  Packet Scheduling
      6.6.  Retransmissions
-     6.7.  Handling PTO Expiration
-     6.8.  Handling Different PMTU Sizes
+     6.7.  PTO Expiration
+     6.8.  Different PMTU Sizes
      6.9.  Keep Alive
      6.10. Idle Timeout
    7.  IANA Considerations
@@ -1180,7 +1180,7 @@ Table of Contents
    simplified migration handling at the server side as NAT rebindings
    imply immediate loss of the old address.
 
-6.2.  Using multiple paths on the same 4-tuple
+6.2.  Using Multiple Paths on the Same 4-tuple
 
    It is possible to create paths that refer to the same 4-tuple.  For
    example, the endpoints may want to create paths that use different
@@ -1358,7 +1358,7 @@ Table of Contents
    different path with a smaller MTU limit, new smaller STREAM frames
    might need to be sent instead.
 
-6.7.  Handling PTO Expiration
+6.7.  PTO Expiration
 
    An implementation should follow the mechanism specified in
    [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
@@ -1374,7 +1374,7 @@ Table of Contents
    retransmit the content of the delayed packets on other available
    paths if the congestion control window on these paths allows.
 
-6.8.  Handling Different PMTU Sizes
+6.8.  Different PMTU Sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
