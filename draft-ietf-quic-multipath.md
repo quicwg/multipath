@@ -1086,15 +1086,13 @@ as specified in {{QUIC-TRANSPORT}} might occur, similar as on a single path.
 These events do not change the Path ID,  and do not affect the packet number
 space associated with the path.
 
-In case of network-based NAT rebindings, path migration cannot be avoided.
-However, as a general rule, when the multipath extension is supported,
-implementations  should otherwise strongly prefer opening a new path instead
-of path migration  as specified in {{QUIC-TRANSPORT}}.
-This enables a smoother handover and allows a simplified migration
-handling at the server side as NAT rebindings imply immediate loss of the old
-address. However, if the server requests migration to a "preferred address",
-clients must initiate migration of path 0 to that preferred address as
-specified in {{QUIC-TRANSPORT}}.
+It is generally preferable to use multipath mechanisms such as
+creating a new path and later abandoning the old path,
+rather than doing migration of a single path as specified in {{QUIC-TRANSPORT}}.
+This enables a smoother handover and allows a more controlled migration handling
+at the server side. However, migration of a single path cannot be
+avoided in case of NAT rebinding, or if the server requests migration
+to a "preferred address" during the handshake.
 
 {{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
 a peer address if that address has been seen recently. However, when the
