@@ -714,7 +714,6 @@ as specified in {{frames}}.
 # New Frames {#frames}
 
 All frames defined in this document MUST only be sent in 1-RTT packets.
-
 If an endpoint receives a multipath-specific frame in a different packet type,
 it MUST close the connection with an error of type PROTOCOL_VIOLATION.
 
