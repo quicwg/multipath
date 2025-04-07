@@ -862,22 +862,22 @@ Table of Contents
    following QUIC error codes are defined for use in the PATH_ABANDON
    frame:
 
-   APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at
-   the request of the application.
+   APPLICATION_ABANDON (TBD-10):  The endpoint is abandoning the path at
+      the request of the application.
 
-   RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path
-   because it cannot allocate sufficient resources to maintain it.
+   RESOURCE_LIMIT_REACHED (TBD-11):  The endpoint is abandoning the path
+      because it cannot allocate sufficient resources to maintain it.
 
-   UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path
-   because the used interface is considered to be unstable.  This
-   condition can occur, e.g., due to a weak wireless signal or frequent
-   handover events during high-speed mobility.
+   UNSTABLE_INTERFACE (TBD-12):  The endpoint is abandoning the path
+      because the used interface is considered to be unstable.  This
+      condition can occur, e.g., due to a weak wireless signal or
+      frequent handover events during high-speed mobility.
 
-   NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
-   the lack of a connection ID for this path.  This may occur when the
-   peer initiates a new path but has not provided a corresponding
-   connection ID for the path ID (or the packet containing the
-   connection IDs has not arrived yet).
+   NO_CID_AVAILABLE (TBD-13):  The endpoint is abandoning the path due
+      to the lack of a connection ID for this path.  This may occur when
+      the peer initiates a new path but has not provided a corresponding
+      connection ID for the path ID (or the packet containing the
+      connection IDs has not arrived yet).
 
 4.3.  PATH_AVAILABLE and PATH_BACKUP frames
 
