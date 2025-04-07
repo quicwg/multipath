@@ -1348,10 +1348,13 @@ that are currently usable.
 
 # IANA Considerations
 
-This document defines a new transport parameter for the negotiation of
-enable multiple paths for QUIC, and three new frame types. The draft defines
-provisional values for experiments, but we expect IANA to allocate
-short values if the draft is approved.
+This document defines a new transport parameter to
+enable simultaneouy use of multiple paths within one QUIC connection.
+Further, it specifies new frame types for path management and new error codes
+when a path is abandoned.
+
+The current draft defines provisional values for experiments,
+but IANA is requested to allocate short values if the draft is approved.
 
 The following entry in {{transport-parameters}} should be added to
 the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
