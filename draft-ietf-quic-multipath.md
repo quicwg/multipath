@@ -1239,6 +1239,7 @@ Further, congestion control functions that rely on delay estimates needs
 to consider cases where acknowledgements are sent over multiple paths
 with different delays explicitly.
 
+
 ## Packet Scheduling {#packet-scheduling}
 
 The transmission of QUIC packets on a regular QUIC connection is regulated
@@ -1310,7 +1311,7 @@ on another path without further frame scheduling adaptations.
 ## Idle Timeout and Keep-Alives {#idle-time-close}
 
 {{QUIC-TRANSPORT}} defines an idle timeout for closing the connection
-which applies in case of multipath usage 
+which applies in case of multipath usage
 if no packet is received on any path for the duration of the idle timeout.
 
 This document does not specify per-path idle timeouts. An endpoint
