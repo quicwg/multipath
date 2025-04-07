@@ -2036,7 +2036,7 @@ MUST silently ignore the frame.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4.1-1">The PATH_ACK frame (types TBD-00 and TBD-01)
 is an extension of the ACK frame specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. It is
 used to acknowledge packets that were sent on different paths, as
-each path as its own packet number space. If the frame type is TBD-01, PATH_ACK frames
+each path has its own packet number space. If the frame type is TBD-01, PATH_ACK frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2">PATH_ACK frame is formatted as shown in <a href="#fig-mp-ack-format" class="auto internal xref">Figure 3</a>.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
