@@ -882,8 +882,9 @@ Table of Contents
 4.3.  PATH_AVAILABLE and PATH_BACKUP frames
 
    PATH_AVAILABLE frames are used by endpoints to inform the peer that
-   the indicated path is available for sending.  PATH_AVAILABLE frames
-   are formatted as shown in Figure 5.
+   the indicated path is available for sending.
+
+   PATH_AVAILABLE frames are formatted as shown in Figure 5.
 
      PATH_AVAILABLE Frame {
        Type (i) = TBD-04 (experiments use 0x15228c08),
@@ -894,8 +895,9 @@ Table of Contents
                    Figure 5: PATH_AVAILABLE Frame Format
 
    PATH_BACKUP frames are used by endpoints to inform the peer about its
-   preference to not use the indicated path for sending.  PATH_BACKUP
-   frames are formatted as shown in Figure 6.
+   preference to not use the indicated path for sending.
+
+   PATH_BACKUP frames are formatted as shown in Figure 6.
 
      PATH_BACKUP Frame {
        Type (i) = TBD-03 (experiments use 0x15228c07)

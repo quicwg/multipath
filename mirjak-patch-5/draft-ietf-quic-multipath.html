@@ -2140,11 +2140,11 @@ but has not provided a corresponding connection ID for the path ID
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-path_available-and-path_bac" class="section-name selfRef">PATH_AVAILABLE and PATH_BACKUP frames</a>
         </h3>
 <p id="section-4.3-1">PATH_AVAILABLE frames are used by endpoints to inform the peer
-that the indicated path is available for sending.
-PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 5</a>.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+that the indicated path is available for sending.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 5</a>.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <span id="name-path_available-frame-format"></span><div id="fig-path-available-format">
 <figure id="figure-5">
-          <div class="alignLeft art-text artwork" id="section-4.3-2.1">
+          <div class="alignLeft art-text artwork" id="section-4.3-3.1">
 <pre>
   PATH_AVAILABLE Frame {
     Type (i) = TBD-04 (experiments use 0x15228c08),
@@ -2157,12 +2157,12 @@ PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-for
 <a href="#name-path_available-frame-format" class="selfRef">PATH_AVAILABLE Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.3-3">PATH_BACKUP frames are used by endpoints to inform the peer
-about its preference to not use the indicated path for sending.
-PATH_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" class="auto internal xref">Figure 6</a>.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">PATH_BACKUP frames are used by endpoints to inform the peer
+about its preference to not use the indicated path for sending.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-5">PATH_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" class="auto internal xref">Figure 6</a>.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
 <span id="name-path_backup-frame-format"></span><div id="fig-path-backup-format">
 <figure id="figure-6">
-          <div class="alignLeft art-text artwork" id="section-4.3-4.1">
+          <div class="alignLeft art-text artwork" id="section-4.3-6.1">
 <pre>
   PATH_BACKUP Frame {
     Type (i) = TBD-03 (experiments use 0x15228c07)
@@ -2175,43 +2175,43 @@ PATH_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" c
 <a href="#name-path_backup-frame-format" class="selfRef">PATH_BACKUP Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.3-5">Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:<a href="#section-4.3-5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.3-6">
-          <dt id="section-4.3-6.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.3-6.2">
-            <p id="section-4.3-6.2.1">The Path ID that the status update corresponds to.
+<p id="section-4.3-7">Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:<a href="#section-4.3-7" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.3-8">
+          <dt id="section-4.3-8.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.3-8.2">
+            <p id="section-4.3-8.2.1">The Path ID that the status update corresponds to.
 All Path IDs below the maximum path ID limit can be indicated,
-even if the path is not in active use yet.<a href="#section-4.3-6.2.1" class="pilcrow">¶</a></p>
+even if the path is not in active use yet.<a href="#section-4.3-8.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-4.3-6.3">Path Status Sequence Number:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.3-6.4">
-            <p id="section-4.3-6.4.1">A variable-length integer specifying the per-path sequence number assigned for
-this frame.<a href="#section-4.3-6.4.1" class="pilcrow">¶</a></p>
+<dt id="section-4.3-8.3">Path Status Sequence Number:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.3-8.4">
+            <p id="section-4.3-8.4.1">A variable-length integer specifying the per-path sequence number assigned for
+this frame.<a href="#section-4.3-8.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.3-7">The sequence number space is common to the two frame types,
+<p id="section-4.3-9">The sequence number space is common to the two frame types,
 and monotonically increasing values MUST be used when sending PATH_AVAILABLE or
-PATH_BACKUP frames for a given Path ID.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
-<p id="section-4.3-8">Frames may be received out of order. A peer MUST ignore an incoming
+PATH_BACKUP frames for a given Path ID.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
+<p id="section-4.3-10">Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE or
 PATH_BACKUP frame if it previously received another PATH_BACKUP frame
 or PATH_AVAILABLE frame for the same Path ID with a Path Status sequence number
-equal to or higher than the Path Status sequence number of the incoming frame.<a href="#section-4.3-8" class="pilcrow">¶</a></p>
-<p id="section-4.3-9">The requirement of monotonically increasing sequence numbers
+equal to or higher than the Path Status sequence number of the incoming frame.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
+<p id="section-4.3-11">The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
 same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
 on different paths. As such, the receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
-separately for each Path ID.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
-<p id="section-4.3-10">PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
+separately for each Path ID.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
+<p id="section-4.3-12">PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
 PATH_BACKUP or PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
-by the sequence number.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
-<p id="section-4.3-11">A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
+by the sequence number.<a href="#section-4.3-12" class="pilcrow">¶</a></p>
+<p id="section-4.3-13">A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
-before or during path initiation.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
+before or during path initiation.<a href="#section-4.3-13" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mp-new-conn-id-frame">
