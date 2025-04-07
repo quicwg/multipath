@@ -2412,25 +2412,26 @@ PATH_CIDS_BLOCKED Frame {
 <a href="#name-path_cids_blocked-frame-for" class="selfRef">PATH_CIDS_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
-<span class="break"></span><dl class="dlParallel" id="section-4.7-10">
-          <dt id="section-4.7-10.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.7-10.2">
-            <p id="section-4.7-10.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-4.7-10.2.1" class="pilcrow">¶</a></p>
+<p id="section-4.7-10">PATH_CIDS_BLOCKED frames contain the following fields:<a href="#section-4.7-10" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.7-11">
+          <dt id="section-4.7-11.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.7-11.2">
+            <p id="section-4.7-11.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-4.7-11.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-4.7-10.3">Next Sequence Number:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.7-10.4">
-            <p id="section-4.7-10.4.1">The next sequence number that is expected to be issued for a connection ID for this path by the peer.<a href="#section-4.7-10.4.1" class="pilcrow">¶</a></p>
+<dt id="section-4.7-11.3">Next Sequence Number:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.7-11.4">
+            <p id="section-4.7-11.4.1">The next sequence number that is expected to be issued for a connection ID for this path by the peer.<a href="#section-4.7-11.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.7-11">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
-the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-11" class="pilcrow">¶</a></p>
-<p id="section-4.7-12">Receipt of a value of Next Sequence Number that is higher than
+<p id="section-4.7-12">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
+the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-12" class="pilcrow">¶</a></p>
+<p id="section-4.7-13">Receipt of a value of Next Sequence Number that is higher than
 the sequence number of the next expected to be issued connection ID for this path
-MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-12" class="pilcrow">¶</a></p>
-<p id="section-4.7-13">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
-if the path is still blocked when the lost is detected.<a href="#section-4.7-13" class="pilcrow">¶</a></p>
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-13" class="pilcrow">¶</a></p>
+<p id="section-4.7-14">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
+if the path is still blocked when the lost is detected.<a href="#section-4.7-14" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
