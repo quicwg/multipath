@@ -786,7 +786,7 @@ a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 Use of the PATH_ABANDON frame is specified in section {{path-close}}.
 
-## Error Codes {#error-codes}
+### Error Codes {#error-codes}
 
 QUIC transport error codes are 62-bit unsigned integers
 (see {{Section 20.1 of QUIC-TRANSPORT}}. In addition to
