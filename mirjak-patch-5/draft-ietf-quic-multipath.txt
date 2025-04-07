@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 29 September 2025                        Uber Technologies Inc.
+Expires: 9 October 2025                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 29 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           28 March 2025
+                                                            7 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 September 2025.
+   This Internet-Draft will expire on 9 October 2025.
 
 Copyright Notice
 
@@ -94,12 +94,12 @@ Table of Contents
    4.  New Frames
      4.1.  PATH_ACK Frame
      4.2.  PATH_ABANDON Frame
-     4.3.  Error Codes
-     4.4.  PATH_AVAILABLE and PATH_BACKUP frames
-     4.5.  PATH_NEW_CONNECTION_ID frame
-     4.6.  PATH_RETIRE_CONNECTION_ID frame
-     4.7.  MAX_PATH_ID frame
-     4.8.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
+       4.2.1.  Error Codes
+     4.3.  PATH_AVAILABLE and PATH_BACKUP frames
+     4.4.  PATH_NEW_CONNECTION_ID frame
+     4.5.  PATH_RETIRE_CONNECTION_ID frame
+     4.6.  MAX_PATH_ID frame
+     4.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
    5.  Implementation Considerations
      5.1.  CID Changes, Migration, and NAT Rebindings
      5.2.  Using multiple paths on the same 4-tuple
@@ -228,7 +228,7 @@ Table of Contents
    allowing extra paths immediately.
 
    Setting initial_max_path_id parameter is equivalent to sending a
-   MAX_PATH_ID frame (Section 4.7) with the same value.  As such to
+   MAX_PATH_ID frame (Section 4.6) with the same value.  As such to
    allow for the use of more paths later, endpoints can send the
    MAX_PATH_ID frame to increase the maximum allowed path identifier.
 
@@ -553,14 +553,14 @@ Table of Contents
 
    Endpoints MUST NOT issue new connection IDs with Path IDs greater
    than the Maximum Path Identifier field in MAX_PATH_ID frames (see
-   Section 4.7) or the value of initial_max_path_id transport parameter
+   Section 4.6) or the value of initial_max_path_id transport parameter
    if no MAX_PATH_ID frame was received yet.  Receipt of a frame with a
    greater Path ID is a connection error as specified in Section 4.
 
    When an endpoint finds it has not enough available unused path
    identifiers, it SHOULD either send a MAX_PATH_ID frame to increase
    the active path limit (when limited by the sender) or a PATHS_BLOCKED
-   frame (see Section 4.8) to inform the peer that its current limit
+   frame (see Section 4.7) to inform the peer that its current limit
    prevented the creation of the new path.
 
 3.2.2.  Rotating and Retiring Connection IDs
@@ -582,7 +582,7 @@ Table of Contents
    While it it expected that the peer provides at least one unused
    connection ID for all active paths using the PATH_NEW_CONNECTION_ID
    after retirement of an old connection ID, an endpoint MAY send a
-   PATH_CIDS_BLOCKED (see Section 4.8) if it wants to change the
+   PATH_CIDS_BLOCKED (see Section 4.7) if it wants to change the
    connection ID but no unused connection ID for a that path is
    available.  Further, an endpoint MAY also send a PATH_CIDS_BLOCKED
    frame if it wants to open a new path and has no connection IDs
@@ -601,7 +601,7 @@ Table of Contents
 3.3.  Path Status Management
 
    An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
-   Section 4.4) to inform the peer that it should send packets with the
+   Section 4.3) to inform the peer that it should send packets with the
    preference expressed by these frames.  Note that an endpoint might
    not follow the peer’s advertisements, but these frames are still a
    clear signal of the peer's preference of path usage.  Each peer
@@ -639,7 +639,7 @@ Table of Contents
 
    The PATH_AVAILABLE and PATH_BACKUP frames share a common, per-path
    sequence number space to detect and ignore outdated information, as
-   further described in Section 4.4.  This is needed as they might
+   further described in Section 4.3.  This is needed as they might
    arrive out-of-order, e.g., if sent using different paths.
 
 3.4.  Path Close
@@ -848,14 +848,14 @@ Table of Contents
    Error Code:  A variable-length integer that indicates the reason for
       abandoning this path.  NO_ERROR(0x0) indicates that the path is
       being abandoned without any error being encountered.  Other error
-      codes can be found in Section 4.3.
+      codes can be found in Section 4.2.1.
 
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
    Use of the PATH_ABANDON frame is specified in section Section 3.4.
 
-4.3.  Error Codes
+4.2.1.  Error Codes
 
    QUIC transport error codes are 62-bit unsigned integers (see
    Section 20.1 of [QUIC-TRANSPORT].  In addition to NO_ERROR(0x0), the
@@ -879,7 +879,7 @@ Table of Contents
    connection ID for the path ID (or the packet containing the
    connection IDs has not arrived yet).
 
-4.4.  PATH_AVAILABLE and PATH_BACKUP frames
+4.3.  PATH_AVAILABLE and PATH_BACKUP frames
 
    PATH_AVAILABLE frames are used by endpoints to inform the peer that
    the indicated path is available for sending.  PATH_AVAILABLE frames
@@ -940,7 +940,7 @@ Table of Contents
    PATH_NEW_CONNECTION_ID frame or a PATH_RESPONSE frame in order to
    indicate the preferred path usage before or during path initiation.
 
-4.5.  PATH_NEW_CONNECTION_ID frame
+4.4.  PATH_NEW_CONNECTION_ID frame
 
    The PATH_NEW_CONNECTION_ID frame (type=TBD-05) is an extension of the
    NEW_CONNECTION_ID frame specified in Section 19.15 of
@@ -990,7 +990,7 @@ Table of Contents
    it applies per path.  If the multipath extension is used, the rule
    for NEW_CONNECTION_ID frame is only applied for Path ID 0.
 
-4.6.  PATH_RETIRE_CONNECTION_ID frame
+4.5.  PATH_RETIRE_CONNECTION_ID frame
 
    The PATH_RETIRE_CONNECTION_ID frame (TBD-06) is an extension of the
    RETIRE_CONNECTION_ID frame specified in Section 19.16 of
@@ -1002,7 +1002,7 @@ Table of Contents
    to send additional connection IDs for this path (see also Section 5.1
    of [QUIC-TRANSPORT]), unless the path specified by the Path ID has
    been abandoned.  New path-specific connection IDs can be delivered to
-   a peer using the PATH_NEW_CONNECTION_ID frame (see Section 4.5).
+   a peer using the PATH_NEW_CONNECTION_ID frame (see Section 4.4).
 
    PATH_RETIRE_CONNECTION_ID frames are formatted as shown in Figure 8.
 
@@ -1034,7 +1034,7 @@ Table of Contents
    multipath extension the processing of a RETIRE_CONNECTION_ID frame is
    only applied for Path ID 0.
 
-4.7.  MAX_PATH_ID frame
+4.6.  MAX_PATH_ID frame
 
    A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum
    path identifier it is permitted to use.
@@ -1069,7 +1069,7 @@ Table of Contents
    lost and no more recent MAX_PATH_ID frame has been sent in the
    meantime.
 
-4.8.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
+4.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
 
    A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when it
    wishes to open a path but is unable to do so due to the maximum path
@@ -1452,25 +1452,25 @@ Table of Contents
    | TBD-02 (experiments    | PATH_ABANDON              |Section 4.2  |
    | use 0x15228c05)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-03 (experiments    | PATH_BACKUP               |Section 4.4  |
+   | TBD-03 (experiments    | PATH_BACKUP               |Section 4.3  |
    | use 0x15228c07)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-04 (experiments    | PATH_AVAILABLE            |Section 4.4  |
+   | TBD-04 (experiments    | PATH_AVAILABLE            |Section 4.3  |
    | use 0x15228c08)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-05 (experiments    | PATH_NEW_CONNECTION_ID    |Section 4.5  |
+   | TBD-05 (experiments    | PATH_NEW_CONNECTION_ID    |Section 4.4  |
    | use 0x15228c09)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-06 (experiments    | PATH_RETIRE_CONNECTION_ID |Section 4.6  |
+   | TBD-06 (experiments    | PATH_RETIRE_CONNECTION_ID |Section 4.5  |
    | use 0x15228c0a)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-07 (experiments    | MAX_PATH_ID               |Section 4.7  |
+   | TBD-07 (experiments    | MAX_PATH_ID               |Section 4.6  |
    | use 0x15228c0c)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-08 (experiments    | PATHS_BLOCKED             |Section 4.8  |
+   | TBD-08 (experiments    | PATHS_BLOCKED             |Section 4.7  |
    | use 0x15228c0d)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-09 (experiments    | PATH_CIDS_BLOCKED         |Section 4.8  |
+   | TBD-09 (experiments    | PATH_CIDS_BLOCKED         |Section 4.7  |
    | use 0x15228c0e)        |                           |             |
    +------------------------+---------------------------+-------------+
 
@@ -1483,25 +1483,25 @@ Table of Contents
    +===================+======================+=============+=============+
    |Value              |Code                  |Description  |Specification|
    +===================+======================+=============+=============+
-   |TBD-10 (experiments|APPLICATION_ABANDON   |Path         |Section 4.3  |
+   |TBD-10 (experiments|APPLICATION_ABANDON   |Path         |Section 4.2.1|
    |use                |                      |abandoned at |             |
    |0x004150504142414e)|                      |the          |             |
    |                   |                      |application's|             |
    |                   |                      |request      |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-11 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 4.3  |
+   |TBD-11 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 4.2.1|
    |use                |                      |abandoned due|             |
    |0x0052534c494d4954)|                      |to resource  |             |
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-12 (experiments|UNSTABLE_INTERFACE    |Path         |Section 4.3  |
+   |TBD-12 (experiments|UNSTABLE_INTERFACE    |Path         |Section 4.2.1|
    |use                |                      |abandoned due|             |
    |0x00554e5f494e5446)|                      |to unstable  |             |
    |                   |                      |interfaces   |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-13 (experiments|NO_CID_AVAILABLE      |Path         |Section 4.3  |
+   |TBD-13 (experiments|NO_CID_AVAILABLE      |Path         |Section 4.2.1|
    |use                |                      |abandoned due|             |
    |0x004e4f5f4349445f)|                      |to no        |             |
    |                   |                      |available    |             |

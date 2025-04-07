@@ -15,18 +15,18 @@
        This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection. 
     " name="description">
-<meta content="xml2rfc 3.28.0" name="generator">
+<meta content="xml2rfc 3.28.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-quic-multipath-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.28.0
+  xml2rfc 3.28.1
     Python 3.12.9
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.0
-    platformdirs 4.3.6
+    platformdirs 4.3.7
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.3
@@ -1050,11 +1050,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Multipath QUIC</td>
-<td class="right">March 2025</td>
+<td class="right">April 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 29 September 2025</td>
+<td class="center">Expires 9 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-03-28" class="published">28 March 2025</time>
+<time datetime="2025-04-07" class="published">7 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-09-29">29 September 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-09">9 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1255,24 +1255,26 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
                 <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-path_abandon-frame" class="internal xref">PATH_ABANDON Frame</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="auto internal xref">4.2.1</a>.  <a href="#name-error-codes" class="internal xref">Error Codes</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-error-codes" class="internal xref">Error Codes</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-path_available-and-path_bac" class="internal xref">PATH_AVAILABLE and PATH_BACKUP frames</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
-                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-path_available-and-path_bac" class="internal xref">PATH_AVAILABLE and PATH_BACKUP frames</a></p>
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-path_new_connection_id-fram" class="internal xref">PATH_NEW_CONNECTION_ID frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.5">
-                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="auto internal xref">4.5</a>.  <a href="#name-path_new_connection_id-fram" class="internal xref">PATH_NEW_CONNECTION_ID frame</a></p>
+                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="auto internal xref">4.5</a>.  <a href="#name-path_retire_connection_id-f" class="internal xref">PATH_RETIRE_CONNECTION_ID frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.6">
-                <p id="section-toc.1-1.4.2.6.1"><a href="#section-4.6" class="auto internal xref">4.6</a>.  <a href="#name-path_retire_connection_id-f" class="internal xref">PATH_RETIRE_CONNECTION_ID frame</a></p>
+                <p id="section-toc.1-1.4.2.6.1"><a href="#section-4.6" class="auto internal xref">4.6</a>.  <a href="#name-max_path_id-frame" class="internal xref">MAX_PATH_ID frame</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.7">
-                <p id="section-toc.1-1.4.2.7.1"><a href="#section-4.7" class="auto internal xref">4.7</a>.  <a href="#name-max_path_id-frame" class="internal xref">MAX_PATH_ID frame</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.8">
-                <p id="section-toc.1-1.4.2.8.1"><a href="#section-4.8" class="auto internal xref">4.8</a>.  <a href="#name-paths_blocked-and-path_cids" class="internal xref">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a></p>
+                <p id="section-toc.1-1.4.2.7.1"><a href="#section-4.7" class="auto internal xref">4.7</a>.  <a href="#name-paths_blocked-and-path_cids" class="internal xref">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a></p>
 </li>
             </ul>
 </li>
@@ -1453,7 +1455,7 @@ associated with Path IDs 0 and 1 should be issued by the peer.
 If an endpoint receives an initial_max_path_id transport parameter with value 0,
 the peer aims to enable the multipath extension without allowing extra paths immediately.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 <p id="section-2.1-4">Setting initial_max_path_id parameter is equivalent to sending a
-MAX_PATH_ID frame (<a href="#max-paths-frame" class="auto internal xref">Section 4.7</a>) with the same value.
+MAX_PATH_ID frame (<a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>) with the same value.
 As such to allow for the use of more paths later,
 endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
 <p id="section-2.1-5">If an initial_max_path_id transport parameter value higher than 2^32-1
@@ -1777,14 +1779,14 @@ cannot be issued more than once on the same connection
 and therefore are unique for the scope of the connection,
 regardless of the associated Path ID.<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-6">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
-the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths-frame" class="auto internal xref">Section 4.7</a>)
+the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>)
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater Path ID is a connection error as specified
 in <a href="#frames" class="auto internal xref">Section 4</a>.<a href="#section-3.2.1-6" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-7">When an endpoint finds it has not enough available unused path identifiers,
 it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
-(see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.8</a>) to inform the peer that
+(see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>) to inform the peer that
 its current limit prevented the creation of the new path.<a href="#section-3.2.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1807,7 +1809,7 @@ SHOULD provide new connection IDs for that path, if still open, using PATH_NEW_C
 <p id="section-3.2.2-3">While it it expected that the peer provides at least one unused connection ID
 for all active paths using the PATH_NEW_CONNECTION_ID after retirement
 of an old connection ID, an endpoint MAY send
-a PATH_CIDS_BLOCKED (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.8</a>)
+a PATH_CIDS_BLOCKED (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>)
 if it wants to change the connection ID but no
 unused connection ID for a that path is available. Further, an
 endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
@@ -1830,7 +1832,7 @@ to use a different connection ID for the same Path ID when doing so.<a href="#se
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-path-status-management" class="section-name selfRef">Path Status Management</a>
         </h3>
 <p id="section-3.3-1">An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
-<a href="#path-backup-available-frame" class="auto internal xref">Section 4.4</a>) to inform the peer that it should
+<a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>) to inform the peer that it should
 send packets with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
@@ -1857,7 +1859,7 @@ If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, PING frames can potentially be used to quickly detect
 connectivity changes and switch back in a timely way.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
 <p id="section-3.3-6">The PATH_AVAILABLE and PATH_BACKUP frames share a common, per-path sequence number space
-to detect and ignore outdated information, as further described in <a href="#path-backup-available-frame" class="auto internal xref">Section 4.4</a>.
+to detect and ignore outdated information, as further described in <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>.
 This is needed as they might arrive out-of-order,
 e.g., if sent using different paths.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
 </section>
@@ -2100,49 +2102,49 @@ After the PATH_ABANDON frame is sent on a path, the path can no longer be used f
           <dd style="margin-left: 1.5em" id="section-4.2-5.4">
             <p id="section-4.2-5.4.1">A variable-length integer that indicates the reason for abandoning
 this path. NO_ERROR(0x0) indicates that the path is being abandoned
-without any error being encountered. Other error codes can be found in <a href="#error-codes" class="auto internal xref">Section 4.3</a>.<a href="#section-4.2-5.4.1" class="pilcrow">¶</a></p>
+without any error being encountered. Other error codes can be found in <a href="#error-codes" class="auto internal xref">Section 4.2.1</a>.<a href="#section-4.2-5.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <p id="section-4.2-6">PATH_ABANDON frames are ack-eliciting. If a packet containing
 a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 <p id="section-4.2-7">Use of the PATH_ABANDON frame is specified in section <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="error-codes">
-<section id="section-4.3">
-        <h3 id="name-error-codes">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-error-codes" class="section-name selfRef">Error Codes</a>
-        </h3>
-<p id="section-4.3-1">QUIC transport error codes are 62-bit unsigned integers
+<section id="section-4.2.1">
+          <h4 id="name-error-codes">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-error-codes" class="section-name selfRef">Error Codes</a>
+          </h4>
+<p id="section-4.2.1-1">QUIC transport error codes are 62-bit unsigned integers
 (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-20.1" class="relref">Section 20.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. In addition to
 NO_ERROR(0x0), the following QUIC error codes are defined
-for use in the PATH_ABANDON frame:<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
-request of the application.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.3-3">RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
-it cannot allocate sufficient resources to maintain it.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
-<p id="section-4.3-4">UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
+for use in the PATH_ABANDON frame:<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-2">APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
+request of the application.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-3">RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
+it cannot allocate sufficient resources to maintain it.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-4">UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
 the used interface is considered to be unstable. This condition can occur, e.g.,
-due to a weak wireless signal or frequent handover events during high-speed mobility.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.3-5">NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
+due to a weak wireless signal or frequent handover events during high-speed mobility.<a href="#section-4.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-5">NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
 the lack of a connection ID for this path.
 This may occur when the peer initiates a new path
 but has not provided a corresponding connection ID for the path ID
-(or the packet containing the connection IDs has not arrived yet).<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+(or the packet containing the connection IDs has not arrived yet).<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="path-backup-available-frame">
-<section id="section-4.4">
+<section id="section-4.3">
         <h3 id="name-path_available-and-path_bac">
-<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-path_available-and-path_bac" class="section-name selfRef">PATH_AVAILABLE and PATH_BACKUP frames</a>
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-path_available-and-path_bac" class="section-name selfRef">PATH_AVAILABLE and PATH_BACKUP frames</a>
         </h3>
-<p id="section-4.4-1">PATH_AVAILABLE frames are used by endpoints to inform the peer
+<p id="section-4.3-1">PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
-PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 5</a>.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 5</a>.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <span id="name-path_available-frame-format"></span><div id="fig-path-available-format">
 <figure id="figure-5">
-          <div class="alignLeft art-text artwork" id="section-4.4-2.1">
+          <div class="alignLeft art-text artwork" id="section-4.3-2.1">
 <pre>
   PATH_AVAILABLE Frame {
     Type (i) = TBD-04 (experiments use 0x15228c08),
@@ -2155,12 +2157,12 @@ PATH_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-for
 <a href="#name-path_available-frame-format" class="selfRef">PATH_AVAILABLE Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.4-3">PATH_BACKUP frames are used by endpoints to inform the peer
+<p id="section-4.3-3">PATH_BACKUP frames are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
-PATH_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" class="auto internal xref">Figure 6</a>.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+PATH_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" class="auto internal xref">Figure 6</a>.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <span id="name-path_backup-frame-format"></span><div id="fig-path-backup-format">
 <figure id="figure-6">
-          <div class="alignLeft art-text artwork" id="section-4.4-4.1">
+          <div class="alignLeft art-text artwork" id="section-4.3-4.1">
 <pre>
   PATH_BACKUP Frame {
     Type (i) = TBD-03 (experiments use 0x15228c07)
@@ -2173,60 +2175,60 @@ PATH_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" c
 <a href="#name-path_backup-frame-format" class="selfRef">PATH_BACKUP Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.4-5">Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:<a href="#section-4.4-5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.4-6">
-          <dt id="section-4.4-6.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.4-6.2">
-            <p id="section-4.4-6.2.1">The Path ID that the status update corresponds to.
+<p id="section-4.3-5">Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.3-6">
+          <dt id="section-4.3-6.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.3-6.2">
+            <p id="section-4.3-6.2.1">The Path ID that the status update corresponds to.
 All Path IDs below the maximum path ID limit can be indicated,
-even if the path is not in active use yet.<a href="#section-4.4-6.2.1" class="pilcrow">¶</a></p>
+even if the path is not in active use yet.<a href="#section-4.3-6.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-4.4-6.3">Path Status Sequence Number:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.4-6.4">
-            <p id="section-4.4-6.4.1">A variable-length integer specifying the per-path sequence number assigned for
-this frame.<a href="#section-4.4-6.4.1" class="pilcrow">¶</a></p>
+<dt id="section-4.3-6.3">Path Status Sequence Number:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.3-6.4">
+            <p id="section-4.3-6.4.1">A variable-length integer specifying the per-path sequence number assigned for
+this frame.<a href="#section-4.3-6.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.4-7">The sequence number space is common to the two frame types,
+<p id="section-4.3-7">The sequence number space is common to the two frame types,
 and monotonically increasing values MUST be used when sending PATH_AVAILABLE or
-PATH_BACKUP frames for a given Path ID.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
-<p id="section-4.4-8">Frames may be received out of order. A peer MUST ignore an incoming
+PATH_BACKUP frames for a given Path ID.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
+<p id="section-4.3-8">Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE or
 PATH_BACKUP frame if it previously received another PATH_BACKUP frame
 or PATH_AVAILABLE frame for the same Path ID with a Path Status sequence number
-equal to or higher than the Path Status sequence number of the incoming frame.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
-<p id="section-4.4-9">The requirement of monotonically increasing sequence numbers
+equal to or higher than the Path Status sequence number of the incoming frame.<a href="#section-4.3-8" class="pilcrow">¶</a></p>
+<p id="section-4.3-9">The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
 same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
 on different paths. As such, the receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
-separately for each Path ID.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
-<p id="section-4.4-10">PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
+separately for each Path ID.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
+<p id="section-4.3-10">PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
 PATH_BACKUP or PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
-by the sequence number.<a href="#section-4.4-10" class="pilcrow">¶</a></p>
-<p id="section-4.4-11">A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
+by the sequence number.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
+<p id="section-4.3-11">A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
-before or during path initiation.<a href="#section-4.4-11" class="pilcrow">¶</a></p>
+before or during path initiation.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mp-new-conn-id-frame">
-<section id="section-4.5">
+<section id="section-4.4">
         <h3 id="name-path_new_connection_id-fram">
-<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-path_new_connection_id-fram" class="section-name selfRef">PATH_NEW_CONNECTION_ID frame</a>
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-path_new_connection_id-fram" class="section-name selfRef">PATH_NEW_CONNECTION_ID frame</a>
         </h3>
-<p id="section-4.5-1">The PATH_NEW_CONNECTION_ID frame (type=TBD-05)
+<p id="section-4.4-1">The PATH_NEW_CONNECTION_ID frame (type=TBD-05)
 is an extension of the NEW_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.15" class="relref">Section 19.15</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 It is used to provide its peer with alternative connection IDs for 1-RTT packets
 for a specific path. The peer can then use a different connection ID on the same path
-to break linkability when migrating on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
-<p id="section-4.5-2">PATH_NEW_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-connection-id-frame-format" class="auto internal xref">Figure 7</a>.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+to break linkability when migrating on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">PATH_NEW_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-connection-id-frame-format" class="auto internal xref">Figure 7</a>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 <span id="name-path_new_connection_id-frame"></span><div id="fig-mp-connection-id-frame-format">
 <figure id="figure-7">
-          <div class="alignLeft art-text artwork" id="section-4.5-3.1">
+          <div class="alignLeft art-text artwork" id="section-4.4-3.1">
 <pre>
 PATH_NEW_CONNECTION_ID Frame {
   Type (i) = TBD-05 (experiments use 0x15228c09),
@@ -2243,40 +2245,40 @@ PATH_NEW_CONNECTION_ID Frame {
 <a href="#name-path_new_connection_id-frame" class="selfRef">PATH_NEW_CONNECTION_ID Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.5-4">Compared to the NEW_CONNECTION_ID frame specified in
+<p id="section-4.4-4">Compared to the NEW_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.15" class="relref">Section 19.15</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the following
-field is added:<a href="#section-4.5-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.5-5">
-          <dt id="section-4.5-5.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.5-5.2">
-            <p id="section-4.5-5.2.1">The Path ID associated with the connection ID. This
-means the provided connection ID can only be used on the corresponding path.<a href="#section-4.5-5.2.1" class="pilcrow">¶</a></p>
+field is added:<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.4-5">
+          <dt id="section-4.4-5.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.4-5.2">
+            <p id="section-4.4-5.2.1">The Path ID associated with the connection ID. This
+means the provided connection ID can only be used on the corresponding path.<a href="#section-4.4-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.5-6">Note that, other than for the NEW_CONNECTION_ID frame of <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.15" class="relref">Section 19.15</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
+<p id="section-4.4-6">Note that, other than for the NEW_CONNECTION_ID frame of <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.15" class="relref">Section 19.15</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 the sequence number applies on a per-path context.
 This means different connection IDs on different paths may have the same
-sequence number value.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
-<p id="section-4.5-7">The Retire Prior To field indicates which connection IDs
+sequence number value.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
+<p id="section-4.4-7">The Retire Prior To field indicates which connection IDs
 should be retired among those that share the Path ID in the Path Identifier field.
-Connection IDs associated with different Path IDs are not affected.<a href="#section-4.5-7" class="pilcrow">¶</a></p>
-<p id="section-4.5-8">Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
-connection IDs for the initial path with Path ID 0.<a href="#section-4.5-8" class="pilcrow">¶</a></p>
-<p id="section-4.5-9">The last paragraph of <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies how to
+Connection IDs associated with different Path IDs are not affected.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
+<p id="section-4.4-8">Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
+connection IDs for the initial path with Path ID 0.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
+<p id="section-4.4-9">The last paragraph of <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies how to
 verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
 The same rule
 applies for PATH_NEW_CONNECTION_ID frames, but it applies per path. If the
 multipath extension is used, the rule
-for NEW_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.5-9" class="pilcrow">¶</a></p>
+for NEW_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mp-retire-conn-id-frame">
-<section id="section-4.6">
+<section id="section-4.5">
         <h3 id="name-path_retire_connection_id-f">
-<a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-path_retire_connection_id-f" class="section-name selfRef">PATH_RETIRE_CONNECTION_ID frame</a>
+<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-path_retire_connection_id-f" class="section-name selfRef">PATH_RETIRE_CONNECTION_ID frame</a>
         </h3>
-<p id="section-4.6-1">The PATH_RETIRE_CONNECTION_ID frame (TBD-06)
+<p id="section-4.5-1">The PATH_RETIRE_CONNECTION_ID frame (TBD-06)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. It is used
 to indicate that an endpoint will no longer use a connection ID for a specific Path ID
@@ -2285,11 +2287,11 @@ during the handshake on the initial path, Path ID 0 is used.
 Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for this path (see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
 unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
-delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.5</a>).<a href="#section-4.6-1" class="pilcrow">¶</a></p>
-<p id="section-4.6-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
+delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>).<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
 <span id="name-path_retire_connection_id-fr"></span><div id="fig-mp-retire-connection-id-frame-format">
 <figure id="figure-8">
-          <div class="alignLeft art-text artwork" id="section-4.6-3.1">
+          <div class="alignLeft art-text artwork" id="section-4.5-3.1">
 <pre>
 PATH_RETIRE_CONNECTION_ID Frame {
   Type (i) = TBD-06 (experiments use 0x15228c0a),
@@ -2302,40 +2304,40 @@ PATH_RETIRE_CONNECTION_ID Frame {
 <a href="#name-path_retire_connection_id-fr" class="selfRef">PATH_RETIRE_CONNECTION_ID Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.6-4">Compared to the RETIRE_CONNECTION_ID frame specified in
+<p id="section-4.5-4">Compared to the RETIRE_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the following
-field is added:<a href="#section-4.6-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.6-5">
-          <dt id="section-4.6-5.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.6-5.2">
-            <p id="section-4.6-5.2.1">The Path ID associated with the connection ID to retire.<a href="#section-4.6-5.2.1" class="pilcrow">¶</a></p>
+field is added:<a href="#section-4.5-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.5-5">
+          <dt id="section-4.5-5.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.5-5.2">
+            <p id="section-4.5-5.2.1">The Path ID associated with the connection ID to retire.<a href="#section-4.5-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.6-6">Note that the RETIRE_CONNECTION_ID frame can only be used to retire
-connection IDs for the initial path with Path ID 0.<a href="#section-4.6-6" class="pilcrow">¶</a></p>
-<p id="section-4.6-7">As the PATH_NEW_CONNECTION_ID frames applies the sequence number per path,
+<p id="section-4.5-6">Note that the RETIRE_CONNECTION_ID frame can only be used to retire
+connection IDs for the initial path with Path ID 0.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
+<p id="section-4.5-7">As the PATH_NEW_CONNECTION_ID frames applies the sequence number per path,
 the sequence number in the PATH_RETIRE_CONNECTION_ID frame is also per
 path. The PATH_RETIRE_CONNECTION_ID frame retires the Connection ID with
-the specified Path ID and sequence number.<a href="#section-4.6-7" class="pilcrow">¶</a></p>
-<p id="section-4.6-8">The processing of an incoming RETIRE_CONNECTION_ID frame
+the specified Path ID and sequence number.<a href="#section-4.5-7" class="pilcrow">¶</a></p>
+<p id="section-4.5-8">The processing of an incoming RETIRE_CONNECTION_ID frame
 is described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while with use of
 the multipath extension the
-processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.6-8" class="pilcrow">¶</a></p>
+processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.5-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="max-paths-frame">
-<section id="section-4.7">
+<section id="section-4.6">
         <h3 id="name-max_path_id-frame">
-<a href="#section-4.7" class="section-number selfRef">4.7. </a><a href="#name-max_path_id-frame" class="section-name selfRef">MAX_PATH_ID frame</a>
+<a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-max_path_id-frame" class="section-name selfRef">MAX_PATH_ID frame</a>
         </h3>
-<p id="section-4.7-1">A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
-it is permitted to use.<a href="#section-4.7-1" class="pilcrow">¶</a></p>
-<p id="section-4.7-2">MAX_PATH_ID frames are formatted as shown in <a href="#fig-max-paths-frame-format" class="auto internal xref">Figure 9</a>.<a href="#section-4.7-2" class="pilcrow">¶</a></p>
+<p id="section-4.6-1">A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
+it is permitted to use.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.6-2">MAX_PATH_ID frames are formatted as shown in <a href="#fig-max-paths-frame-format" class="auto internal xref">Figure 9</a>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
 <span id="name-max_path_id-frame-format"></span><div id="fig-max-paths-frame-format">
 <figure id="figure-9">
-          <div class="alignLeft art-text artwork" id="section-4.7-3.1">
+          <div class="alignLeft art-text artwork" id="section-4.6-3.1">
 <pre>
 MAX_PATH_ID Frame {
   Type (i) = TBD-07 (experiments use 0x15228c0c),
@@ -2347,50 +2349,50 @@ MAX_PATH_ID Frame {
 <a href="#name-max_path_id-frame-format" class="selfRef">MAX_PATH_ID Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.7-4">MAX_PATH_ID frames contain the following field:<a href="#section-4.7-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.7-5">
-          <dt id="section-4.7-5.1">Maximum Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.7-5.2">
-            <p id="section-4.7-5.2.1">The maximum path identifier that the sending endpoint is willing to accept.
+<p id="section-4.6-4">MAX_PATH_ID frames contain the following field:<a href="#section-4.6-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.6-5">
+          <dt id="section-4.6-5.1">Maximum Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.6-5.2">
+            <p id="section-4.6-5.2.1">The maximum path identifier that the sending endpoint is willing to accept.
 This value MUST NOT exceed 2^32-1, which is the maximum allowed value for the Path ID due to
 restrictions on the nonce calculation (see <a href="#nonce" class="auto internal xref">Section 2.4</a>).
 The Maximum Path Identifier value MUST NOT be lower than the value
-advertised in the initial_max_path_id transport parameter.<a href="#section-4.7-5.2.1" class="pilcrow">¶</a></p>
+advertised in the initial_max_path_id transport parameter.<a href="#section-4.6-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.7-6">Receipt of an invalid Maximum Path Identifier value MUST be treated as a
-connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-6" class="pilcrow">¶</a></p>
-<p id="section-4.7-7">Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
+<p id="section-4.6-6">Receipt of an invalid Maximum Path Identifier value MUST be treated as a
+connection error of type PROTOCOL_VIOLATION.<a href="#section-4.6-6" class="pilcrow">¶</a></p>
+<p id="section-4.6-7">Loss or reordering can cause an endpoint to receive a MAX_PATH_ID frame with
 a smaller Maximum Path Identifier value than was previously received.
-MAX_PATH_ID frames that do not increase the path limit MUST be ignored.<a href="#section-4.7-7" class="pilcrow">¶</a></p>
-<p id="section-4.7-8">MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost
-and no more recent MAX_PATH_ID frame has been sent in the meantime.<a href="#section-4.7-8" class="pilcrow">¶</a></p>
+MAX_PATH_ID frames that do not increase the path limit MUST be ignored.<a href="#section-4.6-7" class="pilcrow">¶</a></p>
+<p id="section-4.6-8">MAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost
+and no more recent MAX_PATH_ID frame has been sent in the meantime.<a href="#section-4.6-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="paths-and-cids-blocked-frame">
-<section id="section-4.8">
+<section id="section-4.7">
         <h3 id="name-paths_blocked-and-path_cids">
-<a href="#section-4.8" class="section-number selfRef">4.8. </a><a href="#name-paths_blocked-and-path_cids" class="section-name selfRef">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a>
+<a href="#section-4.7" class="section-number selfRef">4.7. </a><a href="#name-paths_blocked-and-path_cids" class="section-name selfRef">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a>
         </h3>
-<p id="section-4.8-1">A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
+<p id="section-4.7-1">A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
 it wishes to open a path but is unable to do so due to the maximum path identifier
-limit set by its peer.<a href="#section-4.8-1" class="pilcrow">¶</a></p>
-<p id="section-4.8-2">A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
+limit set by its peer.<a href="#section-4.7-1" class="pilcrow">¶</a></p>
+<p id="section-4.7-2">A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
 it wishes to open a path with a valid Path ID or change the CID on an established path
 but is unable to do so because there are no unused connection IDs available
-for the corresponding Path ID.<a href="#section-4.8-2" class="pilcrow">¶</a></p>
-<p id="section-4.8-3">Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
+for the corresponding Path ID.<a href="#section-4.7-2" class="pilcrow">¶</a></p>
+<p id="section-4.7-3">Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
 like updating the new Max Path ID value, but informs the peer that the maximum path identifier limit
 or the absence of unused connection IDs prevented the creation or the usage of paths.
 If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
 no action is taken by the peer, this is likely a deliberate decision by the peer and
-repeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.<a href="#section-4.8-3" class="pilcrow">¶</a></p>
-<p id="section-4.8-4">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-4.8-4" class="pilcrow">¶</a></p>
+repeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.<a href="#section-4.7-3" class="pilcrow">¶</a></p>
+<p id="section-4.7-4">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-4.7-4" class="pilcrow">¶</a></p>
 <span id="name-max_path_id_blocked-frame-f"></span><div id="fig-paths-blocked-frame-format">
 <figure id="figure-10">
-          <div class="alignLeft art-text artwork" id="section-4.8-5.1">
+          <div class="alignLeft art-text artwork" id="section-4.7-5.1">
 <pre>
 PATHS_BLOCKED Frame {
   Type (i) = TBD-08 (experiments use 0x15228c0d),
@@ -2402,20 +2404,20 @@ PATHS_BLOCKED Frame {
 <a href="#name-max_path_id_blocked-frame-f" class="selfRef">MAX_PATH_ID_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
-<p id="section-4.8-6">PATHS_BLOCKED frames contain the following field:<a href="#section-4.8-6" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.8-7">
-          <dt id="section-4.8-7.1">Maximum Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.8-7.2">
-            <p id="section-4.8-7.2.1">A variable-length integer indicating the maximum path identifier that was
+<p id="section-4.7-6">PATHS_BLOCKED frames contain the following field:<a href="#section-4.7-6" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.7-7">
+          <dt id="section-4.7-7.1">Maximum Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.7-7.2">
+            <p id="section-4.7-7.2.1">A variable-length integer indicating the maximum path identifier that was
 allowed at the time the frame was sent. If the received value is lower than
-the currently allowed maximum value, this frame can be ignored.<a href="#section-4.8-7.2.1" class="pilcrow">¶</a></p>
+the currently allowed maximum value, this frame can be ignored.<a href="#section-4.7-7.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.8-8">PATH_CIDS_BLOCKED frames are formatted as shown in <a href="#fig-path-cid-blocked-frame-format" class="auto internal xref">Figure 11</a>.<a href="#section-4.8-8" class="pilcrow">¶</a></p>
+<p id="section-4.7-8">PATH_CIDS_BLOCKED frames are formatted as shown in <a href="#fig-path-cid-blocked-frame-format" class="auto internal xref">Figure 11</a>.<a href="#section-4.7-8" class="pilcrow">¶</a></p>
 <span id="name-path_cids_blocked-frame-for"></span><div id="fig-path-cid-blocked-frame-format">
 <figure id="figure-11">
-          <div class="alignLeft art-text artwork" id="section-4.8-9.1">
+          <div class="alignLeft art-text artwork" id="section-4.7-9.1">
 <pre>
 PATH_CIDS_BLOCKED Frame {
   Type (i) = TBD-09 (experiments use 0x15228c0e),
@@ -2428,25 +2430,25 @@ PATH_CIDS_BLOCKED Frame {
 <a href="#name-path_cids_blocked-frame-for" class="selfRef">PATH_CIDS_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
-<span class="break"></span><dl class="dlParallel" id="section-4.8-10">
-          <dt id="section-4.8-10.1">Path Identifier:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.8-10.2">
-            <p id="section-4.8-10.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-4.8-10.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.7-10">
+          <dt id="section-4.7-10.1">Path Identifier:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.7-10.2">
+            <p id="section-4.7-10.2.1">Identifier of the path for which unused connection IDs are not available.<a href="#section-4.7-10.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-4.8-10.3">Next Sequence Number:</dt>
-          <dd style="margin-left: 1.5em" id="section-4.8-10.4">
-            <p id="section-4.8-10.4.1">The next sequence number that is expected to be issued for a connection ID for this path by the peer.<a href="#section-4.8-10.4.1" class="pilcrow">¶</a></p>
+<dt id="section-4.7-10.3">Next Sequence Number:</dt>
+          <dd style="margin-left: 1.5em" id="section-4.7-10.4">
+            <p id="section-4.7-10.4.1">The next sequence number that is expected to be issued for a connection ID for this path by the peer.<a href="#section-4.7-10.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.8-11">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
-the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.8-11" class="pilcrow">¶</a></p>
-<p id="section-4.8-12">Receipt of a value of Next Sequence Number that is higher than
+<p id="section-4.7-11">Receipt of a value of Maximum Path Identifier or Path Identifier that is higher than
+the local maximum value MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-11" class="pilcrow">¶</a></p>
+<p id="section-4.7-12">Receipt of a value of Next Sequence Number that is higher than
 the sequence number of the next expected to be issued connection ID for this path
-MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.8-12" class="pilcrow">¶</a></p>
-<p id="section-4.8-13">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
-if the path is still blocked when the lost is detected.<a href="#section-4.8-13" class="pilcrow">¶</a></p>
+MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4.7-12" class="pilcrow">¶</a></p>
+<p id="section-4.7-13">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
+if the path is still blocked when the lost is detected.<a href="#section-4.7-13" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2842,49 +2844,49 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
             <td class="text-left" rowspan="1" colspan="1">TBD-03 (experiments use 0x15228c07)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_BACKUP</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#path-backup-available-frame" class="auto internal xref">Section 4.4</a>
+              <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-04 (experiments use 0x15228c08)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_AVAILABLE</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#path-backup-available-frame" class="auto internal xref">Section 4.4</a>
+              <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-05 (experiments use 0x15228c09)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_NEW_CONNECTION_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.5</a>
+              <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-06 (experiments use 0x15228c0a)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_RETIRE_CONNECTION_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#mp-retire-conn-id-frame" class="auto internal xref">Section 4.6</a>
+              <a href="#mp-retire-conn-id-frame" class="auto internal xref">Section 4.5</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-07 (experiments use 0x15228c0c)</td>
             <td class="text-left" rowspan="1" colspan="1">MAX_PATH_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#max-paths-frame" class="auto internal xref">Section 4.7</a>
+              <a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-08 (experiments use 0x15228c0d)</td>
             <td class="text-left" rowspan="1" colspan="1">PATHS_BLOCKED</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.8</a>
+              <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">TBD-09 (experiments use 0x15228c0e)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_CIDS_BLOCKED</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.8</a>
+              <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>
 </td>
           </tr>
         </tbody>
@@ -2913,7 +2915,7 @@ the "QUIC Protocol" heading.<a href="#section-6-6" class="pilcrow">¶</a></p>
             <td class="text-left" rowspan="1" colspan="1">APPLICATION_ABANDON</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned at the application's request</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#error-codes" class="auto internal xref">Section 4.3</a>
+              <a href="#error-codes" class="auto internal xref">Section 4.2.1</a>
 </td>
           </tr>
           <tr>
@@ -2921,7 +2923,7 @@ the "QUIC Protocol" heading.<a href="#section-6-6" class="pilcrow">¶</a></p>
             <td class="text-left" rowspan="1" colspan="1">RESOURCE_LIMIT_REACHED</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned due to resource limitations in the transport</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#error-codes" class="auto internal xref">Section 4.3</a>
+              <a href="#error-codes" class="auto internal xref">Section 4.2.1</a>
 </td>
           </tr>
           <tr>
@@ -2929,7 +2931,7 @@ the "QUIC Protocol" heading.<a href="#section-6-6" class="pilcrow">¶</a></p>
             <td class="text-left" rowspan="1" colspan="1">UNSTABLE_INTERFACE</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned due to unstable interfaces</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#error-codes" class="auto internal xref">Section 4.3</a>
+              <a href="#error-codes" class="auto internal xref">Section 4.2.1</a>
 </td>
           </tr>
           <tr>
@@ -2937,7 +2939,7 @@ the "QUIC Protocol" heading.<a href="#section-6-6" class="pilcrow">¶</a></p>
             <td class="text-left" rowspan="1" colspan="1">NO_CID_AVAILABLE</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned due to no available connection IDs for the path</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <a href="#error-codes" class="auto internal xref">Section 4.3</a>
+              <a href="#error-codes" class="auto internal xref">Section 4.2.1</a>
 </td>
           </tr>
         </tbody>
