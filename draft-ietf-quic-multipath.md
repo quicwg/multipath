@@ -813,6 +813,7 @@ but has not provided a corresponding connection ID for the path ID
 
 PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
+
 PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
@@ -826,6 +827,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 PATH_BACKUP frames are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
+
 PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 
 ~~~
