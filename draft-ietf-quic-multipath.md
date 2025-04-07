@@ -1242,31 +1242,34 @@ with different delays explicitly.
 
 ## Packet Scheduling {#packet-scheduling}
 
-The transmission of QUIC packets on a regular QUIC connection is regulated
+The transmission of data packets is limited
 by the arrival of data from the application and the congestion control
-scheme. QUIC packets that increase the number of bytes in flight can only be sent
-when the congestion window allows it.
-Multipath QUIC implementations also need to include a packet scheduler
-that decides, among the paths whose congestion window is open, the path
-over which the next QUIC packet will be sent. Most frames, including
-control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
-exceptions), can be sent and received on any open path. The scheduling
-is a local decision, based on the preferences of the application and the
+window. Generally, QUIC packets that increase the number of bytes in flight can only be sent
+when the congestion window for the selected path allows it.
+
+Most frames, including control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
+exceptions), can be sent and received on any open path.
+As such a packet scheduler is needed to decide which path to use
+for sending the next packet, among those paths with an open congestion window.
+The scheduling is a local decision, based on the preferences of the application and the
 implementation.
 
-Note that this implies that an endpoint may send and receive PATH_ACK
+This implies that an endpoint may send and receive PATH_ACK
 frames on a path different from the one that carried the acknowledged
-packets. As noted in {{compute-rtt}} the values computed using
+packets. As noted in {{compute-rtt}}, RTT estimates computed using
 the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
-faster if the scheduling strategy is stable, but besides that
-implementations can choose between multiple strategies such as sending
-PATH_ACK frames on the path they acknowledge packets, or sending
-PATH_ACK frames on the shortest path, which results in shorter control loops
-and thus better performance. However, since packets that only carry PATH_ACK frames
+faster if the scheduling strategy is stable. 
+Still, implementations can choose different strategies such as sending
+PATH_ACK frames e.g. either simply on the path where the acknowledged packets was received,
+or alternatively the shortest path, which results in shorter control loops
+and potentially better performance.
+
+Since packets that only carry PATH_ACK frames
 are not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),
 senders should carefully consider the load induced
-by these packets, especially if the capacity is unknown on that path.
+by these packets, especially if the capacity is unknown on that path
+e.g when that path is not used for sending data frames.
 
 ## Retransmissions
 
