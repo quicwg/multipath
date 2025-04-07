@@ -1130,19 +1130,19 @@ independently to suit the needs of the application.
 
 There may be cases in which paths are created with different 4-tuples,
 but end up using the same 4-tuples as a consequence of path
-migrations. For example:
+migrations. This is an example that assumes the same ports are used on both paths:
 
 * Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
 * Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
 * Both paths are used for a while.
-* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.
-* Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating Path ID 2.
+* Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.
 
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint could want to close one of them.
-Uncoordinated abandon from both ends of the connection may result in deleting
-two paths instead of just one. To avoid this pitfall, endpoints could
+Uncoordinated abandon of both endpoints may result in deleting
+both paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
 the application protocol to decide which paths should be closed.
