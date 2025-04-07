@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 29 September 2025                        Uber Technologies Inc.
+Expires: 9 October 2025                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 29 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           28 March 2025
+                                                            7 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 September 2025.
+   This Internet-Draft will expire on 9 October 2025.
 
 Copyright Notice
 
@@ -1152,17 +1152,14 @@ Table of Contents
    similar as on a single path.  These events do not change the Path ID,
    and do not affect the packet number space associated with the path.
 
-   In case of network-based NAT rebindings, path migration cannot be
-   avoided.  However, as a general rule, when the multipath extension is
-   supported, implementations
-   should otherwise strongly prefer opening a new path instead of path
-   migration
-   as specified in [QUIC-TRANSPORT].  This enables a smoother handover
-   and allows a simplified migration handling at the server side as NAT
-   rebindings imply immediate loss of the old address.  However, if the
-   server requests migration to a "preferred address", clients must
-   initiate migration of path 0 to that preferred address as specified
-   in [QUIC-TRANSPORT].
+   It is generally preferable to use multipath mechanisms such as
+   creating a new path and later abandoning the old path, rather than
+   doing migration of a single path as specified in [QUIC-TRANSPORT].
+   This enables a smoother handover and allows a more controlled
+   migration handling at the server side.  However, migration of a
+   single path cannot be avoided in case of NAT rebinding, or if the
+   server requests migration to a "preferred address" during the
+   handshake.
 
    Section 9.3 of [QUIC-TRANSPORT] allows an endpoint to skip validation
    of a peer address if that address has been seen recently.  However,
