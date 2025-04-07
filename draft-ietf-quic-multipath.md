@@ -1259,7 +1259,7 @@ frames on a path different from the one that carried the acknowledged
 packets. As noted in {{compute-rtt}}, RTT estimates computed using
 the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
-faster if the scheduling strategy is stable. 
+faster if the scheduling strategy is stable.
 Still, implementations can choose different strategies such as sending
 PATH_ACK frames e.g. either simply on the path where the acknowledged packets was received,
 or alternatively the shortest path, which results in shorter control loops
