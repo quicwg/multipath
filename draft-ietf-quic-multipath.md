@@ -1284,7 +1284,7 @@ expected to be preserved when data is retransmitted. Especially when STREAM
 frames have to be retransmitted over a different path with a smaller MTU limit,
 new smaller STREAM frames might need to be sent instead.
 
-## Handling PTO
+## Handling PTO Expiration
 
 An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
 for detecting packet loss on each individual path. A special case happens when
