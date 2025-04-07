@@ -543,15 +543,16 @@ to use a different connection ID for the same Path ID when doing so.
 
 ## Path Status Management {#path-state}
 
-An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
+An endpoint can send PATH_BACKUP and PATH_AVAILABLE frames (see
 {{path-backup-available-frame}}) to inform the peer that it should
-send packets with the preference expressed by these frames.
+send packets on the paths with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
 but these frames are still a clear signal of the peer's preference of path usage.
+
 Each peer indicates its preference of path usage independently of the other peer.
 That means that peers may have different usage preferences for the same path.
 Depending on the data sender's decisions, this may lead to usage of paths that have been
-indicated as "standby" by the peer or non-usage of some locally available paths.
+indicated as "backup" by the peer or non-usage of some locally available paths.
 
 PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
@@ -570,7 +571,7 @@ because it has detected issues on the paths marked as "available", it is RECOMME
 to update its own path state signaling such that the peer avoids using the broken path.
 An endpoint that detects a path breakage can also explicitly close the path
 by sending a PATH_ABANDON frame (see {{path-close}}) in order to avoid
-that its peer keeps using it and enable faster switch over to a backup path.
+that its peer keeps using it and enable faster switchover to a backup path.
 If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, PING frames can potentially be used to quickly detect
 connectivity changes and switch back in a timely way.
