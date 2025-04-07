@@ -1035,6 +1035,8 @@ PATH_CIDS_BLOCKED Frame {
 ~~~
 {: #fig-path-cid-blocked-frame-format title="PATH_CIDS_BLOCKED Frame Format"}
 
+PATH_CIDS_BLOCKED frames contain the following fields:
+
 Path Identifier:
 : Identifier of the path for which unused connection IDs are not available.
 
