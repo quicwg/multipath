@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 October 2025                           Uber Technologies Inc.
+Expires: 10 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 October 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            7 April 2025
+                                                            8 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 October 2025.
+   This Internet-Draft will expire on 10 October 2025.
 
 Copyright Notice
 
@@ -1193,8 +1193,8 @@ Table of Contents
 
    There may be cases in which paths are created with different
    4-tuples, but end up using the same 4-tuples as a consequence of path
-   migrations.  This is an example that assumes the same ports are used
-   on both paths:
+   migrations.  Consider the following example where all paths use the
+   same source and destination ports:
 
    *  Client starts path 1 from address 192.0.2.1 to server address
       198.51.100.1
