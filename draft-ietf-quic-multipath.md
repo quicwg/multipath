@@ -1130,7 +1130,8 @@ independently to suit the needs of the application.
 
 There may be cases in which paths are created with different 4-tuples,
 but end up using the same 4-tuples as a consequence of path
-migrations. This is an example that assumes the same ports are used on both paths:
+migrations. Consider the following example where all paths use the same
+source and destination ports:
 
 * Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
 * Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
