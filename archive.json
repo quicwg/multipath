@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-01T01:06:26.246825+00:00",
+  "timestamp": "2025-04-08T00:59:23.349422+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -58161,23 +58161,45 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2025-03-28T13:57:12Z",
-      "updatedAt": "2025-03-28T19:11:05Z",
+      "updatedAt": "2025-04-07T14:10:05Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e7655a2808a019610d4cbc4ee6ad68ffa43f0807",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-5",
-      "headRefOid": "f6216118d492621430d88ef289eb19da2694f213",
+      "headRefOid": "5505ffbb065ef340be2c0c574a7b08011ddc935c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6jtojq",
+          "commit": {
+            "abbreviatedOid": "f621611"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-07T12:30:25Z",
+          "updatedAt": "2025-04-07T12:30:25Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\n### Error Codes {#error-codes}\r\n```",
+              "createdAt": "2025-04-07T12:30:25Z",
+              "updatedAt": "2025-04-07T12:30:25Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 523,
@@ -58193,13 +58215,13 @@
       ],
       "body": "Proposed edits by Christian; slightly adapted",
       "createdAt": "2025-03-28T14:13:21Z",
-      "updatedAt": "2025-03-29T00:14:35Z",
+      "updatedAt": "2025-04-07T12:25:07Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e7655a2808a019610d4cbc4ee6ad68ffa43f0807",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
-      "headRefOid": "d805cc8f663d83b621b15d8756bb3c4ced420cf4",
+      "headRefOid": "106b2072e0bb1af8d94f9cf0da0e588e1eed7bc8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -58231,8 +58253,432 @@
               "updatedAt": "2025-03-29T00:14:35Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6jtiwT",
+          "commit": {
+            "abbreviatedOid": "d805cc8"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-07T12:21:34Z",
+          "updatedAt": "2025-04-07T12:21:35Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "This will be gone with the proposed edit below. Resolving this comment for now to add the commit.",
+              "createdAt": "2025-04-07T12:21:34Z",
+              "updatedAt": "2025-04-07T12:21:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6jtjGC",
+          "commit": {
+            "abbreviatedOid": "d805cc8"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-07T12:22:06Z",
+          "updatedAt": "2025-04-07T12:22:06Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Removing this comment and adding the proposed changes in a commit instead",
+              "createdAt": "2025-04-07T12:22:06Z",
+              "updatedAt": "2025-04-07T12:22:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6jtkUz",
+          "commit": {
+            "abbreviatedOid": "d805cc8"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-07T12:23:59Z",
+          "updatedAt": "2025-04-07T12:24:00Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "```suggestion\r\nIt is generally preferable to use multipath mechanisms such as\r\ncreating a new path and later abandoning the old path,\r\nrather than doing migration of a single path as specified in {{QUIC-TRANSPORT}}.\r\nThis enables a smoother handover and allows a more controlled migration handling\r\nat the server side. However, migration of a single path cannot be\r\navoided in case of NAT rebinding, or if the server requests migration\r\nto a \"preferred address\" during the handshake.\r\n```",
+              "createdAt": "2025-04-07T12:24:00Z",
+              "updatedAt": "2025-04-07T12:24:00Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 524,
+      "id": "PR_kwDOGNtpaM6RoZvz",
+      "title": "Remove redundancy on use of PATH_NEW/RETIRE_CID frames",
+      "url": "https://github.com/quicwg/multipath/pull/524",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Small editorial fix.",
+      "createdAt": "2025-04-07T13:14:09Z",
+      "updatedAt": "2025-04-07T13:25:57Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-7",
+      "headRefOid": "3175ee0566dd2439e09d8180d2392a60dd97cbfc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6juJ7d",
+          "commit": {
+            "abbreviatedOid": "3175ee0"
+          },
+          "author": "copilot-pull-request-reviewer",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "\n\nCopilot reviewed 1 out of 1 changed files in this pull request and generated no comments.\n\n\n\n",
+          "createdAt": "2025-04-07T13:15:40Z",
+          "updatedAt": "2025-04-07T13:15:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 525,
+      "id": "PR_kwDOGNtpaM6RohVO",
+      "title": "small editorial edits on PATH_ACK usage",
+      "url": "https://github.com/quicwg/multipath/pull/525",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-04-07T13:25:04Z",
+      "updatedAt": "2025-04-07T13:25:47Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-8",
+      "headRefOid": "31db11cd799e22205030130f4f6d38782665b0bc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 526,
+      "id": "PR_kwDOGNtpaM6RonZl",
+      "title": "nits in path status section",
+      "url": "https://github.com/quicwg/multipath/pull/526",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-04-07T13:31:20Z",
+      "updatedAt": "2025-04-07T13:31:51Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-9",
+      "headRefOid": "5e725720c24fced76394936c7d8fb714268b5bbb",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 527,
+      "id": "PR_kwDOGNtpaM6Rorrv",
+      "title": "remove wrong line break",
+      "url": "https://github.com/quicwg/multipath/pull/527",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-04-07T13:37:27Z",
+      "updatedAt": "2025-04-07T13:38:17Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-10",
+      "headRefOid": "22614aa6dc4527b7b507eaebd5460f276f4b9afe",
+      "closedAt": "2025-04-07T13:38:16Z",
+      "mergedAt": "2025-04-07T13:38:16Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "10e08b6a4a12cf6e76c262ff967214d1f7c6e556"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 528,
+      "id": "PR_kwDOGNtpaM6Roy7t",
+      "title": "add line breaks",
+      "url": "https://github.com/quicwg/multipath/pull/528",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is for consistency with the other frame sections.",
+      "createdAt": "2025-04-07T13:48:26Z",
+      "updatedAt": "2025-04-07T13:50:40Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "mirjak-patch-5",
+      "baseRefOid": "627d4573c3cad9dc1801756adbb371f284113b3c",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-11",
+      "headRefOid": "b886061720b9a54b305f5c206e3fc79d2dfddaeb",
+      "closedAt": "2025-04-07T13:50:40Z",
+      "mergedAt": "2025-04-07T13:50:40Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "9296c866dab75dbe3adbd9d21995b7731f738864"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 529,
+      "id": "PR_kwDOGNtpaM6Ro_rj",
+      "title": "Unify frame field description",
+      "url": "https://github.com/quicwg/multipath/pull/529",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-04-07T14:07:50Z",
+      "updatedAt": "2025-04-07T14:08:28Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "993877f5973b91fa5788476e5f8feb614156988d",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-12",
+      "headRefOid": "f3e751cb487fe44a6dd18c2b6d5c9351c932b1a5",
+      "closedAt": "2025-04-07T14:08:28Z",
+      "mergedAt": "2025-04-07T14:08:28Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "629eab638df02a36618021439376e0a739c0d8d2"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 530,
+      "id": "PR_kwDOGNtpaM6RpG31",
+      "title": "small editorial changes on \"same 4-tuple\" section",
+      "url": "https://github.com/quicwg/multipath/pull/530",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "This also addresses an earlier comment made by @qdeconinck in PR #509",
+      "createdAt": "2025-04-07T14:19:01Z",
+      "updatedAt": "2025-04-07T15:15:23Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-13",
+      "headRefOid": "e239fe256d1af0068ededf77995a8afdb79d8732",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 531,
+      "id": "PR_kwDOGNtpaM6RpUcV",
+      "title": "editorial pass packet scheduling section",
+      "url": "https://github.com/quicwg/multipath/pull/531",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-04-07T14:39:14Z",
+      "updatedAt": "2025-04-07T15:15:51Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-14",
+      "headRefOid": "9e94a279171515b270958e785c6d651889cd6303",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6jvxt9",
+          "commit": {
+            "abbreviatedOid": "5463111"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-07T15:14:50Z",
+          "updatedAt": "2025-04-07T15:14:51Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nfaster if the scheduling strategy is stable.\r\n```",
+              "createdAt": "2025-04-07T15:14:51Z",
+              "updatedAt": "2025-04-07T15:14:52Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 532,
+      "id": "PR_kwDOGNtpaM6Rpaon",
+      "title": "Update IANA section",
+      "url": "https://github.com/quicwg/multipath/pull/532",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-04-07T14:47:59Z",
+      "updatedAt": "2025-04-07T15:15:37Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-15",
+      "headRefOid": "30db266b4bd7c8f4ebb6cd1dd960a36a2d5c35a3",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 533,
+      "id": "PR_kwDOGNtpaM6RpncA",
+      "title": "Merge idle timeout and keep alive section",
+      "url": "https://github.com/quicwg/multipath/pull/533",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-04-07T15:07:08Z",
+      "updatedAt": "2025-04-07T15:16:21Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-16",
+      "headRefOid": "ed44a8dd3012fc930b567c6cf4350c152ffe75a3",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6jvswK",
+          "commit": {
+            "abbreviatedOid": "b336375"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-07T15:08:07Z",
+          "updatedAt": "2025-04-07T15:08:07Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Note that is moved a shorter version of this text further down.",
+              "createdAt": "2025-04-07T15:08:07Z",
+              "updatedAt": "2025-04-07T15:08:07Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 534,
+      "id": "PR_kwDOGNtpaM6RppWV",
+      "title": "Headings in implementation guidance section",
+      "url": "https://github.com/quicwg/multipath/pull/534",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-04-07T15:10:21Z",
+      "updatedAt": "2025-04-07T15:16:44Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-17",
+      "headRefOid": "c70c0f794c63ddfc7e543d468d21c97f971bb074",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
