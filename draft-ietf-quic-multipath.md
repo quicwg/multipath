@@ -1295,7 +1295,7 @@ Endpoints could take advantage of the multipath extension, and retransmit the co
 of the delayed packets on other available paths if the congestion control window on these
 paths allows.
 
-## Different PMTU Sizes
+## Paths Having Different PMTU Sizes
 
 An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
