@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 October 2025                           Uber Technologies Inc.
+Expires: 10 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 October 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            7 April 2025
+                                                            8 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 October 2025.
+   This Internet-Draft will expire on 10 October 2025.
 
 Copyright Notice
 
@@ -108,7 +108,7 @@ Table of Contents
      6.5.  Packet Scheduling
      6.6.  Retransmissions
      6.7.  PTO Expiration
-     6.8.  Different PMTU Sizes
+     6.8.  Paths Having Different PMTU Sizes
      6.9.  Keep Alive
      6.10. Idle Timeout
    7.  IANA Considerations
@@ -1374,7 +1374,7 @@ Table of Contents
    retransmit the content of the delayed packets on other available
    paths if the congestion control window on these paths allows.
 
-6.8.  Different PMTU Sizes
+6.8.  Paths Having Different PMTU Sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
