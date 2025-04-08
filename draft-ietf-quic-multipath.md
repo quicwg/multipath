@@ -1349,7 +1349,7 @@ that are currently usable.
 # IANA Considerations
 
 This document defines a new transport parameter to
-enable simultaneouy use of multiple paths within one QUIC connection.
+enable simultaneous use of multiple paths within one QUIC connection.
 Further, it specifies new frame types for path management and new error codes
 when a path is abandoned.
 
