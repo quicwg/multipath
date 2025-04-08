@@ -1082,7 +1082,7 @@ This is a major difference from
 Handshake and Application packets).
 
 For any given path, connection ID rotation, NAT rebinding, or client initiated migration
-as specified in {{QUIC-TRANSPORT}} might occur, similar as on a single path.
+as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
 These events do not change the Path ID,  and do not affect the packet number
 space associated with the path.
 
