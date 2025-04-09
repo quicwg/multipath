@@ -242,7 +242,7 @@ Initial and Handshake packets are sent using ACK frames.
 
 After the handshake concluded with support for the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-also so far unacknowledged 0-RTT packets using Path ID 0.
+including for so far unacknowledged 0-RTT packets using Path ID 0.
 Endpoints MUST still process ACK frames that acknowledge 0-RTT packets or 1-RTT packets.
 For example, ACK frames might be preferred by the sender as long as only the initial path
 with Path ID 0 is in use.
