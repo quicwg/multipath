@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 October 2025                           Uber Technologies Inc.
+Expires: 11 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 October 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            7 April 2025
+                                                            9 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 October 2025.
+   This Internet-Draft will expire on 11 October 2025.
 
 Copyright Notice
 
@@ -1316,9 +1316,9 @@ Table of Contents
 6.5.  Packet Scheduling
 
    The transmission of data packets is limited by the arrival of data
-   from the application and the congestion control window.  Generally,
-   QUIC packets that increase the number of bytes in flight can only be
-   sent when the congestion window for the selected path allows it.
+   from the application and by congestion control.  Generally, QUIC
+   packets that increase the number of bytes in flight can only be sent
+   when the congestion window for the selected path allows it.
 
    Most frames, including control frames (PATH_CHALLENGE and
    PATH_RESPONSE being the notable exceptions), can be sent and received
@@ -1332,11 +1332,11 @@ Table of Contents
    As noted in Section 6.4, RTT estimates computed using the standard
    algorithm reflect both the characteristics of the path and the
    scheduling algorithm of PATH_ACK frames.  The estimates will converge
-   faster if the scheduling strategy is stable.  Still, implementations
-   can choose different strategies such as sending PATH_ACK frames e.g.
-   either simply on the path where the acknowledged packets was
-   received, or alternatively the shortest path, which results in
-   shorter control loops and potentially better performance.
+   faster if the scheduling strategy of PATH_ACK frames is stable.
+   Implementations can choose different strategies such as sending
+   PATH_ACK frames e.g. either simply on the path where the acknowledged
+   packets was received, or alternatively the shortest path, which
+   results in shorter control loops and potentially better performance.
 
    Since packets that only carry PATH_ACK frames are not congestion
    controlled (see Section 7 of [QUIC-RECOVERY]), senders should
