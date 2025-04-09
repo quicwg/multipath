@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 October 2025                           Uber Technologies Inc.
+Expires: 11 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 October 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            7 April 2025
+                                                            9 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 October 2025.
+   This Internet-Draft will expire on 11 October 2025.
 
 Copyright Notice
 
@@ -94,34 +94,34 @@ Table of Contents
    4.  New Frames
      4.1.  PATH_ACK Frame
      4.2.  PATH_ABANDON Frame
+       4.2.1.  Error Codes
      4.3.  PATH_AVAILABLE and PATH_BACKUP frames
      4.4.  PATH_NEW_CONNECTION_ID frame
      4.5.  PATH_RETIRE_CONNECTION_ID frame
      4.6.  MAX_PATH_ID frame
      4.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
-   5.  Error Codes
-   6.  Implementation Considerations
-     6.1.  CID Changes, Migration, and NAT Rebindings
-     6.2.  Using multiple paths on the same 4-tuple
-     6.3.  Congestion Control
-     6.4.  Computing Path RTT
-     6.5.  Packet Scheduling
-     6.6.  Retransmissions
-     6.7.  Handling PTO
-     6.8.  Handling Different PMTU Sizes
-     6.9.  Keep Alive
-     6.10. Idle Timeout
-   7.  IANA Considerations
-   8.  Security Considerations
-     8.1.  Memory Allocation for Per-Path Resources
-     8.2.  Request Forgery with Spoofed Address
-     8.3.  Use of Transport Layer Security and the AEAD Encryption
+   5.  Implementation Considerations
+     5.1.  CID Changes, Migration, and NAT Rebindings
+     5.2.  Using multiple paths on the same 4-tuple
+     5.3.  Congestion Control
+     5.4.  Computing Path RTT
+     5.5.  Packet Scheduling
+     5.6.  Retransmissions
+     5.7.  Handling PTO
+     5.8.  Handling Different PMTU Sizes
+     5.9.  Keep Alive
+     5.10. Idle Timeout
+   6.  IANA Considerations
+   7.  Security Considerations
+     7.1.  Memory Allocation for Per-Path Resources
+     7.2.  Request Forgery with Spoofed Address
+     7.3.  Use of Transport Layer Security and the AEAD Encryption
            Nonce
-   9.  Contributors
-   10. Acknowledgments
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   8.  Contributors
+   9.  Acknowledgments
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -180,7 +180,7 @@ Table of Contents
    Further, this document does not specify detailed algorithms that
    define how multiple, simultaneously open paths are used to send
    packets.  As these differ depending on the application requirements,
-   only some basic implementation guidance is discussed in Section 6.
+   only some basic implementation guidance is discussed in Section 5.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
    well-known multipath use case, it only uses two paths at the same
@@ -417,7 +417,7 @@ Table of Contents
 
    PATH_ACK frames (see Section 4.1) can be returned on any path.  If
    the PATH_ACK is preferred to be sent on the same path as the
-   acknowledged packet (see Section 6.4 for further guidance), it can be
+   acknowledged packet (see Section 5.4 for further guidance), it can be
    beneficial to bundle a PATH_ACK frame with the PATH_RESPONSE frame
    during path validation.
 
@@ -655,7 +655,7 @@ Table of Contents
    explicitly close the path by sending a PATH_ABANDON frame (see
    Section 4.2).  This is true whether the decision to close the path
    results from implicit signals such as an idle time-out (see
-   Section 6.10) or packet losses as well as for any other reason such
+   Section 5.10) or packet losses as well as for any other reason such
    as management of local resources.
 
    The peers that send a PATH_ABANDON frame MUST treat all connection
@@ -851,18 +851,43 @@ Table of Contents
    Error Code:  A variable-length integer that indicates the reason for
       abandoning this path.  NO_ERROR(0x0) indicates that the path is
       being abandoned without any error being encountered.  Other error
-      codes can be found in Section 5.
+      codes can be found in Section 4.2.1.
 
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
    Use of the PATH_ABANDON frame is specified in section Section 3.4.
 
+4.2.1.  Error Codes
+
+   QUIC transport error codes are 62-bit unsigned integers (see
+   Section 20.1 of [QUIC-TRANSPORT].  In addition to NO_ERROR(0x0), the
+   following QUIC error codes are defined for use in the PATH_ABANDON
+   frame:
+
+   APPLICATION_ABANDON (TBD-10):  The endpoint is abandoning the path at
+      the request of the application.
+
+   RESOURCE_LIMIT_REACHED (TBD-11):  The endpoint is abandoning the path
+      because it cannot allocate sufficient resources to maintain it.
+
+   UNSTABLE_INTERFACE (TBD-12):  The endpoint is abandoning the path
+      because the used interface is considered to be unstable.  This
+      condition can occur, e.g., due to a weak wireless signal or
+      frequent handover events during high-speed mobility.
+
+   NO_CID_AVAILABLE (TBD-13):  The endpoint is abandoning the path due
+      to the lack of a connection ID for this path.  This may occur when
+      the peer initiates a new path but has not provided a corresponding
+      connection ID for the path ID (or the packet containing the
+      connection IDs has not arrived yet).
+
 4.3.  PATH_AVAILABLE and PATH_BACKUP frames
 
    PATH_AVAILABLE frames are used by endpoints to inform the peer that
-   the indicated path is available for sending.  PATH_AVAILABLE frames
-   are formatted as shown in Figure 5.
+   the indicated path is available for sending.
+
+   PATH_AVAILABLE frames are formatted as shown in Figure 5.
 
      PATH_AVAILABLE Frame {
        Type (i) = TBD-04 (experiments use 0x15228c08),
@@ -873,8 +898,9 @@ Table of Contents
                    Figure 5: PATH_AVAILABLE Frame Format
 
    PATH_BACKUP frames are used by endpoints to inform the peer about its
-   preference to not use the indicated path for sending.  PATH_BACKUP
-   frames are formatted as shown in Figure 6.
+   preference to not use the indicated path for sending.
+
+   PATH_BACKUP frames are formatted as shown in Figure 6.
 
      PATH_BACKUP Frame {
        Type (i) = TBD-03 (experiments use 0x15228c07)
@@ -1117,35 +1143,11 @@ Table of Contents
    be retransmitted if the path is still blocked when the lost is
    detected.
 
-5.  Error Codes
-
-   QUIC transport error codes are 62-bit unsigned integers (see
-   Section 20.1 of [QUIC-TRANSPORT].  In addition to NO_ERROR(0x0), the
-   following QUIC error codes are defined for use in the PATH_ABANDON
-   frame:
-
-   APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at
-   the request of the application.
-
-   RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path
-   because it cannot allocate sufficient resources to maintain it.
-
-   UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path
-   because the used interface is considered to be unstable.  This
-   condition can occur, e.g., due to a weak wireless signal or frequent
-   handover events during high-speed mobility.
-
-   NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
-   the lack of a connection ID for this path.  This may occur when the
-   peer initiates a new path but has not provided a corresponding
-   connection ID for the path ID (or the packet containing the
-   connection IDs has not arrived yet).
-
-6.  Implementation Considerations
+5.  Implementation Considerations
 
    This section provides informational guidance for implementors.
 
-6.1.  CID Changes, Migration, and NAT Rebindings
+5.1.  CID Changes, Migration, and NAT Rebindings
 
    With the multipath extension, each path uses a separate packet number
    space.  This is a major difference from [QUIC-TRANSPORT], which only
@@ -1180,7 +1182,7 @@ Table of Contents
    simplified migration handling at the server side as NAT rebindings
    imply immediate loss of the old address.
 
-6.2.  Using multiple paths on the same 4-tuple
+5.2.  Using multiple paths on the same 4-tuple
 
    It is possible to create paths that refer to the same 4-tuple.  For
    example, the endpoints may want to create paths that use different
@@ -1218,7 +1220,7 @@ Table of Contents
    closure of duplicate paths, or perhaps relying on the application
    protocol to decide which paths should be closed.
 
-6.3.  Congestion Control
+5.3.  Congestion Control
 
    When the QUIC multipath extension is used, senders manage per-path
    congestion status as required in Section 9.4 of [QUIC-TRANSPORT].
@@ -1248,7 +1250,7 @@ Table of Contents
    the endpoint can keep the same congestion control and RTT measurement
    state.
 
-6.4.  Computing Path RTT
+5.4.  Computing Path RTT
 
    PATH_ACK frames indicate which path the acknowledged packets were
    sent on, but they may be received through any open path.  If
@@ -1313,7 +1315,7 @@ Table of Contents
    needs to consider cases where acknowledgements are sent over multiple
    paths with different delays explicitly.
 
-6.5.  Packet Scheduling
+5.5.  Packet Scheduling
 
    The transmission of QUIC packets on a regular QUIC connection is
    regulated by the arrival of data from the application and the
@@ -1329,7 +1331,7 @@ Table of Contents
 
    Note that this implies that an endpoint may send and receive PATH_ACK
    frames on a path different from the one that carried the acknowledged
-   packets.  As noted in Section 6.4 the values computed using the
+   packets.  As noted in Section 5.4 the values computed using the
    standard algorithm reflect both the characteristics of the path and
    the scheduling algorithm of PATH_ACK frames.  The estimates will
    converge faster if the scheduling strategy is stable, but besides
@@ -1342,7 +1344,7 @@ Table of Contents
    the load induced by these packets, especially if the capacity is
    unknown on that path.
 
-6.6.  Retransmissions
+5.6.  Retransmissions
 
    Simultaneous use of multiple paths enables different retransmission
    strategies to cope with losses such as: a) retransmitting lost frames
@@ -1358,7 +1360,7 @@ Table of Contents
    different path with a smaller MTU limit, new smaller STREAM frames
    might need to be sent instead.
 
-6.7.  Handling PTO
+5.7.  Handling PTO
 
    An implementation should follow the mechanism specified in
    [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
@@ -1374,7 +1376,7 @@ Table of Contents
    retransmit the content of the delayed packets on other available
    paths if the congestion control window on these paths allows.
 
-6.8.  Handling Different PMTU Sizes
+5.8.  Handling Different PMTU Sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
@@ -1386,7 +1388,7 @@ Table of Contents
    initially sent on one path can be sent on another path without
    further frame scheduling adaptations.
 
-6.9.  Keep Alive
+5.9.  Keep Alive
 
    The QUIC specification defines an optional keep alive process, see
    Section 5.3 of [QUIC-TRANSPORT].  Implementations of the multipath
@@ -1398,7 +1400,7 @@ Table of Contents
    paths to keep alive, it can do so by sending Ping frames on each of
    these paths before the idle timeout expires.
 
-6.10.  Idle Timeout
+5.10.  Idle Timeout
 
    [QUIC-TRANSPORT] allows for closing of connections if they stay idle
    for too long.  The connection idle timeout when using the multipath
@@ -1425,7 +1427,7 @@ Table of Contents
    before switching to active use if there are still other paths that
    are currently usable.
 
-7.  IANA Considerations
+6.  IANA Considerations
 
    This document defines a new transport parameter for the negotiation
    of enable multiple paths for QUIC, and three new frame types.  The
@@ -1488,25 +1490,25 @@ Table of Contents
    +===================+======================+=============+=============+
    |Value              |Code                  |Description  |Specification|
    +===================+======================+=============+=============+
-   |TBD-10 (experiments|APPLICATION_ABANDON   |Path         |Section 5    |
+   |TBD-10 (experiments|APPLICATION_ABANDON   |Path         |Section 4.2.1|
    |use                |                      |abandoned at |             |
    |0x004150504142414e)|                      |the          |             |
    |                   |                      |application's|             |
    |                   |                      |request      |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-11 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 5    |
+   |TBD-11 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 4.2.1|
    |use                |                      |abandoned due|             |
    |0x0052534c494d4954)|                      |to resource  |             |
    |                   |                      |limitations  |             |
    |                   |                      |in the       |             |
    |                   |                      |transport    |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-12 (experiments|UNSTABLE_INTERFACE    |Path         |Section 5    |
+   |TBD-12 (experiments|UNSTABLE_INTERFACE    |Path         |Section 4.2.1|
    |use                |                      |abandoned due|             |
    |0x00554e5f494e5446)|                      |to unstable  |             |
    |                   |                      |interfaces   |             |
    +-------------------+----------------------+-------------+-------------+
-   |TBD-13 (experiments|NO_CID_AVAILABLE      |Path         |Section 5    |
+   |TBD-13 (experiments|NO_CID_AVAILABLE      |Path         |Section 4.2.1|
    |use                |                      |abandoned due|             |
    |0x004e4f5f4349445f)|                      |to no        |             |
    |                   |                      |available    |             |
@@ -1517,7 +1519,7 @@ Table of Contents
 
                   Table 4: Error Codes for Multipath QUIC
 
-8.  Security Considerations
+7.  Security Considerations
 
    The multipath extension retains all the security features of
    [QUIC-TRANSPORT] and [QUIC-TLS] but requires some additional
@@ -1536,7 +1538,7 @@ Table of Contents
    *  the changes on encryption requirements due to the use of multiple
       packet number spaces.
 
-8.1.  Memory Allocation for Per-Path Resources
+7.1.  Memory Allocation for Per-Path Resources
 
    The initial_max_path_id transport parameter and the Max Path ID field
    in the MAX_PATH_ID frame limit the number of paths an endpoint is
@@ -1555,7 +1557,7 @@ Table of Contents
    number handling, only after path validation has successfully
    completed.
 
-8.2.  Request Forgery with Spoofed Address
+7.2.  Request Forgery with Spoofed Address
 
    The path validation mechanism as specified in Section 8.2. of
    [QUIC-TRANSPORT] for migration is used unchanged for initiation of
@@ -1576,7 +1578,7 @@ Table of Contents
    validation processes e.g. by pacing them out or limiting the number
    of path initiation attempts over a certain time period.
 
-8.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
+7.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
 
    The multipath extension as specified in this document is only enabled
    after a successful handshake when both endpoints indicate support for
@@ -1597,7 +1599,7 @@ Table of Contents
    ensure a unique nonce, path identifiers are limited to 32 bits and
    cannot be reused for another path in the same connection.
 
-9.  Contributors
+8.  Contributors
 
    This document is a collaboration of authors that combines work from
    three proposals.  Further contributors that were also involved one of
@@ -1607,15 +1609,15 @@ Table of Contents
 
    *  Zhenyu Li
 
-10.  Acknowledgments
+9.  Acknowledgments
 
    Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus
    Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu
    for their thorough reviews and valuable contributions.
 
-11.  References
+10.  References
 
-11.1.  Normative References
+10.1.  Normative References
 
    [QUIC-RECOVERY]
               Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
@@ -1641,7 +1643,7 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-11.2.  Informative References
+10.2.  Informative References
 
    [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.
               Le Boudec, "MPTCP is not pareto-optimal: performance
