@@ -1243,8 +1243,8 @@ with different delays explicitly.
 ## Packet Scheduling {#packet-scheduling}
 
 The transmission of data packets is limited
-by the arrival of data from the application and the congestion control
-window. Generally, QUIC packets that increase the number of bytes in flight can only be sent
+by the arrival of data from the application and by congestion control.
+Generally, QUIC packets that increase the number of bytes in flight can only be sent
 when the congestion window for the selected path allows it.
 
 Most frames, including control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
@@ -1259,8 +1259,8 @@ frames on a path different from the one that carried the acknowledged
 packets. As noted in {{compute-rtt}}, RTT estimates computed using
 the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
-faster if the scheduling strategy is stable.
-Still, implementations can choose different strategies such as sending
+faster if the scheduling strategy of PATH_ACK frames is stable.
+Implementations can choose different strategies such as sending
 PATH_ACK frames e.g. either simply on the path where the acknowledged packets was received,
 or alternatively the shortest path, which results in shorter control loops
 and potentially better performance.
