@@ -792,10 +792,38 @@ a PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
 Use of the PATH_ABANDON frame is specified in section {{path-close}}.
 
+### Error Codes {#error-codes}
+
+QUIC transport error codes are 62-bit unsigned integers
+(see {{Section 20.1 of QUIC-TRANSPORT}}. In addition to
+NO_ERROR(0x0), the following QUIC error codes are defined
+for use in the PATH_ABANDON frame:
+
+APPLICATION_ABANDON (TBD-10):
+: The endpoint is abandoning the path at the
+  request of the application.
+
+RESOURCE_LIMIT_REACHED (TBD-11):
+: The endpoint is abandoning the path because
+  it cannot allocate sufficient resources to maintain it.
+
+UNSTABLE_INTERFACE (TBD-12):
+: The endpoint is abandoning the path because
+  the used interface is considered to be unstable. This condition can occur, e.g.,
+  due to a weak wireless signal or frequent handover events during high-speed mobility.
+
+NO_CID_AVAILABLE (TBD-13):
+: The endpoint is abandoning the path due to
+  the lack of a connection ID for this path.
+  This may occur when the peer initiates a new path
+  but has not provided a corresponding connection ID for the path ID
+  (or the packet containing the connection IDs has not arrived yet).
+
 ## PATH_AVAILABLE and PATH_BACKUP frames {#path-backup-available-frame}
 
 PATH_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
+
 PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
@@ -809,6 +837,7 @@ PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 PATH_BACKUP frames are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
+
 PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 
 ~~~
@@ -1052,29 +1081,6 @@ MUST be treated as a connection error of type PROTOCOL_VIOLATION.
 
 PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY be retransmitted
 if the path is still blocked when the lost is detected.
-
-# Error Codes {#error-codes}
-
-QUIC transport error codes are 62-bit unsigned integers
-(see {{Section 20.1 of QUIC-TRANSPORT}}. In addition to
-NO_ERROR(0x0), the following QUIC error codes are defined
-for use in the PATH_ABANDON frame:
-
-APPLICATION_ABANDON (TBD-10): The endpoint is abandoning the path at the
-request of the application.
-
-RESOURCE_LIMIT_REACHED (TBD-11): The endpoint is abandoning the path because
-it cannot allocate sufficient resources to maintain it.
-
-UNSTABLE_INTERFACE (TBD-12): The endpoint is abandoning the path because
-the used interface is considered to be unstable. This condition can occur, e.g.,
-due to a weak wireless signal or frequent handover events during high-speed mobility.
-
-NO_CID_AVAILABLE (TBD-13): The endpoint is abandoning the path due to
-the lack of a connection ID for this path.
-This may occur when the peer initiates a new path
-but has not provided a corresponding connection ID for the path ID
-(or the packet containing the connection IDs has not arrived yet).
 
 
 # Implementation Considerations {#impl-consideration}
