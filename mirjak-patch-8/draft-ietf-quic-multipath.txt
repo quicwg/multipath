@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 October 2025                           Uber Technologies Inc.
+Expires: 11 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 October 2025                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            7 April 2025
+                                                            9 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 October 2025.
+   This Internet-Draft will expire on 11 October 2025.
 
 Copyright Notice
 
@@ -292,8 +292,8 @@ Table of Contents
 
    After the handshake concluded with support for the multipath
    extension, endpoints SHOULD use PATH_ACK frames instead of ACK
-   frames, also so far unacknowledged 0-RTT packets using Path ID 0.
-   Endpoints MUST still process ACK frames that acknowledge 0-RTT
+   frames, including for so far unacknowledged 0-RTT packets using Path
+   ID 0.  Endpoints MUST still process ACK frames that acknowledge 0-RTT
    packets or 1-RTT packets.  For example, ACK frames might be preferred
    by the sender as long as only the initial path with Path ID 0 is in
    use.
