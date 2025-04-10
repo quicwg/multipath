@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-08T00:59:23.349422+00:00",
+  "timestamp": "2025-04-10T00:59:28.415324+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13018,9 +13018,17 @@
       ],
       "body": "See email",
       "createdAt": "2025-03-21T06:24:55Z",
-      "updatedAt": "2025-03-21T06:25:00Z",
+      "updatedAt": "2025-04-09T08:55:25Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is what IANA wrote in the email:\n\n\"Please add the Status, Change Controller, and Contact for the registrations. This information doesn't have to be included in the tables. It could be added in a sentence.\"",
+          "createdAt": "2025-04-09T08:55:24Z",
+          "updatedAt": "2025-04-09T08:55:24Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -56439,7 +56447,7 @@
       ],
       "body": "",
       "createdAt": "2025-03-23T09:47:42Z",
-      "updatedAt": "2025-03-28T16:01:37Z",
+      "updatedAt": "2025-04-09T15:16:53Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e7655a2808a019610d4cbc4ee6ad68ffa43f0807",
@@ -56988,6 +56996,119 @@
               "body": "The point of the sentence was originally to highlight that there are multiple nonces in parallel use, one for each path, which is a difference to RFC9000 (and needs ressources and management to handle that correctly).\r\n\r\nHowever, maybe we just remove the sentence entirely...?",
               "createdAt": "2025-03-28T16:01:36Z",
               "updatedAt": "2025-03-28T16:01:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2Sad",
+          "commit": {
+            "abbreviatedOid": "c1ab39d"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I think this is good, except for the last sentence regarding nonces. Either we commit my suggestion (https://github.com/quicwg/multipath/pull/515#discussion_r2011684026) or we instead remove that sentence.",
+          "createdAt": "2025-04-08T07:16:01Z",
+          "updatedAt": "2025-04-08T07:16:01Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j7_wr",
+          "commit": {
+            "abbreviatedOid": "c1ab39d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T15:23:40Z",
+          "updatedAt": "2025-04-08T15:23:40Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "Either delete the sentence or commit @qdeconinck suggestion.",
+              "createdAt": "2025-04-08T15:23:40Z",
+              "updatedAt": "2025-04-08T15:23:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kGbf_",
+          "commit": {
+            "abbreviatedOid": "c1ab39d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T11:30:49Z",
+          "updatedAt": "2025-04-09T11:30:49Z",
+          "comments": [
+            {
+              "originalPosition": 95,
+              "body": "This proposed change removes the last sentences but also edits the previous sentence a bit.\r\n```suggestion\r\nAEAD nonce (see {{nonce}}). To ensure unique nonces for simultaneous use over all paths, path identifiers\r\nare limited to 32 bits and cannot be reused for another path of the same connection.\r\n```\r\nDoes this work? @huitema @qdeconinck ?",
+              "createdAt": "2025-04-09T11:30:49Z",
+              "updatedAt": "2025-04-09T11:30:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kJHD1",
+          "commit": {
+            "abbreviatedOid": "c1ab39d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T15:12:34Z",
+          "updatedAt": "2025-04-09T15:12:34Z",
+          "comments": [
+            {
+              "originalPosition": 95,
+              "body": "I don't think that helps. Just remove the last sentence, from \"However...\".\r\n",
+              "createdAt": "2025-04-09T15:12:34Z",
+              "updatedAt": "2025-04-09T15:12:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kJJGN",
+          "commit": {
+            "abbreviatedOid": "c1ab39d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T15:15:17Z",
+          "updatedAt": "2025-04-09T15:15:17Z",
+          "comments": [
+            {
+              "originalPosition": 95,
+              "body": "My rationale: there is already text explaining all that in the \"nonce\" section. We have a reference to that section in the paragraph already. The new text does not help implementers, since they need to read the nonce section. Security reviewers will also read the nonce section. There is no point in elaborating here.",
+              "createdAt": "2025-04-09T15:15:17Z",
+              "updatedAt": "2025-04-09T15:15:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kJKOz",
+          "commit": {
+            "abbreviatedOid": "c1ab39d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T15:16:53Z",
+          "updatedAt": "2025-04-09T15:16:53Z",
+          "comments": [
+            {
+              "originalPosition": 95,
+              "body": "But yes, do replace \"a unique nonce\" by \"unique nonces\".",
+              "createdAt": "2025-04-09T15:16:53Z",
+              "updatedAt": "2025-04-09T15:16:53Z"
             }
           ]
         }
@@ -58116,7 +58237,7 @@
       ],
       "body": "As requested by Gorry this PR add the more or less same wording as used in the MP-DCCP document.",
       "createdAt": "2025-03-28T12:32:40Z",
-      "updatedAt": "2025-03-28T19:19:31Z",
+      "updatedAt": "2025-04-08T07:24:31Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1789f25b6c211a6737c52e2c9563c1a1faaea772",
@@ -58148,6 +58269,26 @@
               "updatedAt": "2025-03-28T16:43:26Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2ZgI",
+          "commit": {
+            "abbreviatedOid": "c544765"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I agree with the above comments (especially point 3, as there should not be any packet reordering over a given path, but rather some \"STREAM data\" reordering, which is handled by design in (single-path) QUIC). More generally, do we need to add more than \"Further scheduling considerations are implementation specific and are out of scope of this document.\"?",
+          "createdAt": "2025-04-08T07:24:18Z",
+          "updatedAt": "2025-04-08T07:24:31Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I agree with the above comments (especially point 3, as there should not be any packet reordering over a given path, but rather some \"STREAM data\" reordering, which is handled by design in (single-path) QUIC). More generally, do we need to add more than \"Further scheduling considerations are implementation specific and are out of scope of this document.\"?",
+              "createdAt": "2025-04-08T07:24:18Z",
+              "updatedAt": "2025-04-08T07:24:31Z"
+            }
+          ]
         }
       ]
     },
@@ -58156,7 +58297,7 @@
       "id": "PR_kwDOGNtpaM6QkJLa",
       "title": "Move error codes into PATH-ABANDON section",
       "url": "https://github.com/quicwg/multipath/pull/522",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -58166,18 +58307,28 @@
       ],
       "body": "",
       "createdAt": "2025-03-28T13:57:12Z",
-      "updatedAt": "2025-04-07T14:10:05Z",
+      "updatedAt": "2025-04-09T11:43:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e7655a2808a019610d4cbc4ee6ad68ffa43f0807",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-5",
       "headRefOid": "5505ffbb065ef340be2c0c574a7b08011ddc935c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2025-04-09T11:43:58Z",
+      "mergedAt": "2025-04-09T11:43:58Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "6a1a8a26b038bc8c097a581f1ea6566c25454e14"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Merging this now already as this is the last restructure bit.",
+          "createdAt": "2025-04-09T11:43:55Z",
+          "updatedAt": "2025-04-09T11:43:55Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6jtojq",
@@ -58198,6 +58349,32 @@
               "updatedAt": "2025-04-07T12:30:25Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j0w-b",
+          "commit": {
+            "abbreviatedOid": "5505ffb"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T02:42:36Z",
+          "updatedAt": "2025-04-08T02:42:36Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2aCX",
+          "commit": {
+            "abbreviatedOid": "5505ffb"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T07:25:03Z",
+          "updatedAt": "2025-04-08T07:25:03Z",
+          "comments": []
         }
       ]
     },
@@ -58211,17 +58388,18 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "Proposed edits by Christian; slightly adapted",
       "createdAt": "2025-03-28T14:13:21Z",
-      "updatedAt": "2025-04-07T12:25:07Z",
+      "updatedAt": "2025-04-08T07:45:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e7655a2808a019610d4cbc4ee6ad68ffa43f0807",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
-      "headRefOid": "106b2072e0bb1af8d94f9cf0da0e588e1eed7bc8",
+      "headRefOid": "12e5fc7c4e24e0747a4bd938207035f4d6707086",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -58313,6 +58491,39 @@
               "updatedAt": "2025-04-07T12:24:00Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j0wh3",
+          "commit": {
+            "abbreviatedOid": "106b207"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T02:40:34Z",
+          "updatedAt": "2025-04-08T02:40:34Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2TcJ",
+          "commit": {
+            "abbreviatedOid": "106b207"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Minor suggestion, but good to ship.",
+          "createdAt": "2025-04-08T07:17:35Z",
+          "updatedAt": "2025-04-08T07:19:08Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nas specified in {{QUIC-TRANSPORT}} might occur, like on a single path.\r\n```",
+              "createdAt": "2025-04-08T07:17:35Z",
+              "updatedAt": "2025-04-08T07:19:08Z"
+            }
+          ]
         }
       ]
     },
@@ -58326,11 +58537,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "Small editorial fix.",
       "createdAt": "2025-04-07T13:14:09Z",
-      "updatedAt": "2025-04-07T13:25:57Z",
+      "updatedAt": "2025-04-08T07:45:29Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
@@ -58355,6 +58567,32 @@
           "createdAt": "2025-04-07T13:15:40Z",
           "updatedAt": "2025-04-07T13:15:40Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j0xRP",
+          "commit": {
+            "abbreviatedOid": "3175ee0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Good enough.",
+          "createdAt": "2025-04-08T02:43:49Z",
+          "updatedAt": "2025-04-08T02:43:49Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2ah7",
+          "commit": {
+            "abbreviatedOid": "3175ee0"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T07:25:44Z",
+          "updatedAt": "2025-04-08T07:25:44Z",
+          "comments": []
         }
       ]
     },
@@ -58372,19 +58610,132 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T13:25:04Z",
-      "updatedAt": "2025-04-07T13:25:47Z",
+      "updatedAt": "2025-04-09T11:41:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-8",
-      "headRefOid": "31db11cd799e22205030130f4f6d38782665b0bc",
+      "headRefOid": "da4795bcea952b791e0ef097aa541f8a512b97f6",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6j0zud",
+          "commit": {
+            "abbreviatedOid": "31db11c"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Some changes suggested...",
+          "createdAt": "2025-04-08T02:54:20Z",
+          "updatedAt": "2025-04-08T02:54:56Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "The initial writing is better. \"also\" is a bit ambiguous, and \"also so far\" does not really convey the meaning. I suggest reverting to \"including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0.\"",
+              "createdAt": "2025-04-08T02:54:20Z",
+              "updatedAt": "2025-04-08T02:54:56Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "No strong opinion, but this will be interpreted as \"please use ACK frames for path 0 if it is the only path.\" Maybe replace by \"ACK frames might be preferred by some senders for various reasons.\"",
+              "createdAt": "2025-04-08T02:54:23Z",
+              "updatedAt": "2025-04-08T02:54:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2b5t",
+          "commit": {
+            "abbreviatedOid": "31db11c"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T07:27:37Z",
+          "updatedAt": "2025-04-08T07:31:35Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "Agree with Christian here. The \"including\" version is better.",
+              "createdAt": "2025-04-08T07:27:37Z",
+              "updatedAt": "2025-04-08T07:31:35Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "I also agree that this wording is a bit strange. I am not sure to understand the \"only\" here.\r\n```suggestion\r\nFor example, ACK frames might be preferred by the sender to acknowledge packets\r\nof the initial path with Path ID 0.\r\n```",
+              "createdAt": "2025-04-08T07:31:11Z",
+              "updatedAt": "2025-04-08T07:31:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2qY8",
+          "commit": {
+            "abbreviatedOid": "31db11c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T07:48:21Z",
+          "updatedAt": "2025-04-08T07:48:21Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "```suggestion\r\nincluding for so far unacknowledged 0-RTT packets using Path ID 0.\r\n```\r\nOkay?",
+              "createdAt": "2025-04-08T07:48:21Z",
+              "updatedAt": "2025-04-08T07:48:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kGfvt",
+          "commit": {
+            "abbreviatedOid": "31db11c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T11:38:16Z",
+          "updatedAt": "2025-04-09T11:38:16Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "The intention here was to give an example. The sentence you proposed is a bit meaningless. If there is a real concern, we should just remove the sentence. But I think it's useful to give an example as this was the one case that was brought up. I don't think this is a risk of being see as recommendation as I think our recommendation is clear. At the end it will be an implementation decision potentially mostly related to implementation complexity. However, the important point here is that the other end needs to be able to handle this case.",
+              "createdAt": "2025-04-09T11:38:16Z",
+              "updatedAt": "2025-04-09T11:38:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kGhOI",
+          "commit": {
+            "abbreviatedOid": "31db11c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T11:40:43Z",
+          "updatedAt": "2025-04-09T11:40:43Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Actually this changes the meaning of the example. I though the case that was brought up is that you might want to negotiate multipath support (for potential later use) but be able to have a quic connection that is behaving completely in the same way as a single path connection as long as you allow only for one path. That's why it says \"only\".",
+              "createdAt": "2025-04-09T11:40:43Z",
+              "updatedAt": "2025-04-09T11:40:43Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 526,
@@ -58396,11 +58747,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2025-04-07T13:31:20Z",
-      "updatedAt": "2025-04-07T13:31:51Z",
+      "updatedAt": "2025-04-08T07:49:29Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
@@ -58412,7 +58764,34 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6j00O9",
+          "commit": {
+            "abbreviatedOid": "5e72572"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "OK.",
+          "createdAt": "2025-04-08T02:56:34Z",
+          "updatedAt": "2025-04-08T02:56:34Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2fO3",
+          "commit": {
+            "abbreviatedOid": "5e72572"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T07:32:09Z",
+          "updatedAt": "2025-04-08T07:32:09Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 527,
@@ -58508,23 +58887,45 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "This also addresses an earlier comment made by @qdeconinck in PR #509",
       "createdAt": "2025-04-07T14:19:01Z",
-      "updatedAt": "2025-04-07T15:15:23Z",
+      "updatedAt": "2025-04-08T08:15:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-13",
-      "headRefOid": "e239fe256d1af0068ededf77995a8afdb79d8732",
+      "headRefOid": "703fe7898ea868fd0f2907119968b7aca6bf881b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6j2ggO",
+          "commit": {
+            "abbreviatedOid": "e239fe2"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Sounds good, with a minor suggestion.",
+          "createdAt": "2025-04-08T07:34:05Z",
+          "updatedAt": "2025-04-08T07:34:20Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nmigrations. Consider the following example where all paths use the same\r\nsource and destination ports:\r\n```",
+              "createdAt": "2025-04-08T07:34:05Z",
+              "updatedAt": "2025-04-08T07:34:20Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 531,
@@ -58540,18 +58941,26 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T14:39:14Z",
-      "updatedAt": "2025-04-07T15:15:51Z",
+      "updatedAt": "2025-04-09T15:19:54Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-14",
-      "headRefOid": "9e94a279171515b270958e785c6d651889cd6303",
+      "headRefOid": "b0362f78c406462154a34aaec0518ffa2f6fc73c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I applied @huitema suggestions. @qdeconinck can you also do a quick review? ",
+          "createdAt": "2025-04-09T11:32:44Z",
+          "updatedAt": "2025-04-09T11:32:44Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6jvxt9",
@@ -58572,6 +58981,137 @@
               "updatedAt": "2025-04-07T15:14:52Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j008W",
+          "commit": {
+            "abbreviatedOid": "9e94a27"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I am refraining from adding too many comments, because I don't want to end up writing a treatise on scheduling. For example, for stream data, there are at least two strategies:\r\n\r\n* mapping specific streams to specific paths, in order to reduce \"out of order\" deliveries of stream data. This could be done either internally, or by letting applications \"pin\" a stream to a path.\r\n* or, spreading stream data frames across several paths, to obtain load balancing.\r\n\r\nWe could see similar consideration for datagram frames. But I think we should keep the text short, so I am only proposing some fairly minor changes.\r\n\r\n\r\n",
+          "createdAt": "2025-04-08T02:59:31Z",
+          "updatedAt": "2025-04-08T03:23:13Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "\"scheme\" is better than window. Some congestion controllers use rate control instead of window control.\" Or say, \r\n\"The transmission of data packets is limited\r\nby the arrival of data from the application and by congestion control.\"\r\n",
+              "createdAt": "2025-04-08T02:59:31Z",
+              "updatedAt": "2025-04-08T03:23:13Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "Also, the transmission of stream data is subject to flow control. Don't know whether we need to mention that.",
+              "createdAt": "2025-04-08T03:15:38Z",
+              "updatedAt": "2025-04-08T03:23:13Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "Delete \"Still, \".",
+              "createdAt": "2025-04-08T03:19:03Z",
+              "updatedAt": "2025-04-08T03:23:13Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "I would specify \"the scheduling strategy of PATH_ACK frames is stable.\"",
+              "createdAt": "2025-04-08T03:19:05Z",
+              "updatedAt": "2025-04-08T03:23:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2s2C",
+          "commit": {
+            "abbreviatedOid": "9e94a27"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T07:52:04Z",
+          "updatedAt": "2025-04-08T07:52:05Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nfaster if the scheduling strategy of PATH_ACK frames is stable.\r\n```",
+              "createdAt": "2025-04-08T07:52:04Z",
+              "updatedAt": "2025-04-08T07:52:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2s9M",
+          "commit": {
+            "abbreviatedOid": "9e94a27"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T07:52:14Z",
+          "updatedAt": "2025-04-08T07:52:15Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nImplementations can choose different strategies such as sending\r\n```",
+              "createdAt": "2025-04-08T07:52:14Z",
+              "updatedAt": "2025-04-08T07:52:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2t7h",
+          "commit": {
+            "abbreviatedOid": "9e94a27"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T07:53:40Z",
+          "updatedAt": "2025-04-08T07:53:40Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\r\nGenerally, QUIC packets that increase the number of bytes in flight can only be sent\r\n```",
+              "createdAt": "2025-04-08T07:53:40Z",
+              "updatedAt": "2025-04-08T07:53:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2uJv",
+          "commit": {
+            "abbreviatedOid": "9e94a27"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-08T07:54:00Z",
+          "updatedAt": "2025-04-08T07:54:00Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nby the arrival of data from the application and by congestion control.\r\n```",
+              "createdAt": "2025-04-08T07:54:00Z",
+              "updatedAt": "2025-04-08T07:54:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kJMbZ",
+          "commit": {
+            "abbreviatedOid": "b0362f7"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good,",
+          "createdAt": "2025-04-09T15:19:54Z",
+          "updatedAt": "2025-04-09T15:19:54Z",
+          "comments": []
         }
       ]
     },
@@ -58585,23 +59125,105 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2025-04-07T14:47:59Z",
-      "updatedAt": "2025-04-07T15:15:37Z",
+      "updatedAt": "2025-04-09T15:06:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-15",
-      "headRefOid": "30db266b4bd7c8f4ebb6cd1dd960a36a2d5c35a3",
+      "headRefOid": "a60d68059a1d78efc0f05c0962931c6ca91c8b03",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6j06b2",
+          "commit": {
+            "abbreviatedOid": "30db266"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T03:24:39Z",
+          "updatedAt": "2025-04-08T03:25:07Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "typo, simultaneous",
+              "createdAt": "2025-04-08T03:24:39Z",
+              "updatedAt": "2025-04-08T03:25:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j2hzq",
+          "commit": {
+            "abbreviatedOid": "30db266"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-08T07:35:50Z",
+          "updatedAt": "2025-04-08T07:36:13Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nenable simultaneous use of multiple paths within one QUIC connection.\r\n```",
+              "createdAt": "2025-04-08T07:35:50Z",
+              "updatedAt": "2025-04-08T07:36:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kElP_",
+          "commit": {
+            "abbreviatedOid": "a60d680"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T09:02:32Z",
+          "updatedAt": "2025-04-09T09:02:33Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "This is to address the IANA feedback (see issue #514):\r\n```suggestion\r\nbut, if the draft is approved, IANA is requested to allocate short values\r\nas permanent with \"IETF\" as change controller and\r\nthe QUIC WG as contact to the respective registries under\r\n<https://www.iana.org/assignments/quic/quic.xhtml>.\r\n```",
+              "createdAt": "2025-04-09T09:02:33Z",
+              "updatedAt": "2025-04-09T11:22:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kJCU4",
+          "commit": {
+            "abbreviatedOid": "a60d680"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "This is good. Please commit the suggestion.",
+          "createdAt": "2025-04-09T15:06:23Z",
+          "updatedAt": "2025-04-09T15:06:49Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "OK.",
+              "createdAt": "2025-04-09T15:06:23Z",
+              "updatedAt": "2025-04-09T15:06:49Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 533,
@@ -58617,7 +59239,7 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T15:07:08Z",
-      "updatedAt": "2025-04-07T15:16:21Z",
+      "updatedAt": "2025-04-09T11:34:24Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
@@ -58649,6 +59271,46 @@
               "updatedAt": "2025-04-07T15:08:07Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6j0-5l",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Maybe take time to rethink the very last paragraph?",
+          "createdAt": "2025-04-08T03:45:00Z",
+          "updatedAt": "2025-04-08T03:45:25Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "The weird part of that paragraph is the conditional \"if there are still other paths\r\nthat are currently usable.\" What we are saying is that and endpoint that want to use an idle path should probe it first, to verify that it is still usable. Of course if there is no other path available, the probing is a bit pointless, because if that last idle path does not work the connection will just break. But we we don't really need to say that.",
+              "createdAt": "2025-04-08T03:45:00Z",
+              "updatedAt": "2025-04-08T03:45:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kGdl7",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-09T11:34:24Z",
+          "updatedAt": "2025-04-09T11:34:24Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "Yes, but I don't see a real problem just saying it anyway and keeping the sentence as it is...",
+              "createdAt": "2025-04-09T11:34:24Z",
+              "updatedAt": "2025-04-09T11:34:24Z"
+            }
+          ]
         }
       ]
     },
@@ -58662,23 +59324,45 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2025-04-07T15:10:21Z",
-      "updatedAt": "2025-04-07T15:16:44Z",
+      "updatedAt": "2025-04-09T11:34:47Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-17",
-      "headRefOid": "c70c0f794c63ddfc7e543d468d21c97f971bb074",
+      "headRefOid": "65a8320729ef72466929b78766ba2742ca57565d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6j2jdp",
+          "commit": {
+            "abbreviatedOid": "c70c0f7"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Good, with a minor suggestion.",
+          "createdAt": "2025-04-08T07:38:09Z",
+          "updatedAt": "2025-04-08T07:38:23Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "Minor, but it may be clearer to refer to the paths?\r\n```suggestion\r\n## Paths Having Different PMTU Sizes\r\n```",
+              "createdAt": "2025-04-08T07:38:09Z",
+              "updatedAt": "2025-04-08T07:38:23Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
