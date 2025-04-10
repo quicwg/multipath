@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 29 September 2025                        Uber Technologies Inc.
+Expires: 12 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 29 September 2025                        Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           28 March 2025
+                                                           10 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 September 2025.
+   This Internet-Draft will expire on 12 October 2025.
 
 Copyright Notice
 
@@ -1576,11 +1576,9 @@ Table of Contents
    number of packets sent on all paths.
 
    This specification changes the AEAD calculation by using the path
-   identifier as part of AEAD nonce (see Section 2.4).  To ensure a
-   unique nonce, path identifiers are limited to 32 bits and cannot be
-   reused for another path of the same connection.  However, note that
-   with the use of this extension, multiple nonces can be in use
-   simultaneously for the same AEAD key.
+   identifier as part of AEAD nonce (see Section 2.4).  To ensure unique
+   nonces, path identifiers are limited to 32 bits and cannot be reused
+   for another path of the same connection.
 
 9.  Contributors
 
