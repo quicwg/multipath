@@ -1442,10 +1442,8 @@ remain unchanged. As such, the respective security considerations in {{QUIC-TLS}
 apply to the total number of packets sent on all paths.
 
 This specification changes the AEAD calculation by using the path identifier as part of
-AEAD nonce (see {{nonce}}). To ensure a unique nonce, path identifiers
+AEAD nonce (see {{nonce}}). To ensure unique nonces, path identifiers
 are limited to 32 bits and cannot be reused for another path of the same connection.
-However, note that with the use of this extension, multiple nonces can be in use simultaneously
-for the same AEAD key.
 
 # Contributors
 
