@@ -1354,7 +1354,10 @@ Further, it specifies new frame types for path management and new error codes
 when a path is abandoned.
 
 The current draft defines provisional values for experiments,
-but IANA is requested to allocate short values if the draft is approved.
+but, if the draft is approved, IANA is requested to allocate short values
+as permanent with "IETF" as change controller and
+the QUIC WG as contact to the respective registries under
+<https://www.iana.org/assignments/quic/quic.xhtml>.
 
 The following entry in {{transport-parameters}} should be added to
 the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
