@@ -1274,6 +1274,12 @@ are not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),
 senders should carefully consider the load induced
 by these packets, especially if the capacity is unknown on that path.
 
+The specification of scheduling for concurrent multipath and related the
+congestion control algorithms and re-ordering methods for use in the general
+Internet are outside the scope of this document. If, and when, the IETF
+specifies a method for concurrent usage of multiple paths for the general
+Internet, it can be used with the multipath extension specified in this document.
+
 ## Retransmissions
 
 Simultaneous use of multiple paths enables different
