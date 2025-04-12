@@ -1833,37 +1833,37 @@ to use a different connection ID for the same Path ID when doing so.<a href="#se
         <h3 id="name-path-status-management">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-path-status-management" class="section-name selfRef">Path Status Management</a>
         </h3>
-<p id="section-3.3-1">An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
+<p id="section-3.3-1">An endpoint can send PATH_BACKUP and PATH_AVAILABLE frames (see
 <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>) to inform the peer that it should
-send packets with the preference expressed by these frames.
+send packets on the paths with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
-but these frames are still a clear signal of the peer's preference of path usage.
-Each peer indicates its preference of path usage independently of the other peer.
+but these frames are still a clear signal of the peer's preference of path usage.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">Each peer indicates its preference of path usage independently of the other peer.
 That means that peers may have different usage preferences for the same path.
 Depending on the data sender's decisions, this may lead to usage of paths that have been
-indicated as "standby" by the peer or non-usage of some locally available paths.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
-the peer to use its own logic to split traffic among available paths.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3-3">PATH_BACKUP suggests that a path should only be used as backup i.e. that no traffic
+indicated as "backup" by the peer or non-usage of some locally available paths.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
+the peer to use its own logic to split traffic among available paths.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">PATH_BACKUP suggests that a path should only be used as backup i.e. that no traffic
 should be sent on that path if another path is available and usable.
 If all established paths are indicated as backup paths, no guidance is provided about
-which path should be used.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">Similarly, if no frame indicating a path usage preference was received for a certain path,
+which path should be used.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-5">Similarly, if no frame indicating a path usage preference was received for a certain path,
 the preference of the peer is unknown and the sender needs to decide based on it
-own local logic if the path should be used.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">If an endpoint starts using a backup path
+own local logic if the path should be used.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">If an endpoint starts using a backup path
 because it has detected issues on the paths marked as "available", it is RECOMMENDED
 to update its own path state signaling such that the peer avoids using the broken path.
 An endpoint that detects a path breakage can also explicitly close the path
 by sending a PATH_ABANDON frame (see <a href="#path-close" class="auto internal xref">Section 3.4</a>) in order to avoid
-that its peer keeps using it and enable faster switch over to a backup path.
+that its peer keeps using it and enable faster switchover to a backup path.
 If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, PING frames can potentially be used to quickly detect
-connectivity changes and switch back in a timely way.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3-6">The PATH_AVAILABLE and PATH_BACKUP frames share a common, per-path sequence number space
+connectivity changes and switch back in a timely way.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">The PATH_AVAILABLE and PATH_BACKUP frames share a common, per-path sequence number space
 to detect and ignore outdated information, as further described in <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>.
 This is needed as they might arrive out-of-order,
-e.g., if sent using different paths.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+e.g., if sent using different paths.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="path-close">

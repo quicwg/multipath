@@ -597,16 +597,17 @@ Table of Contents
 
 3.3.  Path Status Management
 
-   An endpoint uses the PATH_BACKUP and PATH_AVAILABLE frames (see
-   Section 4.3) to inform the peer that it should send packets with the
-   preference expressed by these frames.  Note that an endpoint might
-   not follow the peer’s advertisements, but these frames are still a
-   clear signal of the peer's preference of path usage.  Each peer
-   indicates its preference of path usage independently of the other
-   peer.  That means that peers may have different usage preferences for
-   the same path.  Depending on the data sender's decisions, this may
-   lead to usage of paths that have been indicated as "standby" by the
-   peer or non-usage of some locally available paths.
+   An endpoint can send PATH_BACKUP and PATH_AVAILABLE frames (see
+   Section 4.3) to inform the peer that it should send packets on the
+   paths with the preference expressed by these frames.  Note that an
+   endpoint might not follow the peer’s advertisements, but these frames
+   are still a clear signal of the peer's preference of path usage.
+
+   Each peer indicates its preference of path usage independently of the
+   other peer.  That means that peers may have different usage
+   preferences for the same path.  Depending on the data sender's
+   decisions, this may lead to usage of paths that have been indicated
+   as "backup" by the peer or non-usage of some locally available paths.
 
    PATH_AVAILABLE indicates that a path is "available", i.e., it
    suggests to the peer to use its own logic to split traffic among
@@ -629,7 +630,7 @@ Table of Contents
    the broken path.  An endpoint that detects a path breakage can also
    explicitly close the path by sending a PATH_ABANDON frame (see
    Section 3.4) in order to avoid that its peer keeps using it and
-   enable faster switch over to a backup path.  If the endpoints do not
+   enable faster switchover to a backup path.  If the endpoints do not
    want to close the path immediately, as connectivity could be re-
    established, PING frames can potentially be used to quickly detect
    connectivity changes and switch back in a timely way.
