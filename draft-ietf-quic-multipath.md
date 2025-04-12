@@ -448,23 +448,17 @@ found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
 ## Handling Connection IDs {#consume-retire-cid}
 
-In order to identify a connection ID correctly when the multipath extension is used,
+When the multipath extension is used,
 endpoints have to use the PATH_NEW_CONNECTION_ID and PATH_RETIRE_CONNECTION_ID frames
-instead of the NEW_CONNECTION_ID and RETIRE_CONNECTION_ID frame to indicate
-the respective Path ID together with associated sequence number
+to indicate the respective Path ID together with associated sequence number
 (see {{Section 5.1.1 of QUIC-TRANSPORT}}), at least for all paths with a Path ID other than 0.
 Each Path ID has its own connection ID sequence number space whose initial value is 0.
 
-Endpoints can also use PATH_NEW_CONNECTION_ID and
-PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0,
-however, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
+Endpoints SHOULD also use PATH_NEW_CONNECTION_ID and
+PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0.
+However, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid and endpoints need to process these frames accordingly
 as corresponding to Path ID 0.
-
-Endpoints SHOULD also use
-the PATH_NEW_CONNECTION_ID frame to provide new connection IDs for Path ID 0 and,
-respectively, the PATH_RETIRE_CONNECTION_ID frame to retire connection IDs for
-Path ID 0.
 
 ### Issuing New Connection IDs
 
