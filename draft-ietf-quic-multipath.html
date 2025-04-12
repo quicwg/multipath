@@ -2495,30 +2495,27 @@ path uses a separate packet number space.
 This is a major difference from
 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, which only defines three number spaces (Initial,
 Handshake and Application packets).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">The relation between packet number spaces and paths is fixed.
-Connection IDs are separately allocated for each Path ID.
-Rotating the connection ID on a path does not change the Path ID
-nor the packet number space.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1-3">While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. This changes the 4-tuple of the path but
-the connection ID remains the same, and so the related path identifier.
-Servers observing a 4-tuple change will
-perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
-If path validation process succeeds, the endpoints set
-the path's congestion controller and round-trip time
-estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">For any given path, connection ID rotation, NAT rebinding, or client initiated migration
+as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> might occur, like on a single path.
+These events do not change the Path ID,<br> and do not affect the packet number
+space associated with the path.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">It is generally preferable to use multipath mechanisms such as
+creating a new path and later abandoning the old path,
+rather than doing migration of a single path as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
+This enables a smoother handover and allows a more controlled migration handling
+at the server side. However, migration of a single path cannot be
+avoided in case of NAT rebinding, or if the server requests migration
+to a "preferred address" during the handshake.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <p id="section-5.1-4"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows an endpoint to skip validation of
 a peer address if that address has been seen recently. However, when the
 multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
 multiple open paths instead.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
-<p id="section-5.1-5">More generally, while migration cannot be avoided in case of network-based
-NAT rebindings, opening a new path instead of active client migration
-should be strongly preferred when the multipath extension is supported.
-This enables a smoother handover and allows a simplified migration
-handling at the server side as NAT rebindings imply immediate loss of the old
-address.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1-5">Servers observing a 4-tuple change will
+perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="using-multiple-paths-on-the-same-4-tuple">
