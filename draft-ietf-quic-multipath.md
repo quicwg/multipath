@@ -1115,7 +1115,7 @@ If path validation process succeeds, the endpoints set
 the path's congestion controller and round-trip time
 estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
 
-## Using multiple paths on the same 4-tuple
+## Using Multiple Paths on the Same 4-tuple
 
 It is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
@@ -1200,13 +1200,11 @@ direction.  The acknowledgment delay will depend on the combination
 of paths used for the packet transmission and the acknowledgement transmission,
 as shown in {{fig-example-ack-delay}}.
 
-
 ACK Path \ Data path         | Terrestrial   | Satellite
 -----------------------------|-------------------|-----------------
 Terrestrial | 100ms  | 350ms
 Satellite   | 350ms  | 600ms
 {: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
-
 
 The computed values reflect both the state of the network path and the
 scheduling decisions of the acknowledgement sender. If we
@@ -1239,7 +1237,6 @@ if that acknowledgement path changes or is abandoned.
 Further, congestion control functions that rely on delay estimates needs
 to consider cases where acknowledgements are sent over multiple paths
 with different delays explicitly.
-
 
 ## Packet Scheduling {#packet-scheduling}
 
@@ -1285,7 +1282,7 @@ expected to be preserved when data is retransmitted. Especially when STREAM
 frames have to be retransmitted over a different path with a smaller MTU limit,
 new smaller STREAM frames might need to be sent instead.
 
-## Handling PTO
+## PTO Expiration
 
 An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
 for detecting packet loss on each individual path. A special case happens when
@@ -1299,7 +1296,7 @@ Endpoints could take advantage of the multipath extension, and retransmit the co
 of the delayed packets on other available paths if the congestion control window on these
 paths allows.
 
-## Handling Different PMTU Sizes
+## Paths Having Different PMTU Sizes
 
 An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
