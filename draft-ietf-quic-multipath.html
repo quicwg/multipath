@@ -2528,7 +2528,8 @@ Since these paths use different path IDs, they can be managed
 independently to suit the needs of the application.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">There may be cases in which paths are created with different 4-tuples,
 but end up using the same 4-tuples as a consequence of path
-migrations. For example:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+migrations. Consider the following example where all paths use the same
+source and destination ports:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.2-3.1">
             <p id="section-5.2-3.1.1">Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
@@ -2540,17 +2541,17 @@ migrations. For example:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
             <p id="section-5.2-3.3.1">Both paths are used for a while.<a href="#section-5.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.2-3.4">
-            <p id="section-5.2-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path=2.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating Path ID 2.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.2-3.5">
-            <p id="section-5.2-3.5.1">Client receives packet, recognizes a path migration, update source address of path 2 to 192.0.2.1.<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.5.1">Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-5.2-4">Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint could want to close one of them.
-Uncoordinated abandon from both ends of the connection may result in deleting
-two paths instead of just one. To avoid this pitfall, endpoints could
+Uncoordinated abandon of both endpoints may result in deleting
+both paths instead of just one. To avoid this pitfall, endpoints could
 adopt a simple coordination rule, such as only letting the client
 initiate closure of duplicate paths, or perhaps relying on
 the application protocol to decide which paths should be closed.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
