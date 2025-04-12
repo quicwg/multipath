@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 11 October 2025</td>
+<td class="center">Expires 14 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-09" class="published">9 April 2025</time>
+<time datetime="2025-04-12" class="published">12 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-11">11 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-14">14 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1326,7 +1326,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-request-forgery-with-spoofe" class="internal xref">Request Forgery with Spoofed Address</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-use-of-transport-layer-secu" class="internal xref">Use of Transport Layer Security and the AEAD Encryption Nonce</a></p>
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-cryptographic-handshake-and" class="internal xref">Cryptographic handshake and AEAD Nonce</a></p>
 </li>
             </ul>
 </li>
@@ -2978,20 +2978,17 @@ the "QUIC Protocol" heading.<a href="#section-6-6" class="pilcrow">¶</a></p>
       <h2 id="name-security-considerations">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">The multipath extension retains all the security features of <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
-but requires some additional consideration regarding the following amendments:<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">The multipath extension retains all security properties of <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
+but requires some additional consideration regarding:<a href="#section-7-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7-2.1">
-          <p id="section-7-2.1.1">the need of potential additional resources as connection IDs are now maintained per-path;<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-7-2.1.1">potential additional resource usage for per-path connection IDs and multiple concurrent path contexts;<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-7-2.2">
-          <p id="section-7-2.2.1">the provisioning of multiple concurrent path contexts and the associated resources;<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-7-2.2.1">a potentially increased amplification risk for request forgery attacks if multiple paths are used simultaneously;<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-7-2.3">
-          <p id="section-7-2.3.1">the possibility to create and use multiple simultaneous paths and the corresponding increased amplification risk for request forgery attacks;<a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-7-2.4">
-          <p id="section-7-2.4.1">the changes on encryption requirements due to the use of multiple packet number spaces.<a href="#section-7-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-7-2.3.1">changes to the nonce calculation due to the use of multiple packet number spaces.<a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="memory-allocation-for-per-path-resources">
@@ -2999,16 +2996,17 @@ but requires some additional consideration regarding the following amendments:<a
         <h3 id="name-memory-allocation-for-per-p">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-memory-allocation-for-per-p" class="section-name selfRef">Memory Allocation for Per-Path Resources</a>
         </h3>
-<p id="section-7.1-1">The initial_max_path_id transport parameter and the Max Path ID field
-in the MAX_PATH_ID frame limit the number of paths an endpoint is willing
-to maintain and accordingly limit the associated path resources.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.1-2">Furthermore, as connection IDs have to be issued by both endpoints for the
-same path ID before an endpoint can open a path, each endpoint can further
-control the per-path resource usage (beyond the connection IDs) by limiting
-the number of Path ID that it issues connection IDs for.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<p id="section-7.1-3">Therefore, to avoid unnecessarily resource usage, that potentially could be exploited
-in a resource exhaustion attack, endpoints should allocate those additional path resource,
-such as e.g. for packet number handling, only after path validation has successfully completed.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-1">The maximum Path ID limit in initial_max_path_id or MAX_PATH_ID frame
+limits the number of paths an endpoint is willing
+to maintain and thereby also limits the associated path resources.
+Furthermore, as connection IDs have to be issued by both endpoints for the
+same Path ID before an endpoint can open a path, each endpoint could also
+control the per-path resource usage by only
+issuing connection IDs for a limited number of paths. However, using
+the maximum Path ID limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">To avoid unnecessary resource usage that could be exploited
+in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
+such as e.g. for packet number handling, only after path validation has successfully completed.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="request-forgery-with-spoofed-address">
@@ -3016,40 +3014,39 @@ such as e.g. for packet number handling, only after path validation has successf
         <h3 id="name-request-forgery-with-spoofe">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-request-forgery-with-spoofe" class="section-name selfRef">Request Forgery with Spoofed Address</a>
         </h3>
-<p id="section-7.2-1">The path validation mechanism as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2." class="relref">Section 8.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> for migration is used
-unchanged for initiation of new paths in this extension. Therefore, the security considerations
+<p id="section-7.2-1">Path validation as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2." class="relref">Section 8.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
+for migration is used
+unchanged for path initiation in this extension. Therefore, the security considerations
 on source address spoofing as outlined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.5.4" class="relref">Section 21.5.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> equally apply.
 Similarly, the anti-amplification limits as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> need to be
 followed to limit the amplification risk.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.2-2">However, while <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path simultaneously
-and therefore only one path migration at the time should be validated,
-this extension allows for multiple open paths, that could in theory be migrated
-all at the same time, and it allows for multiple paths that could be initialized
-simultaneously. Therefore, each path could be used to further amplify an attack.
-Endpoints need to limit the number of maximum paths and might consider
+<p id="section-7.2-2"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path
+and the number of concurrent path validation attempts is
+limited by number of issued connection IDs.
+This extension, however, allows for multiple open paths that could in theory be migrated
+all at the same time. Further multiple paths could be initialized
+simultaneously. Each open path could be used to further amplify an attack.
+Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="use-of-transport-layer-security-and-the-aead-encryption-nonce">
+<div id="cryptographic-handshake-and-aead-nonce">
 <section id="section-7.3">
-        <h3 id="name-use-of-transport-layer-secu">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-use-of-transport-layer-secu" class="section-name selfRef">Use of Transport Layer Security and the AEAD Encryption Nonce</a>
+        <h3 id="name-cryptographic-handshake-and">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-cryptographic-handshake-and" class="section-name selfRef">Cryptographic handshake and AEAD Nonce</a>
         </h3>
 <p id="section-7.3-1">The multipath extension as specified in this document is only enabled after a
 successful handshake when both endpoints indicate support for this extension.
 Respectively, all new frames defined in this extension are only used in 1-RTT packets.
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, such as encryption key exchange and peer authentication,
-remain unchanged as well and the respective security considerations in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span> applied unaltered.
-Note that with the use of this extension, multiple nonces can be in use simultaneously
-for the same AEAD key.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<p id="section-7.3-2">Further note, that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
-apply to the total number of packets sent on all paths.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
-<p id="section-7.3-3">This specification changes the AEAD calculation by using the path identifier as part of
-AEAD encryption nonce (see <a href="#nonce" class="auto internal xref">Section 2.4</a>). To ensure a unique nonce, path identifiers
-are limited to 32 bits and cannot be reused for another path in the same connection.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+remain unchanged. As such, the respective security considerations in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span> apply unaltered. However, note that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
+apply to the total number of packets sent on all paths.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-2">This specification changes the AEAD calculation by using the path identifier as part of
+AEAD nonce (see <a href="#nonce" class="auto internal xref">Section 2.4</a>). To ensure unique nonces, path identifiers
+are limited to 32 bits and cannot be reused for another path of the same connection.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 11 October 2025                          Uber Technologies Inc.
+Expires: 14 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 11 October 2025                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            9 April 2025
+                                                           12 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 October 2025.
+   This Internet-Draft will expire on 14 October 2025.
 
 Copyright Notice
 
@@ -115,8 +115,7 @@ Table of Contents
    7.  Security Considerations
      7.1.  Memory Allocation for Per-Path Resources
      7.2.  Request Forgery with Spoofed Address
-     7.3.  Use of Transport Layer Security and the AEAD Encryption
-           Nonce
+     7.3.  Cryptographic handshake and AEAD Nonce
    8.  Contributors
    9.  Acknowledgments
    10. References
@@ -1521,64 +1520,56 @@ Table of Contents
 
 7.  Security Considerations
 
-   The multipath extension retains all the security features of
+   The multipath extension retains all security properties of
    [QUIC-TRANSPORT] and [QUIC-TLS] but requires some additional
-   consideration regarding the following amendments:
+   consideration regarding:
 
-   *  the need of potential additional resources as connection IDs are
-      now maintained per-path;
+   *  potential additional resource usage for per-path connection IDs
+      and multiple concurrent path contexts;
 
-   *  the provisioning of multiple concurrent path contexts and the
-      associated resources;
+   *  a potentially increased amplification risk for request forgery
+      attacks if multiple paths are used simultaneously;
 
-   *  the possibility to create and use multiple simultaneous paths and
-      the corresponding increased amplification risk for request forgery
-      attacks;
-
-   *  the changes on encryption requirements due to the use of multiple
-      packet number spaces.
+   *  changes to the nonce calculation due to the use of multiple packet
+      number spaces.
 
 7.1.  Memory Allocation for Per-Path Resources
 
-   The initial_max_path_id transport parameter and the Max Path ID field
-   in the MAX_PATH_ID frame limit the number of paths an endpoint is
-   willing to maintain and accordingly limit the associated path
-   resources.
+   The maximum Path ID limit in initial_max_path_id or MAX_PATH_ID frame
+   limits the number of paths an endpoint is willing to maintain and
+   thereby also limits the associated path resources.  Furthermore, as
+   connection IDs have to be issued by both endpoints for the same Path
+   ID before an endpoint can open a path, each endpoint could also
+   control the per-path resource usage by only issuing connection IDs
+   for a limited number of paths.  However, using the maximum Path ID
+   limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.
 
-   Furthermore, as connection IDs have to be issued by both endpoints
-   for the same path ID before an endpoint can open a path, each
-   endpoint can further control the per-path resource usage (beyond the
-   connection IDs) by limiting the number of Path ID that it issues
-   connection IDs for.
-
-   Therefore, to avoid unnecessarily resource usage, that potentially
-   could be exploited in a resource exhaustion attack, endpoints should
-   allocate those additional path resource, such as e.g. for packet
-   number handling, only after path validation has successfully
-   completed.
+   To avoid unnecessary resource usage that could be exploited in a
+   resource exhaustion attack, endpoints SHOULD allocate additional path
+   resources, such as e.g. for packet number handling, only after path
+   validation has successfully completed.
 
 7.2.  Request Forgery with Spoofed Address
 
-   The path validation mechanism as specified in Section 8.2. of
-   [QUIC-TRANSPORT] for migration is used unchanged for initiation of
-   new paths in this extension.  Therefore, the security considerations
-   on source address spoofing as outlined in Section 21.5.4 of
-   [QUIC-TRANSPORT] equally apply.  Similarly, the anti-amplification
-   limits as specified in Section 8 of [QUIC-TRANSPORT] need to be
-   followed to limit the amplification risk.
+   Path validation as specified in Section 8.2. of [QUIC-TRANSPORT] for
+   migration is used unchanged for path initiation in this extension.
+   Therefore, the security considerations on source address spoofing as
+   outlined in Section 21.5.4 of [QUIC-TRANSPORT] equally apply.
+   Similarly, the anti-amplification limits as specified in Section 8 of
+   [QUIC-TRANSPORT] need to be followed to limit the amplification risk.
 
-   However, while [QUIC-TRANSPORT] only allows the use of one path
-   simultaneously and therefore only one path migration at the time
-   should be validated, this extension allows for multiple open paths,
-   that could in theory be migrated all at the same time, and it allows
-   for multiple paths that could be initialized simultaneously.
-   Therefore, each path could be used to further amplify an attack.
-   Endpoints need to limit the number of maximum paths and might
-   consider additional measures to limit the number of concurrent path
-   validation processes e.g. by pacing them out or limiting the number
-   of path initiation attempts over a certain time period.
+   [QUIC-TRANSPORT] only allows the use of one path and the number of
+   concurrent path validation attempts is limited by number of issued
+   connection IDs.  This extension, however, allows for multiple open
+   paths that could in theory be migrated all at the same time.  Further
+   multiple paths could be initialized simultaneously.  Each open path
+   could be used to further amplify an attack.  Therefore, endpoints
+   need to limit the maximum number of paths and might consider
+   additional measures to limit the number of concurrent path validation
+   processes e.g. by pacing them out or limiting the number of path
+   initiation attempts over a certain time period.
 
-7.3.  Use of Transport Layer Security and the AEAD Encryption Nonce
+7.3.  Cryptographic handshake and AEAD Nonce
 
    The multipath extension as specified in this document is only enabled
    after a successful handshake when both endpoints indicate support for
@@ -1586,18 +1577,15 @@ Table of Contents
    extension are only used in 1-RTT packets.  As the handshake is not
    changed by this extension, the transport security mechanisms as
    specified in [QUIC-TLS], such as encryption key exchange and peer
-   authentication, remain unchanged as well and the respective security
-   considerations in [QUIC-TLS] applied unaltered.  Note that with the
-   use of this extension, multiple nonces can be in use simultaneously
-   for the same AEAD key.
-
-   Further note, that the limits as discussed on Appendix B of
-   [QUIC-TLS] apply to the total number of packets sent on all paths.
+   authentication, remain unchanged.  As such, the respective security
+   considerations in [QUIC-TLS] apply unaltered.  However, note that the
+   limits as discussed on Appendix B of [QUIC-TLS] apply to the total
+   number of packets sent on all paths.
 
    This specification changes the AEAD calculation by using the path
-   identifier as part of AEAD encryption nonce (see Section 2.4).  To
-   ensure a unique nonce, path identifiers are limited to 32 bits and
-   cannot be reused for another path in the same connection.
+   identifier as part of AEAD nonce (see Section 2.4).  To ensure unique
+   nonces, path identifiers are limited to 32 bits and cannot be reused
+   for another path of the same connection.
 
 8.  Contributors
 
