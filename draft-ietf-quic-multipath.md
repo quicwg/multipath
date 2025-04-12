@@ -1095,20 +1095,18 @@ This is a major difference from
 {{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
 Handshake and Application packets).
 
-The relation between packet number spaces and paths is fixed.
-Connection IDs are separately allocated for each Path ID.
-Rotating the connection ID on a path does not change the Path ID
-nor the packet number space.
+For any given path, connection ID rotation, NAT rebinding, or client initiated migration
+as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
+These events do not change the Path ID,  and do not affect the packet number
+space associated with the path.
 
-While endpoints assign a connection ID to a specific sending 4-tuple,
-networks events such as NAT rebinding may make the packet's receiver
-observe a different 4-tuple. This changes the 4-tuple of the path but
-the connection ID remains the same, and so the related path identifier.
-Servers observing a 4-tuple change will
-perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
-If path validation process succeeds, the endpoints set
-the path's congestion controller and round-trip time
-estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
+It is generally preferable to use multipath mechanisms such as
+creating a new path and later abandoning the old path,
+rather than doing migration of a single path as specified in {{QUIC-TRANSPORT}}.
+This enables a smoother handover and allows a more controlled migration handling
+at the server side. However, migration of a single path cannot be
+avoided in case of NAT rebinding, or if the server requests migration
+to a "preferred address" during the handshake.
 
 {{Section 9.3 of QUIC-TRANSPORT}} allows an endpoint to skip validation of
 a peer address if that address has been seen recently. However, when the
@@ -1116,12 +1114,11 @@ multipath extension is used and an endpoint has multiple addresses that
 could lead to switching between different paths, it should rather maintain
 multiple open paths instead.
 
-More generally, while migration cannot be avoided in case of network-based
-NAT rebindings, opening a new path instead of active client migration
-should be strongly preferred when the multipath extension is supported.
-This enables a smoother handover and allows a simplified migration
-handling at the server side as NAT rebindings imply immediate loss of the old
-address.
+Servers observing a 4-tuple change will
+perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
+If path validation process succeeds, the endpoints set
+the path's congestion controller and round-trip time
+estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
 
 ## Using multiple paths on the same 4-tuple
 
