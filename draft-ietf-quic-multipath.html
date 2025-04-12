@@ -2801,12 +2801,17 @@ that are currently usable.<a href="#section-5.10-4" class="pilcrow">¶</a></p>
       <h2 id="name-iana-considerations">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-6-1">This document defines a new transport parameter for the negotiation of
-enable multiple paths for QUIC, and three new frame types. The draft defines
-provisional values for experiments, but we expect IANA to allocate
-short values if the draft is approved.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">The following entry in <a href="#transport-parameters" class="auto internal xref">Table 2</a> should be added to
-the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-1">This document defines a new transport parameter to
+enable simultaneous use of multiple paths within one QUIC connection.
+Further, it specifies new frame types for path management and new error codes
+when a path is abandoned.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">The current draft defines provisional values for experiments,
+but, if the draft is approved, IANA is requested to allocate short values
+as permanent with "IETF" as change controller and
+the QUIC WG as contact to the respective registries under
+<a href="https://www.iana.org/assignments/quic/quic.xhtml">https://www.iana.org/assignments/quic/quic.xhtml</a>.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">The following entry in <a href="#transport-parameters" class="auto internal xref">Table 2</a> should be added to
+the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a href="#section-6-3" class="pilcrow">¶</a></p>
 <span id="name-addition-to-quic-transport-"></span><div id="transport-parameters">
 <table class="center" id="table-2">
         <caption>
@@ -2831,8 +2836,8 @@ the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.<a hr
         </tbody>
       </table>
 </div>
-<p id="section-6-4">The following frame types defined in <a href="#frame-types" class="auto internal xref">Table 3</a> should be added to
-the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-5">The following frame types defined in <a href="#frame-types" class="auto internal xref">Table 3</a> should be added to
+the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#section-6-5" class="pilcrow">¶</a></p>
 <span id="name-addition-to-quic-frame-type"></span><div id="frame-types">
 <table class="center" id="table-3">
         <caption>
@@ -2913,9 +2918,9 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.<a href="#sect
         </tbody>
       </table>
 </div>
-<p id="section-6-6">The following transport error code defined in <a href="#tab-error-code" class="auto internal xref">Table 4</a> are to
+<p id="section-6-7">The following transport error code defined in <a href="#tab-error-code" class="auto internal xref">Table 4</a> are to
 be added to the "QUIC Transport Error Codes" registry under
-the "QUIC Protocol" heading.<a href="#section-6-6" class="pilcrow">¶</a></p>
+the "QUIC Protocol" heading.<a href="#section-6-7" class="pilcrow">¶</a></p>
 <span id="name-error-codes-for-multipath-q"></span><div id="tab-error-code">
 <table class="center" id="table-4">
         <caption>
