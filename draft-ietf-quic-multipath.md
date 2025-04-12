@@ -1174,6 +1174,8 @@ congestion control scheme
 specified in {{RFC6356}} to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
 control schemes have been proposed for Multipath TCP such as {{OLIA}}.
+Designers of congestion control algorithms specialized for Multipath QUIC
+are advised to follow BCP 133; see {{Section 7.10 of ?RFC9743}}.
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses to another available one
