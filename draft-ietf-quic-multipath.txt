@@ -1240,7 +1240,9 @@ Table of Contents
    (LIA) congestion control scheme specified in [RFC6356] to solve this
    problem.  This scheme can immediately be adapted to Multipath QUIC.
    Other coupled congestion control schemes have been proposed for
-   Multipath TCP such as [OLIA].
+   Multipath TCP such as [OLIA].  Designers of congestion control
+   algorithms specialized for Multipath QUIC are advised to follow BCP
+   133; see Section 7.10 of [RFC9743].
 
    Section 5.1.2 of [QUIC-TRANSPORT] indicates that an endpoint can
    change the connection ID it uses to another available one at any time
@@ -1648,6 +1650,11 @@ Table of Contents
               Congestion Control for Multipath Transport Protocols",
               RFC 6356, DOI 10.17487/RFC6356, October 2011,
               <https://www.rfc-editor.org/rfc/rfc6356>.
+
+   [RFC9743]  Duke, M., Ed. and G. Fairhurst, Ed., "Specifying New
+              Congestion Control Algorithms", BCP 133, RFC 9743,
+              DOI 10.17487/RFC9743, March 2025,
+              <https://www.rfc-editor.org/rfc/rfc9743>.
 
 Authors' Addresses
 

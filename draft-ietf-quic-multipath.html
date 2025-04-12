@@ -2586,7 +2586,9 @@ paths connections. Multipath TCP uses the linked increased algorithm (LIA)
 congestion control scheme
 specified in <span>[<a href="#RFC6356" class="cite xref">RFC6356</a>]</span> to solve this problem.  This scheme can
 immediately be adapted to Multipath QUIC. Other coupled congestion
-control schemes have been proposed for Multipath TCP such as <span>[<a href="#OLIA" class="cite xref">OLIA</a>]</span>.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+control schemes have been proposed for Multipath TCP such as <span>[<a href="#OLIA" class="cite xref">OLIA</a>]</span>.
+Designers of congestion control algorithms specialized for Multipath QUIC
+are advised to follow BCP 133; see <span><a href="https://rfc-editor.org/rfc/rfc9743#section-7.10" class="relref">Section 7.10</a> of [<a href="#RFC9743" class="cite xref">RFC9743</a>]</span>.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.3-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. As such, a sole change of the Connection
@@ -3126,8 +3128,12 @@ one of the original proposals are:<a href="#section-8-1" class="pilcrow">¶</a><
 <span class="refAuthor">Blake, S.</span>, <span class="refAuthor">Black, D.</span>, <span class="refAuthor">Carlson, M.</span>, <span class="refAuthor">Davies, E.</span>, <span class="refAuthor">Wang, Z.</span>, and <span class="refAuthor">W. Weiss</span>, <span class="refTitle">"An Architecture for Differentiated Services"</span>, <span class="seriesInfo">RFC 2475</span>, <span class="seriesInfo">DOI 10.17487/RFC2475</span>, <time datetime="1998-12" class="refDate">December 1998</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2475">https://www.rfc-editor.org/rfc/rfc2475</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6356">[RFC6356]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Raiciu, C.</span>, <span class="refAuthor">Handley, M.</span>, and <span class="refAuthor">D. Wischik</span>, <span class="refTitle">"Coupled Congestion Control for Multipath Transport Protocols"</span>, <span class="seriesInfo">RFC 6356</span>, <span class="seriesInfo">DOI 10.17487/RFC6356</span>, <time datetime="2011-10" class="refDate">October 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6356">https://www.rfc-editor.org/rfc/rfc6356</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9743">[RFC9743]</dt>
+      <dd>
+<span class="refAuthor">Duke, M., Ed.</span> and <span class="refAuthor">G. Fairhurst, Ed.</span>, <span class="refTitle">"Specifying New Congestion Control Algorithms"</span>, <span class="seriesInfo">BCP 133</span>, <span class="seriesInfo">RFC 9743</span>, <span class="seriesInfo">DOI 10.17487/RFC9743</span>, <time datetime="2025-03" class="refDate">March 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9743">https://www.rfc-editor.org/rfc/rfc9743</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
