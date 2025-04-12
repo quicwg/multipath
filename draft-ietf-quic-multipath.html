@@ -1285,7 +1285,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-cid-changes-migration-and-n" class="internal xref">CID Changes, Migration, and NAT Rebindings</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-using-multiple-paths-on-the" class="internal xref">Using multiple paths on the same 4-tuple</a></p>
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-using-multiple-paths-on-the" class="internal xref">Using Multiple Paths on the Same 4-tuple</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
                 <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-congestion-control" class="internal xref">Congestion Control</a></p>
@@ -1300,10 +1300,10 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.5.2.6.1"><a href="#section-5.6" class="auto internal xref">5.6</a>.  <a href="#name-retransmissions" class="internal xref">Retransmissions</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
-                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-handling-pto" class="internal xref">Handling PTO</a></p>
+                <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="auto internal xref">5.7</a>.  <a href="#name-pto-expiration" class="internal xref">PTO Expiration</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
-                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-handling-different-pmtu-siz" class="internal xref">Handling Different PMTU Sizes</a></p>
+                <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-paths-having-different-pmtu" class="internal xref">Paths Having Different PMTU Sizes</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.9">
                 <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-keep-alive" class="internal xref">Keep Alive</a></p>
@@ -2516,7 +2516,7 @@ estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section
 <div id="using-multiple-paths-on-the-same-4-tuple">
 <section id="section-5.2">
         <h3 id="name-using-multiple-paths-on-the">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using multiple paths on the same 4-tuple</a>
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using Multiple Paths on the Same 4-tuple</a>
         </h3>
 <p id="section-5.2-1">It is possible to create paths that
 refer to the same 4-tuple. For example, the endpoints may want
@@ -2721,10 +2721,10 @@ frames have to be retransmitted over a different path with a smaller MTU limit,
 new smaller STREAM frames might need to be sent instead.<a href="#section-5.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="handling-pto">
+<div id="pto-expiration">
 <section id="section-5.7">
-        <h3 id="name-handling-pto">
-<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-handling-pto" class="section-name selfRef">Handling PTO</a>
+        <h3 id="name-pto-expiration">
+<a href="#section-5.7" class="section-number selfRef">5.7. </a><a href="#name-pto-expiration" class="section-name selfRef">PTO Expiration</a>
         </h3>
 <p id="section-5.7-1">An implementation should follow the mechanism specified in <span>[<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>
 for detecting packet loss on each individual path. A special case happens when
@@ -2738,10 +2738,10 @@ of the delayed packets on other available paths if the congestion control window
 paths allows.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="handling-different-pmtu-sizes">
+<div id="paths-having-different-pmtu-sizes">
 <section id="section-5.8">
-        <h3 id="name-handling-different-pmtu-siz">
-<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-handling-different-pmtu-siz" class="section-name selfRef">Handling Different PMTU Sizes</a>
+        <h3 id="name-paths-having-different-pmtu">
+<a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-paths-having-different-pmtu" class="section-name selfRef">Paths Having Different PMTU Sizes</a>
         </h3>
 <p id="section-5.8-1">An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-14.3" class="relref">Section 14.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> the

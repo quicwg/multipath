@@ -102,13 +102,13 @@ Table of Contents
      4.7.  PATHS_BLOCKED and PATH_CIDS_BLOCKED frames
    5.  Implementation Considerations
      5.1.  CID Changes, Migration, and NAT Rebindings
-     5.2.  Using multiple paths on the same 4-tuple
+     5.2.  Using Multiple Paths on the Same 4-tuple
      5.3.  Congestion Control
      5.4.  Computing Path RTT
      5.5.  Packet Scheduling
      5.6.  Retransmissions
-     5.7.  Handling PTO
-     5.8.  Handling Different PMTU Sizes
+     5.7.  PTO Expiration
+     5.8.  Paths Having Different PMTU Sizes
      5.9.  Keep Alive
      5.10. Idle Timeout
    6.  IANA Considerations
@@ -1172,7 +1172,7 @@ Table of Contents
    the endpoints set the path's congestion controller and round-trip
    time estimator according to Section 9.4 of [QUIC-TRANSPORT].
 
-5.2.  Using multiple paths on the same 4-tuple
+5.2.  Using Multiple Paths on the Same 4-tuple
 
    It is possible to create paths that refer to the same 4-tuple.  For
    example, the endpoints may want to create paths that use different
@@ -1353,7 +1353,7 @@ Table of Contents
    different path with a smaller MTU limit, new smaller STREAM frames
    might need to be sent instead.
 
-5.7.  Handling PTO
+5.7.  PTO Expiration
 
    An implementation should follow the mechanism specified in
    [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
@@ -1369,7 +1369,7 @@ Table of Contents
    retransmit the content of the delayed packets on other available
    paths if the congestion control window on these paths allows.
 
-5.8.  Handling Different PMTU Sizes
+5.8.  Paths Having Different PMTU Sizes
 
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
