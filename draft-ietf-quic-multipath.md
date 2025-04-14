@@ -1249,8 +1249,10 @@ Most frames, including control frames (PATH_CHALLENGE and PATH_RESPONSE being th
 exceptions), can be sent and received on any open path.
 As such, a packet scheduler is needed to decide which path to use
 for sending the next packet, among those paths with an open congestion window.
+If multiple paths are used to send data frames belonging to the same stream,
+data delivery will expirience the maximum delay of all used paths due to in-order delivery.
 The scheduling is a local decision, based on the preferences of the application and the
-implementation.
+implementation. 
 
 This implies that an endpoint may send and receive PATH_ACK
 frames on a path different from the one that carried the acknowledged
