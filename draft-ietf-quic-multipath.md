@@ -1250,7 +1250,7 @@ exceptions), can be sent and received on any open path.
 As such, a packet scheduler is needed to decide which path to use
 for sending the next packet, among those paths with an open congestion window.
 If multiple paths are used to send data frames belonging to the same stream,
-data delivery will expirience the maximum delay of all used paths due to in-order delivery.
+data delivery will experience the maximum delay of all used paths due to in-order delivery.
 The scheduling is a local decision, based on the preferences of the application and the
 implementation.
 
