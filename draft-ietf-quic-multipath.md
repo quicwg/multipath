@@ -1249,7 +1249,7 @@ when the congestion window for the selected path allows it.
 
 Most frames, including control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
 exceptions), can be sent and received on any open path.
-As such a packet scheduler is needed to decide which path to use
+As such, a packet scheduler is needed to decide which path to use
 for sending the next packet, among those paths with an open congestion window.
 The scheduling is a local decision, based on the preferences of the application and the
 implementation.
@@ -1260,16 +1260,16 @@ packets. As noted in {{compute-rtt}}, RTT estimates computed using
 the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
 faster if the scheduling strategy of PATH_ACK frames is stable.
-Implementations can choose different strategies such as sending
-PATH_ACK frames e.g. either simply on the path where the acknowledged packets was received,
+Implementations can choose different strategies such as, for instance, sending
+PATH_ACK frames either simply on the path where the acknowledged packets was received,
 or alternatively the shortest path, which results in shorter control loops
 and potentially better performance.
 
 Since packets that only carry PATH_ACK frames
 are not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),
 senders should carefully consider the load induced
-by these packets, especially if the capacity is unknown on that path
-e.g when that path is not used for sending data frames.
+by these packets, especially if the capacity is unknown on that path,
+e.g., when that path is not used for sending data frames.
 
 ## Retransmissions
 
