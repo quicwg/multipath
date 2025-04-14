@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 11 October 2025</td>
+<td class="center">Expires 16 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-09" class="published">9 April 2025</time>
+<time datetime="2025-04-14" class="published">14 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-11">11 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-16">16 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 16 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2667,7 +2667,7 @@ Generally, QUIC packets that increase the number of bytes in flight can only be 
 when the congestion window for the selected path allows it.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 <p id="section-6.5-2">Most frames, including control frames (PATH_CHALLENGE and PATH_RESPONSE being the notable
 exceptions), can be sent and received on any open path.
-As such a packet scheduler is needed to decide which path to use
+As such, a packet scheduler is needed to decide which path to use
 for sending the next packet, among those paths with an open congestion window.
 The scheduling is a local decision, based on the preferences of the application and the
 implementation.<a href="#section-6.5-2" class="pilcrow">¶</a></p>
@@ -2677,15 +2677,15 @@ packets. As noted in <a href="#compute-rtt" class="auto internal xref">Section 6
 the standard algorithm reflect both the characteristics of the
 path and the scheduling algorithm of PATH_ACK frames. The estimates will converge
 faster if the scheduling strategy of PATH_ACK frames is stable.
-Implementations can choose different strategies such as sending
-PATH_ACK frames e.g. either simply on the path where the acknowledged packets was received,
+Implementations can choose different strategies such as, for instance, sending
+PATH_ACK frames either simply on the path where the acknowledged packets was received,
 or alternatively the shortest path, which results in shorter control loops
 and potentially better performance.<a href="#section-6.5-3" class="pilcrow">¶</a></p>
 <p id="section-6.5-4">Since packets that only carry PATH_ACK frames
 are not congestion controlled (see <span><a href="https://rfc-editor.org/rfc/rfc9002#section-7" class="relref">Section 7</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>),
 senders should carefully consider the load induced
-by these packets, especially if the capacity is unknown on that path
-e.g when that path is not used for sending data frames.<a href="#section-6.5-4" class="pilcrow">¶</a></p>
+by these packets, especially if the capacity is unknown on that path,
+e.g., when that path is not used for sending data frames.<a href="#section-6.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="retransmissions">
