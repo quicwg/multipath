@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-13T02:29:01.201610+00:00",
+  "timestamp": "2025-04-15T01:01:16.919313+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12952,11 +12952,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "We tried to use \"path identifier\" as the term and \"Path ID\" as the field name, however, maybe it more clear to only use Path ID? In any case we need to check again if used constantly. ",
       "createdAt": "2025-03-17T07:51:50Z",
-      "updatedAt": "2025-03-17T07:51:50Z",
+      "updatedAt": "2025-04-14T16:49:17Z",
       "closedAt": null,
       "comments": []
     },
@@ -13036,6 +13037,25 @@
           "updatedAt": "2025-04-12T07:16:23Z"
         }
       ]
+    },
+    {
+      "number": 535,
+      "id": "I_kwDOGNtpaM6ybjXx",
+      "title": "Should we note anything on streams and scheduling?",
+      "url": "https://github.com/quicwg/multipath/issues/535",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "has PR",
+        "clarification"
+      ],
+      "body": "Maybe all we could do is just noting that scheduling data frames that below to the same on different path will increase the delay to the max path delay for all packets on that stream due to re-ordering, and therefore it could be beneficial to keep data frames of one stream on the same path if the path capacity is large enough.",
+      "createdAt": "2025-04-14T16:27:34Z",
+      "updatedAt": "2025-04-14T16:49:26Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -58660,7 +58680,7 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T13:25:04Z",
-      "updatedAt": "2025-04-10T13:24:56Z",
+      "updatedAt": "2025-04-14T16:12:44Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
@@ -58802,6 +58822,26 @@
               "body": "With the provided explanation, this somewhat makes sense. However, without such context, I find this sentence a bit confusing. But this is not blocking.",
               "createdAt": "2025-04-10T13:24:56Z",
               "updatedAt": "2025-04-10T13:24:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6kzMnj",
+          "commit": {
+            "abbreviatedOid": "da4795b"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-14T16:12:44Z",
+          "updatedAt": "2025-04-14T16:12:44Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "@qdeconinck any proposal how to improve the sentence?",
+              "createdAt": "2025-04-14T16:12:44Z",
+              "updatedAt": "2025-04-14T16:12:44Z"
             }
           ]
         }
@@ -59006,7 +59046,7 @@
       "id": "PR_kwDOGNtpaM6RpUcV",
       "title": "editorial pass packet scheduling section",
       "url": "https://github.com/quicwg/multipath/pull/531",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -59015,17 +59055,19 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T14:39:14Z",
-      "updatedAt": "2025-04-10T13:30:30Z",
+      "updatedAt": "2025-04-14T19:36:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-14",
-      "headRefOid": "b0362f78c406462154a34aaec0518ffa2f6fc73c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "a6199445032f327e89f80540e739a5dbf66b3044",
+      "closedAt": "2025-04-14T16:15:24Z",
+      "mergedAt": "2025-04-14T16:15:24Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "91cefe3e1b8384f489e06eee377ae78477f9ed4b"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -59218,6 +59260,19 @@
               "updatedAt": "2025-04-10T13:30:30Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k1cBW",
+          "commit": {
+            "abbreviatedOid": "a619944"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": ".",
+          "createdAt": "2025-04-14T19:34:34Z",
+          "updatedAt": "2025-04-14T19:36:52Z",
+          "comments": []
         }
       ]
     },
@@ -59484,6 +59539,139 @@
               "updatedAt": "2025-04-08T07:38:23Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 536,
+      "id": "PR_kwDOGNtpaM6Sg-_h",
+      "title": "note on sending data frames on different paths",
+      "url": "https://github.com/quicwg/multipath/pull/536",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "ready-to-merge",
+        "clarification"
+      ],
+      "body": "fixes #535 \r\n\r\nThis proposed note is an optional addition. It's also okay to not merge if we don't think it very useful",
+      "createdAt": "2025-04-14T16:34:00Z",
+      "updatedAt": "2025-04-14T19:53:41Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "91cefe3e1b8384f489e06eee377ae78477f9ed4b",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-18",
+      "headRefOid": "7197920ab73e47bbf5351dfd147f42ed2355c80c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6kzZom",
+          "commit": {
+            "abbreviatedOid": "59b29c3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-14T16:35:16Z",
+          "updatedAt": "2025-04-14T16:35:16Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nimplementation.\r\n```",
+              "createdAt": "2025-04-14T16:35:16Z",
+              "updatedAt": "2025-04-14T16:35:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k1fRI",
+          "commit": {
+            "abbreviatedOid": "eb6ee51"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "No objection. I don't think it is really necessary, but it also doesn't hurt.",
+          "createdAt": "2025-04-14T19:40:52Z",
+          "updatedAt": "2025-04-14T19:41:35Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "typo experience",
+              "createdAt": "2025-04-14T19:40:52Z",
+              "updatedAt": "2025-04-14T19:41:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k1lfW",
+          "commit": {
+            "abbreviatedOid": "eb6ee51"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-14T19:53:16Z",
+          "updatedAt": "2025-04-14T19:53:17Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\ndata delivery will experience the maximum delay of all used paths due to in-order delivery.\r\n```",
+              "createdAt": "2025-04-14T19:53:16Z",
+              "updatedAt": "2025-04-14T19:53:17Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 537,
+      "id": "PR_kwDOGNtpaM6ShF1j",
+      "title": "use only path ID",
+      "url": "https://github.com/quicwg/multipath/pull/537",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial",
+        "ready-to-merge"
+      ],
+      "body": "fixes #510 \r\n\r\nthis patch replaces \"path identifier\" with path ID (expect in the field names) and also uses lower case \"p\" align with lower case c for connection ID in RFC9000",
+      "createdAt": "2025-04-14T16:48:04Z",
+      "updatedAt": "2025-04-14T19:52:58Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "91cefe3e1b8384f489e06eee377ae78477f9ed4b",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-19",
+      "headRefOid": "3fafc99370fde123d299e4cdaee859f3c928f0d5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6k1ePh",
+          "commit": {
+            "abbreviatedOid": "3fafc99"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-14T19:38:45Z",
+          "updatedAt": "2025-04-14T19:38:45Z",
+          "comments": []
         }
       ]
     }
