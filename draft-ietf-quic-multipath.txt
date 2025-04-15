@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 16 October 2025                          Uber Technologies Inc.
+Expires: 17 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 16 October 2025                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           14 April 2025
+                                                           15 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 October 2025.
+   This Internet-Draft will expire on 17 October 2025.
 
 Copyright Notice
 
@@ -1319,8 +1319,11 @@ Table of Contents
    PATH_RESPONSE being the notable exceptions), can be sent and received
    on any open path.  As such, a packet scheduler is needed to decide
    which path to use for sending the next packet, among those paths with
-   an open congestion window.  The scheduling is a local decision, based
-   on the preferences of the application and the implementation.
+   an open congestion window.  If multiple paths are used to send data
+   frames belonging to the same stream, data delivery will experience
+   the maximum delay of all used paths due to in-order delivery.  The
+   scheduling is a local decision, based on the preferences of the
+   application and the implementation.
 
    This implies that an endpoint may send and receive PATH_ACK frames on
    a path different from the one that carried the acknowledged packets.
