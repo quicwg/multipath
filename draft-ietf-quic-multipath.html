@@ -1366,16 +1366,16 @@ connection, using the same or different 4-tuples.<a href="#section-1-1" class="p
 directs a peer to switch sending through
 a new preferred path, and, if successful, to release resources
 associated with the old path. The multipath extension specified in this document
-builds on this mechanism but introduces a path identifier (Path ID)
+builds on this mechanism but introduces a path identifier, or path ID,
 to manage connection IDs and packet number spaces per path, enabling the use
 of multiple paths simultaneously.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">The connection ID of a packet binds the packet to a path identifier, and therefore
-to a packet number space. That means each connection ID is associated with exactly one path identifier
-but multiple connection IDs are usually issued for each path identifier.
-The same Path ID is used in both directions, starting with 0 for the initial path.
-Path identifiers are generated monotonically increasing and cannot be reused.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3">The connection ID of a packet binds the packet to a path ID, and therefore
+to a packet number space. That means each connection ID is associated with exactly one path ID
+but multiple connection IDs are usually issued for each path ID.
+The same path ID is used in both directions, starting with 0 for the initial path.
+Path ID are generated monotonically increasing and cannot be reused.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This extension uses multiple packet number spaces, one for each path.
-Each Path ID-specific packet number space starts at packet number 0.
+Each path ID-specific packet number space starts at packet number 0.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
 Using multiple packet number spaces enables direct use of the
 loss detection and congestion control mechanisms defined in
@@ -1383,7 +1383,7 @@ loss detection and congestion control mechanisms defined in
 However, use of multiple packet number spaces requires
 non-zero connection IDs in order to identify the path and the respective
 packet number space as well as a modified AEAD calculation including the
-Path ID (see <a href="#nonce" class="auto internal xref">Section 2.4</a>).<a href="#section-1-4" class="pilcrow">¶</a></p>
+path ID (see <a href="#nonce" class="auto internal xref">Section 2.4</a>).<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">As such, this extension specifies a departure from the specification of
 path management in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> and therefore
 requires a new transport parameter, as specified in <a href="#nego" class="auto internal xref">Section 2.1</a>, to indicate
@@ -1449,22 +1449,22 @@ and new paths can be used, as specified in Section <a href="#path-management" cl
 <ul class="normal">
 <li class="normal" id="section-2.1-2.1">
             <p id="section-2.1-2.1.1">initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a
-variable-length integer specifying the maximum path identifier
+variable-length integer specifying the maximum path ID
 an endpoint is willing to maintain at connection initiation.
-This value MUST NOT exceed 2^32-1, the maximum allowed value for the Path ID due to
+This value MUST NOT exceed 2^32-1, the maximum allowed value for the path ID due to
 restrictions on the nonce calculation (see <a href="#nonce" class="auto internal xref">Section 2.4</a>).<a href="#section-2.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-2.1-3">The initial_max_path_id transport parameter limits the initial
 maximum number of open paths that can be used during a connection.
 For example, if initial_max_path_id is set to 1, only connection IDs
-associated with Path IDs 0 and 1 should be issued by the peer.
+associated with path IDs 0 and 1 should be issued by the peer.
 If an endpoint receives an initial_max_path_id transport parameter with value 0,
 the peer aims to enable the multipath extension without allowing extra paths immediately.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 <p id="section-2.1-4">Setting initial_max_path_id parameter is equivalent to sending a
 MAX_PATH_ID frame (<a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>) with the same value.
 As such to allow for the use of more paths later,
-endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path identifier.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path ID.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
 <p id="section-2.1-5">If an initial_max_path_id transport parameter value higher than 2^32-1
 is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
@@ -1500,7 +1500,7 @@ cannot assume that the initial server address and the addresses
 contained in this parameter can be simultaneously used for multipath
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.6.2" class="relref">Section 9.6.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
 Use of the preferred address with the same local address is considered as a migration event
-that does not change the Path ID. A such, the Path ID for
+that does not change the path ID. A such, the path ID for
 the connection ID specified in the preferred_address transport parameter is 0.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1512,17 +1512,17 @@ the connection ID specified in the preferred_address transport parameter is 0.<a
 <p id="section-2.3-1">The PATH_ACK frame (see <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>) is used to
 acknowledge 1-RTT packets.
 Compared to the ACK frame, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3" class="relref">Section 19.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the PATH_ACK frame additionally
-contains the Path ID to identify the path-specific packet number space.
-ACK frames when used with the multipath extension acknowledge packets for the path with Path ID 0.
+contains the path ID to identify the path-specific packet number space.
+ACK frames when used with the multipath extension acknowledge packets for the path with path ID 0.
 As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 <p id="section-2.3-2">After the handshake concluded and both endpoints support the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-including for acknowledging so far unacknowledged 0-RTT packets using Path ID 0.
+including for acknowledging so far unacknowledged 0-RTT packets using path ID 0.
 Endpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets,
 even when this extension is used. For example,
 ACK frames might be preferred by the sender as long as only the initial path
-with Path ID 0 is in use.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+with path ID 0 is in use.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="nonce">
@@ -1537,17 +1537,17 @@ the packet number alone would not guarantee the uniqueness of the nonce.
 Therefore, the nonce N is calculated for 1-RTT if the multipath extension is used
 by combining the packet protection
 IV with the packet number and with the least significant 32 bits of the
-Path ID. In order to guarantee the uniqueness of the nonce, the Path ID
+path ID. In order to guarantee the uniqueness of the nonce, the path ID
 is limited to a max value of 2^32-1, as specified in Section <a href="#nego" class="auto internal xref">Section 2.1</a><a href="#section-2.4-1" class="pilcrow">¶</a></p>
 <p id="section-2.4-2">To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
-significant 32 bits of the Path ID in network byte order,
+significant 32 bits of the path ID in network byte order,
 two zero bits, and the 62 bits of the reconstructed QUIC packet number in
 network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
 packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
 is less than 12 bytes MUST NOT be used with the QUIC multipath extension.<a href="#section-2.4-2" class="pilcrow">¶</a></p>
 <p id="section-2.4-3">For example, assuming the IV value is <code>6b26114b9cba2b63a9e8dd4f</code>,
-the Path ID is <code>3</code>, and the packet number is <code>aead</code>,
+the path ID is <code>3</code>, and the packet number is <code>aead</code>,
 the nonce will be set to <code>6b2611489cba2b63a9e873e2</code>.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1592,8 +1592,8 @@ should not cause linkability issues.<a href="#section-2.5-5" class="pilcrow">¶<
 <p id="section-3-1">After completing the handshake indicating
 multipath support, endpoints can start using multiple paths.
 An endpoint can open a new path when both endpoints
-have issued available connection IDs for at least one unused, common Path ID,
-as the same Path ID is used in both directions.<a href="#section-3-1" class="pilcrow">¶</a></p>
+have issued available connection IDs for at least one unused, common path ID,
+as the same path ID is used in both directions.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">This documents specfies path initiation (see <a href="#path-initiation" class="auto internal xref">Section 3.1</a>),
 issuing and retirement of per-path connection IDs (see
 <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>), path status management (see <a href="#path-state" class="auto internal xref">Section 3.3</a>) and
@@ -1606,9 +1606,9 @@ or how multiple active paths are used for sending.<a href="#section-3-2" class="
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-path-initiation-and-validat" class="section-name selfRef">Path Initiation and Validation</a>
         </h3>
 <p id="section-3.1-1">To open a new path, an endpoint MUST use a new connection ID associated
-with an unused Path ID.
+with an unused path ID.
 When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to
-the same Path ID as used in the packet that contained the PATH_CHALLENGE frame.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+the same path ID as used in the packet that contained the PATH_CHALLENGE frame.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">A client that wants to use an
 additional path MUST validate the peer's address before sending any data packets
 as described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
@@ -1621,7 +1621,7 @@ unless it has previously validated the 4-tuple used for that path.
 Until the client's address is
 validated, the anti-amplification limit from <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 applies.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">The server may receive packets for a yet unused Path ID that do not
+<p id="section-3.1-4">The server may receive packets for a yet unused path ID that do not
 contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted
 given a valid connection ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.1-5">Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
@@ -1644,7 +1644,7 @@ path validation.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
 <p id="section-3.1-9">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
-As the used Path ID is anyway consumed,
+As the used path ID is anyway consumed,
 the endpoint MUST explicitly close the path, as specified in
 <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
 <div id="path-establishment-example">
@@ -1654,8 +1654,8 @@ the endpoint MUST explicitly close the path, as specified in
           </h4>
 <p id="section-3.1.1-1">In the example below it is assumed that both endpoints have
 indicated an initial_max_path_id value of at least 2, which means
-both endpoints can use Path IDs 0, 1, and 2. Note that
-Path ID 0 is already used for the initial path.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+both endpoints can use path IDs 0, 1, and 2. Note that
+path ID 0 is already used for the initial path.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
 <span id="name-example-of-new-path-establi"></span><div id="fig-example-new-path">
 <figure id="figure-1">
             <div class="alignLeft art-text artwork" id="section-3.1.1-2.1">
@@ -1669,10 +1669,10 @@ Path ID 0 is already used for the initial path.<a href="#section-3.1.1-1" class=
    ...
    (starts new path)
    1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] --&gt;
-                           Checks AEAD using nonce(Path ID 1, PN 0)
+                           Checks AEAD using nonce(path ID 1, PN 0)
         &lt;-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
                                              PATH_ACK[PathID=1, PN=0]
-   Checks AEAD using nonce(Path ID 1, PN 0)
+   Checks AEAD using nonce(path ID 1, PN 0)
    1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
             PATH_ACK[PathID=1, PN=0], ... --&gt;
 
@@ -1685,17 +1685,17 @@ Path ID 0 is already used for the initial path.<a href="#section-3.1.1-1" class=
 <p id="section-3.1.1-3">In <a href="#fig-example-new-path" class="auto internal xref">Figure 1</a>, the endpoints first exchange
 new available connection IDs with the PATH_NEW_CONNECTION_ID frame.
 In this example, the client provides one connection ID (C1 with
-Path ID 1), and server provides two connection IDs
-(S1 with Path ID 1, and S2 with Path ID 2).<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
+path ID 1), and server provides two connection IDs
+(S1 with path ID 1, and S2 with path ID 2).<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-4">Before the client opens a new path by sending a packet on that path
 with a PATH_CHALLENGE frame, it has to check whether there is
-an unused connection IDs for the same unused Path ID available for each side.
-In this example the Path ID 1 is used which is the smallest unused Path ID available
+an unused connection IDs for the same unused path ID available for each side.
+In this example the path ID 1 is used which is the smallest unused path ID available
 as recommended in <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path when sending the PATH_CHALLENGE frame.
 The server replies with a PATH_RESPONSE bundled with the PATH_ACK using connection ID S1
-associated with the same Path ID.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
+associated with the same path ID.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="relation-to-probing-and-migration">
@@ -1707,16 +1707,16 @@ associated with the same Path ID.<a href="#section-3.1.1-4" class="pilcrow">¶</
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
 is negotiated, the reception of a "non-probing"
-packet on a new path with a new so far unused Path ID
+packet on a new path with a new so far unused path ID
 does not impact the path status of any existing
 path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control
 limits for this path are respected.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.1.2-2">The receiver may observe a connection ID associated with a used Path ID
+<p id="section-3.1.2-2">The receiver may observe a connection ID associated with a used path ID
 on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
 as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> by initiating path validation
-but MUST use a new connection ID for the same Path ID.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
+but MUST use a new connection ID for the same path ID.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="address-validation-token">
@@ -1745,32 +1745,32 @@ found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class=
         </h3>
 <p id="section-3.2-1">When the multipath extension is used,
 endpoints have to use the PATH_NEW_CONNECTION_ID and PATH_RETIRE_CONNECTION_ID frames
-to indicate the respective Path ID together with associated sequence number
-(see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.1" class="relref">Section 5.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>), at least for all paths with a Path ID other than 0.
-Each Path ID has its own connection ID sequence number space whose initial value is 0.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+to indicate the respective path ID together with associated sequence number
+(see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.1" class="relref">Section 5.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>), at least for all paths with a path ID other than 0.
+Each path ID has its own connection ID sequence number space whose initial value is 0.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">Endpoints SHOULD also use PATH_NEW_CONNECTION_ID and
-PATH_RETIRE_CONNECTION_ID for the initial path with Path ID 0.
+PATH_RETIRE_CONNECTION_ID for the initial path with path ID 0.
 However, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
 is still valid and endpoints need to process these frames accordingly
-as corresponding to Path ID 0.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+as corresponding to path ID 0.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <div id="issuing-new-connection-ids">
 <section id="section-3.2.1">
           <h4 id="name-issuing-new-connection-ids">
 <a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-issuing-new-connection-ids" class="section-name selfRef">Issuing New Connection IDs</a>
           </h4>
 <p id="section-3.2.1-1">In order to let the peer open new paths, it is RECOMMENDED to proactively
-issue at least one Connection ID for each unused Path ID up to the
-minimum of the peer's and the local Maximum Path ID limits.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
+issue at least one Connection ID for each unused path ID up to the
+minimum of the peer's and the local maximum path ID limits.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-2">If for any reason an endpoint does not want to issue connection IDs for all
-unused Path ID, it SHOULD NOT introduce discontinuity
-in the issuing of Path IDs as path initiation
-requires available connection IDs for the same Path ID on both sides. For instance,
-if the maximum Path ID limit is 2 and the endpoint wants to provide connection IDs
-for only one Path ID inside range [1, 2], it should select Path ID 1 (and not Path
+unused path ID, it SHOULD NOT introduce discontinuity
+in the issuing of path IDs as path initiation
+requires available connection IDs for the same path ID on both sides. For instance,
+if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs
+for only one path ID inside range [1, 2], it should select path ID 1 (and not Path
 ID 2).<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-3">Similarly, endpoints SHOULD consume Path IDs in a continuous way, i.e., when
+<p id="section-3.2.1-3">Similarly, endpoints SHOULD consume path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
-or path initiation attempts with in-order use of Path IDs
+or path initiation attempts with in-order use of path IDs
 due to out-of-order delivery or path validation failure.<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-4">Each endpoint maintains the set of connection IDs received from its peer for each path,
 any of which it can use when sending packets on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
@@ -1779,13 +1779,13 @@ all used paths, to allow for (unintentional) migration events (<span><a href="ht
 <p id="section-3.2.1-5">As further specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> connection IDs
 cannot be issued more than once on the same connection
 and therefore are unique for the scope of the connection,
-regardless of the associated Path ID.<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-6">Endpoints MUST NOT issue new connection IDs with Path IDs greater than
+regardless of the associated path ID.<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-6">Endpoints MUST NOT issue new connection IDs with path IDs greater than
 the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>)
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
-Receipt of a frame with a greater Path ID is a connection error as specified
+Receipt of a frame with a greater path ID is a connection error as specified
 in <a href="#frames" class="auto internal xref">Section 4</a>.<a href="#section-3.2.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-7">When an endpoint finds it has not enough available unused path identifiers,
+<p id="section-3.2.1-7">When an endpoint finds it has not enough available unused path IDs,
 it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
 (when limited by the sender) or a PATHS_BLOCKED frame
 (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>) to inform the peer that
@@ -1801,8 +1801,8 @@ its current limit prevented the creation of the new path.<a href="#section-3.2.1
 can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
 this document, endpoints MUST only rotate to another connection IDs associated
-to the same Path ID. Use of a connection ID associated with
-another Path ID will be considered as an attempt to open a new path instead.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
+to the same path ID. Use of a connection ID associated with
+another path ID will be considered as an attempt to open a new path instead.<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-2">An endpoint is supposed to retire connection ID that are not used anymore,
 and the server is supposed to provide
 replacements, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2." class="relref">Section 5.1.2.</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
@@ -1818,12 +1818,12 @@ endpoint MAY also send a PATH_CIDS_BLOCKED frame if it wants to
 open a new path and has no connection IDs available for an unused
 path ID even though the Maximum Path Identifier value would allow
 for more paths.<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-4">Retirement of connection IDs will not retire the Path ID
+<p id="section-3.2.2-4">Retirement of connection IDs will not retire the path ID
 that corresponds to the connection ID or any other path resources
-as the packet number space is associated to the Path ID.<a href="#section-3.2.2-4" class="pilcrow">¶</a></p>
+as the packet number space is associated to the path ID.<a href="#section-3.2.2-4" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-5">The peer that sends the PATH_RETIRE_CONNECTION_ID frame can keep sending data
 on the path that the retired connection ID was used on but has
-to use a different connection ID for the same Path ID when doing so.<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
+to use a different connection ID for the same path ID when doing so.<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1881,7 +1881,7 @@ from implicit signals such as an idle time-out (see <a href="#idle-time-close" c
 or packet losses as well as for any other reason such as management
 of local resources.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">The peers that send a PATH_ABANDON frame MUST treat all connection
-IDs received from the peer for the Path ID indicated in the PATH_ABANDON as immediately
+IDs received from the peer for the path ID indicated in the PATH_ABANDON as immediately
 retired, and subsequently cannot send any packet on that path anymore.
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
@@ -1916,8 +1916,8 @@ behavior as it does not impact interoperability. If the endpoint is no longer
 willing to process the issued connection IDs for the abandoned path,
 it MAY close the connection, but SHOULD wait at least 3 PTOs after
 sending the PATH_ABANDON frame.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<p id="section-3.4-7">After a path is abandoned, the Path ID MUST NOT be reused
-for new paths, as the Path ID is part of the nonce calculation <a href="#nonce" class="auto internal xref">Section 2.4</a>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">After a path is abandoned, the path ID MUST NOT be reused
+for new paths, as the path ID is part of the nonce calculation <a href="#nonce" class="auto internal xref">Section 2.4</a>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
 <p id="section-3.4-8">If a PATH_ABANDON frame is received for the only open path of a QUIC
 connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. Alternatively, a client MAY instead try to open a new path, if
@@ -1935,11 +1935,11 @@ Reset (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="re
           <h4 id="name-path-closure-example">
 <a href="#section-3.4.1" class="section-number selfRef">3.4.1. </a><a href="#name-path-closure-example" class="section-name selfRef">Path Closure Example</a>
           </h4>
-<p id="section-3.4.1-1">In the example below, the client wants to close the path with Path ID 0.
-It sends the PATH_ABANDON frame to terminate the path with Path ID 0
-on the path with Path ID 1 using the connection ID S1. After receiving
-the PATH_ABANDON frame for Path ID 0, the server also sends a
-PATH_ABANDON frame with Path ID 0 together with an PATH_ACK frame
+<p id="section-3.4.1-1">In the example below, the client wants to close the path with path ID 0.
+It sends the PATH_ABANDON frame to terminate the path with path ID 0
+on the path with path ID 1 using the connection ID S1. After receiving
+the PATH_ABANDON frame for path ID 0, the server also sends a
+PATH_ABANDON frame with path ID 0 together with an PATH_ACK frame
 on the same path using connection ID C1.<a href="#section-3.4.1-1" class="pilcrow">¶</a></p>
 <span id="name-example-of-closing-a-path"></span><div id="fig-example-path-close1">
 <figure id="figure-2">
@@ -1947,12 +1947,12 @@ on the same path using connection ID C1.<a href="#section-3.4.1-1" class="pilcro
 <pre>
 Client                                                      Server
 
-(client tells server to abandon a path with Path ID 0)
-1-RTT[X]: DCID=S1 PATH_ABANDON[Path ID=0]-&gt;
+(client tells server to abandon a path with path ID 0)
+1-RTT[X]: DCID=S1 PATH_ABANDON[path ID=0]-&gt;
                            (server tells client to abandon a path)
-                    &lt;-1-RTT[Y]: DCID=C1 PATH_ABANDON[Path ID=0],
+                    &lt;-1-RTT[Y]: DCID=C1 PATH_ABANDON[path ID=0],
                                            PATH_ACK[PATH ID=1, PN=X]
-1-RTT[U]: DCID=S1 PATH_ACK[Path ID=1, PN=Y] -&gt;
+1-RTT[U]: DCID=S1 PATH_ACK[path ID=1, PN=Y] -&gt;
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
@@ -2000,7 +2000,7 @@ an abandoned path if path state is still retained to do so.<a href="#section-3.4
 after sending the PATH_ABANDON frame as connection IDs are immediately retired.<a href="#section-3.4.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.4.3-3">When an endpoint finally deletes all state associated with the path,
 the packets sent over the path and not yet acknowledged MUST be considered lost.
-PATH_ACK frames received with an abandoned Path ID are silently ignored,
+PATH_ACK frames received with an abandoned path ID are silently ignored,
 as specified in <a href="#frames" class="auto internal xref">Section 4</a>.<a href="#section-3.4.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2017,12 +2017,12 @@ as specified in <a href="#frames" class="auto internal xref">Section 4</a>.<a hr
 If an endpoint receives a multipath-specific frame in a different packet type,
 it MUST close the connection with an error of type PROTOCOL_VIOLATION.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">Receipt of multipath-specific frames
-that use a Path ID that is greater than the announced Maximum Paths value
+that use a path ID that is greater than the announced Maximum Paths value
 in the MAX_PATH_ID frame or in the initial_max_path_id transport parameter,
 if no MAX_PATH_ID frame was received yet,
 MUST be treated as a connection error of type PROTOCOL_VIOLATION.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">If an endpoint receives a multipath-specific frame
-with a path identifier that it cannot process
+with a path ID that it cannot process
 anymore (e.g., because the path might have been abandoned), it
 MUST silently ignore the frame.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <div id="mp-ack-frame">
@@ -2063,7 +2063,7 @@ field is added:<a href="#section-4.1-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.1-5">
           <dt id="section-4.1-5.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.1-5.2">
-            <p id="section-4.1-5.2.1">The Path ID associated with the packet number space of the 0-RTT and 1-RTT packets
+            <p id="section-4.1-5.2.1">The path ID associated with the packet number space of the 0-RTT and 1-RTT packets
 which are acknowledged by the PATH_ACK frame.<a href="#section-4.1-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
@@ -2097,7 +2097,7 @@ After the PATH_ABANDON frame is sent on a path, the path can no longer be used f
 <span class="break"></span><dl class="dlParallel" id="section-4.2-5">
           <dt id="section-4.2-5.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.2-5.2">
-            <p id="section-4.2-5.2.1">The Path ID associated to the to-be-abandoned path.<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.2-5.2.1">The path ID associated to the to-be-abandoned path.<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-4.2-5.3">Error Code:</dt>
@@ -2199,8 +2199,8 @@ about its preference to not use the indicated path for sending.<a href="#section
 <span class="break"></span><dl class="dlParallel" id="section-4.3-8">
           <dt id="section-4.3-8.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.3-8.2">
-            <p id="section-4.3-8.2.1">The Path ID that the status update corresponds to.
-All Path IDs below the maximum path ID limit can be indicated,
+            <p id="section-4.3-8.2.1">The path ID that the status update corresponds to.
+All path IDs below the maximum path ID limit can be indicated,
 even if the path is not in active use yet.<a href="#section-4.3-8.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
@@ -2213,18 +2213,18 @@ this frame.<a href="#section-4.3-8.4.1" class="pilcrow">¶</a></p>
 </dl>
 <p id="section-4.3-9">The sequence number space is common to the two frame types,
 and monotonically increasing values MUST be used when sending PATH_AVAILABLE or
-PATH_BACKUP frames for a given Path ID.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
+PATH_BACKUP frames for a given path ID.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
 <p id="section-4.3-10">Frames may be received out of order. A peer MUST ignore an incoming
 PATH_AVAILABLE or
 PATH_BACKUP frame if it previously received another PATH_BACKUP frame
-or PATH_AVAILABLE frame for the same Path ID with a Path Status sequence number
+or PATH_AVAILABLE frame for the same path ID with a Path Status sequence number
 equal to or higher than the Path Status sequence number of the incoming frame.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
 <p id="section-4.3-11">The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
 same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
 on different paths. As such, the receiver of
 the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
-separately for each Path ID.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
+separately for each path ID.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
 <p id="section-4.3-12">PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
 PATH_BACKUP or PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
@@ -2271,7 +2271,7 @@ field is added:<a href="#section-4.4-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.4-5">
           <dt id="section-4.4-5.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.4-5.2">
-            <p id="section-4.4-5.2.1">The Path ID associated with the connection ID. This
+            <p id="section-4.4-5.2.1">The path ID associated with the connection ID. This
 means the provided connection ID can only be used on the corresponding path.<a href="#section-4.4-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
@@ -2281,16 +2281,16 @@ the sequence number applies on a per-path context.
 This means different connection IDs on different paths may have the same
 sequence number value.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
 <p id="section-4.4-7">The Retire Prior To field indicates which connection IDs
-should be retired among those that share the Path ID in the Path Identifier field.
-Connection IDs associated with different Path IDs are not affected.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
+should be retired among those that share the path ID in the Path Identifier field.
+Connection IDs associated with different path IDs are not affected.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
 <p id="section-4.4-8">Note that the NEW_CONNECTION_ID frame can only be used to issue or retire
-connection IDs for the initial path with Path ID 0.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
+connection IDs for the initial path with path ID 0.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
 <p id="section-4.4-9">The last paragraph of <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies how to
 verify the Retire Prior To field of an incoming NEW_CONNECTION_ID frame.
 The same rule
 applies for PATH_NEW_CONNECTION_ID frames, but it applies per path. If the
 multipath extension is used, the rule
-for NEW_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
+for NEW_CONNECTION_ID frame is only applied for path ID 0.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="mp-retire-conn-id-frame">
@@ -2301,12 +2301,12 @@ for NEW_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.4-
 <p id="section-4.5-1">The PATH_RETIRE_CONNECTION_ID frame (TBD-06)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
 <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. It is used
-to indicate that an endpoint will no longer use a connection ID for a specific Path ID
+to indicate that an endpoint will no longer use a connection ID for a specific path ID
 that was issued by its peer. To retire the connection ID used
-during the handshake on the initial path, Path ID 0 is used.
+during the handshake on the initial path, path ID 0 is used.
 Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for this path (see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
-unless the path specified by the Path ID has been abandoned. New path-specific connection IDs can be
+unless the path specified by the path ID has been abandoned. New path-specific connection IDs can be
 delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>).<a href="#section-4.5-1" class="pilcrow">¶</a></p>
 <p id="section-4.5-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
 <span id="name-path_retire_connection_id-fr"></span><div id="fig-mp-retire-connection-id-frame-format">
@@ -2330,21 +2330,21 @@ field is added:<a href="#section-4.5-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.5-5">
           <dt id="section-4.5-5.1">Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.5-5.2">
-            <p id="section-4.5-5.2.1">The Path ID associated with the connection ID to retire.<a href="#section-4.5-5.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.5-5.2.1">The path ID associated with the connection ID to retire.<a href="#section-4.5-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <p id="section-4.5-6">Note that the RETIRE_CONNECTION_ID frame can only be used to retire
-connection IDs for the initial path with Path ID 0.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
+connection IDs for the initial path with path ID 0.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
 <p id="section-4.5-7">As the PATH_NEW_CONNECTION_ID frames applies the sequence number per path,
 the sequence number in the PATH_RETIRE_CONNECTION_ID frame is also per
 path. The PATH_RETIRE_CONNECTION_ID frame retires the Connection ID with
-the specified Path ID and sequence number.<a href="#section-4.5-7" class="pilcrow">¶</a></p>
+the specified path ID and sequence number.<a href="#section-4.5-7" class="pilcrow">¶</a></p>
 <p id="section-4.5-8">The processing of an incoming RETIRE_CONNECTION_ID frame
 is described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.16" class="relref">Section 19.16</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>. The same processing
 applies for PATH_RETIRE_CONNECTION_ID frames per path, while with use of
 the multipath extension the
-processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href="#section-4.5-8" class="pilcrow">¶</a></p>
+processing of a RETIRE_CONNECTION_ID frame is only applied for path ID 0.<a href="#section-4.5-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="max-paths-frame">
@@ -2352,7 +2352,7 @@ processing of a RETIRE_CONNECTION_ID frame is only applied for Path ID 0.<a href
         <h3 id="name-max_path_id-frame">
 <a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-max_path_id-frame" class="section-name selfRef">MAX_PATH_ID frame</a>
         </h3>
-<p id="section-4.6-1">A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path identifier
+<p id="section-4.6-1">A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path ID
 it is permitted to use.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
 <p id="section-4.6-2">MAX_PATH_ID frames are formatted as shown in <a href="#fig-max-paths-frame-format" class="auto internal xref">Figure 9</a>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
 <span id="name-max_path_id-frame-format"></span><div id="fig-max-paths-frame-format">
@@ -2373,8 +2373,8 @@ MAX_PATH_ID Frame {
 <span class="break"></span><dl class="dlParallel" id="section-4.6-5">
           <dt id="section-4.6-5.1">Maximum Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.6-5.2">
-            <p id="section-4.6-5.2.1">The maximum path identifier that the sending endpoint is willing to accept.
-This value MUST NOT exceed 2^32-1, which is the maximum allowed value for the Path ID due to
+            <p id="section-4.6-5.2.1">The maximum path ID that the sending endpoint is willing to accept.
+This value MUST NOT exceed 2^32-1, which is the maximum allowed value for the path ID due to
 restrictions on the nonce calculation (see <a href="#nonce" class="auto internal xref">Section 2.4</a>).
 The Maximum Path Identifier value MUST NOT be lower than the value
 advertised in the initial_max_path_id transport parameter.<a href="#section-4.6-5.2.1" class="pilcrow">¶</a></p>
@@ -2396,15 +2396,16 @@ and no more recent MAX_PATH_ID frame has been sent in the meantime.<a href="#sec
 <a href="#section-4.7" class="section-number selfRef">4.7. </a><a href="#name-paths_blocked-and-path_cids" class="section-name selfRef">PATHS_BLOCKED and PATH_CIDS_BLOCKED frames</a>
         </h3>
 <p id="section-4.7-1">A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
-it wishes to open a path but is unable to do so due to the maximum path identifier
+it wishes to open a path but is unable to do so due to the maximum path ID
 limit set by its peer.<a href="#section-4.7-1" class="pilcrow">¶</a></p>
 <p id="section-4.7-2">A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
-it wishes to open a path with a valid Path ID or change the CID on an established path
+it wishes to open a path with a valid path ID or change the CID on an established path
 but is unable to do so because there are no unused connection IDs available
-for the corresponding Path ID.<a href="#section-4.7-2" class="pilcrow">¶</a></p>
+for the corresponding path ID.<a href="#section-4.7-2" class="pilcrow">¶</a></p>
 <p id="section-4.7-3">Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
-like updating the new Max Path ID value, but informs the peer that the maximum path identifier limit
+like sending a MAX_PATH_ID farme with a new Maximum Path Identifier value,
+but informs the peer that the maximum path ID limit
 or the absence of unused connection IDs prevented the creation or the usage of paths.
 If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
 no action is taken by the peer, this is likely a deliberate decision by the peer and
@@ -2428,7 +2429,7 @@ PATHS_BLOCKED Frame {
 <span class="break"></span><dl class="dlParallel" id="section-4.7-7">
           <dt id="section-4.7-7.1">Maximum Path Identifier:</dt>
           <dd style="margin-left: 1.5em" id="section-4.7-7.2">
-            <p id="section-4.7-7.2.1">A variable-length integer indicating the maximum path identifier that was
+            <p id="section-4.7-7.2.1">A variable-length integer indicating the maximum path ID that was
 allowed at the time the frame was sent. If the received value is lower than
 the currently allowed maximum value, this frame can be ignored.<a href="#section-4.7-7.2.1" class="pilcrow">¶</a></p>
 </dd>
@@ -2492,7 +2493,7 @@ This is a major difference from
 Handshake and Application packets).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">For any given path, connection ID rotation, NAT rebinding, or client initiated migration
 as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> might occur, like on a single path.
-These events do not change the Path ID,<br> and do not affect the packet number
+These events do not change the path ID,<br> and do not affect the packet number
 space associated with the path.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.1-3">It is generally preferable to use multipath mechanisms such as
 creating a new path and later abandoning the old path,
@@ -2541,7 +2542,7 @@ source and destination ports:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
             <p id="section-5.2-3.3.1">Both paths are used for a while.<a href="#section-5.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.2-3.4">
-            <p id="section-5.2-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating Path ID 2.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.4.1">Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path ID 2.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.2-3.5">
             <p id="section-5.2-3.5.1">Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
@@ -2599,7 +2600,7 @@ but they may be received through any open path. If successive acknowledgments ar
 on different paths, the measured RTT samples can fluctuate widely,
 which could result in poor performance depending e.g. on the used connection control.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <p id="section-5.4-2">Congestion control state as defined in <span>[<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> is kept
-per Path ID. However, depending on which path acknowledgements are
+per path ID. However, depending on which path acknowledgements are
 sent, the actual RTT of a path cannot be calculated or may not be
 the right value to be used.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <p id="section-5.4-3">Instead of using RTT, we define the acknowledgment delays as
@@ -2999,14 +3000,14 @@ but requires some additional consideration regarding:<a href="#section-7-1" clas
         <h3 id="name-memory-allocation-for-per-p">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-memory-allocation-for-per-p" class="section-name selfRef">Memory Allocation for Per-Path Resources</a>
         </h3>
-<p id="section-7.1-1">The maximum Path ID limit in initial_max_path_id or MAX_PATH_ID frame
+<p id="section-7.1-1">The maximum path ID limit in initial_max_path_id or MAX_PATH_ID frame
 limits the number of paths an endpoint is willing
 to maintain and thereby also limits the associated path resources.
 Furthermore, as connection IDs have to be issued by both endpoints for the
-same Path ID before an endpoint can open a path, each endpoint could also
+same path ID before an endpoint can open a path, each endpoint could also
 control the per-path resource usage by only
 issuing connection IDs for a limited number of paths. However, using
-the maximum Path ID limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+the maximum path ID limit in initial_max_path_id or the MAX_PATH_ID frame is preferred.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">To avoid unnecessary resource usage that could be exploited
 in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
 such as e.g. for packet number handling, only after path validation has successfully completed.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
@@ -3047,8 +3048,8 @@ As the handshake is not changed by this extension, the transport security mechan
 as specified in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, such as encryption key exchange and peer authentication,
 remain unchanged. As such, the respective security considerations in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span> apply unaltered. However, note that the limits as discussed on Appendix B of <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
 apply to the total number of packets sent on all paths.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<p id="section-7.3-2">This specification changes the AEAD calculation by using the path identifier as part of
-AEAD nonce (see <a href="#nonce" class="auto internal xref">Section 2.4</a>). To ensure unique nonces, path identifiers
+<p id="section-7.3-2">This specification changes the AEAD calculation by using the path ID as part of
+AEAD nonce (see <a href="#nonce" class="auto internal xref">Section 2.4</a>). To ensure unique nonces, path IDs
 are limited to 32 bits and cannot be reused for another path of the same connection.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
