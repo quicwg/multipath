@@ -1274,8 +1274,14 @@ are not congestion controlled (see {{Section 7 of QUIC-RECOVERY}}),
 senders should carefully consider the load induced
 by these packets, especially if the capacity is unknown on that path.
 
+There are various ways that multipath techniques can be used (see {{Section 7.10 of rfc9743}}). 
+One example use is to provide failover from one path to another when
+the original path is no longer viable or provides inferior performance.
+Another example use is concurrent multipath, where the transport
+protocol simultaneously schedules a flow to aggregate the capacity
+across multiple paths.
 The specification of scheduling for concurrent multipath and related the
-congestion control algorithms and re-ordering methods for use in the general
+congestion control algorithms for use in the general
 Internet are outside the scope of this document. If, and when, the IETF
 specifies a method for concurrent usage of multiple paths for the general
 Internet, it can be used with the multipath extension specified in this document.
