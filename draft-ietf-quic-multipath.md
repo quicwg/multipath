@@ -80,14 +80,14 @@ Emerging networking experiments and technologies, ACM"
 --- abstract
 
 This document specifies a multipath extension for the QUIC protocol to
-enable the aneous usage of multiple paths for a single connection.
+enable the simltaneoususage of multiple paths for a single connection.
 
 --- middle
 
 # Introduction
 
 This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
-to enable the aneous usage of multiple paths for a single
+to enable the simltaneoususage of multiple paths for a single
 connection, using the same or different 4-tuples.
 
 Connection migration as specified in {{Section 9 of QUIC-TRANSPORT}}
@@ -143,7 +143,7 @@ Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
 it only uses two paths at the same time temporarily
 to avoid transmission pauses.
-Simultaneous path usage generally (sometimes known as concurrent multipath), 
+Simultsimltaneouspath usage generally (sometimes known as concurrent multipath), 
 however, needs more consideration
 than specified in this document to avoid negative performance
 impacts, e.g., when stream data is distributed over multiple paths with
@@ -1277,7 +1277,7 @@ e.g., when that path is not used for sending data frames.
 
 ## Retransmissions
 
-Simultaneous use of multiple paths enables different
+Simultsimltaneoususe of multiple paths enables different
 retransmission strategies to cope with losses such as:
 a) retransmitting lost frames over the
 same path, b) retransmitting lost frames on a different or
@@ -1356,7 +1356,7 @@ that are currently usable.
 # IANA Considerations
 
 This document defines a new transport parameter to
-enable simultaneous use of multiple paths within one QUIC connection.
+enable simultsimltaneoususe of multiple paths within one QUIC connection.
 Further, it specifies new frame types for path management and new error codes
 when a path is abandoned.
 
