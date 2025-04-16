@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 17 October 2025</td>
+<td class="center">Expires 18 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-15" class="published">15 April 2025</time>
+<time datetime="2025-04-16" class="published">16 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-17">17 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-18">18 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1306,10 +1306,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
                 <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="auto internal xref">5.8</a>.  <a href="#name-paths-having-different-pmtu" class="internal xref">Paths Having Different PMTU Sizes</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.9">
-                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-keep-alive" class="internal xref">Keep Alive</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.10">
-                <p id="section-toc.1-1.5.2.10.1"><a href="#section-5.10" class="auto internal xref">5.10</a>. <a href="#name-idle-timeout" class="internal xref">Idle Timeout</a></p>
+                <p id="section-toc.1-1.5.2.9.1"><a href="#section-5.9" class="auto internal xref">5.9</a>.  <a href="#name-idle-timeout-and-keep-alive" class="internal xref">Idle Timeout and Keep-Alives</a></p>
 </li>
             </ul>
 </li>
@@ -1877,7 +1874,7 @@ connectivity or local preferences.
 An endpoint that wants to abandon a path MUST explicitly
 close the path by sending a PATH_ABANDON frame (see <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>).
 This is true whether the decision to close the path results
-from implicit signals such as an idle time-out (see <a href="#idle-time-close" class="auto internal xref">Section 5.10</a>)
+from implicit signals such as an idle time-out (see <a href="#idle-time-close" class="auto internal xref">Section 5.9</a>)
 or packet losses as well as for any other reason such as management
 of local resources.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">The peers that send a PATH_ABANDON frame MUST treat all connection
@@ -2756,46 +2753,33 @@ processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.<a href="#section-5.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="keep-alive">
-<section id="section-5.9">
-        <h3 id="name-keep-alive">
-<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-keep-alive" class="section-name selfRef">Keep Alive</a>
-        </h3>
-<p id="section-5.9-1">The QUIC specification defines an optional keep alive process, see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
-Implementations of the multipath extension should map this keep alive process to a number of paths.
-Some applications may keep only one path alive, while others could prefer to maintain
-liveliness on two or more paths during the connection lifetime.
-Different applications will likely require different strategies.
-Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
-on each of these paths before the idle timeout expires.<a href="#section-5.9-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="idle-time-close">
-<section id="section-5.10">
-        <h3 id="name-idle-timeout">
-<a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-idle-timeout" class="section-name selfRef">Idle Timeout</a>
+<section id="section-5.9">
+        <h3 id="name-idle-timeout-and-keep-alive">
+<a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-idle-timeout-and-keep-alive" class="section-name selfRef">Idle Timeout and Keep-Alives</a>
         </h3>
-<p id="section-5.10-1"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> allows for closing of connections if they stay idle
-for too long. The connection idle timeout when using the multipath extension is defined
-as "no packet received on any path for the duration of the idle timeout".
-When only one path is available, servers follow the specifications
-in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-5.10-1" class="pilcrow">¶</a></p>
-<p id="section-5.10-2">This document does not specify per-path idle timeouts. An endpoint
+<p id="section-5.9-1"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> defines an idle timeout for closing the connection
+which applies in case of multipath usage
+if no packet is received on any path for the duration of the idle timeout.<a href="#section-5.9-1" class="pilcrow">¶</a></p>
+<p id="section-5.9-2">This document does not specify per-path idle timeouts. An endpoint
 can decide to close a path at any time, whether the path is in active
 use or not. For example, an endpoint may wait to send
 the initial PATH_ABANDON frame until it anyway sends another frame.
 Note that the receiver of an initial PATH_ABANDON frame is, however,
-required to immediately reply (see <a href="#path-close" class="auto internal xref">Section 3.4</a>).<a href="#section-5.10-2" class="pilcrow">¶</a></p>
-<p id="section-5.10-3">If a path is not actively used for a while, it might not be usable anymore,
+required to immediately reply (see <a href="#path-close" class="auto internal xref">Section 3.4</a>).<a href="#section-5.9-2" class="pilcrow">¶</a></p>
+<p id="section-5.9-3">If a path is not actively used for a while, it might not be usable anymore,
 e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.
-As discussed in
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the keep-alive interval depends
-on the timeout in the middlebox.<a href="#section-5.10-3" class="pilcrow">¶</a></p>
-<p id="section-5.10-4">If a path was not actively used for a while, an endpoint can
-probe it before switching to active use if there are still other paths
-that are currently usable.<a href="#section-5.10-4" class="pilcrow">¶</a></p>
+<span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> defines an optional keep alive process.
+This process can be applied to each path separately depending on application needs.
+Some applications may decide to not keep any not-actively used path alive,
+keep only one additonal path alive, or multiple paths, e.g. for more redunancy.
+As discussed in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the keep-alive interval
+needs to incorperate timeouts in middleboxes on the path.<a href="#section-5.9-3" class="pilcrow">¶</a></p>
+<p id="section-5.9-4">If a path was not actively used for a while and no keep alives have been sent,
+an endpoint can probe it before switching to active use if there are still other paths
+that are currently usable.<a href="#section-5.9-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
