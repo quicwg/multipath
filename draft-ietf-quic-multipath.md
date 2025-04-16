@@ -145,7 +145,7 @@ it only uses two paths at the same time temporarily
 to avoid transmission pauses.
 Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
-impacts, e.g. when stream data is distributed over multiple paths with
+impacts, e.g., when stream data is distributed over multiple paths with
 different delays.
 
 ## Conventions and Definitions {#definition}
