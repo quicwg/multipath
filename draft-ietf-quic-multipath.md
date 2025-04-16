@@ -1312,23 +1312,11 @@ each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.
 
-## Keep Alive
+## Idle Timeout and Keep-Alives {#idle-time-close}
 
-The QUIC specification defines an optional keep alive process, see {{Section 5.3 of QUIC-TRANSPORT}}.
-Implementations of the multipath extension should map this keep alive process to a number of paths.
-Some applications may keep only one path alive, while others could prefer to maintain
-liveliness on two or more paths during the connection lifetime.
-Different applications will likely require different strategies.
-Once the implementation has decided which paths to keep alive, it can do so by sending Ping frames
-on each of these paths before the idle timeout expires.
-
-## Idle Timeout {#idle-time-close}
-
-{{QUIC-TRANSPORT}} allows for closing of connections if they stay idle
-for too long. The connection idle timeout when using the multipath extension is defined
-as "no packet received on any path for the duration of the idle timeout".
-When only one path is available, servers follow the specifications
-in {{QUIC-TRANSPORT}}.
+{{QUIC-TRANSPORT}} defines an idle timeout for closing the connection
+which applies in case of multipath usage
+if no packet is received on any path for the duration of the idle timeout.
 
 This document does not specify per-path idle timeouts. An endpoint
 can decide to close a path at any time, whether the path is in active
@@ -1341,12 +1329,15 @@ If a path is not actively used for a while, it might not be usable anymore,
 e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 ({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
-As discussed in
-{{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval depends
-on the timeout in the middlebox.
+{{Section 5.3 of QUIC-TRANSPORT}} defines an optional keep alive process.
+This process can be applied to each path separately depending on application needs.
+Some applications may decide to not keep any not-actively used path alive,
+keep only one additonal path alive, or multiple paths, e.g. for more redunancy.
+As discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval
+needs to incorperate timeouts in middleboxes on the path.
 
-If a path was not actively used for a while, an endpoint can
-probe it before switching to active use if there are still other paths
+If a path was not actively used for a while and no keep alives have been sent,
+an endpoint can probe it before switching to active use if there are still other paths
 that are currently usable.
 
 
