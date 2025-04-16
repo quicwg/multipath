@@ -240,13 +240,13 @@ ACK frames when used with the multipath extension acknowledge packets for the pa
 As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.
 
-After the handshake concluded and both endpoints support the multipath extension,
+After the handshake concluded with support for the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-including for acknowledging so far unacknowledged 0-RTT packets using path ID 0.
-Endpoints MUST process ACK frames that acknowledge 0-RTT packets or 1-RTT packets,
-even when this extension is used. For example,
-ACK frames might be preferred by the sender as long as only the initial path
-with path ID 0 is in use.
+including for so far unacknowledged 0-RTT packets using Path ID 0.
+Endpoints MUST still process ACK frames that acknowledge 0-RTT packets or 1-RTT packets.
+For example, a sender may negotiate multipath support for later use and keep
+only the initial path with path ID 0 for a while. During this single-path period,
+the sender might prefer to send ACK frames.
 
 ## Nonce Calculation after Handshake Completion {#nonce}
 
