@@ -80,14 +80,14 @@ Emerging networking experiments and technologies, ACM"
 --- abstract
 
 This document specifies a multipath extension for the QUIC protocol to
-enable the simultaneous usage of multiple paths for a single connection.
+enable the aneous usage of multiple paths for a single connection.
 
 --- middle
 
 # Introduction
 
 This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
-to enable the simultaneous usage of multiple paths for a single
+to enable the aneous usage of multiple paths for a single
 connection, using the same or different 4-tuples.
 
 Connection migration as specified in {{Section 9 of QUIC-TRANSPORT}}
@@ -132,8 +132,8 @@ and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.
 
-Further, this document does not specify detailed scheduling algorithms that define
-how multiple, simultaneously open paths are used to send packets.
+Further, this document does not specify scheduling algorithms that define
+how multiple simultaneously open paths are used to send packets.
 As these differ depending on application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
 However, scheduling algorithms, that may be specified by the IETF in future,
@@ -143,10 +143,11 @@ Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
 it only uses two paths at the same time temporarily
 to avoid transmission pauses.
-Simultaneous path usage generally, however, needs more consideration
+Simultaneous path usage generally (sometimes known as concurrent multipath), 
+however, needs more consideration
 than specified in this document to avoid negative performance
-impacts, e.g. when stream data is distributed over multiple paths with
-different delays.
+impacts, e.g., when stream data is distributed over multiple paths with
+different delays or have common shared bottlenecks.
 
 ## Conventions and Definitions {#definition}
 
