@@ -136,7 +136,7 @@ Further, this document does not specify detailed scheduling algorithms that defi
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
-However, scheduling algorithms, that may be specified by the IETF in future,
+However, scheduling algorithms that may be specified by the IETF in future
 can be used with the multipath extension specified in this document.
 
 Specifically, while failover between Wi-Fi
