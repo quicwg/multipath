@@ -132,14 +132,16 @@ and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.
 
-Further, this document does not specify detailed algorithms that define
+Further, this document does not specify detailed scheduling algorithms that define
 how multiple, simultaneously open paths are used to send packets.
-As these differ depending on the application requirements,
+As these differ depending on application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
+However, scheduling algorithms, that may be specified by the IETF in future,
+can be used with the multipath extension specified in this document.
 
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
-it only uses two paths at the same time temporarily in order
+it only uses two paths at the same time temporarily
 to avoid transmission pauses.
 Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
