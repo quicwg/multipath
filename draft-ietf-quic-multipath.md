@@ -430,7 +430,7 @@ limits for this path are respected.
 
 The receiver may receive a connection ID associated with a used path ID
 on different 4-tuples, e.g., due to NAT rebinding. This causes the receiver initiate
-path validation as specified in {{Section 9.3 of QUIC-TRANSPORT}} 
+path validation as specified in {{Section 9.3 of QUIC-TRANSPORT}}
 which MUST use a new connection ID for the same path ID.
 
 ### Address Validation Token
