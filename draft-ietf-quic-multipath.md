@@ -132,21 +132,28 @@ and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.
 
-Further, this document does not specify scheduling algorithms that define
-how multiple, simultaneously open paths are used to send packets.
-As these differ depending on application requirements,
-only some basic implementation guidance is discussed in {{impl-consideration}}.
-However, scheduling algorithms that may be specified by the IETF in future
-can be used with the multipath extension specified in this document.
+The framework specified in this document can be used with 
+a range of scheduling algorithms that define
+how multiple simultaneously open paths are used to send packets. 
+Examples of schedulers can range from support for failover to simulatenous concurrent
+use of the aggreate capacity across all active paths.
 
+The specification of scheduling for multipath in
+the general Internet is outside the scope of this document.  
+There are existing IETF specifications for path fail-over, but
+concurrently no IETF standards-track specifications for simulatenously
+using the capacity of a set of active paths. 
+
+Because the scheduling policy differs depending on application requirements,
+only some basic implementation guidance is discussed in {{impl-consideration}}.
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
-it only uses two paths at the same time temporarily
+it only temporarily uses two paths at the same time 
 to avoid transmission pauses.
-Simultaneous path usage generally, however, needs more consideration
+More general use of simultaneous paths, however, needs more consideration
 than specified in this document to avoid negative performance
 impacts, e.g., when stream data is distributed over multiple paths with
-different delays.
+different delays or to avoid excessive conestion of shared bottlenecks.
 
 ## Conventions and Definitions {#definition}
 
