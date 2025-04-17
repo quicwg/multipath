@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-15T01:01:16.919313+00:00",
+  "timestamp": "2025-04-17T01:00:24.470954+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12947,7 +12947,7 @@
       "id": "I_kwDOGNtpaM6uSddM",
       "title": "Double-check use of path identifier and Path ID",
       "url": "https://github.com/quicwg/multipath/issues/510",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -12957,8 +12957,8 @@
       ],
       "body": "We tried to use \"path identifier\" as the term and \"Path ID\" as the field name, however, maybe it more clear to only use Path ID? In any case we need to check again if used constantly. ",
       "createdAt": "2025-03-17T07:51:50Z",
-      "updatedAt": "2025-04-14T16:49:17Z",
-      "closedAt": null,
+      "updatedAt": "2025-04-15T07:46:23Z",
+      "closedAt": "2025-04-15T07:46:23Z",
       "comments": []
     },
     {
@@ -13043,7 +13043,7 @@
       "id": "I_kwDOGNtpaM6ybjXx",
       "title": "Should we note anything on streams and scheduling?",
       "url": "https://github.com/quicwg/multipath/issues/535",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -13053,8 +13053,8 @@
       ],
       "body": "Maybe all we could do is just noting that scheduling data frames that below to the same on different path will increase the delay to the max path delay for all packets on that stream due to re-ordering, and therefore it could be beneficial to keep data frames of one stream on the same path if the path capacity is large enough.",
       "createdAt": "2025-04-14T16:27:34Z",
-      "updatedAt": "2025-04-14T16:49:26Z",
-      "closedAt": null,
+      "updatedAt": "2025-04-15T07:46:07Z",
+      "closedAt": "2025-04-15T07:46:07Z",
       "comments": []
     }
   ],
@@ -58294,7 +58294,7 @@
       "id": "PR_kwDOGNtpaM6QjYJs",
       "title": "Add paragraph on concurrent path use",
       "url": "https://github.com/quicwg/multipath/pull/521",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -58303,18 +58303,33 @@
       ],
       "body": "As requested by Gorry this PR add the more or less same wording as used in the MP-DCCP document.",
       "createdAt": "2025-03-28T12:32:40Z",
-      "updatedAt": "2025-04-08T07:24:31Z",
+      "updatedAt": "2025-04-16T17:16:12Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "1789f25b6c211a6737c52e2c9563c1a1faaea772",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-4",
-      "headRefOid": "c5447656d0049723e8be27ce26eb847a2188a8c4",
-      "closedAt": null,
+      "headRefOid": "91df51331e045e3f667e11756e1aaf7c4b222e3f",
+      "closedAt": "2025-04-16T17:14:47Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "body": "Your text seems to hint you could do it ,but there are more things to consider; whereas my proposed text says more like the IETF has specified one but not the other. I think we could find text that does both, andthis ought to be a change to the intro reflecting the key points.\r\nI think using the word scheduler in the intro would be good.\r\nOn \"concurrent\": if your usage means that \"simulatenous: is the same as concurrent (i.e. data on both paths) then you can state this - That I would appreciate.\r\nI've decided to abandon the rest of my thread here because it would be better to start a new PR that is based on the latest text. I will of course also review the entire document when ready, and I think the final text can be consistent. Thanks.",
+          "createdAt": "2025-04-16T17:14:47Z",
+          "updatedAt": "2025-04-16T17:14:47Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "After discussion with Gorry, I created PR #538 to add one more sentence to the intro text covering the missing piece of this PR. The other parts should be covered already in the intro (but using different words). Therefore closing this PR in agreement with Gorry to proceed with PR #538 instead.",
+          "createdAt": "2025-04-16T17:16:11Z",
+          "updatedAt": "2025-04-16T17:16:11Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6ifUQ8",
@@ -58353,6 +58368,138 @@
               "body": "I agree with the above comments (especially point 3, as there should not be any packet reordering over a given path, but rather some \"STREAM data\" reordering, which is handled by design in (single-path) QUIC). More generally, do we need to add more than \"Further scheduling considerations are implementation specific and are out of scope of this document.\"?",
               "createdAt": "2025-04-08T07:24:18Z",
               "updatedAt": "2025-04-08T07:24:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k9OWw",
+          "commit": {
+            "abbreviatedOid": "91df513"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "This edit tries to align the wording, however, it uses a lot of words to introduce the term \"concurrent multipath\" while the term used in this document is \"simultaneous path usage\". Let's just stick to this.\r\n\r\nFurther note that this section on is packet scheduling and there is a separate section on congestion control. I also think these two things are different enough that different considerations apply. Congestion control is similar to single path use; there are some additional considerations on fairness but that applies also to situations were applications open multiple connections on the same path, so I don't think this is a completely unknown situation.\r\n\r\nFor scheduling, however, we have less experience but as the text implies this is a general question for all multipath protocols as well as application layer multipath and I don't think it is really necessary to say that any future work is as applicable to this extension than other multipath protocols.\r\n\r\nSo the only thing left is maybe to explicitly say that scheduling was out-of scope for this doc, however, we already say this in the intro:\r\n\r\n\"Further, this document does not specify detailed algorithms that define how multiple, simultaneously open paths are used to send packets. As these differ depending on the application requirements, only some basic implementation guidance is discussed in [Section 5](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#impl-consideration).[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-1-8)\"\r\n\r\nIf we want to make that more explicit, I suggest to edit this sentence further up in this section:\r\n\r\nOLD\r\n\"The scheduling is a local decision, based on the preferences of the application and the\r\nimplementation.\"\r\n\r\nNEW\r\n\"Scheduling is a local decision, based on the preferences of the application and the\r\nimplementation, and is out of scope for this document.\"",
+          "createdAt": "2025-04-15T09:17:48Z",
+          "updatedAt": "2025-04-15T09:31:15Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Note we already added a reference to RFC9743 in section 5.3 on congestion control:\r\n\r\n\"Designers of congestion control algorithms specialized for Multipath QUIC are advised to follow BCP 133; see [Section 7.10](https://rfc-editor.org/rfc/rfc9743#section-7.10) of [[RFC9743](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#RFC9743)].[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.3-2)\"",
+              "createdAt": "2025-04-15T09:17:48Z",
+              "updatedAt": "2025-04-15T09:30:56Z"
+            },
+            {
+              "originalPosition": 9,
+              "body": "This seems to repeat text from RFC9743 and also what we already say in the introduction:\r\n\r\n\"Specifically, while failover between Wi-Fi and mobile networks is a well-known multipath use case, it only uses two paths at the same time temporarily in order to avoid transmission pauses. Simultaneous path usage generally, however, needs more consideration than specified in this document to avoid negative performance impacts, e.g. when stream data is distributed over multiple paths with different delays.[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-1-9)\"\r\n\r\nI assume the intention is to introduce the term \"concurrent multipath\", however, I don't think this is necessary because we should rather use the term that is already introduced in this document, which is \"simultaneous path usage\".",
+              "createdAt": "2025-04-15T09:20:09Z",
+              "updatedAt": "2025-04-15T09:30:56Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "Do we really need this last sentence? I think this goes without saying....",
+              "createdAt": "2025-04-15T09:20:38Z",
+              "updatedAt": "2025-04-15T09:30:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lRFkC",
+          "commit": {
+            "abbreviatedOid": "c544765"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T14:19:57Z",
+          "updatedAt": "2025-04-16T14:19:58Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Re-ordering: This concerns IP packet reordering between paths and over a specific path, which complicates some types of scheduling and could impact a service delivred over a datagram transport. ",
+              "createdAt": "2025-04-16T14:19:57Z",
+              "updatedAt": "2025-04-16T14:19:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lRH1T",
+          "commit": {
+            "abbreviatedOid": "91df513"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T14:22:51Z",
+          "updatedAt": "2025-04-16T14:22:51Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Yes, but please make sure somewhere you differentiate between path failover and concurrent/simultaneous usage.",
+              "createdAt": "2025-04-16T14:22:51Z",
+              "updatedAt": "2025-04-16T14:22:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lRMBe",
+          "commit": {
+            "abbreviatedOid": "91df513"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T14:27:21Z",
+          "updatedAt": "2025-04-16T14:27:22Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Yes, I really would expect that sentence to appear.",
+              "createdAt": "2025-04-16T14:27:21Z",
+              "updatedAt": "2025-04-16T14:27:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lRRRB",
+          "commit": {
+            "abbreviatedOid": "91df513"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T14:31:53Z",
+          "updatedAt": "2025-04-16T14:31:53Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "RFC9743 does that - explaining the difference between path failover and concurrent use. Why do we need to repeat this here if we don't give any additional advise?",
+              "createdAt": "2025-04-16T14:31:53Z",
+              "updatedAt": "2025-04-16T14:31:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lRcqZ",
+          "commit": {
+            "abbreviatedOid": "c544765"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T14:44:57Z",
+          "updatedAt": "2025-04-16T14:44:58Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "This document is not about IP though. So IP packet reordering methods seem totally put of scope of discussion. There's literally nothing I can do with that statement as an implementer of this extension",
+              "createdAt": "2025-04-16T14:44:57Z",
+              "updatedAt": "2025-04-16T14:44:58Z"
             }
           ]
         }
@@ -58671,7 +58818,7 @@
       "id": "PR_kwDOGNtpaM6RohVO",
       "title": "small editorial edits on PATH_ACK usage",
       "url": "https://github.com/quicwg/multipath/pull/525",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -58680,17 +58827,19 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T13:25:04Z",
-      "updatedAt": "2025-04-14T16:12:44Z",
+      "updatedAt": "2025-04-16T18:12:15Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "c06816a0ec36d9d545159e1a058a6fca58dac3c2",
+      "baseRefOid": "15caeb3708fb9ab2aaa2c89f0015de87b0a2db8b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-8",
-      "headRefOid": "da4795bcea952b791e0ef097aa541f8a512b97f6",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "1c9c80e794cd12259e67aa1a9449b62b92209ecd",
+      "closedAt": "2025-04-16T18:12:15Z",
+      "mergedAt": "2025-04-16T18:12:15Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "9f07dcd7f995f161c52dafa496fb1a91f8e6d079"
+      },
       "comments": [],
       "reviews": [
         {
@@ -58842,6 +58991,99 @@
               "body": "@qdeconinck any proposal how to improve the sentence?",
               "createdAt": "2025-04-14T16:12:44Z",
               "updatedAt": "2025-04-14T16:12:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k7hUx",
+          "commit": {
+            "abbreviatedOid": "da4795b"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "My suggestion is only a suggestion; for the rest, we can merge.",
+          "createdAt": "2025-04-15T07:00:29Z",
+          "updatedAt": "2025-04-15T07:01:17Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "My proposal would be to add more context to the example, but the \"example text\" would start being larger. I will do a suggestion.\r\n\r\n```suggestion\r\nFor example, a sender may negotiate multipath support for later use and keep\r\nonly the initial path with path ID 0 for a while. During this single-path period,\r\nACK frames might be preferred by the sender.\r\n```",
+              "createdAt": "2025-04-15T07:00:29Z",
+              "updatedAt": "2025-04-15T07:01:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k8A9K",
+          "commit": {
+            "abbreviatedOid": "da4795b"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-15T07:45:24Z",
+          "updatedAt": "2025-04-15T07:45:24Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "wfm",
+              "createdAt": "2025-04-15T07:45:24Z",
+              "updatedAt": "2025-04-16T08:02:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lJq2Y",
+          "commit": {
+            "abbreviatedOid": "1621e09"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good. ",
+          "createdAt": "2025-04-16T05:13:22Z",
+          "updatedAt": "2025-04-16T05:13:22Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lMtVX",
+          "commit": {
+            "abbreviatedOid": "1621e09"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T08:06:00Z",
+          "updatedAt": "2025-04-16T08:06:00Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\nFor example, a sender may negotiate multipath support for later use and keep\r\nonly the initial path with path ID 0 for a while. During this single-path period,\r\nthe sender might prefer to send ACK frames.\r\n```\r\nSorry this proposed edit by @qdeconinck got lost when I fixed a merge conflict. So we want it or not?",
+              "createdAt": "2025-04-16T08:06:00Z",
+              "updatedAt": "2025-04-16T18:09:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lTeQg",
+          "commit": {
+            "abbreviatedOid": "1621e09"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T17:41:16Z",
+          "updatedAt": "2025-04-16T17:41:16Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "OK, but avoid the passive form. Say \"During this single-path period, the sender might prefer to send ACK frames.\"",
+              "createdAt": "2025-04-16T17:41:16Z",
+              "updatedAt": "2025-04-16T17:41:16Z"
             }
           ]
         }
@@ -59406,7 +59648,7 @@
       "id": "PR_kwDOGNtpaM6RpncA",
       "title": "Merge idle timeout and keep alive section",
       "url": "https://github.com/quicwg/multipath/pull/533",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -59415,17 +59657,19 @@
       ],
       "body": "",
       "createdAt": "2025-04-07T15:07:08Z",
-      "updatedAt": "2025-04-09T11:34:24Z",
+      "updatedAt": "2025-04-16T17:40:41Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "629eab638df02a36618021439376e0a739c0d8d2",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-16",
       "headRefOid": "ed44a8dd3012fc930b567c6cf4350c152ffe75a3",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-04-16T17:40:40Z",
+      "mergedAt": "2025-04-16T17:40:40Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "e62dbe44d6b94920ccbe5fe72ea796d94ff28b63"
+      },
       "comments": [],
       "reviews": [
         {
@@ -59485,6 +59729,99 @@
               "body": "Yes, but I don't see a real problem just saying it anyway and keeping the sentence as it is...",
               "createdAt": "2025-04-09T11:34:24Z",
               "updatedAt": "2025-04-09T11:34:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k7jrf",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Ok.",
+          "createdAt": "2025-04-15T07:03:16Z",
+          "updatedAt": "2025-04-15T07:03:16Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lJumZ",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Basically I think the new sentences are much more clearer. A few nits.",
+          "createdAt": "2025-04-16T05:18:56Z",
+          "updatedAt": "2025-04-16T05:21:30Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\r\nIf a path was not actively used for a while and no more packets have been sent,\r\n```",
+              "createdAt": "2025-04-16T05:18:56Z",
+              "updatedAt": "2025-04-16T05:21:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lMwRE",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T08:10:15Z",
+          "updatedAt": "2025-04-16T08:10:16Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "I don't think this change puts it right. Active use effectively already implies that no packets have been sent, however, this second part is here to be explicit that also no keep alives have been sent because that is the kind of probing we talk about. If we want to change this sentence we could just remove the second part about keep alives but I think it's okay to be explicit.",
+              "createdAt": "2025-04-16T08:10:15Z",
+              "updatedAt": "2025-04-16T08:10:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lTZZf",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-16T17:33:09Z",
+          "updatedAt": "2025-04-16T17:33:20Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "I think I agree with @mirjak.",
+              "createdAt": "2025-04-16T17:33:09Z",
+              "updatedAt": "2025-04-16T17:33:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lTd3w",
+          "commit": {
+            "abbreviatedOid": "ed44a8d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T17:40:31Z",
+          "updatedAt": "2025-04-16T17:40:31Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "Okay, I will merge the PR now as it is.",
+              "createdAt": "2025-04-16T17:40:31Z",
+              "updatedAt": "2025-04-16T17:40:31Z"
             }
           ]
         }
@@ -59547,7 +59884,7 @@
       "id": "PR_kwDOGNtpaM6Sg-_h",
       "title": "note on sending data frames on different paths",
       "url": "https://github.com/quicwg/multipath/pull/536",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -59557,17 +59894,19 @@
       ],
       "body": "fixes #535 \r\n\r\nThis proposed note is an optional addition. It's also okay to not merge if we don't think it very useful",
       "createdAt": "2025-04-14T16:34:00Z",
-      "updatedAt": "2025-04-14T19:53:41Z",
+      "updatedAt": "2025-04-15T07:46:06Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "91cefe3e1b8384f489e06eee377ae78477f9ed4b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-18",
       "headRefOid": "7197920ab73e47bbf5351dfd147f42ed2355c80c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-04-15T07:46:06Z",
+      "mergedAt": "2025-04-15T07:46:06Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "6bc8a4744c1bd7173fc702882567df7637152f4b"
+      },
       "comments": [],
       "reviews": [
         {
@@ -59629,6 +59968,19 @@
               "updatedAt": "2025-04-14T19:53:17Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k7b2g",
+          "commit": {
+            "abbreviatedOid": "7197920"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "True and good enough to explicitly state it.",
+          "createdAt": "2025-04-15T06:52:28Z",
+          "updatedAt": "2025-04-15T06:52:28Z",
+          "comments": []
         }
       ]
     },
@@ -59637,7 +59989,7 @@
       "id": "PR_kwDOGNtpaM6ShF1j",
       "title": "use only path ID",
       "url": "https://github.com/quicwg/multipath/pull/537",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -59647,17 +59999,19 @@
       ],
       "body": "fixes #510 \r\n\r\nthis patch replaces \"path identifier\" with path ID (expect in the field names) and also uses lower case \"p\" align with lower case c for connection ID in RFC9000",
       "createdAt": "2025-04-14T16:48:04Z",
-      "updatedAt": "2025-04-14T19:52:58Z",
+      "updatedAt": "2025-04-15T07:46:22Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "91cefe3e1b8384f489e06eee377ae78477f9ed4b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-19",
       "headRefOid": "3fafc99370fde123d299e4cdaee859f3c928f0d5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-04-15T07:46:22Z",
+      "mergedAt": "2025-04-15T07:46:22Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "15caeb3708fb9ab2aaa2c89f0015de87b0a2db8b"
+      },
       "comments": [],
       "reviews": [
         {
@@ -59672,8 +60026,138 @@
           "createdAt": "2025-04-14T19:38:45Z",
           "updatedAt": "2025-04-14T19:38:45Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6k7a5w",
+          "commit": {
+            "abbreviatedOid": "3fafc99"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-15T06:51:27Z",
+          "updatedAt": "2025-04-15T06:51:27Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 538,
+      "id": "PR_kwDOGNtpaM6S333N",
+      "title": "note applicability of future scheduling algorithms",
+      "url": "https://github.com/quicwg/multipath/pull/538",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "clarification"
+      ],
+      "body": "This is an alternative PR to #521 extending the existing text in the intro rather than adding entirely new text later on.",
+      "createdAt": "2025-04-16T17:13:29Z",
+      "updatedAt": "2025-04-16T23:28:43Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "15caeb3708fb9ab2aaa2c89f0015de87b0a2db8b",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-20",
+      "headRefOid": "346ed0ddee74a5f528b90d949a4d833de444d51b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6lUnOr",
+          "commit": {
+            "abbreviatedOid": "f679dbe"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "No big issue.",
+          "createdAt": "2025-04-16T19:34:31Z",
+          "updatedAt": "2025-04-16T19:34:50Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Too many commas? Copy editors insist on no comma before \"that\", and the one after future is not useful.",
+              "createdAt": "2025-04-16T19:34:32Z",
+              "updatedAt": "2025-04-16T19:35:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lWZN2",
+          "commit": {
+            "abbreviatedOid": "f679dbe"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T23:28:16Z",
+          "updatedAt": "2025-04-16T23:28:16Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\nHowever, scheduling algorithms that may be specified by the IETF in future\r\n```",
+              "createdAt": "2025-04-16T23:28:16Z",
+              "updatedAt": "2025-04-16T23:28:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lWZUn",
+          "commit": {
+            "abbreviatedOid": "346ed0d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-16T23:28:43Z",
+          "updatedAt": "2025-04-16T23:28:43Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I thought they help but removed them now.",
+              "createdAt": "2025-04-16T23:28:43Z",
+              "updatedAt": "2025-04-16T23:28:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 539,
+      "id": "PR_kwDOGNtpaM6S4Ogv",
+      "title": "Update draft-ietf-quic-multipath.md",
+      "url": "https://github.com/quicwg/multipath/pull/539",
+      "state": "CLOSED",
+      "author": "gorryfair",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "mirjak"
+      ],
+      "labels": [],
+      "body": "Adding some more nuances to this PR.",
+      "createdAt": "2025-04-16T18:02:53Z",
+      "updatedAt": "2025-04-16T18:08:01Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "mirjak-patch-20",
+      "baseRefOid": "152e1a577ceca44469a3c8f858f7e58ef89973ae",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "gorryfair-patch-1",
+      "headRefOid": "4ac948341a1aa54c1f2eb1799e52f43563a853af",
+      "closedAt": "2025-04-16T18:08:01Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
