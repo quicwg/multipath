@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 18 October 2025                          Uber Technologies Inc.
+Expires: 19 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 18 October 2025                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           16 April 2025
+                                                           17 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 October 2025.
+   This Internet-Draft will expire on 19 October 2025.
 
 Copyright Notice
 
@@ -175,13 +175,13 @@ Table of Contents
    prevent future extensions from defining mechanisms to cope with the
    remaining scenarios.
 
-   Further, this document does not specify detailed scheduling
-   algorithms that define how multiple, simultaneously open paths are
-   used to send packets.  As these differ depending on application
-   requirements, only some basic implementation guidance is discussed in
-   Section 5.  However, scheduling algorithms that may be specified by
-   the IETF in future can be used with the multipath extension specified
-   in this document.
+   Further, this document does not specify scheduling algorithms that
+   define how multiple, simultaneously open paths are used to send
+   packets.  As these differ depending on application requirements, only
+   some basic implementation guidance is discussed in Section 5.
+   However, scheduling algorithms that may be specified by the IETF in
+   future can be used with the multipath extension specified in this
+   document.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
    well-known multipath use case, it only uses two paths at the same
