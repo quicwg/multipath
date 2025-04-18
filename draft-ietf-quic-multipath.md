@@ -141,7 +141,7 @@ use of the aggreate capacity across all active paths.
 The specification of scheduling for multipath in
 the general Internet is outside the scope of this document.  
 There are existing IETF specifications for path fail-over, but
-concurrently no IETF standards-track specifications for simulatenously
+concurrently no IETF standards-track specifications for simultaneously
 using the capacity of a set of active paths. 
 
 Because the scheduling policy differs depending on application requirements,
