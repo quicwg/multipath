@@ -153,7 +153,7 @@ to avoid transmission pauses.
 More general use of simultaneous paths, however, needs more consideration
 than specified in this document to avoid negative performance
 impacts, e.g., when stream data is distributed over multiple paths with
-different delays or to avoid excessive conestion of shared bottlenecks.
+different delays or to avoid excessive congestion of shared bottlenecks.
 
 ## Conventions and Definitions {#definition}
 
