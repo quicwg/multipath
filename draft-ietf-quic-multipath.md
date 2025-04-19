@@ -141,7 +141,8 @@ e.g., can range from support for failover to simulatenous
 use of the aggreate capacity across all active paths.
 There are IETF specifications for path fail-over, but
 there are currently no IETF standards-track specifications for simultaneously
-(concurrently) using the aggregated capacity of a set of active paths. 
+(concurrently) using the aggregated capacity of a set of active paths.
+
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
 it only temporarily uses two paths at the same time
