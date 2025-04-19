@@ -141,7 +141,7 @@ can be used with the multipath extension specified in this document.
 
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
-it only uses two paths at the same time temporarily
+it only temporarily uses two paths at the same time
 to avoid transmission pauses.
 Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
