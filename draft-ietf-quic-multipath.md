@@ -144,7 +144,7 @@ there are currently no IETF standards-track specifications for simultaneously
 (concurrently) using the aggregated capacity of a set of active paths. 
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
-it only temporarily uses two paths at the same time 
+it only temporarily uses two paths at the same time
 to avoid transmission pauses.
 Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
