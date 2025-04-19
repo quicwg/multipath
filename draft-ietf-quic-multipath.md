@@ -136,8 +136,12 @@ Further, this document does not specify scheduling algorithms that define
 how multiple, simultaneously open paths are used to send packets.
 As these differ depending on application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
-However, scheduling algorithms that may be specified by the IETF in future
-can be used with the multipath extension specified in this document.
+This extension can be used with different scheduling algorithms that,
+e.g., can range from support for failover to simulatenous
+use of the aggreate capacity across all active paths.
+There are IETF specifications for path fail-over, but
+there are currently no IETF standards-track specifications for simultaneously
+(concurrently) using the aggregated capacity of a set of active paths.
 
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
