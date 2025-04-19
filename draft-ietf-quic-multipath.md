@@ -132,17 +132,17 @@ and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.
 
-The framework specified in this document can be used with 
-a range of scheduling algorithms that define
+This extension can be used with 
+different scheduling algorithms that define
 how multiple simultaneously open paths are used to send packets. 
-Examples of schedulers can range from support for failover to simulatenous concurrent
+Examples of schedulers can range from support for failover to simulatenous
 use of the aggreate capacity across all active paths.
 
-The specification of scheduling for multipath in
-the general Internet is outside the scope of this document.  
-There are existing IETF specifications for path fail-over, but
-concurrently no IETF standards-track specifications for simultaneously
-using the capacity of a set of active paths. 
+This document does not specify scheduling for multipath in
+the general Internet.
+There are IETF specifications for path fail-over, but
+there are currently no IETF standards-track specifications for simultaneously
+(concurrently) using the aggreate capacity of a set of active paths. 
 
 Because the scheduling policy differs depending on application requirements,
 only some basic implementation guidance is discussed in {{impl-consideration}}.
