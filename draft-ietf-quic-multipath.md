@@ -150,10 +150,10 @@ Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
 it only temporarily uses two paths at the same time 
 to avoid transmission pauses.
-More general use of simultaneous paths, however, needs more consideration
+Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
 impacts, e.g., when stream data is distributed over multiple paths with
-different delays or to avoid excessive congestion of shared bottlenecks.
+different delays.
 
 ## Conventions and Definitions {#definition}
 
