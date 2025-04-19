@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 19 October 2025                          Uber Technologies Inc.
+Expires: 21 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 19 October 2025                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           17 April 2025
+                                                           19 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 October 2025.
+   This Internet-Draft will expire on 21 October 2025.
 
 Copyright Notice
 
@@ -184,11 +184,11 @@ Table of Contents
    document.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
-   well-known multipath use case, it only uses two paths at the same
-   time temporarily to avoid transmission pauses.  Simultaneous path
-   usage generally, however, needs more consideration than specified in
-   this document to avoid negative performance impacts, e.g., when
-   stream data is distributed over multiple paths with different delays.
+   well-known multipath use case, it only temporarily uses two paths at
+   the same time to avoid transmission pauses.  Simultaneous path usage
+   generally, however, needs more consideration than specified in this
+   document to avoid negative performance impacts, e.g., when stream
+   data is distributed over multiple paths with different delays.
 
 1.1.  Conventions and Definitions
 
