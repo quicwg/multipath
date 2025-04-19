@@ -138,8 +138,7 @@ how multiple simultaneously open paths are used to send packets.
 Examples of schedulers can range from support for failover to simulatenous
 use of the aggreate capacity across all active paths.
 
-This document does not specify a scheduling algorithm for multipath in
-the general Internet.
+This document does not specify a scheduling algorithm.
 There are IETF specifications for path fail-over, but
 there are currently no IETF standards-track specifications for simultaneously
 (concurrently) using the aggreate capacity of a set of active paths. 
