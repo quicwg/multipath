@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-17T01:00:24.470954+00:00",
+  "timestamp": "2025-04-20T01:04:46.661299+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -12992,7 +12992,7 @@
       "id": "I_kwDOGNtpaM6urqfg",
       "title": "Double-check recommendation on minRTT and cc",
       "url": "https://github.com/quicwg/multipath/issues/513",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -13001,9 +13001,17 @@
       ],
       "body": "Indicated by Gorry that more discussion in the implementation guidance section might be useful. Especially as ACK might not be sent on the same than the data.",
       "createdAt": "2025-03-19T07:03:25Z",
-      "updatedAt": "2025-03-19T07:03:25Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-04-17T10:21:34Z",
+      "closedAt": "2025-04-17T10:21:33Z",
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this issue after confirming with Gorry that editorial pass on RTT computing section clarified this.",
+          "createdAt": "2025-04-17T10:21:33Z",
+          "updatedAt": "2025-04-17T10:21:33Z"
+        }
+      ]
     },
     {
       "number": 514,
@@ -60056,13 +60064,13 @@
       ],
       "body": "This is an alternative PR to #521 extending the existing text in the intro rather than adding entirely new text later on.",
       "createdAt": "2025-04-16T17:13:29Z",
-      "updatedAt": "2025-04-16T23:28:43Z",
+      "updatedAt": "2025-04-19T17:48:54Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "15caeb3708fb9ab2aaa2c89f0015de87b0a2db8b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-20",
-      "headRefOid": "346ed0ddee74a5f528b90d949a4d833de444d51b",
+      "headRefOid": "6249b79dd31d4d17266babd6981f9b59afe076d2",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -60128,6 +60136,130 @@
               "updatedAt": "2025-04-16T23:28:44Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6la_Vl",
+          "commit": {
+            "abbreviatedOid": "346ed0d"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-17T10:40:07Z",
+          "updatedAt": "2025-04-17T10:40:07Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Proposed by Gorry:\r\n```suggestion\r\nFurther, this document does not specify scheduling algorithms that define\r\n```",
+              "createdAt": "2025-04-17T10:40:07Z",
+              "updatedAt": "2025-04-17T10:40:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lceZm",
+          "commit": {
+            "abbreviatedOid": "c9a0f06"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-17T13:19:15Z",
+          "updatedAt": "2025-04-17T13:19:15Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsdnl",
+          "commit": {
+            "abbreviatedOid": "c9a0f06"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T07:23:07Z",
+          "updatedAt": "2025-04-19T07:23:07Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nit only temporarily uses two paths at the same time\r\n```",
+              "createdAt": "2025-04-19T07:23:07Z",
+              "updatedAt": "2025-04-19T07:23:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsfIn",
+          "commit": {
+            "abbreviatedOid": "2db066c"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-19T07:45:36Z",
+          "updatedAt": "2025-04-19T07:45:36Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lssPI",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "I merged a new suggestion from Gorry. If needed I\u2018d be okay to keep the text as it but I have still three small comments to clarify the text and also make it shorter.",
+          "createdAt": "2025-04-19T12:49:54Z",
+          "updatedAt": "2025-04-19T12:56:15Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Do we really need to mention that there is a failover spec? As I said earlier I don\u2019t think RFC7829 is necessarily relevant here as it doesn\u2019t really assume that both paths are used simultaneously. If we want to keep this however I think we need to give a reference\u2026?\r\n\r\n```suggestion\r\n```\r\n",
+              "createdAt": "2025-04-19T12:49:54Z",
+              "updatedAt": "2025-04-19T12:56:15Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "Can we maybe just remove \u201estandards-track\u201c? Because this is also true for none standards-track specs.\r\n\r\n```suggestion\r\nthere are currently no IETF specifications for simultaneously\r\n```",
+              "createdAt": "2025-04-19T12:51:13Z",
+              "updatedAt": "2025-04-19T12:56:15Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "Do we need to say \u201eaggregated capacity\u201c here again?\r\n\r\nThis would be less wordy:\r\n```suggestion\r\n(concurrently) using multiple paths.\r\n```",
+              "createdAt": "2025-04-19T12:52:43Z",
+              "updatedAt": "2025-04-19T12:56:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6ltFL8",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Good suggestions for streamlining the text. Let's apply them.",
+          "createdAt": "2025-04-19T17:46:53Z",
+          "updatedAt": "2025-04-19T17:48:54Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I agree that we should strike out that sentence. I was almost ready to commit the suggestion, but will let @mirjak do that once consensus is assessed.\r\n\r\nI did read RFC7829, and I don't think citing it would be useful. The multipath extension does not create a new path fail-over capability, because that capability is already defined in RFC 9000. For example, the concern about simultaneous failover creating a thundering herd issue applies equally with and without the multipath extensions to RFC 9000. ",
+              "createdAt": "2025-04-19T17:46:53Z",
+              "updatedAt": "2025-04-19T17:48:54Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "+1",
+              "createdAt": "2025-04-19T17:47:50Z",
+              "updatedAt": "2025-04-19T17:48:54Z"
+            }
+          ]
         }
       ]
     },
@@ -60158,6 +60290,496 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 540,
+      "id": "PR_kwDOGNtpaM6S97J9",
+      "title": "Some remaining small editorial improvements from Gorry",
+      "url": "https://github.com/quicwg/multipath/pull/540",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "This addresses outstanding comments from Gorry's review (see email) and some edits he proposed in a follow-up email to me.\r\n\r\nThanks Gorry!",
+      "createdAt": "2025-04-17T10:15:04Z",
+      "updatedAt": "2025-04-17T16:19:13Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "9f07dcd7f995f161c52dafa496fb1a91f8e6d079",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-21",
+      "headRefOid": "7e6d8eec4b735a0c8331c3de67503511d41abbc9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6la09L",
+          "commit": {
+            "abbreviatedOid": "037e698"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-17T10:20:12Z",
+          "updatedAt": "2025-04-17T10:20:12Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\npath validation as specified in {{Section 9.3 of QUIC-TRANSPORT}}\r\n```",
+              "createdAt": "2025-04-17T10:20:12Z",
+              "updatedAt": "2025-04-17T10:20:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lccEO",
+          "commit": {
+            "abbreviatedOid": "7e6d8ee"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2025-04-17T13:16:33Z",
+          "updatedAt": "2025-04-17T13:16:33Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lexUZ",
+          "commit": {
+            "abbreviatedOid": "7e6d8ee"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-17T16:19:13Z",
+          "updatedAt": "2025-04-17T16:19:13Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 541,
+      "id": "PR_kwDOGNtpaM6TBE2o",
+      "title": "Text proposed to address scope/expectation",
+      "url": "https://github.com/quicwg/multipath/pull/541",
+      "state": "MERGED",
+      "author": "gorryfair",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Here are a bunch of changes that I think cover all my corner cases of what the IETF has STD'ed/what would be regarded as EXP, and the caveats, while hopefully not constraining the use of MP-QUIC. I am super happier about the idea that this appears in the intro, rather than the spec.",
+      "createdAt": "2025-04-17T16:45:52Z",
+      "updatedAt": "2025-04-19T12:44:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "mirjak-patch-20",
+      "baseRefOid": "2db066c235ddcdc4aa7da8c5bc5085afd95a30cc",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "gorryfair-patch-2",
+      "headRefOid": "4115a2e1bbbe6d6402f1b7f0e1f08099b4b1430e",
+      "closedAt": "2025-04-19T12:44:37Z",
+      "mergedAt": "2025-04-19T12:44:37Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "6249b79dd31d4d17266babd6981f9b59afe076d2"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6lkTJP",
+          "commit": {
+            "abbreviatedOid": "f7b67c3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T06:37:34Z",
+          "updatedAt": "2025-04-18T06:37:34Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\ndifferent delays or to avoid excessive congestion of shared bottlenecks.\r\n```",
+              "createdAt": "2025-04-18T06:37:34Z",
+              "updatedAt": "2025-04-18T06:37:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkWN0",
+          "commit": {
+            "abbreviatedOid": "c698bd3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T06:41:06Z",
+          "updatedAt": "2025-04-18T06:41:07Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "This is a separate issue and not necessarily a \"negative performance impact\". E.g. early version of BBR could lead to high loss but exactly because of its aggressiveness would provide better application performance.\r\nAlso congestion control is there to avoid excessive congestion and this has nothing to do with use of multipath. So what is the actually problem for shared bottlenecks that you want to point out here?",
+              "createdAt": "2025-04-18T06:41:06Z",
+              "updatedAt": "2025-04-18T06:41:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkb-L",
+          "commit": {
+            "abbreviatedOid": "c698bd3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T06:47:35Z",
+          "updatedAt": "2025-04-18T06:47:35Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nconcurrently no IETF standards-track specifications for simultaneously\r\n```",
+              "createdAt": "2025-04-18T06:47:35Z",
+              "updatedAt": "2025-04-18T06:47:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkfmN",
+          "commit": {
+            "abbreviatedOid": "c698bd3"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T06:55:45Z",
+          "updatedAt": "2025-04-18T06:55:45Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "It's an example, and if you think there are sensitivities you can skip the second example.\r\nThe example is about avoiding *excessive congestion*, and that can arise, or can not arise when  you share a common bottleneck - I'd say congestion is not a negative impact but excessive congestion is. \r\nAnyway, as I noted I REALLY don't mind not having the example.",
+              "createdAt": "2025-04-18T06:55:45Z",
+              "updatedAt": "2025-04-18T06:55:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkgHd",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T06:57:13Z",
+          "updatedAt": "2025-04-18T06:57:13Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "A couple of comments:\r\n\r\n- This text again uses the term \"framework\" which we don't use in this document and I don't find appropriate.\r\n- I personally prefer the phrasing \"this document does not specify\" instead of talking about \"out of scope\". I think that is more clear and otherwise the question comes up why is it out of scope. I think it's reflecting more how we decided to focus the document and leave other things for future work. Why do you think that the \"out-of-scope\" re-wording is needed/different/better?\r\n- Are there existing IETF specification of path fail-over? Which? if so we should add a reference somewhere (not necessarily here but maybe in the scheduling section) but not sure what you mean.\r\n- I don't think we need to say \"simultaneously using the capacity of a set of\" that is just more words and still says the same thing as \"simultaneously using multiple paths\".\r\n- Actually I don't really understand why it is important to mention \"standards-track\" here?\r\n- Saying \"simultaneous concurrent\" is saying the same thing twice. I don't see a different here. We keep using \"simultaneous\" in this document, so I think we should stick with it. We could change that but I don't see a difference.",
+              "createdAt": "2025-04-18T06:57:13Z",
+              "updatedAt": "2025-04-18T07:20:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkl_h",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T07:03:22Z",
+          "updatedAt": "2025-04-18T07:03:23Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "How about keep the old text and adding the following sentence, which I believes covers what you want to say above with less wordings:\r\n\r\n```suggestion\r\nFurther, this document does not specify scheduling algorithms that define\r\nhow multiple, simultaneously open paths are used to send packets.\r\nAs these differ depending on application requirements,\r\nonly some basic implementation guidance is discussed in {{impl-consideration}}.\r\nHowever, this extension can be used with different scheduling algorithms,\r\ne.g., for failover or capacity aggregation, even though\r\nthere is no IETF document that specifies scheduling algorithms\r\nfor simultaneous path usage at this point of time.\r\n```",
+              "createdAt": "2025-04-18T07:03:22Z",
+              "updatedAt": "2025-04-18T07:03:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lktlk",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T07:11:53Z",
+          "updatedAt": "2025-04-18T07:11:53Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "If you think it is import to say something about congestion (control) I would prefer to add a separate sentence. Or we could just mention congestion control explicitly when we already refer to the implementation guidance above, like this:\r\n\r\n> only some basic implementation guidance is discussed in {{impl-consideration}},\r\n> including congestion control considerations for shared bottlenecks.\r\n\r\nHowever, I thought we agreed that we don't need to mention congestion control explicitly in the intro and the text in the implementation guidance section is sufficient.",
+              "createdAt": "2025-04-18T07:11:53Z",
+              "updatedAt": "2025-04-18T07:11:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkwFA",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T07:14:22Z",
+          "updatedAt": "2025-04-18T07:14:23Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "sorry I typed my second reply on an out-dated view where Gorry's reply didn't show up and as such our postings crossed each other. I'm okay with just remove it. Thanks!",
+              "createdAt": "2025-04-18T07:14:23Z",
+              "updatedAt": "2025-04-18T07:14:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lk0Ao",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T07:18:58Z",
+          "updatedAt": "2025-04-18T07:18:58Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "Actually I find the original phrasing better because a) \"more general\" seems very unspecific (but we could just remove the \"more\") and b) I think it's \"simultaneous use\" and not \"simultaneous paths\". So we could say \"General simultaneous use of multiple paths\" but that seems more clumsy than the original phrasing and I don't see a real difference...?",
+              "createdAt": "2025-04-18T07:18:58Z",
+              "updatedAt": "2025-04-18T07:18:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lkt9s",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T07:12:15Z",
+          "updatedAt": "2025-04-18T12:46:58Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "I agree /framework/extension/ is surely better.\r\n\r\nI think /outside the scope of this document/ came from earlier text from others in this I-D (the work was never expected to specify) - I too would be happy with /does not specify/. \r\n\r\nRFC 7829 is STD, and is a PF spec. Perhaps confusingly the title is quick failover ;-), but it's about SCTP.\r\n\r\n/capacity of /using the aggregate capacity of/. - out omit if you much prefer?\r\n\r\nI do think it is important to mention the STD status. The assertion here is that although methods like RFC6356 are EXP, this extension is STD. This spec can be used with either.\r\n\r\n I'd say we must mention this keyword: concurrent. It is used in the literature - and concurrent multipath was a topic long before QUIC was on the seem, it has also been used in other IETF work. I don't mind if you define simultaneous in this spec. (that's your choice). I do think it should explain that concurrent usage is within scope. IF you have strong opinions place the word concurrent in brackets, or whatever; or add a separate sentence if you need. \r\n",
+              "createdAt": "2025-04-18T07:13:03Z",
+              "updatedAt": "2025-04-18T12:46:58Z"
+            },
+            {
+              "originalPosition": 30,
+              "body": "I think we differ on what \"generally\" implies. This isn't important to me.",
+              "createdAt": "2025-04-18T12:36:48Z",
+              "updatedAt": "2025-04-18T12:46:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lnLfV",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-18T12:50:37Z",
+          "updatedAt": "2025-04-18T12:50:37Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "... You can write: Simultaneous path usage generally, however, needs more consideration.",
+              "createdAt": "2025-04-18T12:50:37Z",
+              "updatedAt": "2025-04-18T12:50:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsbRP",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T06:34:14Z",
+          "updatedAt": "2025-04-19T06:34:14Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "As agreed reverting to original text:\r\n```suggestion\r\nSimultaneous path usage generally, however, needs more consideration\r\n```",
+              "createdAt": "2025-04-19T06:34:14Z",
+              "updatedAt": "2025-04-19T06:34:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsbTE",
+          "commit": {
+            "abbreviatedOid": "c698bd3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T06:35:02Z",
+          "updatedAt": "2025-04-19T06:35:02Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "As agreed removing this additional text:\r\n```suggestion\r\ndifferent delays.\r\n```",
+              "createdAt": "2025-04-19T06:35:02Z",
+              "updatedAt": "2025-04-19T06:35:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lscuv",
+          "commit": {
+            "abbreviatedOid": "eb692aa"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T07:02:12Z",
+          "updatedAt": "2025-04-19T07:02:12Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "I made a new suggestion, based on the above, see PR text.",
+              "createdAt": "2025-04-19T07:02:12Z",
+              "updatedAt": "2025-04-19T07:02:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lscwp",
+          "commit": {
+            "abbreviatedOid": "6e9e7a0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T07:02:56Z",
+          "updatedAt": "2025-04-19T07:02:56Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Thanks for the reference to RFC7829. I wasn't aware of this RFC. However, I\u2019m not sure RFC7829 is really relevant here because I don\u2019t think it necessarily assumes that packet are transmitted on more than one path at any point of time. It\u2019s more you want to detect a breakage quickly and stop sending on one path and then start sending on another path. So in other words no concurrent use. However, I only had a quick look.\r\n\r\nOn the term concurrent multipath: MP-TCP uses \u201csimultaneous\". There is not a single occurrence of \u201cconcurrent\u201d in that RFC8684. So why is this a requirement for this document now? Also we now refer to RFC9743 which explains and uses that term but given scheduling is not part of this document, I don\u2019t see why we need to use it. I think \u201csimultaneous\u201d is equally clear. \r\n\r\nHowever, here is a proposal to add this to my proposed sentence above:\r\n```suggestion\r\nFurther, this document does not specify scheduling algorithms that define\r\nhow multiple, simultaneously open paths are used to send packets.\r\nAs these differ depending on application requirements,\r\nonly some basic implementation guidance is discussed in {{impl-consideration}}.\r\nThis extension can be used with different scheduling algorithms,\r\ne.g., for failover or capacity aggregation, even though\r\nthere is no IETF document that specifies scheduling algorithms\r\nfor simultaneous path usage, sometime also referred to as concurrent multipath, at this point of time.\r\n```\r\n\r\n@Gorry please let me know if that proposed text/sentence would be okay for you instead of your text?\r\n\r\nHowever, I would also like to get more input from others before merging! @LPardue @huitema @qdeconinck @Yanmei-Liu ",
+              "createdAt": "2025-04-19T07:02:56Z",
+              "updatedAt": "2025-04-19T07:02:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsdaP",
+          "commit": {
+            "abbreviatedOid": "8da22d3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T07:18:06Z",
+          "updatedAt": "2025-04-19T07:18:06Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "This is a proposal to rearrange the text to make the different to the existing text smaller:\r\n```suggestion\r\nFurther, this document does not specify scheduling algorithms \r\nfor multipath usage in the general Internet.\r\nAs these differ depending on application requirements,\r\nonly some basic implementation guidance is discussed in {{impl-consideration}}.\r\nThis extension can be used with  different scheduling algorithms that\r\ne.g. can range from support for failover to simultaneous\r\nuse of the aggregated capacity across all active paths.\r\nThere are IETF specifications for path fail-over, but\r\nthere are currently no IETF standards-track specifications for simultaneously\r\n(concurrently) using the aggreate capacity of a set of active paths. \r\n```\r\nHowever, I still have some comments on this text:\r\na) I don't think we should say \"scheduling for the general Internet\" because this document does actually not specify any scheduling algorithm. If you add \"for the general Internet\" this sounds like it does specify something but it can only not be used in the general Internet. Why is that needed?\r\nb) I would like to still remove \"standards track\" because I don't think it matter if that doc would be PS or informational and also this sound like there is only no PR doc but there is no doc at all.\r\nc) If we say there are specs for failover we should add a reference, however, as I said earlier I don't think RFC7829 is really relevant here.\r\nd) I would still prefer a shorter version as proposed by my previously",
+              "createdAt": "2025-04-19T07:18:06Z",
+              "updatedAt": "2025-04-19T07:18:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsgJr",
+          "commit": {
+            "abbreviatedOid": "8da22d3"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T08:09:58Z",
+          "updatedAt": "2025-04-19T08:09:58Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "(a) Changed. \r\n(b, c) The principle behind RFC7829 might or might not be relevant - that would be for the WG to decide. If the WG thinks it is not relevant background for QUIC, then the I-D could say there are no current IETF standards-track documents defining schedulers for MP_QUIC for use in the general Internet.\r\n- I'd much prefer text that also includes something like \"if and when the IETF standardises a scheduling method this can be used with this extension\".\r\n(d) Of course, you might prefer your own shorter text;-). \r\n\r\nI will anyway be sure to look to what has been finally written, and will ask questions when the WG decides to request publication.",
+              "createdAt": "2025-04-19T08:09:58Z",
+              "updatedAt": "2025-04-19T08:09:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lshEl",
+          "commit": {
+            "abbreviatedOid": "c1cfe1a"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T08:27:19Z",
+          "updatedAt": "2025-04-19T08:27:20Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Thanks for further updates.\r\n\r\nProposing again to re-order your sentences to keep changes to the existing text minimal:\r\n```suggestion\r\nFurther, this document does not specify scheduling algorithms that define\r\nhow multiple, simultaneously open paths are used to send packets.\r\nAs these differ depending on application requirements,\r\nonly some basic implementation guidance is discussed in {{impl-consideration}}.\r\nThis extension can be used with different scheduling algorithms that,\r\ne.g., can range from support for failover to simulatenous\r\nuse of the aggreate capacity across all active paths.\r\nThere are IETF specifications for path fail-over, but\r\nthere are currently no IETF standards-track specifications for simultaneously\r\n(concurrently) using the aggregated capacity of a set of active paths. \r\n```",
+              "createdAt": "2025-04-19T08:27:19Z",
+              "updatedAt": "2025-04-19T08:27:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6lsr7p",
+          "commit": {
+            "abbreviatedOid": "36386af"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-19T12:41:29Z",
+          "updatedAt": "2025-04-19T12:41:29Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\r\n(concurrently) using the aggregated capacity of a set of active paths.\r\n\r\n```",
+              "createdAt": "2025-04-19T12:41:29Z",
+              "updatedAt": "2025-04-19T12:41:29Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
