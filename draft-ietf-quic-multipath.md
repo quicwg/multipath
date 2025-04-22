@@ -316,7 +316,7 @@ issuing and retirement of per-path connection IDs (see
 {{consume-retire-cid}}), path status management (see {{path-state}}) and
 path closure (see {{path-close}}).
 However, this document does not specify when a client decides to initiate or close a path,
-or how multiple active paths are used for sending.
+or how multiple open paths are used for sending.
 
 ## Path Initiation and Validation {#path-initiation}
 
