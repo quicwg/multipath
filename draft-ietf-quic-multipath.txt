@@ -174,18 +174,22 @@ Table of Contents
    prevent future extensions from defining mechanisms to cope with the
    remaining scenarios.
 
-   Further, this document does not specify detailed algorithms that
+   Further, this document does not specify scheduling algorithms that
    define how multiple, simultaneously open paths are used to send
-   packets.  As these differ depending on the application requirements,
-   only some basic implementation guidance is discussed in Section 5.
+   packets.  As these differ depending on application requirements, only
+   some basic implementation guidance is discussed in Section 5.  This
+   extension can be used with different scheduling algorithms that,
+   e.g., can range from support for failover to simulatenous use of the
+   aggregated capacity across all open paths.  There are currently no
+   IETF specifications for simultaneously (concurrently) using multiple
+   paths.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
-   well-known multipath use case, it only uses two paths at the same
-   time temporarily in order to avoid transmission pauses.  Simultaneous
-   path usage generally, however, needs more consideration than
-   specified in this document to avoid negative performance impacts,
-   e.g. when stream data is distributed over multiple paths with
-   different delays.
+   well-known multipath use case, it only temporarily uses two paths at
+   the same time to avoid transmission pauses.  Simultaneous path usage
+   generally, however, needs more consideration than specified in this
+   document to avoid negative performance impacts, e.g., when stream
+   data is distributed over multiple paths with different delays.
 
 1.1.  Conventions and Definitions
 

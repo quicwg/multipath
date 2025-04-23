@@ -1395,17 +1395,22 @@ of a path, but it has to validate a new path created by a client.<a href="#secti
 and the actual decision to setup or tear down paths are assumed
 to be handled by the application. But this document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.<a href="#section-1-7" class="pilcrow">¶</a></p>
-<p id="section-1-8">Further, this document does not specify detailed algorithms that define
+<p id="section-1-8">Further, this document does not specify scheduling algorithms that define
 how multiple, simultaneously open paths are used to send packets.
-As these differ depending on the application requirements,
-only some basic implementation guidance is discussed in <a href="#impl-consideration" class="auto internal xref">Section 5</a>.<a href="#section-1-8" class="pilcrow">¶</a></p>
+As these differ depending on application requirements,
+only some basic implementation guidance is discussed in <a href="#impl-consideration" class="auto internal xref">Section 5</a>.
+This extension can be used with different scheduling algorithms that,
+e.g., can range from support for failover to simulatenous
+use of the aggregated capacity across all open paths.
+There are currently no IETF specifications for simultaneously
+(concurrently) using multiple paths.<a href="#section-1-8" class="pilcrow">¶</a></p>
 <p id="section-1-9">Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
-it only uses two paths at the same time temporarily in order
+it only temporarily uses two paths at the same time
 to avoid transmission pauses.
 Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
-impacts, e.g. when stream data is distributed over multiple paths with
+impacts, e.g., when stream data is distributed over multiple paths with
 different delays.<a href="#section-1-9" class="pilcrow">¶</a></p>
 <div id="definition">
 <section id="section-1.1">
