@@ -1710,10 +1710,10 @@ path. Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1" class="relref">Section 21.1.1.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) and the congestion control
 limits for this path are respected.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.1.2-2">The receiver may observe a connection ID associated with a used path ID
-on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
-as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> by initiating path validation
-but MUST use a new connection ID for the same path ID.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-2">The receiver may receive a connection ID associated with a used path ID
+on different 4-tuples, e.g., due to NAT rebinding. This causes the receiver to initiate
+path validation as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.3" class="relref">Section 9.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
+which MUST use a new connection ID for the same path ID.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="address-validation-token">
@@ -1748,7 +1748,7 @@ Each path ID has its own connection ID sequence number space whose initial value
 <p id="section-3.2-2">Endpoints SHOULD also use PATH_NEW_CONNECTION_ID and
 PATH_RETIRE_CONNECTION_ID for the initial path with path ID 0.
 However, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
-is still valid and endpoints need to process these frames accordingly
+is still valid and endpoints need to process these frames
 as corresponding to path ID 0.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <div id="issuing-new-connection-ids">
 <section id="section-3.2.1">
@@ -1883,9 +1883,9 @@ retired, and subsequently cannot send any packet on that path anymore.
 Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
 does not indicate path abandonment (see further <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>).<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">PATH_ABANDON frames can be sent on any path,
+<p id="section-3.4-3">PATH_ABANDON frames can be sent on any open path,
 not only on the path that is intended to be closed.
-It is RECOMMENDED to send the PATH_ABANDON frames on another path,
+It is RECOMMENDED to send the PATH_ABANDON frames on another open path,
 especially if connectivity on the to-be-abandoned path
 is expected to be broken.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 <p id="section-3.4-4">When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding
@@ -2658,9 +2658,9 @@ However, this is not very
 different from route changes on a single path.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
-There is however one exception: the minimum RTT. But this is also
+There is one exception: the minimum RTT, which is also
 a known challenge when route changes occurs on a single path.
-Other than for in-network route change, the acknowledgement receiver
+An acknowledgement receiver
 can, however, remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
 if that acknowledgement path changes or is abandoned.<a href="#section-5.4-6" class="pilcrow">¶</a></p>
