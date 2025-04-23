@@ -428,10 +428,10 @@ as long as the anti-amplification limits
 (see {{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
 
-The receiver may observe a connection ID associated with a used path ID
-on different 4-tuples due to, e.g., NAT rebinding. In such a case, the receiver reacts
-as specified in {{Section 9.3 of QUIC-TRANSPORT}} by initiating path validation
-but MUST use a new connection ID for the same path ID.
+The receiver may receive a connection ID associated with a used path ID
+on different 4-tuples, e.g., due to NAT rebinding. This causes the receiver to initiate
+path validation as specified in {{Section 9.3 of QUIC-TRANSPORT}}
+which MUST use a new connection ID for the same path ID.
 
 ### Address Validation Token
 
@@ -457,7 +457,7 @@ Each path ID has its own connection ID sequence number space whose initial value
 Endpoints SHOULD also use PATH_NEW_CONNECTION_ID and
 PATH_RETIRE_CONNECTION_ID for the initial path with path ID 0.
 However, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID
-is still valid and endpoints need to process these frames accordingly
+is still valid and endpoints need to process these frames
 as corresponding to path ID 0.
 
 ### Issuing New Connection IDs
@@ -594,9 +594,9 @@ Note that while abandoning a path will cause
 connection ID retirement, the inverse is not true: retiring the associated connection IDs
 does not indicate path abandonment (see further {{consume-retire-cid}}).
 
-PATH_ABANDON frames can be sent on any path,
+PATH_ABANDON frames can be sent on any open path,
 not only on the path that is intended to be closed.
-It is RECOMMENDED to send the PATH_ABANDON frames on another path,
+It is RECOMMENDED to send the PATH_ABANDON frames on another open path,
 especially if connectivity on the to-be-abandoned path
 is expected to be broken.
 
@@ -1228,9 +1228,9 @@ However, this is not very
 different from route changes on a single path.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
-There is however one exception: the minimum RTT. But this is also
+There is one exception: the minimum RTT, which is also
 a known challenge when route changes occurs on a single path.
-Other than for in-network route change, the acknowledgement receiver
+An acknowledgement receiver
 can, however, remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
 if that acknowledgement path changes or is abandoned.
