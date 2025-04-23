@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 24 October 2025                          Uber Technologies Inc.
+Expires: 25 October 2025                          Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 24 October 2025                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           22 April 2025
+                                                           23 April 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 October 2025.
+   This Internet-Draft will expire on 25 October 2025.
 
 Copyright Notice
 
@@ -181,10 +181,9 @@ Table of Contents
    some basic implementation guidance is discussed in Section 5.  This
    extension can be used with different scheduling algorithms that,
    e.g., can range from support for failover to simulatenous use of the
-   aggregated capacity across all open paths.  There are IETF
-   specifications for path fail-over, but there are currently no IETF
-   standards-track specifications for simultaneously (concurrently)
-   using the aggregated capacity of a set of active paths.
+   aggregated capacity across all open paths.  There are currently no
+   IETF specifications for simultaneously (concurrently) using multiple
+   paths.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
    well-known multipath use case, it only temporarily uses two paths at
