@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-20T01:04:46.661299+00:00",
+  "timestamp": "2025-04-24T01:01:13.863535+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -60055,7 +60055,7 @@
       "id": "PR_kwDOGNtpaM6S333N",
       "title": "note applicability of future scheduling algorithms",
       "url": "https://github.com/quicwg/multipath/pull/538",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -60064,17 +60064,19 @@
       ],
       "body": "This is an alternative PR to #521 extending the existing text in the intro rather than adding entirely new text later on.",
       "createdAt": "2025-04-16T17:13:29Z",
-      "updatedAt": "2025-04-19T17:48:54Z",
+      "updatedAt": "2025-04-23T10:01:44Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "15caeb3708fb9ab2aaa2c89f0015de87b0a2db8b",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-20",
-      "headRefOid": "6249b79dd31d4d17266babd6981f9b59afe076d2",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "7c1e4818617b4f4728caa0c7633a438e91be3e66",
+      "closedAt": "2025-04-23T10:01:44Z",
+      "mergedAt": "2025-04-23T10:01:43Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "b77e006b7c2e5c81a01ce06fbdbdf947b2c7d004"
+      },
       "comments": [],
       "reviews": [
         {
@@ -60196,7 +60198,7 @@
             "abbreviatedOid": "2db066c"
           },
           "author": "gorryfair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2025-04-19T07:45:36Z",
@@ -60223,9 +60225,9 @@
             },
             {
               "originalPosition": 14,
-              "body": "Can we maybe just remove \u201estandards-track\u201c? Because this is also true for none standards-track specs.\r\n\r\n```suggestion\r\nthere are currently no IETF specifications for simultaneously\r\n```",
+              "body": "Can we maybe just remove \u201estandards-track\u201c? Because this is also true for none standards-track specs.\r\n\r\n```suggestion\r\nThere are currently no IETF specifications for simultaneously\r\n```",
               "createdAt": "2025-04-19T12:51:13Z",
-              "updatedAt": "2025-04-19T12:56:15Z"
+              "updatedAt": "2025-04-23T09:59:59Z"
             },
             {
               "originalPosition": 15,
@@ -60258,6 +60260,166 @@
               "body": "+1",
               "createdAt": "2025-04-19T17:47:50Z",
               "updatedAt": "2025-04-19T17:48:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l59zP",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T09:14:38Z",
+          "updatedAt": "2025-04-22T09:14:39Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "This edit fixes a nit and aligns terminology (as active paths include paths with issued CIDs that are not open yet):\r\n```suggestion\r\nuse of the aggregated capacity across all open paths.\r\n```",
+              "createdAt": "2025-04-22T09:14:39Z",
+              "updatedAt": "2025-04-22T09:14:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l6Rya",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T09:43:01Z",
+          "updatedAt": "2025-04-22T09:43:01Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I hoped mentioning path-failover strengthened the position for making the QUIC MP Extension a PS. It did at least figure when MP items were chartered in the past. It is OK to remove this.",
+              "createdAt": "2025-04-22T09:43:01Z",
+              "updatedAt": "2025-04-22T09:43:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l6W6-",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T09:50:53Z",
+          "updatedAt": "2025-04-22T09:50:53Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "RFC 6356, RFC8382 and RFC 8699 are all experimental specifications for scheduling, albeit not targeting QUIC, but they are all EXP.",
+              "createdAt": "2025-04-22T09:50:53Z",
+              "updatedAt": "2025-04-22T09:50:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l6dC1",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T10:00:07Z",
+          "updatedAt": "2025-04-22T10:00:07Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Sure, I could live without \"aggregated capacity\" here if the word concurrently is understood to say that.",
+              "createdAt": "2025-04-22T10:00:07Z",
+              "updatedAt": "2025-04-22T10:00:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l6yOE",
+          "commit": {
+            "abbreviatedOid": "cb71d4b"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T10:33:34Z",
+          "updatedAt": "2025-04-22T10:33:34Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "These RFCs are all about congestion control but do not specify scheduling.",
+              "createdAt": "2025-04-22T10:33:34Z",
+              "updatedAt": "2025-04-22T10:33:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l61lN",
+          "commit": {
+            "abbreviatedOid": "cb71d4b"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T10:39:37Z",
+          "updatedAt": "2025-04-22T10:39:37Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "Great, I think we agree to remove. Just to add one more comment: We still mention failover in the next paragraph saying it's a \"well-known multipath use case\", however, I do not it's really correct to say there is a respectively IETF spec because as I said I don't think RFC7829 is relevant for this multipath extension specifically as it doesn't assume using two paths at the same time and as Christian says migration is already covered by RFC9000.",
+              "createdAt": "2025-04-22T10:39:37Z",
+              "updatedAt": "2025-04-22T10:39:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l7TiN",
+          "commit": {
+            "abbreviatedOid": "6249b79"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-22T11:30:10Z",
+          "updatedAt": "2025-04-22T11:30:10Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I agree RFC7829 is not about concurrent usage of paths for data - I see this as opening two paths and can keep them alive until a path change is needed.",
+              "createdAt": "2025-04-22T11:30:10Z",
+              "updatedAt": "2025-04-22T11:30:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l9Fjr",
+          "commit": {
+            "abbreviatedOid": "cb71d4b"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Agree, provided that current Mirja's suggestions are merged.",
+          "createdAt": "2025-04-22T14:08:12Z",
+          "updatedAt": "2025-04-22T14:09:04Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "If we mention scheduling, then yes, to my knowledge there is none.",
+              "createdAt": "2025-04-22T14:08:12Z",
+              "updatedAt": "2025-04-22T14:09:04Z"
             }
           ]
         }
@@ -60296,7 +60458,7 @@
       "id": "PR_kwDOGNtpaM6S97J9",
       "title": "Some remaining small editorial improvements from Gorry",
       "url": "https://github.com/quicwg/multipath/pull/540",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -60305,17 +60467,19 @@
       ],
       "body": "This addresses outstanding comments from Gorry's review (see email) and some edits he proposed in a follow-up email to me.\r\n\r\nThanks Gorry!",
       "createdAt": "2025-04-17T10:15:04Z",
-      "updatedAt": "2025-04-17T16:19:13Z",
+      "updatedAt": "2025-04-23T09:59:20Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "9f07dcd7f995f161c52dafa496fb1a91f8e6d079",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-21",
-      "headRefOid": "7e6d8eec4b735a0c8331c3de67503511d41abbc9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "b181407df26719c3c8fd5607a1a385666b70f147",
+      "closedAt": "2025-04-23T09:59:19Z",
+      "mergedAt": "2025-04-23T09:59:19Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "9659e7f56ca62720289378a5e8613e464afb847a"
+      },
       "comments": [],
       "reviews": [
         {
@@ -60357,12 +60521,45 @@
             "abbreviatedOid": "7e6d8ee"
           },
           "author": "gorryfair",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2025-04-17T16:19:13Z",
           "updatedAt": "2025-04-17T16:19:13Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6l7Bkh",
+          "commit": {
+            "abbreviatedOid": "7e6d8ee"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-22T11:00:31Z",
+          "updatedAt": "2025-04-22T11:00:31Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6mGSnM",
+          "commit": {
+            "abbreviatedOid": "7e6d8ee"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-04-23T09:40:33Z",
+          "updatedAt": "2025-04-23T09:40:33Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\non different 4-tuples, e.g., due to NAT rebinding. This causes the receiver to initiate\r\n```",
+              "createdAt": "2025-04-23T09:40:33Z",
+              "updatedAt": "2025-04-23T09:40:33Z"
+            }
+          ]
         }
       ]
     },
@@ -60780,6 +60977,76 @@
           ]
         }
       ]
+    },
+    {
+      "number": 542,
+      "id": "PR_kwDOGNtpaM6TaAwh",
+      "title": "align terminology: active paths -> open paths",
+      "url": "https://github.com/quicwg/multipath/pull/542",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We adjusted the terminology a while back to rather use open (as active includes path with issued path IDs that are not open yet). I used the terminology wrong when I added this sentence with the editorial pass. So fixing this now.",
+      "createdAt": "2025-04-22T09:12:48Z",
+      "updatedAt": "2025-04-23T09:39:18Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "9f07dcd7f995f161c52dafa496fb1a91f8e6d079",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-23",
+      "headRefOid": "5862bd8e612493185e0198e606b2e34a0fa0e354",
+      "closedAt": "2025-04-23T09:39:18Z",
+      "mergedAt": "2025-04-23T09:39:18Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "0791b8880aed88ccb8a5104189a5fd19fe2d3c92"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6mDBzx",
+          "commit": {
+            "abbreviatedOid": "5862bd8"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-04-23T02:54:15Z",
+          "updatedAt": "2025-04-23T02:54:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 543,
+      "id": "PR_kwDOGNtpaM6Tko5C",
+      "title": "add Gorry to Acknowledgements",
+      "url": "https://github.com/quicwg/multipath/pull/543",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-04-23T10:56:46Z",
+      "updatedAt": "2025-04-23T10:57:33Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "b77e006b7c2e5c81a01ce06fbdbdf947b2c7d004",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-24",
+      "headRefOid": "e63fc7f84f5c6d76803def9c0313f9934983c3bb",
+      "closedAt": "2025-04-23T10:57:33Z",
+      "mergedAt": "2025-04-23T10:57:33Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
