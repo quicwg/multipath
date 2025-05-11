@@ -225,7 +225,7 @@ and not retired are considered active.
 If an endpoint receives a disable_active_migration transport parameter,
 it is forbidden to establish new paths to the peer's handshake address. However,
 establishment of additional paths to other peer addresses
-(e.g carried by peer’s preferred_address) is immediately valid.
+(e.g., carried by peer’s preferred_address) is immediately valid.
 
 If the server uses the preferred_address transport parameter, clients
 cannot assume that the initial server address and the addresses
@@ -1187,7 +1187,7 @@ the endpoint can keep the same congestion control and RTT measurement state.
 PATH_ACK frames indicate which path the acknowledged packets were sent on,
 but they may be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
-which could result in poor performance depending e.g. on the used connection control.
+which could result in poor performance depending e.g., on the used connection control.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
 per path ID. However, depending on which path acknowledgements are
@@ -1331,13 +1331,13 @@ Note that the receiver of an initial PATH_ABANDON frame is, however,
 required to immediately reply (see {{path-close}}).
 
 If a path is not actively used for a while, it might not be usable anymore,
-e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
+e.g., due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 ({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
 {{Section 5.3 of QUIC-TRANSPORT}} defines an optional keep alive process.
 This process can be applied to each path separately depending on application needs.
 Some applications may decide to not keep any not-actively used path alive,
-keep only one additonal path alive, or multiple paths, e.g. for more redunancy.
+keep only one additonal path alive, or multiple paths, e.g., for more redunancy.
 As discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval
 needs to incorperate timeouts in middleboxes on the path.
 
@@ -1421,7 +1421,7 @@ the maximum path ID limit in initial_max_path_id or the MAX_PATH_ID frame is pre
 
 To avoid unnecessary resource usage that could be exploited
 in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
-such as e.g. for packet number handling, only after path validation has successfully completed.
+such as e.g., for packet number handling, only after path validation has successfully completed.
 
 
 ## Request Forgery with Spoofed Address
@@ -1441,7 +1441,7 @@ all at the same time. Further multiple paths could be initialized
 simultaneously. Each open path could be used to further amplify an attack.
 Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
-e.g. by pacing them out or limiting the number of path initiation attempts
+e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
 
 
