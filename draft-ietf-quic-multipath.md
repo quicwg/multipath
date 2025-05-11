@@ -515,7 +515,7 @@ this document, endpoints MUST only rotate to another connection IDs associated
 to the same path ID. Use of a connection ID associated with
 another path ID will be considered as an attempt to open a new path instead.
 
-An endpoint is supposed to retire connection ID that are not used anymore,
+An endpoint is supposed to retire any connection ID that is not being used,
 and the server is supposed to provide
 replacements, as specified in {{Section 5.1.2. of QUIC-TRANSPORT}}.
 As such, when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint
