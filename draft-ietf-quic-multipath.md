@@ -306,7 +306,7 @@ and therefore limits the impact on performance.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
-should not cause linkability issues.
+should not cause activity across different paths to be linkable by an observer.
 
 # Path Management {#path-management}
 
