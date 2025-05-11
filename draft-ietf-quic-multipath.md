@@ -271,7 +271,7 @@ two zero bits, and the 62 bits of the reconstructed QUIC packet number in
 network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
 packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
-is less than 12 bytes MUST NOT be used with the QUIC multipath extension.
+is less than 12 bytes cannot be used with the QUIC multipath extension.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the path ID is `3`, and the packet number is `aead`,
