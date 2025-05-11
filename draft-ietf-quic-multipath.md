@@ -516,8 +516,8 @@ to the same path ID. Use of a connection ID associated with
 another path ID will be considered as an attempt to open a new path instead.
 
 An endpoint is supposed to retire any connection ID that is not being used,
-and the server is supposed to provide
-replacements, as specified in {{Section 5.1.2. of QUIC-TRANSPORT}}.
+and the server is expected to provide
+replacements, as specified in {{Section 5.1.2 of QUIC-TRANSPORT}}.
 As such, when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint
 SHOULD provide new connection IDs for that path, if still open, using PATH_NEW_CONNECTION_ID frames.
 
