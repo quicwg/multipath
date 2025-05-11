@@ -181,7 +181,7 @@ The new transport parameter is defined as follows:
 - initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a
   variable-length integer specifying the maximum path ID
   an endpoint is willing to maintain at connection initiation.
-  This value MUST NOT exceed 2^32-1, the maximum allowed value for the path ID due to
+  This value MUST NOT exceed 2<sup>32</sup>-1, the maximum allowed value for the path ID due to
   restrictions on the nonce calculation (see {{nonce}}).
 
 The initial_max_path_id transport parameter limits the initial
@@ -196,7 +196,7 @@ MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
 As such to allow for the use of more paths later,
 endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path ID.
 
-If an initial_max_path_id transport parameter value higher than 2^32-1
+If an initial_max_path_id transport parameter value higher than 2<sup>32</sup>-1
 is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.
 
@@ -263,7 +263,7 @@ Therefore, the nonce N is calculated for 1-RTT if the multipath extension is use
 by combining the packet protection
 IV with the packet number and with the 32 bits of the
 path ID. In order to guarantee the uniqueness of the nonce, the path ID
-is limited to a max value of 2^32-1, as specified in {{nego}}
+is limited to a max value of 2<sup>32</sup>-1, as specified in {{nego}}
 
 To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
 significant 32 bits of the path ID in network byte order,
@@ -1001,7 +1001,7 @@ MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
 : The maximum path ID that the sending endpoint is willing to accept.
-  This value MUST NOT exceed 2^32-1, which is the maximum allowed value for the path ID due to
+  This value MUST NOT exceed 2<sup>32</sup>-1, which is the maximum allowed value for the path ID due to
   restrictions on the nonce calculation (see {{nonce}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
   advertised in the initial_max_path_id transport parameter.
