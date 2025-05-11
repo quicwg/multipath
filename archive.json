@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-24T01:01:13.863535+00:00",
+  "timestamp": "2025-05-11T01:06:42.700311+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13063,6 +13063,22 @@
       "createdAt": "2025-04-14T16:27:34Z",
       "updatedAt": "2025-04-15T07:46:07Z",
       "closedAt": "2025-04-15T07:46:07Z",
+      "comments": []
+    },
+    {
+      "number": 544,
+      "id": "I_kwDOGNtpaM61_509",
+      "title": "Editorial pass for WGLC on -14 (Tommy)",
+      "url": "https://github.com/quicwg/multipath/issues/544",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "During my read-through of the document, I had the following comments. These are generally editorial. This is for draft-ietf-quic-multipath-14.\n\n### Section 1\n\n\"4-tuple\" is used without being directly defined, and I don't think that term is used in RFC 9000. Having a simple explanation of what tuple you mean would be good for people who aren't familiar. This is also used in section 5.2.\n\n> There are currently no IETF specifications for simultaneously (concurrently) using multiple paths.\n\nI think this would be more clear to explain that \"There are currently no IETF specifications _that define scheduling algorithms_ for...\". Without that clarification, it could sound like the IETF specifications prohibit simultaneous use (which isn't true) instead of just not specifying the algorithms for how to schedule them.\n\nThe intro defines the notion of \"path ID\" as part of the body of text, but it might be nice to have a separate sub-section that defines the normative aspects of the path ID. Right now, very crucial details about the path ID being an integer that monotonically increases, isn't reused, has special values for 0, etc, is mixed into the overview/conceptual text.\n\n### Section 2.1\n\n> When advertising the initial_max_path_id transport parameter, endpoints MUST use non-zero length Source and Destination Connection IDs.\n\nThe hyphens here feel a bit odd, like it should really be \"non-zero-length\". I suggest either one of these options:\n- \"endpoints MUST use Source and Destination Connection IDs with non-zero lengths.\"\n- \"endpoints MUST NOT use zero-length Source and Destination Connection IDs.\"\n\n### Section 2.3\n\n> The choice of three times the largest PTO is a trade-off.\n\nIt feels like this sentence should say \"is a trade-off between ___ and ___.\", for clarity.\n\n### Section 3\n\nThis is the first time that some of the new frame types are mentioned, such as `PATH_ABANDON`, `PATH_NEW_CONNECTION_ID`, `PATH_RETIRE_CONNECTION_ID`. These don't consistently provide references to the sections where they are defined below. Please either add the references on these first uses, or maybe have an overview at the top of section 3 that mentions all of the new frame types and provides references at that point; or just move the frame definitions up.\n\n### Section 4.3\n\nI have a slight preference to change `PATH_BACKUP` -> `PATH_IS_BACKUP` or something similar. \"BACKUP\" alone sounds like a verb like \"ABANDON\", so initially I read it as \"back this path up\", which doesn't make much sense. A path _being_ a backup, like it can be available, makes more sense.\n\n### Section 4.2.1\n\nThe error codes defined here seem specific to paths, but they go in the main error registry. Should their names have more clear path-related names?\n\n`APPLICATION_ABANDON` -> `APPLICATION_ABANDON_PATH`\n`RESOURCE_LIMIT_REACHED` -> `PATH_RESOURCE_LIMIT_REACHED` (although this one seems it could be more generic)\n`UNSTABLE_INTERFACE` -> `PATH_UNSTABLE_INTERFACE`\n`NO_CID_AVAILABLE` -> `PATH_NO_CID_AVAILABLE` / `NO_CID_AVAILABLE_FOR_PATH`\n\n",
+      "createdAt": "2025-05-10T00:07:07Z",
+      "updatedAt": "2025-05-10T00:07:07Z",
+      "closedAt": null,
       "comments": []
     }
   ],
