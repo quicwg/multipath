@@ -1424,7 +1424,7 @@ such as e.g., for packet number handling, only after path validation has success
 
 ## Request Forgery with Spoofed Address
 
-Path validation as specified in {{Section 8.2. of QUIC-TRANSPORT}}
+Path validation as specified in {{Section 8.2 of QUIC-TRANSPORT}}
 for migration is used
 unchanged for path initiation in this extension. Therefore, the security considerations
 on source address spoofing as outlined in {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
