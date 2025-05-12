@@ -1443,7 +1443,7 @@ e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
 
 
-## Cryptographic handshake and AEAD Nonce
+## Cryptographic Handshake and AEAD Nonce
 
 The multipath extension as specified in this document is only enabled after a
 successful handshake when both endpoints indicate support for this extension.
