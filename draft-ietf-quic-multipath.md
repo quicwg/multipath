@@ -1339,7 +1339,7 @@ This process can be applied to each path separately depending on application nee
 Some applications may decide to not keep any not-actively used path alive,
 keep only one additonal path alive, or multiple paths, e.g., for more redunancy.
 As discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval
-needs to incorperate timeouts in middleboxes on the path.
+needs to incorporate timeouts in middleboxes on the path.
 
 If a path was not actively used for a while and no keep alives have been sent,
 an endpoint can probe it before switching to active use if there are still other paths
