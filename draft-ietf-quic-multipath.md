@@ -1447,11 +1447,15 @@ over a certain time period.
 
 The multipath extension as specified in this document is only enabled after a
 successful handshake when both endpoints indicate support for this extension.
-Respectively, all new frames defined in this extension are only used in 1-RTT packets.
+All new frames defined in this extension are only used in 1-RTT packets.
+
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication,
-remain unchanged. As such, the respective security considerations in {{QUIC-TLS}} apply unaltered. However, note that the limits as discussed on Appendix B of {{QUIC-TLS}}
-apply to the total number of packets sent on all paths.
+remain unchanged. As such, the security considerations in {{QUIC-TLS}} apply unaltered.
+
+The limits as discussed on {{Appendix B of QUIC-TLS}}
+apply to the total number of packets sent on all paths,
+not each path separately.
 
 This specification changes the AEAD calculation by using the path ID as part of
 AEAD nonce (see {{nonce}}). To ensure unique nonces, path IDs
