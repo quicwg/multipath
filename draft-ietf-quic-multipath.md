@@ -1029,7 +1029,7 @@ for the corresponding path ID.
 
 Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
-like sending a MAX_PATH_ID farme with a new Maximum Path Identifier value,
+like sending a MAX_PATH_ID frame with a new Maximum Path Identifier value,
 but informs the peer that the maximum path ID limit
 or the absence of unused connection IDs prevented the creation or the usage of paths.
 If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
