@@ -1335,7 +1335,7 @@ can send ack-eliciting packets such as packets containing PING frames
 {{Section 5.3 of QUIC-TRANSPORT}} defines an optional keep alive process.
 This process can be applied to each path separately depending on application needs.
 Some applications may decide to not keep any not-actively used path alive,
-keep only one additonal path alive, or multiple paths, e.g., for more redunancy.
+keep only one additional path alive, or multiple paths, e.g., for more redunancy.
 As discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval
 needs to incorporate timeouts in middleboxes on the path.
 
