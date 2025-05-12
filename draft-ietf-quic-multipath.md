@@ -556,7 +556,7 @@ indicated as "backup" by the peer or non-usage of some locally available paths.
 PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
 
-PATH_BACKUP suggests that a path should only be used as backup i.e. that no traffic
+PATH_BACKUP suggests that a path should only be used as backup, i.e., that no traffic
 should be sent on that path if another path is available and usable.
 If all established paths are indicated as backup paths, no guidance is provided about
 which path should be used.
