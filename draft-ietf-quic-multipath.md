@@ -1023,7 +1023,7 @@ it wishes to open a path but is unable to do so due to the maximum path ID
 limit set by its peer.
 
 A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
-it wishes to open a path with a valid path ID or change the CID on an established path
+it wishes to open a path with a valid path ID or change the connection ID on an established path
 but is unable to do so because there are no unused connection IDs available
 for the corresponding path ID.
 
@@ -1088,7 +1088,7 @@ if the path is still blocked when the lost is detected.
 
 This section provides informational guidance for implementors.
 
-## CID Changes, Migration, and NAT Rebindings {#migration}
+## Connection ID Changes, Migration, and NAT Rebindings {#migration}
 
 With the multipath extension, each
 path uses a separate packet number space.
@@ -1140,7 +1140,7 @@ source and destination ports:
 * Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
 * Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
 * Both paths are used for a while.
-* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path ID 2.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with Connection ID indicating path ID 2.
 * Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.
 
 Such unintentional use of the same 4-tuple on different paths ought to
