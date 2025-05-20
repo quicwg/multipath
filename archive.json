@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-18T01:07:39.665638+00:00",
+  "timestamp": "2025-05-20T01:04:22.989309+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13090,10 +13090,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Maybe someone thought this was clever, but it's pretty confusing:\n\n> For example, assuming the IV value is 6b26114b9cba2b63a9e8dd4f, the path ID is 3, and the packet number is **aead**, the nonce will be set to 6b2611489cba2b63a9e873e2.\n\nEmphasis mine.",
       "createdAt": "2025-05-11T23:25:15Z",
-      "updatedAt": "2025-05-11T23:25:15Z",
+      "updatedAt": "2025-05-19T09:01:28Z",
       "closedAt": null,
       "comments": []
     },
@@ -13109,9 +13111,17 @@
       "labels": [],
       "body": "> To open a new path, an endpoint MUST use a new connection ID associated with an unused path ID. When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to the same path ID as used in the packet that contained the PATH_CHALLENGE frame.\n\nThis might be obvious to those of us who understand the chain of logic from \"open a new path\" to \"testing for connectivity and willingness to communicate on that new path\" to \"sending PATH_CHALLENGE\" to \"that generating a PATH_RESPONSE\".  But it is a huge jump for someone less familiar with the protocol.",
       "createdAt": "2025-05-11T23:30:18Z",
-      "updatedAt": "2025-05-11T23:30:39Z",
+      "updatedAt": "2025-05-19T06:20:31Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, we struggled a bit with that one. There is a strong assumption that all path creation will start with an exchange of \"path challenge / path response\", but that's not actually required, and a few lines after the text that you cite you will find \"The server may receive packets for a yet unused path ID that do not contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted given a valid connection ID.\"\n\nMaybe we should rewrite the first paragraph as:\n\nTo open a new path, an endpoint MUST use a new connection ID associated with an unused path ID. When sending packets on the same path, an endpoint MUST use a connection ID associated to the same path ID as used in the packet received by the server. If an endpoint receives a PATH_CHALLENGE, the PATH_RESPONSE MUST be sent on the same path as the packet that contained the PATH_CHALLENGE frame.",
+          "createdAt": "2025-05-19T06:20:29Z",
+          "updatedAt": "2025-05-19T06:20:29Z"
+        }
+      ]
     },
     {
       "number": 547,
@@ -13122,10 +13132,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "The example in Section 3.1.1 shows this:\n\n```\n   (Exchanges start on default path)\n   1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->\n```\n\nThis says default path, but the PathID is 1, not 0.  This is confusing.\n\nThat the client is using DCID=C1 is weird as well.  Shouldn't it be S0 if it is on path ID 0 and the server chose it?\n\n(I find the AEAD discussion in this example distracting as well.  The process of unsealing packets is not the point of this discussion.)",
       "createdAt": "2025-05-11T23:36:09Z",
-      "updatedAt": "2025-05-11T23:37:12Z",
+      "updatedAt": "2025-05-19T09:01:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -13134,6 +13146,13 @@
           "body": "In terms of presentation, this sequence diagram could take a more traditional form as well.  That we copied the TLS pattern in QUIC was - in retrospect - a mistake.",
           "createdAt": "2025-05-11T23:37:11Z",
           "updatedAt": "2025-05-11T23:37:11Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@martinthomson the diagram is trying to explain that \"the exchange starts on path 0\" (and yes, there is no need to introduce a concept of \"default\" path in this diagram). That path is already established, and can be used to send/receive the \"PATH_NEW_CONNECTION_ID\" frames. Then \"the path establishment continues on path 1\", with the exchange of PATH CHALLENGE and PATH RESPONSE.\n\nThe diagram is indeed a bit confusing. Saying that the packets are sent on path X (0 or 1) really means that the UDP packets are sent to two different 4 tuples for path 0 and path 1. But we did not include the UDP headers in the diagram. Probably we would want that.\n\nYou are concerned by the use of \"path ID = 1\" in the line:\n~~~\n1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->\n~~~\nThat actually OK, and demonstrates a valid point: the connection IDs have a value, a sequence number, and a path-ID. The connection IDs that will be sent on path 1 (and 2) need to have the corresponding value in the Path-ID attribute. They also need to be sent on path 0, before they are needed before we start using path 1. The text below the diagram says that. Suggestion for improvement?\n\nAll the frames are sent in 1RTT packets. Some are decorated with a sequence number, some are not. There is no actual requirement that the first packet sent on a path has sequence number 0 -- and even if there was, these packets can be resent with a different sequence number. Maybe we could drop these packet numbers, because casual readers may misinterpret them as related to path numbers. Or maybe we should document a sequence number in each packet, say using \"3\" for the packet sent on path 0, to illustrate that sequence numbers are per path.",
+          "createdAt": "2025-05-19T05:12:33Z",
+          "updatedAt": "2025-05-19T05:12:33Z"
         }
       ]
     },
@@ -13189,9 +13208,59 @@
       "labels": [],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-05-11T23:53:30Z",
+      "updatedAt": "2025-05-19T07:34:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This was discussed in issue #248, with some strong arguments by @kazuho in favor of the solution that we adopted -- e.g., that paths differ mostly by client IP, but the client does not usually know its own IP address. Discussed also in issues #262, and #303. I think that the text follows the consensus in the WG.",
+          "createdAt": "2025-05-19T05:35:43Z",
+          "updatedAt": "2025-05-19T05:35:43Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "This might be one of those cases where a little bit of explanatory text would go a long way.  The points there about not knowing your own IP address is a good one.\n\nThe same applies to the question about how to construct tokens for use in a multipath context.  That is, what should a client infer a NEW_TOKEN means when it is received and what information should a server bind to tokens so that they can be used safely later.",
+          "createdAt": "2025-05-19T05:38:19Z",
+          "updatedAt": "2025-05-19T05:38:19Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Do you mean that the same applies to session resumption tickets?",
+          "createdAt": "2025-05-19T06:39:52Z",
+          "updatedAt": "2025-05-19T06:39:52Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Less so, at least in this case, because session resumption is not typically tied to address validity.  Address validation tokens are the only things that matter there.",
+          "createdAt": "2025-05-19T06:44:03Z",
+          "updatedAt": "2025-05-19T06:44:03Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Is there a specific text that you would want added to section 3.1.3?",
+          "createdAt": "2025-05-19T06:50:48Z",
+          "updatedAt": "2025-05-19T06:50:48Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "The current text:\n> As specified in [Section 9.3](https://rfc-editor.org/rfc/rfc9000#section-9.3) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)], the server is expected to send a new address validation token to a client following the successful validation of a new client address. The client will receive several tokens. When considering using a token for subsequent connections, it might be difficult for the client to pick the \"right\" token among multiple tokens obtained in a previous connection. The client is likely to fall back to the strategy specified in [Section 8.1.3](https://rfc-editor.org/rfc/rfc9000#section-8.1.3) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)], i.e., pick the last received token. To avoid issues when clients make the \"wrong\" choice, a server SHOULD issue tokens that are capable of validating any of the previously validated addresses. Further guidance on token usage can be found in [Section 8.1.3](https://rfc-editor.org/rfc/rfc9000#section-8.1.3) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)].\n\nThis is pretty vague.  It says that the client is likely to pick the last.  But that doesn't work for multipath, because there are multiple paths active at any given time.  Questions to answer:\n\n* Can the client assume that the token is good for a connection attempt along any one of the paths that are currently active?\n* What needs to have happened for each path to be considered \"OK\"?  From the client's perspective as well as the server's.\n* What information should a client store for each token it receives, so that it can later use it and have a reasonable expectation that it works?\n* What information does a server need to store (either in the token or in a database keyed by the token) so that it can use the token if the client attempts to use it?\n* What might a client assume about addresses and paths that were validated, but are no longer in use?\n",
+          "createdAt": "2025-05-19T07:05:19Z",
+          "updatedAt": "2025-05-19T07:05:19Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The intent is:\n\n1. _Can the client assume that the token is good for a connection attempt along any one of the paths that are currently active?_ Yes.\n2. _What needs to have happened for each path to be considered \"OK\"? From the client's perspective as well as the server's?_ What RFC 9000 says, \"A token received in a NEW_TOKEN frame is applicable to any server that the connection is considered authoritative for (e.g., server names included in the certificate). \" But yes, this could be qualified with \"all the IP address pairs validated so far.\"\n3. _What information should a client store for each token it receives, so that it can later use it and have a reasonable expectation that it works?_ See above. At this point, we have no reason to be more specific than RFC 9000. If the client knows its own IP address, it may want to store the IP address pairs for all the paths validated at this point.\n4. _What information does a server need to store (either in the token or in a database keyed by the token) so that it can use the token if the client attempts to use it?_ The list of IP addresses pairs for which this token is valid.\n5. _What might a client assume about addresses and paths that were validated, but are no longer in use?_ They are valid, see \"any of the previously validated addresses\".\n\nThese may not be the responses that you want. But I would prefer this particular can of worms to remain close for now, and rely on an extension later to drive whatever consensus we get from experience.  After all, RFC 9000 does not specify anything about path migration and NEW_TOKEN, so this is not exactly a new problem.\n",
+          "createdAt": "2025-05-19T07:34:24Z",
+          "updatedAt": "2025-05-19T07:34:24Z"
+        }
+      ]
     },
     {
       "number": 551,
@@ -13202,12 +13271,22 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "The document isn't consistent, for example:\n\n> For instance, if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs for only one path ID inside range [1, 2], it should select path ID 1 (and not Path ID 2).",
       "createdAt": "2025-05-11T23:55:39Z",
-      "updatedAt": "2025-05-11T23:55:39Z",
+      "updatedAt": "2025-05-19T08:59:08Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It's should be \"path ID\". We changed this recently and it seems like I overlooked some places. Will double-check again! Thanks!",
+          "createdAt": "2025-05-19T08:59:04Z",
+          "updatedAt": "2025-05-19T08:59:04Z"
+        }
+      ]
     },
     {
       "number": 552,
@@ -13218,12 +13297,50 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "body": "The PATH_CIDS_BLOCKED gives an endpoint the ability to indicate that it wanted a connection ID, but was not able to obtain one.\n\nThis is not a feature of the original QUIC.  Deliberately so.  If it is added to the protocol, it should be added to the core protocol.  (Obviously, if it is added to the core protocol, then the multipath-specific variant is also needed, which would justify the definition of this frame.)\n\nBut then we have to ask: what resource does this seek to conserve?  If an endpoint has a per-path connection ID limit of X, then under what circumstances would its peer not supply all X connection IDs?  If the peer can supply those connection IDs, why is there a need for this frame?\n\nSo, this frame says that there are circumstances where an endpoint might ask for more connection IDs than its peer is able to supply.  Even if that were the case, why would this signal result in any different behavior?  An endpoint that is limited in that fashion, perhaps because it needs to allocate non-trivial state for every connection ID that is active, would not suddenly be able to issue more connection IDs because the other side wanted them.",
       "createdAt": "2025-05-12T00:05:50Z",
-      "updatedAt": "2025-05-12T00:05:50Z",
+      "updatedAt": "2025-05-19T09:20:15Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "> This is not a feature of the original QUIC. Deliberately so. If it is added to the protocol, it should be added to the core protocol. (Obviously, if it is added to the core protocol, then the multipath-specific variant is also needed, which would justify the definition of this frame.)\n\nThis is true. Though, based on previous consensus that PATHS_BLOCKED would be useful for Multipath, I think it would be more consistent to have PATH_CIDS_BLOCKED frame too.\n\nThe rest of your comment question the utility of PATH_CIDS_BLOCK frames. While I might agree, that applies equally to all the credit-issuing schemes that we have in RFC 9000, which have (I think) turned out to be a useful debugging tool.\n\nTo summarize, I think we should be consistent in having these blocked frames for every credit-issuing schemes. For both RFC 9000 and Multipath.",
+          "createdAt": "2025-05-19T06:02:18Z",
+          "updatedAt": "2025-05-19T06:02:18Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We indeed had issues during interop caused by one application not sending the expected connection IDs, so yes, soething like path_cid_blocked would have been useful then.",
+          "createdAt": "2025-05-19T06:43:03Z",
+          "updatedAt": "2025-05-19T06:43:03Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If we wanted to add CID_BLOCKED frames for RFC 9000, how would we proceed? A new extension? Would that really help?",
+          "createdAt": "2025-05-19T06:45:07Z",
+          "updatedAt": "2025-05-19T06:45:07Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "I argue above, that CID_BLOCKED would not be a good idea.  Here or otherwise.  I know that might put me in the rough, which I'm prepared to occupy, but \"would be useful\" is not the same as an argument for why they might need to be rationed out at less than the limit set by a peer.",
+          "createdAt": "2025-05-19T06:59:43Z",
+          "updatedAt": "2025-05-19T06:59:43Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was actually one of the last design issues that we discussed at the last IETF meeting and in issue #500. The consensus was to keep it (even though as you say above this might not lead to any action at the receiver). If there are no new point here, I propose to close this issue.",
+          "createdAt": "2025-05-19T09:20:13Z",
+          "updatedAt": "2025-05-19T09:20:13Z"
+        }
+      ]
     },
     {
       "number": 553,
@@ -13234,12 +13351,22 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "Section 3.1.2 gets right into it:\n\n> An endpoint is supposed to retire connection ID that are not used anymore, and the server is supposed to provide replacements, as specified in [Section 5.1.2.](https://rfc-editor.org/rfc/rfc9000#section-5.1.2.) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]. As such, when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint SHOULD provide new connection IDs for that path, if still open, using PATH_NEW_CONNECTION_ID frames.\n\nThat is, this first mention of these two frames assumes that you know that these are the equivalents of the NEW_CONNECTION_ID and RETIRE_CONNECTION_ID frames and that you need to use these new variants instead of those defined in the core specification.",
       "createdAt": "2025-05-12T00:08:24Z",
-      "updatedAt": "2025-05-12T00:08:24Z",
+      "updatedAt": "2025-05-19T09:26:56Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah right, this happened because I moved the examples into Section 3 rather than having them in a separate section later. maybe the easiest/best solution is to simply switch the order of section 3.1 (path initiation) and 3.2 (CID handling).",
+          "createdAt": "2025-05-19T09:26:50Z",
+          "updatedAt": "2025-05-19T09:26:50Z"
+        }
+      ]
     },
     {
       "number": 554,
@@ -13253,7 +13380,7 @@
       "labels": [],
       "body": "In reading this...\n\n> An endpoint may also decide to abandon an unused path for any other reason, for example, removing a hole from the sequence of path IDs in use. This is not an error.\n\n(Is that MAY?)\n\n... it occurred that maybe, if the endpoint had a strong desire to defragment the path ID space, it might choose to use a connection ID from a new path ID for subsequent packets on a very old path.  In that case, it's really the same path, so you would not expect to need to perform address validation.  However, there are a bunch of requirements in the document that would likely be violated by that arrangement.\n\nThe specification assumes that use of new path ID activates a bunch of new requirements that don't seem to be necessary in all cases.  Even acknowledging that would be helpful, even if no special allowance is made for this case, which is a bit unusual (I wouldn't personally bother with defragmentation like that).",
       "createdAt": "2025-05-12T00:21:53Z",
-      "updatedAt": "2025-05-12T20:04:39Z",
+      "updatedAt": "2025-05-19T09:34:56Z",
       "closedAt": null,
       "comments": [
         {
@@ -13262,6 +13389,13 @@
           "body": "\"Same path\" is defined as \"same path ID\" throughout the document. If the client sends packets with a new path-ID, they are by definition on a new path. Took us a couple years to get there, but other definitions of paths all lead to inconsistencies.\n\nThe client may well want to \"duplicate and then abandon\" and old path because the path ID space is too fragmented, but that's purely an internal decision. Abandoning the old path results in orderly handling of the packets sent on the old number space.",
           "createdAt": "2025-05-12T20:04:37Z",
           "updatedAt": "2025-05-12T20:04:37Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree that the definition that a different path ID means a different path is a very essential concept that we needed a while to reach and definitely should not change again.\n\nNote that you can have multiple paths (with different path IDs) on the same 4-tuple. So if you want to open a new path on a 4-tuple just to close an older one on the same 4-tuple, you can do that.\n\nIf people think that is useful we could add this \"duplicate and then abandon\" as another example to this sentence but otherwise I don't see any changes here.",
+          "createdAt": "2025-05-19T09:34:55Z",
+          "updatedAt": "2025-05-19T09:34:55Z"
         }
       ]
     },
@@ -13290,12 +13424,29 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "no-action-needed"
+      ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-05-12T00:31:48Z",
+      "updatedAt": "2025-05-19T09:37:33Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We already have text to that effect -- \"Therefore, knowledge of the connection IDs issued to the peer and of the state of the number space associated to the path SHOULD be retained for 3 PTO after the PATH_ABANDON frame has been received. This avoids generating spurious stateless packets, as discussed in [Section 3.4.2](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#spurious-stateless-reset), and helps acknowledge any potentially reordered, outstanding packets from the peer (see [Section 3.4.3](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#ack-after-abandon)).\" Plus the discussion of potential stateless reset in [3.4.2. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.4.2)[Avoiding Spurious Stateless Resets](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-avoiding-spurious-stateless).\n\n",
+          "createdAt": "2025-05-19T06:10:06Z",
+          "updatedAt": "2025-05-19T06:10:06Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I think this is clearly specified already. Can we close this issue or is something else missing?",
+          "createdAt": "2025-05-19T09:37:21Z",
+          "updatedAt": "2025-05-19T09:37:21Z"
+        }
+      ]
     },
     {
       "number": 557,
@@ -13306,12 +13457,22 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design"
+      ],
       "body": "Interface instability is a local choice, which maybe some implementations can detect.  However, I would consider loss of the ability to communicate on a path to be a pretty strong reason for PATH_ABANDON, so maybe COMMUNICATION_FAILED.\n\nThen there is the case where a path, such as a backup back, simply times out.  TIMED_OUT.\n\nAnd then there are a bunch of cases where the choice is not application-driven, but driven by other considerations, like POOR_PERFORMANCE.\n\nWhat other things have implementation and deployment experience with the protocol revealed?",
       "createdAt": "2025-05-12T00:36:35Z",
-      "updatedAt": "2025-05-12T00:36:35Z",
+      "updatedAt": "2025-05-19T09:39:00Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think that we use \"instability\" to describe both the \"communication failed\" and \"poor performance\" conditions. That may or may not be the right word, we may want a new name, but I would suggest having just one code for now. \n\nBy timeout, do you mean the \"idle timeout\" discussed in  [5.9. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.9)[Idle Timeout and Keep-Alives](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-idle-timeout-and-keep-alive)? This kind of path closure is an application decision, as in \"path as not been used for a long time, don't need it anymore.\" I would use the code APPLICATION_ABANDON",
+          "createdAt": "2025-05-19T05:47:33Z",
+          "updatedAt": "2025-05-19T05:47:33Z"
+        }
+      ]
     },
     {
       "number": 558,
@@ -13325,9 +13486,24 @@
       "labels": [],
       "body": "> Uncoordinated abandon \\[sic] of both endpoints may result in deleting both paths instead of just one. To avoid this pitfall, endpoints could adopt a simple coordination rule, such as only letting the client initiate closure of duplicate paths, or perhaps relying on the application protocol to decide which paths should be closed.\n\nThis seems like a great recipe for interoperability failure.\n\nWhy does the specification not indicate which endpoint is responsible for abandonment?  Given that a client is the only one that initiate paths, this seems like a pretty unrealistic scenario to begin with (#554 notwithstanding).  If this is possible, is there any reason to allow servers to do anything other than request that a client act to close a path?  At what layer does that decision-making occur?\n\n",
       "createdAt": "2025-05-12T00:45:20Z",
-      "updatedAt": "2025-05-12T00:45:20Z",
+      "updatedAt": "2025-05-19T09:41:52Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "See discussion in issues #378, #451. I think the current text is fine. But if you insist, I would be happy with just keeping the first paragraph in that section.",
+          "createdAt": "2025-05-19T05:58:25Z",
+          "updatedAt": "2025-05-19T05:58:25Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We started discussing this at a time before we allowed more than one path ID per 4-tuple. Without this restriction I think the most likely case is just to keep both. However, I think it's fine to still keep this text but I would also be okay to simply remove it. Anybody insisting on removing it?",
+          "createdAt": "2025-05-19T09:41:51Z",
+          "updatedAt": "2025-05-19T09:41:51Z"
+        }
+      ]
     },
     {
       "number": 559,
@@ -13338,10 +13514,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "> Instead of using RTT, we define the acknowledgment delays as the sum of two one-way delays: the delay on the packet sending path and the delay on the return path chosen for the acknowledgments. \n\nAcknowledgement delay is defined in RFC 9000 as something else entirely: the delay between when a packet is received and when an acknowledgement is sent.  That suggests both that you have three things, not two, and that the terminology is probably in need of adjustment.",
       "createdAt": "2025-05-12T00:48:38Z",
-      "updatedAt": "2025-05-12T00:48:38Z",
+      "updatedAt": "2025-05-19T09:42:19Z",
       "closedAt": null,
       "comments": []
     },
@@ -13373,7 +13551,7 @@
       "labels": [],
       "body": "> One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to each path. The benefit of such an approach is to simplify retransmission processing as the content of lost packets initially sent on one path can be sent on another path without further frame scheduling adaptations.\n\nThis implies a very bad assumption about how implementations handle the loss of packets.  It assumes that the contents are retransmitted, rather than constructing frames anew as needed.  This encourages sloppy thinking about how QUIC operates and this last sentence should be removed.",
       "createdAt": "2025-05-12T01:02:15Z",
-      "updatedAt": "2025-05-12T20:18:19Z",
+      "updatedAt": "2025-05-19T11:14:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -13389,6 +13567,27 @@
           "body": "On retransmission processing, \"constructing frames anew as needed\" can be somewhat messy, such as spreading the content of a long stream data frame in a packet deemed lost on two new shorter stream frames. \n\nBut really, this is no a new problem with multipath -- we get the same issue in mono-path if the PMTU changes between the time the old packet was sent and the time the loss is detected. I wouldn't lose sleep if we struck out the whole of section 5.8.",
           "createdAt": "2025-05-12T20:18:18Z",
           "updatedAt": "2025-05-12T20:18:18Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Naked commit, uh? I don't know why that even worked...\n\nI think this is because Martin is also an author (on another quic doc though). I will undo it.",
+          "createdAt": "2025-05-19T09:45:19Z",
+          "updatedAt": "2025-05-19T09:45:19Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Maybe we can rephrase this a bit and e.g. not talk about benefits but simply saying if you happened to handle retransmits that way you have to check that the MTU on the retransmission path is not smaller or simply apply the same/smallest MTU to all path..?\n\nI agree that the issue also exists for changing MTUs on a single path, however, it more likely to be problem if you have different paths therefore I think it is okay to mention it explicitly in the (non-normative) implementation guidance section, because it exactly this: implementation guidance. However, I also wouldn't insist to keep this section if people feel this guidance is not helpful.",
+          "createdAt": "2025-05-19T09:49:49Z",
+          "updatedAt": "2025-05-19T09:49:49Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@mirjak IIUC the problem with the last sentence is that the advice is in contradiction with RFC 9000. See [Section 13.3](https://www.rfc-editor.org/rfc/rfc9000.html#name-retransmission-of-informati), QUIC stacks are not expected to retransmit packets or frames.",
+          "createdAt": "2025-05-19T11:14:11Z",
+          "updatedAt": "2025-05-19T11:14:11Z"
         }
       ]
     },
@@ -13400,13 +13599,23 @@
       "state": "OPEN",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
-      "assignees": [],
+      "assignees": [
+        "mirjak"
+      ],
       "labels": [],
       "body": "> To avoid such path breakage, endpoints can send ack-eliciting packets such as packets containing PING frames ([Section 19.2](https://rfc-editor.org/rfc/rfc9000#section-19.2) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]) on that path to keep it alive.\n\nThere's obviously a balance to be struck, but this text doesn't really acknowledge the flipside of that balance.  It probably should.",
       "createdAt": "2025-05-12T01:04:53Z",
-      "updatedAt": "2025-05-12T01:04:53Z",
+      "updatedAt": "2025-05-19T09:53:29Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "At least I think it might be good to more explicitly state that there is no requirement to send keep-alives on an unused but still open paths. I guess that got somehow lost in the last edit or maybe was never clearly there. I'll propose a sentence!",
+          "createdAt": "2025-05-19T09:53:24Z",
+          "updatedAt": "2025-05-19T09:53:24Z"
+        }
+      ]
     },
     {
       "number": 563,
@@ -13420,9 +13629,17 @@
       "labels": [],
       "body": "A lot of the discussion in [Section 7.2](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-14#section-7.2) is not about the risk of request forgery - the construction of UDP datagrams that might appear to be valid datagrams for a different protocol - but the consent to communicate risk inherent in establishing new flows.  That is, amplification.\n\nThe request forgery risk with this protocol is almost exactly the same as QUIC[^1].  This is a difference that is not worth mentioning.\n\n[^1]: The addition of the path ID to the nonce has a miniscule impact. But only if the strategy involves what amounts to finding collisions, as you can trial several paths at a time, so you have a bigger search space.  However, that's unlikely to be the main factor anyway.\n\nWhat the text concerns itself with is amplification risk, which is not that interesting either.  There's a minor cost difference to an attacker when it comes to establishing multiple paths from which to mount an attack, as opposed to multiple connections, that's true.  More on that in the next...\n",
       "createdAt": "2025-05-12T01:17:31Z",
-      "updatedAt": "2025-05-12T01:17:31Z",
+      "updatedAt": "2025-05-19T09:56:23Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Is it sufficient to simply change the heading? Or are you proposing to change/remove this section?",
+          "createdAt": "2025-05-19T09:56:22Z",
+          "updatedAt": "2025-05-19T09:56:22Z"
+        }
+      ]
     },
     {
       "number": 564,
@@ -13436,7 +13653,7 @@
       "labels": [],
       "body": "Though Section 7.2 is mistitled (#563), the DoS risk it discusses is worth addressing. The main thing I'm concerned about is spikes in packet arrival rate due to path establishment.  It seems like there is no real guidance here.  There is a suggestion that an endpoint might limit its validation.  But that isn't really enough.\n\nIf paths share a bottleneck and path validation for 50 new paths would generate a spike in packets that hit that bottleneck in a way that it can't handle, we have a real problem.  I would have said that the only right thing to do is to have a stronger recommendation on the maximum number of paths that can be concurrently validated.  Setting that limit at one would be the obvious place to start.\n\nThis is not so much about amplification in the same sense we use in QUIC, because the number of inbound data would still need to reach one third of the outbound, but we also assumed in QUIC that path validation was below the baseline rate that a single link would be able to tolerate.  With multiple paths, that same assumption no longer holds.",
       "createdAt": "2025-05-12T01:18:32Z",
-      "updatedAt": "2025-05-12T19:51:05Z",
+      "updatedAt": "2025-05-19T10:11:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -13445,6 +13662,13 @@
           "body": "You seem to be worried by \"congestion overflow due to multiple path creations through the same bottleneck.\" Probably not congestion overflow created by client-originated traffic, because the client determined to DOS a bottleneck can just send packets. But instead, congestion overflow created by server traffic. Specifically, congestion overflow created by path management traffic from the server, which is not limited by the CC algorithm. We could probably add a section after 7.2 to describe that. \n\nThe first remedy would be to limit the number of paths available for path creation, i.e., do not increase the path-ID limit too fast -- same as suggested in 7.2. That should work for most applications, but some will need to rapidly probe multiple paths, e.g., P2P apps running a variation of ICE. The next limit may be some voluntary restriction on the volume of path response and challenge traffic in flight at a given time. For example, don't pad the response packets if there are multiple paths being probed at the same time.\n\n\n\n\n\n",
           "createdAt": "2025-05-12T19:51:04Z",
           "updatedAt": "2025-05-12T19:51:04Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "First of all there is a limit on the number of paths with of course also limits the number of paths that can be validated at the same time. I would usually expect this number to be small because I would assume the limitation on the endpoints for path state are more strict than any path capacity limitations.\n\nFurther it seems you rather talk about path congestion. What's the different to just opening too many single path QUIC connections? RFC8085 gives recommendation about sending rates of non-congestion controlled traffic. This also applies to all situation where you open various different connections (on the same interface).",
+          "createdAt": "2025-05-19T10:11:42Z",
+          "updatedAt": "2025-05-19T10:11:42Z"
         }
       ]
     }
@@ -61443,7 +61667,7 @@
       "labels": [],
       "body": "Just the minor stuff.  Issues are open for questions and more substantive feedback.",
       "createdAt": "2025-05-12T01:23:48Z",
-      "updatedAt": "2025-05-15T13:44:21Z",
+      "updatedAt": "2025-05-19T05:35:50Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
@@ -61454,8 +61678,43 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "For `<sup>`, the markdown processor passes any XML straight through, so you can just write XML if you preferred that.  `<sup>` is understood by xml2rfc, which passes that straight through to HTML.  It renders it with `^` when rendering text as well.",
+          "createdAt": "2025-05-19T05:35:48Z",
+          "updatedAt": "2025-05-19T05:35:48Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6p1QqY",
+          "commit": {
+            "abbreviatedOid": "b1b2cc1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good! Thanks for all the nits solved.",
+          "createdAt": "2025-05-19T03:48:41Z",
+          "updatedAt": "2025-05-19T03:48:41Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6p1dz_",
+          "commit": {
+            "abbreviatedOid": "b1b2cc1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Thanks, Martin. I have verified that all these edits are editorial. And the use of \\<sup\\>..\\</sup\\> is pretty cool, I was not aware that we could do that in Markdown. What's next, full LateX compatibility?",
+          "createdAt": "2025-05-19T04:47:09Z",
+          "updatedAt": "2025-05-19T04:47:40Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
