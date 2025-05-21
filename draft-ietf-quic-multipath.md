@@ -292,7 +292,8 @@ protection key, assuming that there is sufficient interval between two
 consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
 
 When this specification is used, endpoints SHOULD wait for at least three times
-the largest PTO among all the paths before initiating a new key update
+the largest Probe Timeout (PTO) (see {{Section 6.2 of QUIC-RECOVERY}}
+among all the paths before initiating a new key update
 after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
 which used three times the PTO of the sole single path.
@@ -307,6 +308,14 @@ and therefore limits the impact on performance.
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
 should not cause linkability issues.
+
+## Connection Closure
+
+CONNECTION_CLOSE frames and their processing are unchanged from {{QUIC-TRANSPORT}}.
+They can be sent on any open path. {{Section 10.2 of QUIC-TRANSPORT}} specifies that
+the closing and draining connection states "SHOULD persist for at least three times the current PTO".
+When this specification is used, these states SHOULD instead persist for at least three
+times the largest PTO among all paths.
 
 # Path Management {#path-management}
 
