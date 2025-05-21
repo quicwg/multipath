@@ -3015,7 +3015,9 @@ But the multipath extensions allow for the creation of multiple paths, which mea
 that in addition to the security considerations
 on source address spoofing outlined in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-21.5.4" class="relref">Section 21.5.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 there is a risk of amplified DOS attacks through simultaneous opening
-or migration of multiple paths.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+or migration of multiple paths. For example, an attacker could set the
+4-tuples used in multiple paths so that packets sent by the server would
+travel through common network paths in an attempt to overwhelm a target.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.2-2"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
