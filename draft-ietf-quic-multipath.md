@@ -274,8 +274,8 @@ packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce
 is less than 12 bytes MUST NOT be used with the QUIC multipath extension.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
-the path ID is `3`, and the packet number is `aead`,
-the nonce will be set to `6b2611489cba2b63a9e873e2`.
+the path ID is `3`, and the packet number is `54321` (hex value `0xd431`),
+the nonce will be set to `6b2611489cba2b63a9e8097e`.
 
 ## Key Phase Update Process {#multipath-key-update}
 
@@ -1098,7 +1098,8 @@ Handshake and Application packets).
 
 For any given path, connection ID rotation, NAT rebinding, or client initiated migration
 as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
-These events do not change the path ID,  and do not affect the packet number
+These events do not change the path ID,
+ and do not affect the packet number
 space associated with the path.
 
 It is generally preferable to use multipath mechanisms such as
