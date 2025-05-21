@@ -1098,7 +1098,8 @@ Handshake and Application packets).
 
 For any given path, connection ID rotation, NAT rebinding, or client initiated migration
 as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
-These events do not change the path ID,  and do not affect the packet number
+These events do not change the path ID,
+ and do not affect the packet number
 space associated with the path.
 
 It is generally preferable to use multipath mechanisms such as
@@ -1404,7 +1405,7 @@ The multipath extension retains all security properties of {{QUIC-TRANSPORT}} an
 but requires some additional consideration regarding:
 
 - potential additional resource usage for per-path connection IDs and multiple concurrent path contexts;
-- a potentially increased amplification risk for request forgery attacks if multiple paths are used simultaneously;
+- a potentially increased amplification risk for denial of service attacks if multiple paths are used simultaneously;
 - changes to the nonce calculation due to the use of multiple packet number spaces.
 
 
@@ -1424,21 +1425,27 @@ in a resource exhaustion attack, endpoints SHOULD allocate additional path resou
 such as e.g. for packet number handling, only after path validation has successfully completed.
 
 
-## Request Forgery with Spoofed Address
+## Denial of Service with Multiple Paths
 
 Path validation as specified in {{Section 8.2. of QUIC-TRANSPORT}}
 for migration is used
-unchanged for path initiation in this extension. Therefore, the security considerations
-on source address spoofing as outlined in {{Section 21.5.4 of QUIC-TRANSPORT}} equally apply.
-Similarly, the anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}} need to be
-followed to limit the amplification risk.
+unchanged for path initiation in this extension. 
+But the multipath extensions allow for the creation of multiple paths, which means
+that in addition to the security considerations
+on source address spoofing outlined in {{Section 21.5.4 of QUIC-TRANSPORT}},
+there is a risk of amplified DOS attacks through simultaneous opening
+or migration of multiple paths.
 
 {{QUIC-TRANSPORT}} only allows the use of one path
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
 This extension, however, allows for multiple open paths that could in theory be migrated
 all at the same time. Further multiple paths could be initialized
-simultaneously. Each open path could be used to further amplify an attack.
+simultaneously. 
+The anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}
+limit the amplification risk for a given path,
+but multiple paths could be used to further amplify an attack.
+
 Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
