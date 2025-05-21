@@ -1424,12 +1424,11 @@ To avoid unnecessary resource usage that could be exploited
 in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
 such as e.g. for packet number handling, only after path validation has successfully completed.
 
-
 ## Denial of Service with Multiple Paths
 
 Path validation as specified in {{Section 8.2. of QUIC-TRANSPORT}}
 for migration is used
-unchanged for path initiation in this extension. 
+unchanged for path initiation in this extension.
 But the multipath extensions allow for the creation of multiple paths, which means
 that in addition to the security considerations
 on source address spoofing outlined in {{Section 21.5.4 of QUIC-TRANSPORT}},
@@ -1441,7 +1440,7 @@ and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
 This extension, however, allows for multiple open paths that could in theory be migrated
 all at the same time. Further multiple paths could be initialized
-simultaneously. 
+simultaneously.
 The anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}
 limit the amplification risk for a given path,
 but multiple paths could be used to further amplify an attack.
@@ -1450,7 +1449,6 @@ Therefore, endpoints need to limit the maximum number of paths and might conside
 additional measures to limit the number of concurrent path validation processes
 e.g. by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
-
 
 ## Cryptographic handshake and AEAD Nonce
 
