@@ -1433,7 +1433,9 @@ But the multipath extensions allow for the creation of multiple paths, which mea
 that in addition to the security considerations
 on source address spoofing outlined in {{Section 21.5.4 of QUIC-TRANSPORT}},
 there is a risk of amplified DOS attacks through simultaneous opening
-or migration of multiple paths.
+or migration of multiple paths. For example, an attacker could set the
+4-tuples used in multiple paths so that packets sent by the server would
+travel through common network paths in an attempt to overwhelm a target.
 
 {{QUIC-TRANSPORT}} only allows the use of one path
 and the number of concurrent path validation attempts is
