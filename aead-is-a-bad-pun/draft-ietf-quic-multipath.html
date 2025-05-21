@@ -1548,9 +1548,9 @@ network byte order. The IV length is equal to the nonce length. If the IV is lar
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
 packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
 is less than 12 bytes MUST NOT be used with the QUIC multipath extension.<a href="#section-2.4-2" class="pilcrow">¶</a></p>
-<p id="section-2.4-3">For example, assuming the IV value is <code>6b26114b9cba2b63a9e8dd4f</code>,
+<p id="section-2.4-3">For example, assuming the IV value is <code>0x6b26114b9cba2b63a9e8dd4f</code>,
 the path ID is <code>3</code>, and the packet number is <code>54321</code> (hex value <code>0xd431</code>),
-the nonce will be set to <code>6b2611489cba2b63a9e8097e</code>.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+the nonce will be set to <code>0x6b2611489cba2b63a9e8097e</code>.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="multipath-key-update">
