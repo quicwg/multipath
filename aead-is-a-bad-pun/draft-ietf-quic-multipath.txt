@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 22 November 2025                         Uber Technologies Inc.
+Expires: 23 November 2025                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 22 November 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             21 May 2025
+                                                             22 May 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 November 2025.
+   This Internet-Draft will expire on 23 November 2025.
 
 Copyright Notice
 
@@ -1151,8 +1151,8 @@ Table of Contents
 
    For any given path, connection ID rotation, NAT rebinding, or client
    initiated migration as specified in [QUIC-TRANSPORT] might occur,
-   like on a single path.  These events do not change the path ID, and
-   do not affect the packet number space associated with the path.
+   like on a single path.  These events do not change the path ID and do
+   not affect the packet number space associated with the path.
 
    It is generally preferable to use multipath mechanisms such as
    creating a new path and later abandoning the old path, rather than
