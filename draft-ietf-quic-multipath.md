@@ -102,7 +102,7 @@ The connection ID of a packet binds the packet to a path ID, and therefore
 to a packet number space. That means each connection ID is associated with exactly one path ID
 but multiple connection IDs are usually issued for each path ID.
 The same path ID is used in both directions, starting with 0 for the initial path.
-Path ID are generated monotonically increasing and cannot be reused.
+Path IDs are generated monotonically increasing and cannot be reused.
 
 This extension uses multiple packet number spaces, one for each path.
 Each path ID-specific packet number space starts at packet number 0.
@@ -247,7 +247,7 @@ Initial and Handshake packets are sent using ACK frames.
 
 After the handshake concluded with support for the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-including for so far unacknowledged 0-RTT packets using Path ID 0.
+including for so far unacknowledged 0-RTT packets using path ID 0.
 Endpoints MUST still process ACK frames that acknowledge 0-RTT packets or 1-RTT packets.
 For example, a sender may negotiate multipath support for later use and keep
 only the initial path with path ID 0 for a while. During this single-path period,
@@ -412,7 +412,7 @@ path ID 1), and server provides two connection IDs
 
 Before the client opens a new path by sending a packet on that path
 with a PATH_CHALLENGE frame, it has to check whether there is
-an unused connection IDs for the same unused path ID available for each side.
+an unused connection ID for the same unused path ID available for each side.
 In this example the path ID 1 is used which is the smallest unused path ID available
 as recommended in {{consume-retire-cid}}.
 Respectively, the client chooses the connection ID S1
@@ -476,7 +476,7 @@ unused path ID, it SHOULD NOT introduce discontinuity
 in the issuing of path IDs as path initiation
 requires available connection IDs for the same path ID on both sides. For instance,
 if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs
-for only one path ID inside range \[1, 2\], it should select path ID 1 (and not Path
+for only one path ID inside range \[1, 2\], it should select path ID 1 (and not path
 ID 2).
 
 Similarly, endpoints SHOULD consume path IDs in a continuous way, i.e., when
