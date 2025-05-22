@@ -476,7 +476,7 @@ unused path ID, it SHOULD NOT introduce discontinuity
 in the issuing of path IDs as path initiation
 requires available connection IDs for the same path ID on both sides. For instance,
 if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs
-for only one path ID inside range \[1, 2\], it should select path ID 1 (and not Path
+for only one path ID inside range \[1, 2\], it should select path ID 1 (and not path
 ID 2).
 
 Similarly, endpoints SHOULD consume path IDs in a continuous way, i.e., when
