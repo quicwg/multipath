@@ -292,7 +292,7 @@ protection key, assuming that there is sufficient interval between two
 consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
 
 When this specification is used, endpoints SHOULD wait for at least three times
-the largest Probe Timeout (PTO) (see {{Section 6.2 of QUIC-RECOVERY}}
+the largest Probe Timeout (PTO) (see {{Section 6.2 of QUIC-RECOVERY}})
 among all the paths before initiating a new key update
 after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
