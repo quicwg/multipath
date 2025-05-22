@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-20T01:04:22.989309+00:00",
+  "timestamp": "2025-05-22T01:03:19.432592+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13089,15 +13089,33 @@
       "state": "OPEN",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
-      "assignees": [],
+      "assignees": [
+        "huitema"
+      ],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "Maybe someone thought this was clever, but it's pretty confusing:\n\n> For example, assuming the IV value is 6b26114b9cba2b63a9e8dd4f, the path ID is 3, and the packet number is **aead**, the nonce will be set to 6b2611489cba2b63a9e873e2.\n\nEmphasis mine.",
       "createdAt": "2025-05-11T23:25:15Z",
-      "updatedAt": "2025-05-19T09:01:28Z",
+      "updatedAt": "2025-05-21T14:35:17Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I will prepare a PR replacing aead by a random value like 54321 (hex D431).",
+          "createdAt": "2025-05-21T02:35:08Z",
+          "updatedAt": "2025-05-21T02:35:08Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Adding \"0x\" might help too.",
+          "createdAt": "2025-05-21T02:58:37Z",
+          "updatedAt": "2025-05-21T02:58:37Z"
+        }
+      ]
     },
     {
       "number": 546,
@@ -13208,7 +13226,7 @@
       "labels": [],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-05-19T07:34:24Z",
+      "updatedAt": "2025-05-21T06:26:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -13259,6 +13277,55 @@
           "body": "The intent is:\n\n1. _Can the client assume that the token is good for a connection attempt along any one of the paths that are currently active?_ Yes.\n2. _What needs to have happened for each path to be considered \"OK\"? From the client's perspective as well as the server's?_ What RFC 9000 says, \"A token received in a NEW_TOKEN frame is applicable to any server that the connection is considered authoritative for (e.g., server names included in the certificate). \" But yes, this could be qualified with \"all the IP address pairs validated so far.\"\n3. _What information should a client store for each token it receives, so that it can later use it and have a reasonable expectation that it works?_ See above. At this point, we have no reason to be more specific than RFC 9000. If the client knows its own IP address, it may want to store the IP address pairs for all the paths validated at this point.\n4. _What information does a server need to store (either in the token or in a database keyed by the token) so that it can use the token if the client attempts to use it?_ The list of IP addresses pairs for which this token is valid.\n5. _What might a client assume about addresses and paths that were validated, but are no longer in use?_ They are valid, see \"any of the previously validated addresses\".\n\nThese may not be the responses that you want. But I would prefer this particular can of worms to remain close for now, and rely on an extension later to drive whatever consensus we get from experience.  After all, RFC 9000 does not specify anything about path migration and NEW_TOKEN, so this is not exactly a new problem.\n",
           "createdAt": "2025-05-19T07:34:24Z",
           "updatedAt": "2025-05-19T07:34:24Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "I think you need to write some of this down.  Is the goal to aid interoperability?  Or are we expecting implementers of this protocol to be telepathic?\n\n> What might a client assume about addresses and paths that were validated, but are no longer in use? They are valid, see \"any of the previously validated addresses\".\n\nThat seems unworkable, to my mind.  I don't have a multipath implementation, but I would expect that any implementation would forget about paths that are not being used.  Especially given enough time (PATH_ABANDON + 3PTOs probably means no more state).",
+          "createdAt": "2025-05-20T01:18:42Z",
+          "updatedAt": "2025-05-20T01:18:42Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The situation is asymmetric. \n\nThe client receives tokens and picks one to initiate a new connection. The client does not have to remember all the addresses that it did use -- it would be perfectly fine to only remember the initial address, or the last address used, or anything in between. If the client does pick \"one of the validated addresses\", it expects that to work. The server, on the other hand, does not know which of the validated the client will select. It should thus provide a token that will work for any of those. The client is not much constrained. The server is.",
+          "createdAt": "2025-05-20T06:34:59Z",
+          "updatedAt": "2025-05-20T06:34:59Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@martinthomson \n>> What might a client assume about addresses and paths that were validated, but are no longer in use? They are valid, see \"any of the previously validated addresses\".\n> \n> That seems unworkable, to my mind. I don't have a multipath implementation, but I would expect that any implementation would forget about paths that are not being used.\n\nIIUC, the discussion we had during the development of QUIC v1 was that it makes sense for servers to send a token containing two address, one Wifi and one cellular.\n\nConsidering that the deployments of MP QUIC would include such a setup, I would not be surprised to see servers doing exactly that, _regardless of if the path on Wifi has been closed_.\n\nAnyways, I agree with @huitema that there is no need to change the design from QUIC v1.\n\n@huitema \n>  The client does not have to remember all the addresses that it did use -- it would be perfectly fine to only remember the initial address, or the last address used, or anything in between.\n\nMinor clarification, but the client does not need to remember any of the addresses it used, correct?",
+          "createdAt": "2025-05-20T09:24:08Z",
+          "updatedAt": "2025-05-20T09:24:08Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "We never captured any of that for QUIC v1.  And MP QUIC is substantively different.  I'm saying that you should document what the expectations are, or you will not get interoperability.  Saying what NEW_TOKEN means in this new context isn't so difficult.  If your intent is that the client pick any token and the server has to deal with the complexities, say that explicitly.",
+          "createdAt": "2025-05-21T00:14:15Z",
+          "updatedAt": "2025-05-21T00:14:15Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am trying to think of something consensual. We are effectively saying: \n\n1. \"The client is likely to fall back to the strategy specified in [Section 8.1.3](https://rfc-editor.org/rfc/rfc9000#section-8.1.3) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)], i.e., pick the last received token.\" Which amounts to: the client pick any token.\n2. \"To avoid issues when clients make the \"wrong\" choice, a server SHOULD issue tokens that are capable of validating any of the previously validated addresses.\" Which amounts to: the server has to deal with the complexities.\n\nOf course, things can get better if clients and server cooperate a bit. Consider the sequence:\n\n1. Client uses address A1 to connect to the server.\n2. Server provides token T1.\n3. Client uses address A2 for a new path.\n4. Server provides token T2.\n5. Client uses address A3  for a new path.\n6. Server provides token T3.\n7. Connection close\n8. Client opens a new connection, picks a source address and a token.\n\nWe can kinda predict the following:\n\n1. If client picks address A1, any of T1, T2, T3 will probably work.\n2. If client picks address A2, any of T2, T3 will probably work. Using T1 could cause a stateless retry, i.e., lose 1 RTT.\n3. If client picks address A3, only T3 will probably work. Using T1 or T2 could cause a stateless retry, i.e., lose 1 RTT.\n4. If the client address has changed and is now A4, none of the token will work.\n5. If the client waits to long, any of those tokens will become stale, and will not work.\n\nWhich means: the server should offer tokens that validate with all addresses seen so far. The client could try to be smart, but is better off just picking the last token received on the connection. The last received token it also likely to remain valid longer.\n\nAnd then, if the client picks the wrong one, or wait too long, the connection should still work. The server may need to send a stateless retry, wasting 1 RTT. That's kinda bad, but not the end of the world.",
+          "createdAt": "2025-05-21T05:41:17Z",
+          "updatedAt": "2025-05-21T05:41:17Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "I'm most concerned about the case where step 3a involves PATH_ABANDON for the path associated with A1.  And then 3b is \"time passes\".  I don't think that it is reasonable to expect that the server remembers A1 when it issues T2 or T3 in that case.\n\nIt is definitely the case that \"pick the last\" is the strategy we want to advise, so maybe the client doesn't lose if it tries to use T3 from A1, but if the draft were to note that tokens are expected to validate the client addresses that were active (and validated) at the time the token was issued, that would better match expectations.  A client could then maybe choose a better strategy for token use.",
+          "createdAt": "2025-05-21T05:53:30Z",
+          "updatedAt": "2025-05-21T05:53:30Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We have to be careful with hypotheses. Take the classic example: client starts from a Wi-Fi (A1), then use cellular (A2) and abandons path 0 (A1), then has a coffee, uses the shop's Wi-Fi (A3) and abandons path 1 (Cellular), then closes the connection. The server is trying to construct a token that will be useful for the next connection attempt. Which of A1, A2, A3 is most likely? Hard to tell. Maybe A3 is the most likely right now, A2 the most likely in 2 minutes, A1 the most likely as soon as the user is back home. That an address was used once makes it likely that it will be used again. (Somewhat likely.) But that a path was abandoned may or may not be an indication that the address will not be used again.",
+          "createdAt": "2025-05-21T06:26:21Z",
+          "updatedAt": "2025-05-21T06:26:21Z"
         }
       ]
     },
@@ -13408,12 +13475,37 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "clarification"
+      ],
       "body": "In [key phase handling](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-14#section-2.5) the specification suggests that endpoints keep state for 3 times the maximum PTO across all paths.\n\nThe same requirement probably applies to CONNECTION_CLOSE.  The text gets close to realizing this, but does not.  In both cases, the timer only prevents unnecessary work (dropping of packets for key phase; the generation of stateless resets for closing), but it makes sense to have the requirements for handling connection-level state be consistent.",
       "createdAt": "2025-05-12T00:27:38Z",
-      "updatedAt": "2025-05-12T00:27:38Z",
+      "updatedAt": "2025-05-21T14:26:49Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We say nothing about connection close, because it is unchanged from RFC 9000. If I understand correctly, you are suggesting that we add a section (probably after 3.4 Path Close) to say something like:\n\n3.5 Connection Closure\n\nConnection_Close frames and their processing are unchanged from [QUIC-TRANSPORT]. They can be sent on any open path. Section 10.2 of [QUIC-TRANSPORT] specifies that the closing and draining connection states ... SHOULD persist for at least three times the current PTO interval as defined in [[QUIC-RECOVERY](https://www.rfc-editor.org/rfc/rfc9000.html#QUIC-RECOVERY)]. When this specification is used, these states SHOULD instead persist for at least three times the largest PTO among all the paths.",
+          "createdAt": "2025-05-21T06:16:42Z",
+          "updatedAt": "2025-05-21T06:17:04Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "That would be ideal, yes.",
+          "createdAt": "2025-05-21T06:53:44Z",
+          "updatedAt": "2025-05-21T06:53:44Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #568. Not sure we need to restate the SHOULD from RFC9000 but I added quotation marks for now. Also I added it to section 2 instead because section 3 is about path management and this part is about connection management. However, maybe we still need to find a better heading for section 2?",
+          "createdAt": "2025-05-21T14:26:36Z",
+          "updatedAt": "2025-05-21T14:26:36Z"
+        }
+      ]
     },
     {
       "number": 556,
@@ -13429,7 +13521,7 @@
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-05-19T09:37:33Z",
+      "updatedAt": "2025-05-20T01:25:02Z",
       "closedAt": null,
       "comments": [
         {
@@ -13445,6 +13537,13 @@
           "body": "Yes, I think this is clearly specified already. Can we close this issue or is something else missing?",
           "createdAt": "2025-05-19T09:37:21Z",
           "updatedAt": "2025-05-19T09:37:21Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Section 3.4.2 says:\n\n> The rule to \"retain knowledge of connection ID for 3 PTO after receiving a PATH_ABANDON\" is intended to reduce the risk of sending such spurious stateless packets, but it cannot completely avoid that risk.\n\nWhich rule is that?  This is quoting something, but it doesn't correspond to any text elsewhere in the document.  Maybe you could say this directly.  Is it a rule though, or a recommendation?\n\nSection 3.4 says:\n\n> If a peer sends a PATH_ABANDON frame but never receives a corresponding PATH_ABANDON frame, it might not be able to remove path state. It is left to the implementation to handle this unexpected behavior as it does not impact interoperability. If the endpoint is no longer willing to process the issued connection IDs for the abandoned path, it MAY close the connection, but SHOULD wait at least 3 PTOs after sending the PATH_ABANDON frame.\n\nWait 3 PTOs before doing what exactly?\n\nIt seems like you both believe that this is a requirement of sorts, but I can't work out what.",
+          "createdAt": "2025-05-20T01:25:01Z",
+          "updatedAt": "2025-05-20T01:25:01Z"
         }
       ]
     },
@@ -13551,15 +13650,15 @@
       "labels": [],
       "body": "> One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to each path. The benefit of such an approach is to simplify retransmission processing as the content of lost packets initially sent on one path can be sent on another path without further frame scheduling adaptations.\n\nThis implies a very bad assumption about how implementations handle the loss of packets.  It assumes that the contents are retransmitted, rather than constructing frames anew as needed.  This encourages sloppy thinking about how QUIC operates and this last sentence should be removed.",
       "createdAt": "2025-05-12T01:02:15Z",
-      "updatedAt": "2025-05-19T11:14:12Z",
+      "updatedAt": "2025-05-20T08:51:20Z",
       "closedAt": null,
       "comments": [
         {
           "author": "huitema",
           "authorAssociation": "CONTRIBUTOR",
-          "body": "Naked commit, uh? I don't know why that even worked...",
+          "body": "Naked commit, uh? I don't know why that even worked...\n\n[Corrected, 5/20/2025] My bad. This commit applies to PR #565 in branch martinthomson:edit, not to the main branch. This is perfectly fine.",
           "createdAt": "2025-05-12T19:55:35Z",
-          "updatedAt": "2025-05-12T19:55:35Z"
+          "updatedAt": "2025-05-20T07:08:46Z"
         },
         {
           "author": "huitema",
@@ -13588,6 +13687,27 @@
           "body": "@mirjak IIUC the problem with the last sentence is that the advice is in contradiction with RFC 9000. See [Section 13.3](https://www.rfc-editor.org/rfc/rfc9000.html#name-retransmission-of-informati), QUIC stacks are not expected to retransmit packets or frames.",
           "createdAt": "2025-05-19T11:14:11Z",
           "updatedAt": "2025-05-19T11:14:11Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "> I think this is because Martin is also an author (on another quic doc though). I will undo it.\n\nUh, this is a standard method of connecting commits to issues.  It only has an effect if you merge the pull request.",
+          "createdAt": "2025-05-20T01:31:27Z",
+          "updatedAt": "2025-05-20T01:31:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> [@mirjak](https://github.com/mirjak) IIUC the problem with the last sentence is that the advice is in contradiction with RFC 9000. See [Section 13.3](https://www.rfc-editor.org/rfc/rfc9000.html#name-retransmission-of-informati), QUIC stacks are not expected to retransmit packets or frames.\n\nI don't won't to be nit-picking but I don't think it's a contradiction because it takes about \"frame scheduling adaptations\". Yes, you always retransmit in a new packet and theoretical new frame but the new frame can look exactly like the old one. Also I think this is what many have implemented, so I still find it useful to discuss this in the implementation guidance section.\n\nBut again, happy to rephrase (anybody wants to propose something?) or I also would be okay if we remove it but I would rather keep it.",
+          "createdAt": "2025-05-20T08:42:07Z",
+          "updatedAt": "2025-05-20T08:42:07Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@mirjak Yeah I do not think it is a good idea to hint that retransmitting a frame as-is is an option, when such behavior is has been discouraged deliberately in RFC 9000.\n\nI think we can simple strike the last sentence, or as @huitema points out, remove the section entirely.",
+          "createdAt": "2025-05-20T08:51:19Z",
+          "updatedAt": "2025-05-20T08:51:19Z"
         }
       ]
     },
@@ -13629,7 +13749,7 @@
       "labels": [],
       "body": "A lot of the discussion in [Section 7.2](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-14#section-7.2) is not about the risk of request forgery - the construction of UDP datagrams that might appear to be valid datagrams for a different protocol - but the consent to communicate risk inherent in establishing new flows.  That is, amplification.\n\nThe request forgery risk with this protocol is almost exactly the same as QUIC[^1].  This is a difference that is not worth mentioning.\n\n[^1]: The addition of the path ID to the nonce has a miniscule impact. But only if the strategy involves what amounts to finding collisions, as you can trial several paths at a time, so you have a bigger search space.  However, that's unlikely to be the main factor anyway.\n\nWhat the text concerns itself with is amplification risk, which is not that interesting either.  There's a minor cost difference to an attacker when it comes to establishing multiple paths from which to mount an attack, as opposed to multiple connections, that's true.  More on that in the next...\n",
       "createdAt": "2025-05-12T01:17:31Z",
-      "updatedAt": "2025-05-19T09:56:23Z",
+      "updatedAt": "2025-05-20T01:26:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -13638,6 +13758,13 @@
           "body": "Is it sufficient to simply change the heading? Or are you proposing to change/remove this section?",
           "createdAt": "2025-05-19T09:56:22Z",
           "updatedAt": "2025-05-19T09:56:22Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "The text also talks about request forgery.  Sort of.  It uses those two specific words, but then talks about something else entirely.  So that would need to be rewritten too.",
+          "createdAt": "2025-05-20T01:26:47Z",
+          "updatedAt": "2025-05-20T01:26:47Z"
         }
       ]
     },
@@ -13653,7 +13780,7 @@
       "labels": [],
       "body": "Though Section 7.2 is mistitled (#563), the DoS risk it discusses is worth addressing. The main thing I'm concerned about is spikes in packet arrival rate due to path establishment.  It seems like there is no real guidance here.  There is a suggestion that an endpoint might limit its validation.  But that isn't really enough.\n\nIf paths share a bottleneck and path validation for 50 new paths would generate a spike in packets that hit that bottleneck in a way that it can't handle, we have a real problem.  I would have said that the only right thing to do is to have a stronger recommendation on the maximum number of paths that can be concurrently validated.  Setting that limit at one would be the obvious place to start.\n\nThis is not so much about amplification in the same sense we use in QUIC, because the number of inbound data would still need to reach one third of the outbound, but we also assumed in QUIC that path validation was below the baseline rate that a single link would be able to tolerate.  With multiple paths, that same assumption no longer holds.",
       "createdAt": "2025-05-12T01:18:32Z",
-      "updatedAt": "2025-05-19T10:11:43Z",
+      "updatedAt": "2025-05-21T02:26:05Z",
       "closedAt": null,
       "comments": [
         {
@@ -13669,6 +13796,34 @@
           "body": "First of all there is a limit on the number of paths with of course also limits the number of paths that can be validated at the same time. I would usually expect this number to be small because I would assume the limitation on the endpoints for path state are more strict than any path capacity limitations.\n\nFurther it seems you rather talk about path congestion. What's the different to just opening too many single path QUIC connections? RFC8085 gives recommendation about sending rates of non-congestion controlled traffic. This also applies to all situation where you open various different connections (on the same interface).",
           "createdAt": "2025-05-19T10:11:42Z",
           "updatedAt": "2025-05-19T10:11:42Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "If you expect it to be small, that doesn't mean that the right thing will happen.  For your expectations to match reality, you need to offer some guidance, or normative language, that will constrain implementations.  Otherwise, some implementation will say \"I have no need to limit paths, they cost only 50 bytes a pop, so I can support thousands\" and then they probe them all at once and choke up the bottleneck toward an unwitting victim, who hasn't asked for that traffic at all.\n\nWhat I'm asking is that you explain the shape of the risk and either suggest some ways that the risk might be mitigated or (perhaps better yet) put some hard caps in place.  The number of paths that are needed in practice are very likely to be small, so there is no reason not to suggest small caps that require special overrides to exceed.",
+          "createdAt": "2025-05-20T01:30:32Z",
+          "updatedAt": "2025-05-20T01:30:32Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Attackers can do a \"PATH RESPONSE DOS\" with RFC9000 style \"path validation\". Not discussed in RFC 9000, but an endpoint can send as many PATH CHALLENGES at it wants, only limited by the number of Connection ID provided by the peer. With multipath, that traffic is limited by the number of Connection ID provided by the peer over a set of paths. Same attack, but slightly different mitigation.\n\nWe do have a mitigation described already -- limit the number of authorized paths, limit the number of provided Connection ID, maybe limit the number of validations that the server want to have going at a given time, or for a given path. I am not sure that we want to put in hard numbers. We could say 2, 3, 7 or 42. Why one rather than the other?\n\n\n\n",
+          "createdAt": "2025-05-20T07:01:53Z",
+          "updatedAt": "2025-05-20T07:01:53Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Attackers don't have the same ability to DoS in RFC 9000 because there is just one path.  A peer might probe multiple paths, but it is only seeking to ensure that it has a single path.\n\nAlso, that DoS is not a great feature of base QUIC.  Why would you not document the implications of allowing more paths on DoS?  It seems like this is the entire point of the current Section 7.2, so you thought it worthy of addressing at some point.  Has your opinion changed?",
+          "createdAt": "2025-05-21T00:11:52Z",
+          "updatedAt": "2025-05-21T00:11:52Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Please review PR #566, which changes the title and tweaks the wording of section 7.2.",
+          "createdAt": "2025-05-21T02:26:04Z",
+          "updatedAt": "2025-05-21T02:26:04Z"
         }
       ]
     }
@@ -61712,6 +61867,194 @@
           "body": "Thanks, Martin. I have verified that all these edits are editorial. And the use of \\<sup\\>..\\</sup\\> is pretty cool, I was not aware that we could do that in Markdown. What's next, full LateX compatibility?",
           "createdAt": "2025-05-19T04:47:09Z",
           "updatedAt": "2025-05-19T04:47:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 566,
+      "id": "PR_kwDOGNtpaM6W-u9g",
+      "title": "Warn about denial of service using multiple paths.",
+      "url": "https://github.com/quicwg/multipath/pull/566",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR is based on the discussion of issue #563 and #564\r\n\r\nClose #563\r\nClose #564",
+      "createdAt": "2025-05-21T02:19:53Z",
+      "updatedAt": "2025-05-21T05:13:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "not-a-forgery",
+      "headRefOid": "b674db3c11e002dcf60b2493890af350fdd108fc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "@kazuho's points are good.  Maybe you need to think about establishing a convention that allows you to make a distinction between \"path\" as used generally (the thing that has a path ID) and the network path itself.",
+          "createdAt": "2025-05-21T02:58:10Z",
+          "updatedAt": "2025-05-21T02:58:10Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In the context of this document, path always refer to \"the packets exchanged with the same path-id\". This is indeed the potential attack: use multiple path ID, but tweak the addresses so the server ends up sending packets on the same network path.",
+          "createdAt": "2025-05-21T04:50:54Z",
+          "updatedAt": "2025-05-21T04:50:54Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6qPFvb",
+          "commit": {
+            "abbreviatedOid": "cdc56d5"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "Thank you for the PR.\r\n\r\nI think the direction is good although it seemed to me that the new text uses \"path\" for two meanings: a flow identified by 5-tuple and a path as identified by a Path ID.\r\n\r\nThis might be a broader issue but I would hope the text could be clearer.",
+          "createdAt": "2025-05-21T02:47:02Z",
+          "updatedAt": "2025-05-21T02:47:02Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qPIq2",
+          "commit": {
+            "abbreviatedOid": "cdc56d5"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-05-21T02:56:59Z",
+          "updatedAt": "2025-05-21T02:56:59Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qP2jd",
+          "commit": {
+            "abbreviatedOid": "3e4b5bc"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-21T05:03:48Z",
+          "updatedAt": "2025-05-21T05:03:48Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nor migration of multiple paths. For example, an attacker could set or spoof the\r\n```",
+              "createdAt": "2025-05-21T05:03:48Z",
+              "updatedAt": "2025-05-21T05:03:49Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 567,
+      "id": "PR_kwDOGNtpaM6W_lcT",
+      "title": "replace sequence value aead by 54321",
+      "url": "https://github.com/quicwg/multipath/pull/567",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Close #545",
+      "createdAt": "2025-05-21T05:09:33Z",
+      "updatedAt": "2025-05-21T14:34:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "aead-is-a-bad-pun",
+      "headRefOid": "3e1273b1116b2452d6932043c721f9f239904279",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6qQMoQ",
+          "commit": {
+            "abbreviatedOid": "6a547b0"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-05-21T05:49:51Z",
+          "updatedAt": "2025-05-21T05:49:51Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qWW2t",
+          "commit": {
+            "abbreviatedOid": "6a547b0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-21T14:34:25Z",
+          "updatedAt": "2025-05-21T14:34:25Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nThese events do not change the path ID, and do not affect the packet number\r\n```",
+              "createdAt": "2025-05-21T14:34:25Z",
+              "updatedAt": "2025-05-21T14:34:26Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 568,
+      "id": "PR_kwDOGNtpaM6XEotz",
+      "title": "3x largest PTO for CONNECTION_CLOSE",
+      "url": "https://github.com/quicwg/multipath/pull/568",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #555",
+      "createdAt": "2025-05-21T14:23:44Z",
+      "updatedAt": "2025-05-21T17:05:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-25",
+      "headRefOid": "b0f6232ff2bc68cc6dd1c136893f1c965f4d2dd9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6qYb1A",
+          "commit": {
+            "abbreviatedOid": "b0f6232"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-05-21T17:05:38Z",
+          "updatedAt": "2025-05-21T17:05:38Z",
           "comments": []
         }
       ]
