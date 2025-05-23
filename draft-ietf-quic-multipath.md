@@ -1098,8 +1098,7 @@ Handshake and Application packets).
 
 For any given path, connection ID rotation, NAT rebinding, or client initiated migration
 as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
-These events do not change the path ID,
- and do not affect the packet number
+These events do not change the path ID, and do not affect the packet number
 space associated with the path.
 
 It is generally preferable to use multipath mechanisms such as
