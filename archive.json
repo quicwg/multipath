@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-22T01:03:19.432592+00:00",
+  "timestamp": "2025-05-25T01:09:10.427698+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -61822,7 +61822,7 @@
       "labels": [],
       "body": "Just the minor stuff.  Issues are open for questions and more substantive feedback.",
       "createdAt": "2025-05-12T01:23:48Z",
-      "updatedAt": "2025-05-19T05:35:50Z",
+      "updatedAt": "2025-05-22T10:50:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
@@ -61868,6 +61868,39 @@
           "createdAt": "2025-05-19T04:47:09Z",
           "updatedAt": "2025-05-19T04:47:40Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qfuG-",
+          "commit": {
+            "abbreviatedOid": "b1b2cc1"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-05-22T09:17:14Z",
+          "updatedAt": "2025-05-22T09:17:14Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qg69F",
+          "commit": {
+            "abbreviatedOid": "b1b2cc1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T10:50:39Z",
+          "updatedAt": "2025-05-22T10:50:39Z",
+          "comments": [
+            {
+              "originalPosition": 149,
+              "body": "We have a separate issue for this #562 and I guess are still discussion it. Either we keep this PR open until the issues is resolved or we move this chance to a separate PR.",
+              "createdAt": "2025-05-22T10:50:39Z",
+              "updatedAt": "2025-05-22T10:50:39Z"
+            }
+          ]
         }
       ]
     },
@@ -61883,13 +61916,13 @@
       "labels": [],
       "body": "This PR is based on the discussion of issue #563 and #564\r\n\r\nClose #563\r\nClose #564",
       "createdAt": "2025-05-21T02:19:53Z",
-      "updatedAt": "2025-05-21T05:13:38Z",
+      "updatedAt": "2025-05-23T00:06:08Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "not-a-forgery",
-      "headRefOid": "b674db3c11e002dcf60b2493890af350fdd108fc",
+      "headRefOid": "f072f9fc5f7f65ccda98c9fb21375e50ccb5b4c8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -61956,6 +61989,32 @@
               "updatedAt": "2025-05-21T05:03:49Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qfwgF",
+          "commit": {
+            "abbreviatedOid": "b674db3"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Overall good, small nits.",
+          "createdAt": "2025-05-22T09:20:26Z",
+          "updatedAt": "2025-05-22T09:22:36Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I am not sure if this was an unintentional change (this does not change anything except adding a new line?).\r\n```suggestion\r\nThese events do not change the path ID, and do not affect the packet number\r\n```",
+              "createdAt": "2025-05-22T09:20:26Z",
+              "updatedAt": "2025-05-22T09:22:36Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nthere is a risk of amplified DoS attacks through simultaneous opening\r\n```",
+              "createdAt": "2025-05-22T09:21:19Z",
+              "updatedAt": "2025-05-22T09:22:36Z"
+            }
+          ]
         }
       ]
     },
@@ -61968,16 +62027,18 @@
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "Close #545",
       "createdAt": "2025-05-21T05:09:33Z",
-      "updatedAt": "2025-05-21T14:34:38Z",
+      "updatedAt": "2025-05-22T10:52:45Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "aead-is-a-bad-pun",
-      "headRefOid": "3e1273b1116b2452d6932043c721f9f239904279",
+      "headRefOid": "dc41d26f719c802bb8497e0de971ad57b3d69957",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -62016,6 +62077,52 @@
               "updatedAt": "2025-05-21T14:34:26Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qc_K6",
+          "commit": {
+            "abbreviatedOid": "3e1273b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T04:25:33Z",
+          "updatedAt": "2025-05-22T04:25:33Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nThese events do not change the path ID and do not affect the packet number\r\n```",
+              "createdAt": "2025-05-22T04:25:33Z",
+              "updatedAt": "2025-05-22T04:25:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qf4zK",
+          "commit": {
+            "abbreviatedOid": "3e1273b"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-05-22T09:28:59Z",
+          "updatedAt": "2025-05-22T09:28:59Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qg75t",
+          "commit": {
+            "abbreviatedOid": "3e1273b"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-05-22T10:52:12Z",
+          "updatedAt": "2025-05-22T10:52:12Z",
+          "comments": []
         }
       ]
     },
@@ -62028,16 +62135,18 @@
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "fixes #555",
       "createdAt": "2025-05-21T14:23:44Z",
-      "updatedAt": "2025-05-21T17:05:38Z",
+      "updatedAt": "2025-05-22T10:46:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-25",
-      "headRefOid": "b0f6232ff2bc68cc6dd1c136893f1c965f4d2dd9",
+      "headRefOid": "c73abb82d18ef9a8a1b6c2f4d57861fae45b52ed",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -62055,6 +62164,81 @@
           "body": "",
           "createdAt": "2025-05-21T17:05:38Z",
           "updatedAt": "2025-05-21T17:05:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qc-6Z",
+          "commit": {
+            "abbreviatedOid": "b0f6232"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Thanks for this.  Sometimes you have to write the obvious stuff down too.",
+          "createdAt": "2025-05-22T04:24:31Z",
+          "updatedAt": "2025-05-22T04:25:03Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nthe largest Probe Timeout (PTO) (see {{Section 6.2 of QUIC-RECOVERY}})\r\n```",
+              "createdAt": "2025-05-22T04:24:31Z",
+              "updatedAt": "2025-05-22T04:25:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6qf6HH",
+          "commit": {
+            "abbreviatedOid": "c73abb8"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Sounds good.",
+          "createdAt": "2025-05-22T09:30:28Z",
+          "updatedAt": "2025-05-22T09:30:28Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 569,
+      "id": "PR_kwDOGNtpaM6XL53_",
+      "title": "Minor editorial edits",
+      "url": "https://github.com/quicwg/multipath/pull/569",
+      "state": "OPEN",
+      "author": "lsj0410",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [
+        "ready-to-merge"
+      ],
+      "body": "",
+      "createdAt": "2025-05-22T08:46:59Z",
+      "updatedAt": "2025-05-22T10:47:06Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "lsj0410/multipath",
+      "headRefName": "main",
+      "headRefOid": "f0acca14426b69b4bff9b25a04403c746c0f7a38",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6qfgov",
+          "commit": {
+            "abbreviatedOid": "f0acca1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks!",
+          "createdAt": "2025-05-22T08:58:47Z",
+          "updatedAt": "2025-05-22T08:58:47Z",
           "comments": []
         }
       ]
