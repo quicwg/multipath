@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 25 October 2025                          Uber Technologies Inc.
+Expires: 14 December 2025                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 25 October 2025                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                           23 April 2025
+                                                            12 June 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 October 2025.
+   This Internet-Draft will expire on 14 December 2025.
 
 Copyright Notice
 
@@ -109,8 +109,7 @@ Table of Contents
      5.6.  Retransmissions
      5.7.  PTO Expiration
      5.8.  Paths Having Different PMTU Sizes
-     5.9.  Keep Alive
-     5.10. Idle Timeout
+     5.9.  Idle Timeout and Keep-Alives
    6.  IANA Considerations
    7.  Security Considerations
      7.1.  Memory Allocation for Per-Path Resources
@@ -127,7 +126,8 @@ Table of Contents
 
    This document specifies an extension to QUIC version 1
    [QUIC-TRANSPORT] to enable the simultaneous usage of multiple paths
-   for a single connection, using the same or different 4-tuples.
+   for a single connection, using the same or different 4-tuples (of
+   source/destination port number and source/destination IP address).
 
    Connection migration as specified in Section 9 of [QUIC-TRANSPORT]
    directs a peer to switch sending through a new preferred path, and,
@@ -243,10 +243,10 @@ Table of Contents
    error of type TRANSPORT_PARAMETER_ERROR.
 
    When advertising the initial_max_path_id transport parameter,
-   endpoints MUST use non-zero length Source and Destination Connection
-   IDs.  If an initial_max_path_id transport parameter is received and
-   the carrying packet contains a zero-length connection ID, the
-   receiver MUST treat this as a connection error of type
+   endpoints MUST use Source and Destination Connection IDs with non-
+   zero lengths.  If an initial_max_path_id transport parameter is
+   received and the carrying packet contains a zero-length connection
+   ID, the receiver MUST treat this as a connection error of type
    PROTOCOL_VIOLATION and close the connection.
 
    Cipher suites with a nonce shorter than 12 bytes cannot be used
@@ -291,13 +291,14 @@ Table of Contents
    handshake, acknowledgments of Initial and Handshake packets are sent
    using ACK frames.
 
-   After the handshake concluded and both endpoints support the
-   multipath extension, endpoints SHOULD use PATH_ACK frames instead of
-   ACK frames, including for acknowledging so far unacknowledged 0-RTT
-   packets using path ID 0.  Endpoints MUST process ACK frames that
-   acknowledge 0-RTT packets or 1-RTT packets, even when this extension
-   is used.  For example, ACK frames might be preferred by the sender as
-   long as only the initial path with path ID 0 is in use.
+   After the handshake concluded with support for the multipath
+   extension, endpoints SHOULD use PATH_ACK frames instead of ACK
+   frames, including for so far unacknowledged 0-RTT packets using Path
+   ID 0.  Endpoints MUST still process ACK frames that acknowledge 0-RTT
+   packets or 1-RTT packets.  For example, a sender may negotiate
+   multipath support for later use and keep only the initial path with
+   path ID 0 for a while.  During this single-path period, the sender
+   might prefer to send ACK frames.
 
 2.4.  Nonce Calculation after Handshake Completion
 
@@ -372,8 +373,27 @@ Table of Contents
    and retirement of per-path connection IDs (see Section 3.2), path
    status management (see Section 3.3) and path closure (see
    Section 3.4).  However, this document does not specify when a client
-   decides to initiate or close a path, or how multiple active paths are
+   decides to initiate or close a path, or how multiple open paths are
    used for sending.
+
+   For path management this extension specifies the following frames in
+   Section 4:
+
+   *  PATH_ABANDON (see Section 4.2)
+
+   *  PATH_BACKUP (see Section 4.3)
+
+   *  PATH_AVAILABLE (see Section 4.3)
+
+   *  PATH_NEW_CONNECTION_ID (see Section 4.4)
+
+   *  PATH_RETIRE_CONNECTION_ID (see Section 4.5)
+
+   *  MAX_PATH_ID (see Section 4.6)
+
+   *  PATHS_BLOCKED (see Section 4.7)
+
+   *  PATH_CIDS_BLOCKED (see Section 4.7)
 
 3.1.  Path Initiation and Validation
 
@@ -482,11 +502,11 @@ Table of Contents
    Section 21.1.1.1 of [QUIC-TRANSPORT]) and the congestion control
    limits for this path are respected.
 
-   The receiver may observe a connection ID associated with a used path
-   ID on different 4-tuples due to, e.g., NAT rebinding.  In such a
-   case, the receiver reacts as specified in Section 9.3 of
-   [QUIC-TRANSPORT] by initiating path validation but MUST use a new
-   connection ID for the same path ID.
+   The receiver may receive a connection ID associated with a used path
+   ID on different 4-tuples, e.g., due to NAT rebinding.  This causes
+   the receiver to initiate path validation as specified in Section 9.3
+   of [QUIC-TRANSPORT] which MUST use a new connection ID for the same
+   path ID.
 
 3.1.3.  Address Validation Token
 
@@ -515,7 +535,7 @@ Table of Contents
    Endpoints SHOULD also use PATH_NEW_CONNECTION_ID and
    PATH_RETIRE_CONNECTION_ID for the initial path with path ID 0.
    However, the use of NEW_CONNECTION_ID and RETIRE_CONNECTION_ID is
-   still valid and endpoints need to process these frames accordingly as
+   still valid and endpoints need to process these frames as
    corresponding to path ID 0.
 
 3.2.1.  Issuing New Connection IDs
@@ -650,8 +670,8 @@ Table of Contents
    explicitly close the path by sending a PATH_ABANDON frame (see
    Section 4.2).  This is true whether the decision to close the path
    results from implicit signals such as an idle time-out (see
-   Section 5.10) or packet losses as well as for any other reason such
-   as management of local resources.
+   Section 5.9) or packet losses as well as for any other reason such as
+   management of local resources.
 
    The peers that send a PATH_ABANDON frame MUST treat all connection
    IDs received from the peer for the path ID indicated in the
@@ -661,10 +681,10 @@ Table of Contents
    associated connection IDs does not indicate path abandonment (see
    further Section 3.2).
 
-   PATH_ABANDON frames can be sent on any path, not only on the path
-   that is intended to be closed.  It is RECOMMENDED to send the
-   PATH_ABANDON frames on another path, especially if connectivity on
-   the to-be-abandoned path is expected to be broken.
+   PATH_ABANDON frames can be sent on any open path, not only on the
+   path that is intended to be closed.  It is RECOMMENDED to send the
+   PATH_ABANDON frames on another open path, especially if connectivity
+   on the to-be-abandoned path is expected to be broken.
 
    When an endpoint receives a PATH_ABANDON frame, it MUST send a
    corresponding PATH_ABANDON frame, if it has not already done so, and
@@ -1299,12 +1319,12 @@ Table of Contents
    are used to send acknowledgements.  However, this is not very
    different from route changes on a single path.  The RTT, RTT variance
    and PTO estimates will rapidly converge to reflect the new
-   conditions.  There is however one exception: the minimum RTT.  But
-   this is also a known challenge when route changes occurs on a single
-   path.  Other than for in-network route change, the acknowledgement
-   receiver can, however, remember the path over which the PATH_ACK that
-   produced the minimum RTT was received, and restart the minimum RTT
-   computation if that acknowledgement path changes or is abandoned.
+   conditions.  There is one exception: the minimum RTT, which is also a
+   known challenge when route changes occurs on a single path.  An
+   acknowledgement receiver can, however, remember the path over which
+   the PATH_ACK that produced the minimum RTT was received, and restart
+   the minimum RTT computation if that acknowledgement path changes or
+   is abandoned.
 
    Further, congestion control functions that rely on delay estimates
    needs to consider cases where acknowledgements are sent over multiple
@@ -1389,25 +1409,11 @@ Table of Contents
    initially sent on one path can be sent on another path without
    further frame scheduling adaptations.
 
-5.9.  Keep Alive
+5.9.  Idle Timeout and Keep-Alives
 
-   The QUIC specification defines an optional keep alive process, see
-   Section 5.3 of [QUIC-TRANSPORT].  Implementations of the multipath
-   extension should map this keep alive process to a number of paths.
-   Some applications may keep only one path alive, while others could
-   prefer to maintain liveliness on two or more paths during the
-   connection lifetime.  Different applications will likely require
-   different strategies.  Once the implementation has decided which
-   paths to keep alive, it can do so by sending Ping frames on each of
-   these paths before the idle timeout expires.
-
-5.10.  Idle Timeout
-
-   [QUIC-TRANSPORT] allows for closing of connections if they stay idle
-   for too long.  The connection idle timeout when using the multipath
-   extension is defined as "no packet received on any path for the
-   duration of the idle timeout".  When only one path is available,
-   servers follow the specifications in [QUIC-TRANSPORT].
+   [QUIC-TRANSPORT] defines an idle timeout for closing the connection
+   which applies in case of multipath usage if no packet is received on
+   any path for the duration of the idle timeout.
 
    This document does not specify per-path idle timeouts.  An endpoint
    can decide to close a path at any time, whether the path is in active
@@ -1420,13 +1426,17 @@ Table of Contents
    anymore, e.g. due to middlebox timeouts.  To avoid such path
    breakage, endpoints can send ack-eliciting packets such as packets
    containing PING frames (Section 19.2 of [QUIC-TRANSPORT]) on that
-   path to keep it alive.  As discussed in Section 10.1.2 of
-   [QUIC-TRANSPORT], the keep-alive interval depends on the timeout in
-   the middlebox.
+   path to keep it alive.  Section 5.3 of [QUIC-TRANSPORT] defines an
+   optional keep alive process.  This process can be applied to each
+   path separately depending on application needs.  Some applications
+   may decide to not keep any not-actively used path alive, keep only
+   one additonal path alive, or multiple paths, e.g. for more redunancy.
+   As discussed in Section 10.1.2 of [QUIC-TRANSPORT], the keep-alive
+   interval needs to incorperate timeouts in middleboxes on the path.
 
-   If a path was not actively used for a while, an endpoint can probe it
-   before switching to active use if there are still other paths that
-   are currently usable.
+   If a path was not actively used for a while and no keep alives have
+   been sent, an endpoint can probe it before switching to active use if
+   there are still other paths that are currently usable.
 
 6.  IANA Considerations
 
@@ -1609,8 +1619,9 @@ Table of Contents
 9.  Acknowledgments
 
    Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus
-   Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, and Yu Zhu
-   for their thorough reviews and valuable contributions.
+   Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, Yu Zhu, and
+   Gorry Fairhurst for their thorough reviews and valuable
+   contributions.
 
 10.  References
 
