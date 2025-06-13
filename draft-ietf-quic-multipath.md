@@ -1428,7 +1428,7 @@ such as e.g. for packet number handling, only after path validation has successf
 Path validation as specified in {{Section 8.2. of QUIC-TRANSPORT}}
 for migration is used
 unchanged for path initiation in this extension.
-But the multipath extensions allow for the creation of multiple paths, which means
+Further, the multipath extension allows for the creation of multiple paths, which means
 that in addition to the security considerations
 on source address spoofing outlined in {{Section 21.5.4 of QUIC-TRANSPORT}},
 there is a risk of amplified DoS attacks through simultaneous opening
