@@ -1440,7 +1440,7 @@ travel through common network paths in an attempt to overwhelm a target.
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
 This extension, however, allows for multiple open paths that could in theory be migrated
-all at the same time. Further multiple paths could be initialized
+all at the same time. Further, multiple paths could be initialized
 simultaneously.
 The anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}
 limit the amplification risk for a given path,
