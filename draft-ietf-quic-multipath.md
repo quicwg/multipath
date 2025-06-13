@@ -1222,7 +1222,7 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to use the acknowledgment delay
+The simplest implementation is to use the sum of the two one-way delays
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
