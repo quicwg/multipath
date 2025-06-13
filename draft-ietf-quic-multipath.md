@@ -325,11 +325,12 @@ or how multiple open paths are used for sending.
 
 ## Path Initiation and Validation {#path-initiation}
 
-
 To open a new path, an endpoint MUST use a new connection ID associated
-with an unused path ID.
-When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to
-the same path ID as used in the packet that contained the PATH_CHALLENGE frame.
+with an unused path ID. When sending packets on the same path, an endpoint
+MUST use a connection ID associated to the same path ID as used in the packet
+received by the server. If an endpoint receives a PATH_CHALLENGE, the
+PATH_RESPONSE MUST be sent on the same path as the packet that contained
+the PATH_CHALLENGE frame.
 
 A client that wants to use an
 additional path MUST validate the peer's address before sending any data packets
