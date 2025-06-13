@@ -1194,15 +1194,15 @@ per path ID. However, depending on which path acknowledgements are
 sent, the actual RTT of a path cannot be calculated or may not be
 the right value to be used.
 
-Instead of using RTT, we define the acknowledgment delays as
+Instead of using the real RTT of a path, it is recommended to use
 the sum of two one-way delays: the delay
 on the packet sending path and the delay on the return path chosen
 for the acknowledgments.  When different paths have different
-characteristics, acknowledgment delays can vary
+characteristics, the delays can vary
 widely. Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in each
-direction.  The acknowledgment delay will depend on the combination
+direction.  The sum of the two one-way delays will depend on the combination
 of paths used for the packet transmission and the acknowledgement transmission,
 as shown in {{fig-example-ack-delay}}.
 
