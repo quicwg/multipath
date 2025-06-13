@@ -387,17 +387,17 @@ path ID 0 is already used for the initial path.
 ~~~
    Client                                                  Server
 
-   (Exchanges start on default path)
-   1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
-             <-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S1, Seq=0, PathID=1]
-             <-- 1-RTT[]: PATH_NEW_CONNECTION_ID[S2, Seq=0, PathID=2]
+   (Provide new CIDs for path 1 on an existing path 0)
+   1-RTT[X]: DCID=S0, PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
+           <-- 1-RTT[Y]: DCID=C0, PATH_NEW_CONNECTION_ID[S1, Seq=0,
+                                  PathID=1], PATH_ACK[PathID=0, PN=X]
+           <-- 1-RTT[Y+1]: DCID=C0, PATH_NEW_CONNECTION_ID[S2, Seq=0,
+                                                            PathID=2]
    ...
-   (starts new path)
+   (start sending packets on a new path using path ID 1)
    1-RTT[0]: DCID=S1, PATH_CHALLENGE[X] -->
-                           Checks AEAD using nonce(path ID 1, PN 0)
         <-- 1-RTT[0]: DCID=C1, PATH_RESPONSE[X], PATH_CHALLENGE[Y],
                                              PATH_ACK[PathID=1, PN=0]
-   Checks AEAD using nonce(path ID 1, PN 0)
    1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
             PATH_ACK[PathID=1, PN=0], ... -->
 
