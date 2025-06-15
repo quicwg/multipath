@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 December 2025                         Uber Technologies Inc.
+Expires: 17 December 2025                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 December 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            13 June 2025
+                                                            15 June 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2025.
+   This Internet-Draft will expire on 17 December 2025.
 
 Copyright Notice
 
@@ -127,7 +127,7 @@ Table of Contents
    This document specifies an extension to QUIC version 1
    [QUIC-TRANSPORT] to enable the simultaneous usage of multiple paths
    for a single connection, using the same or different 4-tuples (of
-   source/destination port number and source/destination IP address).
+   source/destination port numbers and source/destination IP addresses).
 
    Connection migration as specified in Section 9 of [QUIC-TRANSPORT]
    directs a peer to switch sending through a new preferred path, and,
