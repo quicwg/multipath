@@ -181,7 +181,7 @@ The new transport parameter is defined as follows:
 - initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a
   variable-length integer specifying the maximum path ID
   an endpoint is willing to maintain at connection initiation.
-  This value MUST NOT exceed 2^32-1, the maximum allowed value for the path ID due to
+  This value MUST NOT exceed 2<sup>32</sup>-1, the maximum allowed value for the path ID due to
   restrictions on the nonce calculation (see {{nonce}}).
 
 The initial_max_path_id transport parameter limits the initial
@@ -196,7 +196,7 @@ MAX_PATH_ID frame ({{max-paths-frame}}) with the same value.
 As such to allow for the use of more paths later,
 endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path ID.
 
-If an initial_max_path_id transport parameter value higher than 2^32-1
+If an initial_max_path_id transport parameter value higher than 2<sup>32</sup>-1
 is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.
 
@@ -225,7 +225,7 @@ and not retired are considered active.
 If an endpoint receives a disable_active_migration transport parameter,
 it is forbidden to establish new paths to the peer's handshake address. However,
 establishment of additional paths to other peer addresses
-(e.g carried by peer’s preferred_address) is immediately valid.
+(e.g., carried by peer’s preferred_address) is immediately valid.
 
 If the server uses the preferred_address transport parameter, clients
 cannot assume that the initial server address and the addresses
@@ -261,9 +261,9 @@ with the packet number. When multiple packet number spaces are used,
 the packet number alone would not guarantee the uniqueness of the nonce.
 Therefore, the nonce N is calculated for 1-RTT if the multipath extension is used
 by combining the packet protection
-IV with the packet number and with the least significant 32 bits of the
+IV with the packet number and with the 32 bits of the
 path ID. In order to guarantee the uniqueness of the nonce, the path ID
-is limited to a max value of 2^32-1, as specified in Section {{nego}}
+is limited to a max value of 2<sup>32</sup>-1, as specified in {{nego}}
 
 To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
 significant 32 bits of the path ID in network byte order,
@@ -271,7 +271,7 @@ two zero bits, and the 62 bits of the reconstructed QUIC packet number in
 network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
 packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
-is less than 12 bytes MUST NOT be used with the QUIC multipath extension.
+is less than 12 bytes cannot be used with the QUIC multipath extension.
 
 For example, assuming the IV value is `6b26114b9cba2b63a9e8dd4f`,
 the path ID is `3`, and the packet number is `aead`,
@@ -306,7 +306,7 @@ and therefore limits the impact on performance.
 
 Following {{Section 5.4 of QUIC-TLS}}, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
-should not cause linkability issues.
+should not cause activity across different paths to be linkable by an observer.
 
 # Path Management {#path-management}
 
@@ -515,9 +515,9 @@ this document, endpoints MUST only rotate to another connection IDs associated
 to the same path ID. Use of a connection ID associated with
 another path ID will be considered as an attempt to open a new path instead.
 
-An endpoint is supposed to retire connection ID that are not used anymore,
-and the server is supposed to provide
-replacements, as specified in {{Section 5.1.2. of QUIC-TRANSPORT}}.
+An endpoint is supposed to retire any connection ID that is not being used,
+and the server is expected to provide
+replacements, as specified in {{Section 5.1.2 of QUIC-TRANSPORT}}.
 As such, when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint
 SHOULD provide new connection IDs for that path, if still open, using PATH_NEW_CONNECTION_ID frames.
 
@@ -556,7 +556,7 @@ indicated as "backup" by the peer or non-usage of some locally available paths.
 PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
 
-PATH_BACKUP suggests that a path should only be used as backup i.e. that no traffic
+PATH_BACKUP suggests that a path should only be used as backup, i.e., that no traffic
 should be sent on that path if another path is available and usable.
 If all established paths are indicated as backup paths, no guidance is provided about
 which path should be used.
@@ -1001,7 +1001,7 @@ MAX_PATH_ID frames contain the following field:
 
 Maximum Path Identifier:
 : The maximum path ID that the sending endpoint is willing to accept.
-  This value MUST NOT exceed 2^32-1, which is the maximum allowed value for the path ID due to
+  This value MUST NOT exceed 2<sup>32</sup>-1, which is the maximum allowed value for the path ID due to
   restrictions on the nonce calculation (see {{nonce}}).
   The Maximum Path Identifier value MUST NOT be lower than the value
   advertised in the initial_max_path_id transport parameter.
@@ -1023,13 +1023,13 @@ it wishes to open a path but is unable to do so due to the maximum path ID
 limit set by its peer.
 
 A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
-it wishes to open a path with a valid path ID or change the CID on an established path
+it wishes to open a path with a valid path ID or change the connection ID on an established path
 but is unable to do so because there are no unused connection IDs available
 for the corresponding path ID.
 
 Note that PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are informational.
 Sending a PATHS_BLOCKED or a PATH_CIDS_BLOCKED frame does not imply a particular action from the peer
-like sending a MAX_PATH_ID farme with a new Maximum Path Identifier value,
+like sending a MAX_PATH_ID frame with a new Maximum Path Identifier value,
 but informs the peer that the maximum path ID limit
 or the absence of unused connection IDs prevented the creation or the usage of paths.
 If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
@@ -1088,7 +1088,7 @@ if the path is still blocked when the lost is detected.
 
 This section provides informational guidance for implementors.
 
-## CID Changes, Migration, and NAT Rebindings {#migration}
+## Connection ID Changes, Migration, and NAT Rebindings {#migration}
 
 With the multipath extension, each
 path uses a separate packet number space.
@@ -1140,7 +1140,7 @@ source and destination ports:
 * Client starts path 1 from address 192.0.2.1 to server address 198.51.100.1
 * Client starts path 2 from address 192.0.2.2 to server address 198.51.100.1
 * Both paths are used for a while.
-* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with CID indicating path ID 2.
+* Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with Connection ID indicating path ID 2.
 * Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.
 
 Such unintentional use of the same 4-tuple on different paths ought to
@@ -1187,7 +1187,7 @@ the endpoint can keep the same congestion control and RTT measurement state.
 PATH_ACK frames indicate which path the acknowledged packets were sent on,
 but they may be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
-which could result in poor performance depending e.g. on the used connection control.
+which could result in poor performance depending e.g., on the used connection control.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
 per path ID. However, depending on which path acknowledgements are
@@ -1291,7 +1291,7 @@ strategy, more detailed specification is out of scope.
 As noted in {{Section 2.2 of QUIC-TRANSPORT}}, STREAM frame boundaries are not
 expected to be preserved when data is retransmitted. Especially when STREAM
 frames have to be retransmitted over a different path with a smaller MTU limit,
-new smaller STREAM frames might need to be sent instead.
+smaller STREAM frames might need to be sent instead.
 
 ## PTO Expiration
 
@@ -1312,7 +1312,7 @@ paths allows.
 An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
 DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
-One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to
+One simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to
 each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
 on another path without further frame scheduling adaptations.
@@ -1331,15 +1331,15 @@ Note that the receiver of an initial PATH_ABANDON frame is, however,
 required to immediately reply (see {{path-close}}).
 
 If a path is not actively used for a while, it might not be usable anymore,
-e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
+e.g., due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 ({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
 {{Section 5.3 of QUIC-TRANSPORT}} defines an optional keep alive process.
 This process can be applied to each path separately depending on application needs.
 Some applications may decide to not keep any not-actively used path alive,
-keep only one additonal path alive, or multiple paths, e.g. for more redunancy.
+keep only one additional path alive, or multiple paths, e.g., for more redunancy.
 As discussed in {{Section 10.1.2 of QUIC-TRANSPORT}}, the keep-alive interval
-needs to incorperate timeouts in middleboxes on the path.
+needs to incorporate timeouts in middleboxes on the path.
 
 If a path was not actively used for a while and no keep alives have been sent,
 an endpoint can probe it before switching to active use if there are still other paths
@@ -1421,11 +1421,11 @@ the maximum path ID limit in initial_max_path_id or the MAX_PATH_ID frame is pre
 
 To avoid unnecessary resource usage that could be exploited
 in a resource exhaustion attack, endpoints SHOULD allocate additional path resources,
-such as e.g. for packet number handling, only after path validation has successfully completed.
+such as e.g., for packet number handling, only after path validation has successfully completed.
 
 ## Denial of Service with Multiple Paths
 
-Path validation as specified in {{Section 8.2. of QUIC-TRANSPORT}}
+Path validation as specified in {{Section 8.2 of QUIC-TRANSPORT}}
 for migration is used
 unchanged for path initiation in this extension.
 Further, the multipath extension allows for the creation of multiple paths, which means
@@ -1448,18 +1448,22 @@ but multiple paths could be used to further amplify an attack.
 
 Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
-e.g. by pacing them out or limiting the number of path initiation attempts
+e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
 
-## Cryptographic handshake and AEAD Nonce
+## Cryptographic Handshake and AEAD Nonce
 
 The multipath extension as specified in this document is only enabled after a
 successful handshake when both endpoints indicate support for this extension.
-Respectively, all new frames defined in this extension are only used in 1-RTT packets.
+All new frames defined in this extension are only used in 1-RTT packets.
+
 As the handshake is not changed by this extension, the transport security mechanisms
 as specified in {{QUIC-TLS}}, such as encryption key exchange and peer authentication,
-remain unchanged. As such, the respective security considerations in {{QUIC-TLS}} apply unaltered. However, note that the limits as discussed on Appendix B of {{QUIC-TLS}}
-apply to the total number of packets sent on all paths.
+remain unchanged. As such, the security considerations in {{QUIC-TLS}} apply unaltered.
+
+The limits as discussed on {{Appendix B of QUIC-TLS}}
+apply to the total number of packets sent on all paths,
+not each path separately.
 
 This specification changes the AEAD calculation by using the path ID as part of
 AEAD nonce (see {{nonce}}). To ensure unique nonces, path IDs
