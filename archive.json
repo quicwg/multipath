@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-25T01:09:10.427698+00:00",
+  "timestamp": "2025-06-15T01:12:14.664860+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13074,12 +13074,43 @@
       "author": "tfpauly",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "During my read-through of the document, I had the following comments. These are generally editorial. This is for draft-ietf-quic-multipath-14.\n\n### Section 1\n\n\"4-tuple\" is used without being directly defined, and I don't think that term is used in RFC 9000. Having a simple explanation of what tuple you mean would be good for people who aren't familiar. This is also used in section 5.2.\n\n> There are currently no IETF specifications for simultaneously (concurrently) using multiple paths.\n\nI think this would be more clear to explain that \"There are currently no IETF specifications _that define scheduling algorithms_ for...\". Without that clarification, it could sound like the IETF specifications prohibit simultaneous use (which isn't true) instead of just not specifying the algorithms for how to schedule them.\n\nThe intro defines the notion of \"path ID\" as part of the body of text, but it might be nice to have a separate sub-section that defines the normative aspects of the path ID. Right now, very crucial details about the path ID being an integer that monotonically increases, isn't reused, has special values for 0, etc, is mixed into the overview/conceptual text.\n\n### Section 2.1\n\n> When advertising the initial_max_path_id transport parameter, endpoints MUST use non-zero length Source and Destination Connection IDs.\n\nThe hyphens here feel a bit odd, like it should really be \"non-zero-length\". I suggest either one of these options:\n- \"endpoints MUST use Source and Destination Connection IDs with non-zero lengths.\"\n- \"endpoints MUST NOT use zero-length Source and Destination Connection IDs.\"\n\n### Section 2.3\n\n> The choice of three times the largest PTO is a trade-off.\n\nIt feels like this sentence should say \"is a trade-off between ___ and ___.\", for clarity.\n\n### Section 3\n\nThis is the first time that some of the new frame types are mentioned, such as `PATH_ABANDON`, `PATH_NEW_CONNECTION_ID`, `PATH_RETIRE_CONNECTION_ID`. These don't consistently provide references to the sections where they are defined below. Please either add the references on these first uses, or maybe have an overview at the top of section 3 that mentions all of the new frame types and provides references at that point; or just move the frame definitions up.\n\n### Section 4.3\n\nI have a slight preference to change `PATH_BACKUP` -> `PATH_IS_BACKUP` or something similar. \"BACKUP\" alone sounds like a verb like \"ABANDON\", so initially I read it as \"back this path up\", which doesn't make much sense. A path _being_ a backup, like it can be available, makes more sense.\n\n### Section 4.2.1\n\nThe error codes defined here seem specific to paths, but they go in the main error registry. Should their names have more clear path-related names?\n\n`APPLICATION_ABANDON` -> `APPLICATION_ABANDON_PATH`\n`RESOURCE_LIMIT_REACHED` -> `PATH_RESOURCE_LIMIT_REACHED` (although this one seems it could be more generic)\n`UNSTABLE_INTERFACE` -> `PATH_UNSTABLE_INTERFACE`\n`NO_CID_AVAILABLE` -> `PATH_NO_CID_AVAILABLE` / `NO_CID_AVAILABLE_FOR_PATH`\n\n",
       "createdAt": "2025-05-10T00:07:07Z",
-      "updatedAt": "2025-05-10T00:07:07Z",
+      "updatedAt": "2025-06-14T17:30:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> > There are currently no IETF specifications for simultaneously (concurrently) using multiple paths.\n> \n> I think this would be more clear to explain that \"There are currently no IETF specifications _that define scheduling algorithms_ for...\". Without that clarification, it could sound like the IETF specifications prohibit simultaneous use (which isn't true) instead of just not specifying the algorithms for how to schedule them.\n\n@gorryfair would that wording be okay for you?\n\n\n\n",
+          "createdAt": "2025-06-12T16:59:01Z",
+          "updatedAt": "2025-06-12T16:59:01Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PRs #570, #571, #572 to address most of your editorial comments, expect the question above for Gorry and the following two points:\n\n> The intro defines the notion of \"path ID\" as part of the body of text, but it might be nice to have a separate sub-section that defines the normative aspects of the path ID. Right now, very crucial details about the path ID being an integer that monotonically increases, isn't reused, has special values for 0, etc, is mixed into the overview/conceptual text.\n\nThe normative specification effectively is where the transport parameter is defined to be an integer and the max value. Btw 0 does not have a special meaning. We used to have an own subsection on path ID but it seemed redundant. So I'm not really sure if I would want to (re-)add it again.\n\n> ### Section 2.3\n> \n> > The choice of three times the largest PTO is a trade-off.\n> \n> It feels like this sentence should say \"is a trade-off between ___ and ___.\", for clarity.\n\nThis is want the sentence after the next sentence already says:\n\n\"Longer delays reduce the probability of losing packets but keeping old keys longer can negatively impact the security of the protocol.\"\n\nIsn't that sufficient. Trying to squeeze this into one sentence would just make it a really long sentence, no?\n\n",
+          "createdAt": "2025-06-12T17:25:27Z",
+          "updatedAt": "2025-06-12T17:25:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I added the part of scheduling algorithm to PR #570 given Gorry provided a thumbs-up above.",
+          "createdAt": "2025-06-13T12:29:04Z",
+          "updatedAt": "2025-06-13T12:29:04Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "body": "For \"is a trade-off between\", if the trade-off is the next sentence, maybe the first should end in a colon, like:\n\n\"The choice of three times the largest PTO is a trade-off: longer delays reduce the probability of losing packets, but keeping old keys longer can negatively impact the security of the protocol.\"",
+          "createdAt": "2025-06-14T17:30:24Z",
+          "updatedAt": "2025-06-14T17:30:24Z"
+        }
+      ]
     },
     {
       "number": 545,
@@ -13126,10 +13157,13 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "> To open a new path, an endpoint MUST use a new connection ID associated with an unused path ID. When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to the same path ID as used in the packet that contained the PATH_CHALLENGE frame.\n\nThis might be obvious to those of us who understand the chain of logic from \"open a new path\" to \"testing for connectivity and willingness to communicate on that new path\" to \"sending PATH_CHALLENGE\" to \"that generating a PATH_RESPONSE\".  But it is a huge jump for someone less familiar with the protocol.",
       "createdAt": "2025-05-11T23:30:18Z",
-      "updatedAt": "2025-05-19T06:20:31Z",
+      "updatedAt": "2025-06-13T08:57:45Z",
       "closedAt": null,
       "comments": [
         {
@@ -13138,6 +13172,13 @@
           "body": "Yes, we struggled a bit with that one. There is a strong assumption that all path creation will start with an exchange of \"path challenge / path response\", but that's not actually required, and a few lines after the text that you cite you will find \"The server may receive packets for a yet unused path ID that do not contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted given a valid connection ID.\"\n\nMaybe we should rewrite the first paragraph as:\n\nTo open a new path, an endpoint MUST use a new connection ID associated with an unused path ID. When sending packets on the same path, an endpoint MUST use a connection ID associated to the same path ID as used in the packet received by the server. If an endpoint receives a PATH_CHALLENGE, the PATH_RESPONSE MUST be sent on the same path as the packet that contained the PATH_CHALLENGE frame.",
           "createdAt": "2025-05-19T06:20:29Z",
           "updatedAt": "2025-05-19T06:20:29Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #573 with @huitema proposed text",
+          "createdAt": "2025-06-13T08:57:45Z",
+          "updatedAt": "2025-06-13T08:57:45Z"
         }
       ]
     },
@@ -13151,11 +13192,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "The example in Section 3.1.1 shows this:\n\n```\n   (Exchanges start on default path)\n   1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->\n```\n\nThis says default path, but the PathID is 1, not 0.  This is confusing.\n\nThat the client is using DCID=C1 is weird as well.  Shouldn't it be S0 if it is on path ID 0 and the server chose it?\n\n(I find the AEAD discussion in this example distracting as well.  The process of unsealing packets is not the point of this discussion.)",
       "createdAt": "2025-05-11T23:36:09Z",
-      "updatedAt": "2025-05-19T09:01:13Z",
+      "updatedAt": "2025-06-13T08:58:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -13171,6 +13213,13 @@
           "body": "@martinthomson the diagram is trying to explain that \"the exchange starts on path 0\" (and yes, there is no need to introduce a concept of \"default\" path in this diagram). That path is already established, and can be used to send/receive the \"PATH_NEW_CONNECTION_ID\" frames. Then \"the path establishment continues on path 1\", with the exchange of PATH CHALLENGE and PATH RESPONSE.\n\nThe diagram is indeed a bit confusing. Saying that the packets are sent on path X (0 or 1) really means that the UDP packets are sent to two different 4 tuples for path 0 and path 1. But we did not include the UDP headers in the diagram. Probably we would want that.\n\nYou are concerned by the use of \"path ID = 1\" in the line:\n~~~\n1-RTT[]: PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->\n~~~\nThat actually OK, and demonstrates a valid point: the connection IDs have a value, a sequence number, and a path-ID. The connection IDs that will be sent on path 1 (and 2) need to have the corresponding value in the Path-ID attribute. They also need to be sent on path 0, before they are needed before we start using path 1. The text below the diagram says that. Suggestion for improvement?\n\nAll the frames are sent in 1RTT packets. Some are decorated with a sequence number, some are not. There is no actual requirement that the first packet sent on a path has sequence number 0 -- and even if there was, these packets can be resent with a different sequence number. Maybe we could drop these packet numbers, because casual readers may misinterpret them as related to path numbers. Or maybe we should document a sequence number in each packet, say using \"3\" for the packet sent on path 0, to illustrate that sequence numbers are per path.",
           "createdAt": "2025-05-19T05:12:33Z",
           "updatedAt": "2025-05-19T05:12:33Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@huitema @martinthomson please check PR #574",
+          "createdAt": "2025-06-13T08:56:58Z",
+          "updatedAt": "2025-06-13T08:56:58Z"
         }
       ]
     },
@@ -13183,10 +13232,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "There are a few cases where an all-lowercase \"may\" is used.  This is fine, because RFC 8174 exists, but some of these are potentially confusing, because that word has dual meanings that is sometimes permissive and other times just a statement of possibility.",
       "createdAt": "2025-05-11T23:39:47Z",
-      "updatedAt": "2025-05-11T23:39:47Z",
+      "updatedAt": "2025-06-13T09:05:27Z",
       "closedAt": null,
       "comments": []
     },
@@ -13199,10 +13250,13 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "question",
+        "editorial"
+      ],
       "body": "Section 3.1.2 talks about the relationship between this document and migration.  It isn't very clear.\n\nIt is unambiguous about involuntary migration to a new address tuple[^1].  It is not clear about whether a deliberate migration might happen, other than the explicit allowance for preferred address migration on Path ID 0. It does override the notion of probing vs. non-probing (a concept I'm not particularly wed to in QUIC, but an essential one if you are going to allow migration).\n\n[^1]: This draft uses 4-tuple, which is a separate problem. I believe that 5-tuple is more correct, as it captures IP version, but we avoided that entire debate in QUIC by minting a different term entirely.\n\nIf this is replacing the concept of migration with the concept of path additions and removals[^2], which is fine, then please say that directly.\n\n[^2]: With the exception of the preferred address thing, or \"under normal operation\", I guess, if you want to get pedantic.",
       "createdAt": "2025-05-11T23:45:57Z",
-      "updatedAt": "2025-05-12T18:55:34Z",
+      "updatedAt": "2025-06-13T13:09:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -13211,6 +13265,13 @@
           "body": "We are trying to say two things:\n\n1. That the mechanisms of path migration defined in RFC9000 are still supported, because this is an extension, and also because we absolutely need them to manage the \"preferred address\" scenario.\n2. That the multipath extensions provide a much better way to support scenarios like \"make before break\": create a new path, set its status to \"backup\" until the endpoints decide that it is needed, and after deciding to transition explicitly abandon the old path.\n\nDo you have suggestions on how to improve the wording?",
           "createdAt": "2025-05-12T18:55:33Z",
           "updatedAt": "2025-05-12T18:55:33Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We tried to explicitly address this in the implementation guidance section: https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-cid-changes-migration-and-n\n\nI'm not sure what do say more. Or do you think we should say it somewhere else (as well)?\n\n@martinthomson would be great if you could make more concrete proposal how to improve this!",
+          "createdAt": "2025-06-13T09:27:50Z",
+          "updatedAt": "2025-06-13T09:27:50Z"
         }
       ]
     },
@@ -13223,10 +13284,13 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "design",
+        "no-action-needed"
+      ],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-05-21T06:26:23Z",
+      "updatedAt": "2025-06-13T13:08:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -13326,6 +13390,13 @@
           "body": "We have to be careful with hypotheses. Take the classic example: client starts from a Wi-Fi (A1), then use cellular (A2) and abandons path 0 (A1), then has a coffee, uses the shop's Wi-Fi (A3) and abandons path 1 (Cellular), then closes the connection. The server is trying to construct a token that will be useful for the next connection attempt. Which of A1, A2, A3 is most likely? Hard to tell. Maybe A3 is the most likely right now, A2 the most likely in 2 minutes, A1 the most likely as soon as the user is back home. That an address was used once makes it likely that it will be used again. (Somewhat likely.) But that a path was abandoned may or may not be an indication that the address will not be used again.",
           "createdAt": "2025-05-21T06:26:21Z",
           "updatedAt": "2025-05-21T06:26:21Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This whole discussion sounds to me that we don't want to change the design here. It is also not clear if or what clarification could be made. So it looks like either someone (@martinthomson?) proposes some text, or we should simply close this issue with no action.",
+          "createdAt": "2025-06-13T13:08:14Z",
+          "updatedAt": "2025-06-13T13:08:14Z"
         }
       ]
     },
@@ -13339,11 +13410,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "The document isn't consistent, for example:\n\n> For instance, if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs for only one path ID inside range [1, 2], it should select path ID 1 (and not Path ID 2).",
       "createdAt": "2025-05-11T23:55:39Z",
-      "updatedAt": "2025-05-19T08:59:08Z",
+      "updatedAt": "2025-06-13T10:50:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -13352,6 +13424,13 @@
           "body": "It's should be \"path ID\". We changed this recently and it seems like I overlooked some places. Will double-check again! Thanks!",
           "createdAt": "2025-05-19T08:59:04Z",
           "updatedAt": "2025-05-19T08:59:04Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I only found two more occasions and the are covered by PR #569.",
+          "createdAt": "2025-06-13T10:50:43Z",
+          "updatedAt": "2025-06-13T10:50:43Z"
         }
       ]
     },
@@ -13365,11 +13444,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "design"
+        "design",
+        "no-action-needed"
       ],
       "body": "The PATH_CIDS_BLOCKED gives an endpoint the ability to indicate that it wanted a connection ID, but was not able to obtain one.\n\nThis is not a feature of the original QUIC.  Deliberately so.  If it is added to the protocol, it should be added to the core protocol.  (Obviously, if it is added to the core protocol, then the multipath-specific variant is also needed, which would justify the definition of this frame.)\n\nBut then we have to ask: what resource does this seek to conserve?  If an endpoint has a per-path connection ID limit of X, then under what circumstances would its peer not supply all X connection IDs?  If the peer can supply those connection IDs, why is there a need for this frame?\n\nSo, this frame says that there are circumstances where an endpoint might ask for more connection IDs than its peer is able to supply.  Even if that were the case, why would this signal result in any different behavior?  An endpoint that is limited in that fashion, perhaps because it needs to allocate non-trivial state for every connection ID that is active, would not suddenly be able to issue more connection IDs because the other side wanted them.",
       "createdAt": "2025-05-12T00:05:50Z",
-      "updatedAt": "2025-05-19T09:20:15Z",
+      "updatedAt": "2025-06-13T10:51:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -13419,11 +13499,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "Section 3.1.2 gets right into it:\n\n> An endpoint is supposed to retire connection ID that are not used anymore, and the server is supposed to provide replacements, as specified in [Section 5.1.2.](https://rfc-editor.org/rfc/rfc9000#section-5.1.2.) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]. As such, when receiving a PATH_RETIRE_CONNECTION_ID frame, an endpoint SHOULD provide new connection IDs for that path, if still open, using PATH_NEW_CONNECTION_ID frames.\n\nThat is, this first mention of these two frames assumes that you know that these are the equivalents of the NEW_CONNECTION_ID and RETIRE_CONNECTION_ID frames and that you need to use these new variants instead of those defined in the core specification.",
       "createdAt": "2025-05-12T00:08:24Z",
-      "updatedAt": "2025-05-19T09:26:56Z",
+      "updatedAt": "2025-06-13T13:19:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -13432,6 +13513,13 @@
           "body": "Ah right, this happened because I moved the examples into Section 3 rather than having them in a separate section later. maybe the easiest/best solution is to simply switch the order of section 3.1 (path initiation) and 3.2 (CID handling).",
           "createdAt": "2025-05-19T09:26:50Z",
           "updatedAt": "2025-05-19T09:26:50Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Actually I confused now. The text you cite is in section 3.2.1 and not 3.1.2 which is after those frames have been introduces. I was initially assuming you are talking about section 3.1.1 which is the path initiation examples.\n\nI created a PR with a forward reference in the examples now, see #580.\nFurther, PR #570 add a list of all frames to the beginning of section 3.\nI think these two PRs should fix the issue.",
+          "createdAt": "2025-06-13T13:19:50Z",
+          "updatedAt": "2025-06-13T13:19:50Z"
         }
       ]
     },
@@ -13444,10 +13532,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "no-action-needed"
+      ],
       "body": "In reading this...\n\n> An endpoint may also decide to abandon an unused path for any other reason, for example, removing a hole from the sequence of path IDs in use. This is not an error.\n\n(Is that MAY?)\n\n... it occurred that maybe, if the endpoint had a strong desire to defragment the path ID space, it might choose to use a connection ID from a new path ID for subsequent packets on a very old path.  In that case, it's really the same path, so you would not expect to need to perform address validation.  However, there are a bunch of requirements in the document that would likely be violated by that arrangement.\n\nThe specification assumes that use of new path ID activates a bunch of new requirements that don't seem to be necessary in all cases.  Even acknowledging that would be helpful, even if no special allowance is made for this case, which is a bit unusual (I wouldn't personally bother with defragmentation like that).",
       "createdAt": "2025-05-12T00:21:53Z",
-      "updatedAt": "2025-05-19T09:34:56Z",
+      "updatedAt": "2025-06-13T13:23:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -13463,6 +13553,13 @@
           "body": "I agree that the definition that a different path ID means a different path is a very essential concept that we needed a while to reach and definitely should not change again.\n\nNote that you can have multiple paths (with different path IDs) on the same 4-tuple. So if you want to open a new path on a 4-tuple just to close an older one on the same 4-tuple, you can do that.\n\nIf people think that is useful we could add this \"duplicate and then abandon\" as another example to this sentence but otherwise I don't see any changes here.",
           "createdAt": "2025-05-19T09:34:55Z",
           "updatedAt": "2025-05-19T09:34:55Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Can we close this issue?",
+          "createdAt": "2025-06-13T13:23:44Z",
+          "updatedAt": "2025-06-13T13:23:44Z"
         }
       ]
     },
@@ -13557,11 +13654,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "design"
+        "design",
+        "needs-discussion"
       ],
       "body": "Interface instability is a local choice, which maybe some implementations can detect.  However, I would consider loss of the ability to communicate on a path to be a pretty strong reason for PATH_ABANDON, so maybe COMMUNICATION_FAILED.\n\nThen there is the case where a path, such as a backup back, simply times out.  TIMED_OUT.\n\nAnd then there are a bunch of cases where the choice is not application-driven, but driven by other considerations, like POOR_PERFORMANCE.\n\nWhat other things have implementation and deployment experience with the protocol revealed?",
       "createdAt": "2025-05-12T00:36:35Z",
-      "updatedAt": "2025-05-19T09:39:00Z",
+      "updatedAt": "2025-06-13T11:55:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -13570,6 +13668,13 @@
           "body": "I think that we use \"instability\" to describe both the \"communication failed\" and \"poor performance\" conditions. That may or may not be the right word, we may want a new name, but I would suggest having just one code for now. \n\nBy timeout, do you mean the \"idle timeout\" discussed in  [5.9. ](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.9)[Idle Timeout and Keep-Alives](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-idle-timeout-and-keep-alive)? This kind of path closure is an application decision, as in \"path as not been used for a long time, don't need it anymore.\" I would use the code APPLICATION_ABANDON",
           "createdAt": "2025-05-19T05:47:33Z",
           "updatedAt": "2025-05-19T05:47:33Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree with @huitema \"poor performance\" is what we cover by interface instability and \"communication failed\" seems to be just an extreme case of that. We do have a per-path timer in quic, so a time-out would rather occur on connection level. I'm not against adding further error code because we said we should be liberate with that but also not sure that's really needed. So maybe the only action would be to rename \"instable interface\"...?\n\nMore input from others would be welcome",
+          "createdAt": "2025-06-13T11:55:14Z",
+          "updatedAt": "2025-06-13T11:55:14Z"
         }
       ]
     },
@@ -13582,10 +13687,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "needs-discussion"
+      ],
       "body": "> Uncoordinated abandon \\[sic] of both endpoints may result in deleting both paths instead of just one. To avoid this pitfall, endpoints could adopt a simple coordination rule, such as only letting the client initiate closure of duplicate paths, or perhaps relying on the application protocol to decide which paths should be closed.\n\nThis seems like a great recipe for interoperability failure.\n\nWhy does the specification not indicate which endpoint is responsible for abandonment?  Given that a client is the only one that initiate paths, this seems like a pretty unrealistic scenario to begin with (#554 notwithstanding).  If this is possible, is there any reason to allow servers to do anything other than request that a client act to close a path?  At what layer does that decision-making occur?\n\n",
       "createdAt": "2025-05-12T00:45:20Z",
-      "updatedAt": "2025-05-19T09:41:52Z",
+      "updatedAt": "2025-06-13T11:57:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -13614,13 +13721,22 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "> Instead of using RTT, we define the acknowledgment delays as the sum of two one-way delays: the delay on the packet sending path and the delay on the return path chosen for the acknowledgments. \n\nAcknowledgement delay is defined in RFC 9000 as something else entirely: the delay between when a packet is received and when an acknowledgement is sent.  That suggests both that you have three things, not two, and that the terminology is probably in need of adjustment.",
       "createdAt": "2025-05-12T00:48:38Z",
-      "updatedAt": "2025-05-19T09:42:19Z",
+      "updatedAt": "2025-06-13T12:03:07Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created #576 that simply avoids introducing a new term. Please check if that work for you!",
+          "createdAt": "2025-06-13T12:03:02Z",
+          "updatedAt": "2025-06-13T12:03:02Z"
+        }
+      ]
     },
     {
       "number": 560,
@@ -13631,12 +13747,22 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "> The simplest implementation is to use the acknowledgment delay to compute smoothed_rtt and rttvar per [Section 5.3](https://rfc-editor.org/rfc/rfc9002#section-5.3) of [[QUIC-RECOVERY](https://www.rfc-editor.org/rfc/rfc9002)] regardless of the path through which PATH_ACK frames are received. This approach will provide good results as long as acknowledgements are sent consistently over the same paths \\[sic].\n\nIt's not very clear to me what \"same paths\" means in this situation.  Does it mean that it assumes that the PATH_ACK is sent on the same path as the packets that it acknowledges?  Or that it always flows over the same path, even if that is a different return path?\n\nIt probably doesn't matter: if the PATH_ACK path remains the same for a given path, then things will work out.  But the text could be clearer in what it intends.\n\nEither way, the remainder of this description is unclear.\n\n> If at any time the sender revisits its sending preferences, this can also change the paths that are used to send acknowledgements. \n\nWhy?  This doesn't make sense.  A sender changing its behavior might result in a receiver changing how it acknowledges, but that's pretty unlikely and there would be a few logical steps you'd have to describe.\n\nThe text on minimum RTT makes more sense, but it isn't resilient to constant changes.\n\nWhat if the receiver is not consistent about their choice of path?  That seems incomplete and quite risky if your only recommendation is the simplistic one.",
       "createdAt": "2025-05-12T00:57:49Z",
-      "updatedAt": "2025-05-12T00:57:49Z",
+      "updatedAt": "2025-06-13T12:14:56Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #577 adding some additional advice. Let's see if others think this is good advice or if it maybe better so say nothing or just add some warning or something...?",
+          "createdAt": "2025-06-13T12:14:35Z",
+          "updatedAt": "2025-06-13T12:14:35Z"
+        }
+      ]
     },
     {
       "number": 561,
@@ -13647,10 +13773,13 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "> One simple option, if the PMTUs are relatively similar, is to apply the minimum PMTU of all paths to each path. The benefit of such an approach is to simplify retransmission processing as the content of lost packets initially sent on one path can be sent on another path without further frame scheduling adaptations.\n\nThis implies a very bad assumption about how implementations handle the loss of packets.  It assumes that the contents are retransmitted, rather than constructing frames anew as needed.  This encourages sloppy thinking about how QUIC operates and this last sentence should be removed.",
       "createdAt": "2025-05-12T01:02:15Z",
-      "updatedAt": "2025-05-20T08:51:20Z",
+      "updatedAt": "2025-06-13T12:20:47Z",
       "closedAt": null,
       "comments": [
         {
@@ -13708,6 +13837,13 @@
           "body": "@mirjak Yeah I do not think it is a good idea to hint that retransmitting a frame as-is is an option, when such behavior is has been discouraged deliberately in RFC 9000.\n\nI think we can simple strike the last sentence, or as @huitema points out, remove the section entirely.",
           "createdAt": "2025-05-20T08:51:19Z",
           "updatedAt": "2025-05-20T08:51:19Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #578 which some simplified wording removing this explicit assumption. Please review! If people still don't like it we can remove that part entirely.",
+          "createdAt": "2025-06-13T12:20:19Z",
+          "updatedAt": "2025-06-13T12:20:19Z"
         }
       ]
     },
@@ -13722,10 +13858,12 @@
       "assignees": [
         "mirjak"
       ],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "> To avoid such path breakage, endpoints can send ack-eliciting packets such as packets containing PING frames ([Section 19.2](https://rfc-editor.org/rfc/rfc9000#section-19.2) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]) on that path to keep it alive.\n\nThere's obviously a balance to be struck, but this text doesn't really acknowledge the flipside of that balance.  It probably should.",
       "createdAt": "2025-05-12T01:04:53Z",
-      "updatedAt": "2025-05-19T09:53:29Z",
+      "updatedAt": "2025-06-13T12:25:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -13734,6 +13872,13 @@
           "body": "At least I think it might be good to more explicitly state that there is no requirement to send keep-alives on an unused but still open paths. I guess that got somehow lost in the last edit or maybe was never clearly there. I'll propose a sentence!",
           "createdAt": "2025-05-19T09:53:24Z",
           "updatedAt": "2025-05-19T09:53:24Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR #579 proposes an additional sentence. Please review!",
+          "createdAt": "2025-06-13T12:25:42Z",
+          "updatedAt": "2025-06-13T12:25:42Z"
         }
       ]
     },
@@ -13746,10 +13891,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "A lot of the discussion in [Section 7.2](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath-14#section-7.2) is not about the risk of request forgery - the construction of UDP datagrams that might appear to be valid datagrams for a different protocol - but the consent to communicate risk inherent in establishing new flows.  That is, amplification.\n\nThe request forgery risk with this protocol is almost exactly the same as QUIC[^1].  This is a difference that is not worth mentioning.\n\n[^1]: The addition of the path ID to the nonce has a miniscule impact. But only if the strategy involves what amounts to finding collisions, as you can trial several paths at a time, so you have a bigger search space.  However, that's unlikely to be the main factor anyway.\n\nWhat the text concerns itself with is amplification risk, which is not that interesting either.  There's a minor cost difference to an attacker when it comes to establishing multiple paths from which to mount an attack, as opposed to multiple connections, that's true.  More on that in the next...\n",
       "createdAt": "2025-05-12T01:17:31Z",
-      "updatedAt": "2025-05-20T01:26:48Z",
+      "updatedAt": "2025-06-13T12:35:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -13777,10 +13924,12 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR"
+      ],
       "body": "Though Section 7.2 is mistitled (#563), the DoS risk it discusses is worth addressing. The main thing I'm concerned about is spikes in packet arrival rate due to path establishment.  It seems like there is no real guidance here.  There is a suggestion that an endpoint might limit its validation.  But that isn't really enough.\n\nIf paths share a bottleneck and path validation for 50 new paths would generate a spike in packets that hit that bottleneck in a way that it can't handle, we have a real problem.  I would have said that the only right thing to do is to have a stronger recommendation on the maximum number of paths that can be concurrently validated.  Setting that limit at one would be the obvious place to start.\n\nThis is not so much about amplification in the same sense we use in QUIC, because the number of inbound data would still need to reach one third of the outbound, but we also assumed in QUIC that path validation was below the baseline rate that a single link would be able to tolerate.  With multiple paths, that same assumption no longer holds.",
       "createdAt": "2025-05-12T01:18:32Z",
-      "updatedAt": "2025-05-21T02:26:05Z",
+      "updatedAt": "2025-06-13T13:26:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -61819,16 +61968,19 @@
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial",
+        "ready-to-merge"
+      ],
       "body": "Just the minor stuff.  Issues are open for questions and more substantive feedback.",
       "createdAt": "2025-05-12T01:23:48Z",
-      "updatedAt": "2025-05-22T10:50:39Z",
+      "updatedAt": "2025-06-13T12:43:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "martinthomson/multipath",
       "headRefName": "edits",
-      "headRefOid": "b1b2cc16b00a0688e7ec77c3a22e06bb912a61a9",
+      "headRefOid": "427b012ad08f2521072fb5b67ca8519a2a7a2488",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -61901,6 +62053,26 @@
               "updatedAt": "2025-05-22T10:50:39Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6uUuUe",
+          "commit": {
+            "abbreviatedOid": "b1b2cc1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-13T12:39:33Z",
+          "updatedAt": "2025-06-13T12:39:33Z",
+          "comments": [
+            {
+              "originalPosition": 149,
+              "body": "Okay, reverting removing this sentence as this is addressed by PR #578 now to be able to merge this editorial PR now.\r\n```suggestion\r\nOne simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to\r\neach path. The benefit of such an approach is to simplify retransmission\r\nprocessing as the content of lost packets initially sent on one path can be sent\r\non another path without further frame scheduling adaptations.\r\n```",
+              "createdAt": "2025-06-13T12:39:33Z",
+              "updatedAt": "2025-06-13T12:39:34Z"
+            }
+          ]
         }
       ]
     },
@@ -61913,16 +62085,18 @@
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready-to-merge"
+      ],
       "body": "This PR is based on the discussion of issue #563 and #564\r\n\r\nClose #563\r\nClose #564",
       "createdAt": "2025-05-21T02:19:53Z",
-      "updatedAt": "2025-05-23T00:06:08Z",
+      "updatedAt": "2025-06-13T12:34:55Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "not-a-forgery",
-      "headRefOid": "f072f9fc5f7f65ccda98c9fb21375e50ccb5b4c8",
+      "headRefOid": "1b7b96f57432d924510061eb069ff9f2d1aac81d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -62015,6 +62189,59 @@
               "updatedAt": "2025-05-22T09:22:36Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6uUqNE",
+          "commit": {
+            "abbreviatedOid": "f072f9f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-13T12:33:18Z",
+          "updatedAt": "2025-06-13T12:33:18Z",
+          "comments": [
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\r\nFurther, the multipath extension allows for the creation of multiple paths, which means\r\n```",
+              "createdAt": "2025-06-13T12:33:18Z",
+              "updatedAt": "2025-06-13T12:33:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6uUqo7",
+          "commit": {
+            "abbreviatedOid": "b344498"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-13T12:33:55Z",
+          "updatedAt": "2025-06-13T12:33:55Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\r\nall at the same time. Further, multiple paths could be initialized\r\n```",
+              "createdAt": "2025-06-13T12:33:55Z",
+              "updatedAt": "2025-06-13T12:33:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6uUrCV",
+          "commit": {
+            "abbreviatedOid": "1b7b96f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-06-13T12:34:28Z",
+          "updatedAt": "2025-06-13T12:34:28Z",
+          "comments": []
         }
       ]
     },
@@ -62211,11 +62438,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
+        "editorial",
         "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2025-05-22T08:46:59Z",
-      "updatedAt": "2025-05-22T10:47:06Z",
+      "updatedAt": "2025-06-13T12:43:30Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
@@ -62226,7 +62454,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "fixes #551",
+          "createdAt": "2025-06-13T10:51:05Z",
+          "updatedAt": "2025-06-13T10:51:05Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6qfgov",
@@ -62242,6 +62478,410 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 570,
+      "id": "PR_kwDOGNtpaM6aQhk7",
+      "title": "Editorial proposals by Tommy",
+      "url": "https://github.com/quicwg/multipath/pull/570",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "see issue #544",
+      "createdAt": "2025-06-12T17:14:26Z",
+      "updatedAt": "2025-06-14T17:31:10Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-26",
+      "headRefOid": "321f9b9d44c4c573235b7032496eb6236270764d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6ujUjM",
+          "commit": {
+            "abbreviatedOid": "321f9b9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-14T17:30:45Z",
+          "updatedAt": "2025-06-14T17:30:45Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nport numbers and source/destination IP addresses).\r\n```",
+              "createdAt": "2025-06-14T17:30:45Z",
+              "updatedAt": "2025-06-14T17:30:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6ujUn6",
+          "commit": {
+            "abbreviatedOid": "321f9b9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-14T17:30:58Z",
+          "updatedAt": "2025-06-14T17:30:58Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nThere are currently no IETF specifications that define scheduling\r\n```",
+              "createdAt": "2025-06-14T17:30:58Z",
+              "updatedAt": "2025-06-14T17:30:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6ujUog",
+          "commit": {
+            "abbreviatedOid": "321f9b9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Looks good, just some nits!",
+          "createdAt": "2025-06-14T17:31:10Z",
+          "updatedAt": "2025-06-14T17:31:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 571,
+      "id": "PR_kwDOGNtpaM6aQiHp",
+      "title": "Rename PATH_BACKUP to PATH_IS_BACKUP",
+      "url": "https://github.com/quicwg/multipath/pull/571",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "this was proposed by Tommy in issue #544",
+      "createdAt": "2025-06-12T17:15:38Z",
+      "updatedAt": "2025-06-14T17:31:43Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-27",
+      "headRefOid": "b817daf107a37900f1780a5ee0dc60e563ae9a6a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "flub",
+          "authorAssociation": "NONE",
+          "body": "The asymmetry between PATH_IS_BACKUP and PATH_AVAILABLE is now worse than the concern in the issue IMHO.  If the naming really needs to change then PATH_STATUS_BACKUP, PATH_STATUS_AVAILABLE is perhaps an other choice to consider? ",
+          "createdAt": "2025-06-13T16:11:30Z",
+          "updatedAt": "2025-06-13T16:11:30Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "body": "Sure, I think @flub's suggestion would work well too",
+          "createdAt": "2025-06-14T17:31:43Z",
+          "updatedAt": "2025-06-14T17:31:43Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 572,
+      "id": "PR_kwDOGNtpaM6aQj7l",
+      "title": "Rename Errorcodes",
+      "url": "https://github.com/quicwg/multipath/pull/572",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "proposed by Tommy in issue #544",
+      "createdAt": "2025-06-12T17:18:33Z",
+      "updatedAt": "2025-06-14T17:32:08Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-28",
+      "headRefOid": "84db964a8bc89c23e14b178bcc9f3ce28a509c1e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6ujUsF",
+          "commit": {
+            "abbreviatedOid": "84db964"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "Thank you!",
+          "createdAt": "2025-06-14T17:32:08Z",
+          "updatedAt": "2025-06-14T17:32:08Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 573,
+      "id": "PR_kwDOGNtpaM6aWWpU",
+      "title": "using the same path ID, also for PATH_RESPONSE",
+      "url": "https://github.com/quicwg/multipath/pull/573",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #546\r\n\r\nProposed rewrite by @huitema to make it more clear that using the same path does not automatically imply sending a PATH_RESPONSE",
+      "createdAt": "2025-06-13T08:46:34Z",
+      "updatedAt": "2025-06-13T12:41:52Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-30",
+      "headRefOid": "47dadb3b008edd0eb0a5c2e61bbe28e2398592b0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 574,
+      "id": "PR_kwDOGNtpaM6aWdJK",
+      "title": "New path examples",
+      "url": "https://github.com/quicwg/multipath/pull/574",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #547",
+      "createdAt": "2025-06-13T08:56:22Z",
+      "updatedAt": "2025-06-13T13:32:23Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-32",
+      "headRefOid": "7efde5a61ab354d3925cf6a75bf18c6269d3633f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 575,
+      "id": "PR_kwDOGNtpaM6aWiKx",
+      "title": "replace lower-case may with might or could",
+      "url": "https://github.com/quicwg/multipath/pull/575",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #548",
+      "createdAt": "2025-06-13T09:05:10Z",
+      "updatedAt": "2025-06-13T13:22:12Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-33",
+      "headRefOid": "e03b0ae43f474fbb05f0a64f06a84cac067308d8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6uVNMZ",
+          "commit": {
+            "abbreviatedOid": "e03b0ae"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-13T13:22:11Z",
+          "updatedAt": "2025-06-13T13:22:11Z",
+          "comments": [
+            {
+              "originalPosition": 52,
+              "body": "Actually inline with issue #554 this might actually be a MAY...? But not sure. Does it matter?\r\n```suggestion\r\nPATH_ABANDON frame (see {{path-initiation}}). An endpoint MAY decide\r\n```",
+              "createdAt": "2025-06-13T13:22:11Z",
+              "updatedAt": "2025-06-13T13:22:12Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 576,
+      "id": "PR_kwDOGNtpaM6aYWyb",
+      "title": "Don't use the term ack delay",
+      "url": "https://github.com/quicwg/multipath/pull/576",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #559",
+      "createdAt": "2025-06-13T12:02:18Z",
+      "updatedAt": "2025-06-13T13:32:44Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-34",
+      "headRefOid": "9433fcac8fc18acda823de162715ea7e3f9d14e4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 577,
+      "id": "PR_kwDOGNtpaM6aYcwy",
+      "title": "calculate RTT if ACKs are not sent consistently",
+      "url": "https://github.com/quicwg/multipath/pull/577",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #560",
+      "createdAt": "2025-06-13T12:13:38Z",
+      "updatedAt": "2025-06-13T13:32:58Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "mirjak-patch-34",
+      "baseRefOid": "9433fcac8fc18acda823de162715ea7e3f9d14e4",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-36",
+      "headRefOid": "70bc3510a5d7d67b2cd6f31bef5f826c932782d0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 578,
+      "id": "PR_kwDOGNtpaM6aYftM",
+      "title": "not retransmitting frames",
+      "url": "https://github.com/quicwg/multipath/pull/578",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #561",
+      "createdAt": "2025-06-13T12:19:19Z",
+      "updatedAt": "2025-06-13T12:42:49Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-37",
+      "headRefOid": "4eeb1690eb642307c7a9d7df1081a7932ca9913d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 579,
+      "id": "PR_kwDOGNtpaM6aYizq",
+      "title": "not required to send keep-alive",
+      "url": "https://github.com/quicwg/multipath/pull/579",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #562",
+      "createdAt": "2025-06-13T12:25:22Z",
+      "updatedAt": "2025-06-13T13:33:22Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-38",
+      "headRefOid": "287502742d46e9e29c9153971ca91add59cd2cc1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 580,
+      "id": "PR_kwDOGNtpaM6aZCVy",
+      "title": "forward reference to path_new_cid frame",
+      "url": "https://github.com/quicwg/multipath/pull/580",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #552 maybe?",
+      "createdAt": "2025-06-13T13:17:09Z",
+      "updatedAt": "2025-06-13T13:29:18Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-39",
+      "headRefOid": "b6b6be1c591633034c015bb5719fb7a3fd108cf3",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
