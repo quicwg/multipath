@@ -1370,7 +1370,7 @@ of multiple paths simultaneously.<a href="#section-1-2" class="pilcrow">¶</a></
 to a packet number space. That means each connection ID is associated with exactly one path ID
 but multiple connection IDs are usually issued for each path ID.
 The same path ID is used in both directions, starting with 0 for the initial path.
-Path ID are generated monotonically increasing and cannot be reused.<a href="#section-1-3" class="pilcrow">¶</a></p>
+Path IDs are generated monotonically increasing and cannot be reused.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This extension uses multiple packet number spaces, one for each path.
 Each path ID-specific packet number space starts at packet number 0.
 As such, each path maintains distinct packet number states for sending and receiving packets, as in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
@@ -1520,7 +1520,7 @@ As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 <p id="section-2.3-2">After the handshake concluded with support for the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
-including for so far unacknowledged 0-RTT packets using Path ID 0.
+including for so far unacknowledged 0-RTT packets using path ID 0.
 Endpoints MUST still process ACK frames that acknowledge 0-RTT packets or 1-RTT packets.
 For example, a sender may negotiate multipath support for later use and keep
 only the initial path with path ID 0 for a while. During this single-path period,
@@ -1691,7 +1691,7 @@ path ID 1), and server provides two connection IDs
 (S1 with path ID 1, and S2 with path ID 2).<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-4">Before the client opens a new path by sending a packet on that path
 with a PATH_CHALLENGE frame, it has to check whether there is
-an unused connection IDs for the same unused path ID available for each side.
+an unused connection ID for the same unused path ID available for each side.
 In this example the path ID 1 is used which is the smallest unused path ID available
 as recommended in <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>.
 Respectively, the client chooses the connection ID S1
@@ -1768,7 +1768,7 @@ unused path ID, it SHOULD NOT introduce discontinuity
 in the issuing of path IDs as path initiation
 requires available connection IDs for the same path ID on both sides. For instance,
 if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs
-for only one path ID inside range [1, 2], it should select path ID 1 (and not Path
+for only one path ID inside range [1, 2], it should select path ID 1 (and not path
 ID 2).<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-3">Similarly, endpoints SHOULD consume path IDs in a continuous way, i.e., when
 creating paths. However, endpoints cannot expect to receive new connection IDs
