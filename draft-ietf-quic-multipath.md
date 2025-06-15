@@ -88,7 +88,8 @@ enable the simultaneous usage of multiple paths for a single connection.
 
 This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
 to enable the simultaneous usage of multiple paths for a single
-connection, using the same or different 4-tuples.
+connection, using the same or different 4-tuples (of source/destination
+port numbers and source/destination IP addresses).
 
 Connection migration as specified in {{Section 9 of QUIC-TRANSPORT}}
 directs a peer to switch sending through
@@ -139,8 +140,8 @@ only some basic implementation guidance is discussed in {{impl-consideration}}.
 This extension can be used with different scheduling algorithms that,
 e.g., can range from support for failover to simulatenous
 use of the aggregated capacity across all open paths.
-There are currently no IETF specifications for simultaneously
-(concurrently) using multiple paths.
+There are currently no IETF specifications that define scheduling
+algorithms for simultaneously (concurrently) using multiple paths.
 
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
@@ -201,7 +202,7 @@ is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.
 
 When advertising the initial_max_path_id transport parameter, endpoints
-MUST use non-zero length Source and Destination Connection IDs.
+MUST use Source and Destination Connection IDs with non-zero lengths.
 If an initial_max_path_id transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
@@ -331,6 +332,17 @@ issuing and retirement of per-path connection IDs (see
 path closure (see {{path-close}}).
 However, this document does not specify when a client decides to initiate or close a path,
 or how multiple open paths are used for sending.
+
+For path management this extension specifies the following frames in {{frames}}:
+
+* PATH_ABANDON (see {{path-abandon-frame}})
+* PATH_BACKUP (see {{path-backup-available-frame}})
+* PATH_AVAILABLE (see {{path-backup-available-frame}})
+* PATH_NEW_CONNECTION_ID (see {{mp-new-conn-id-frame}})
+* PATH_RETIRE_CONNECTION_ID (see {{mp-retire-conn-id-frame}})
+* MAX_PATH_ID (see {{max-paths-frame}})
+* PATHS_BLOCKED (see {{paths-and-cids-blocked-frame}})
+* PATH_CIDS_BLOCKED (see {{paths-and-cids-blocked-frame}})
 
 ## Path Initiation and Validation {#path-initiation}
 
