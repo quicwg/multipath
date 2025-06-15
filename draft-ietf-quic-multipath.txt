@@ -78,6 +78,7 @@ Table of Contents
      2.3.  Handling ACK and PATH_ACK in 0-RTT and 1-RTT
      2.4.  Nonce Calculation after Handshake Completion
      2.5.  Key Phase Update Process
+     2.6.  Connection Closure
    3.  Path Management
      3.1.  Path Initiation and Validation
        3.1.1.  Path Establishment Example
@@ -342,11 +343,11 @@ Table of Contents
    of [QUIC-TLS]).
 
    When this specification is used, endpoints SHOULD wait for at least
-   three times the largest PTO among all the paths before initiating a
-   new key update after receiving an acknowledgment that confirms the
-   receipt of the previous key update.  This interval is different from
-   that in [QUIC-TLS] which used three times the PTO of the sole single
-   path.
+   three times the largest Probe Timeout (PTO) (see Section 6.2 of
+   [QUIC-RECOVERY]) among all the paths before initiating a new key
+   update after receiving an acknowledgment that confirms the receipt of
+   the previous key update.  This interval is different from that in
+   [QUIC-TLS] which used three times the PTO of the sole single path.
 
    The choice of three times the largest PTO is a trade-off.  Packets
    that arrive after their decryption key has been discarded will be
@@ -360,6 +361,16 @@ Table of Contents
    so sending multiple packets with Key Phase bit flipping at the same
    time should not cause activity across different paths to be linkable
    by an observer.
+
+2.6.  Connection Closure
+
+   CONNECTION_CLOSE frames and their processing are unchanged from
+   [QUIC-TRANSPORT].  They can be sent on any open path.  Section 10.2
+   of [QUIC-TRANSPORT] specifies that the closing and draining
+   connection states "SHOULD persist for at least three times the
+   current PTO".  When this specification is used, these states SHOULD
+   instead persist for at least three times the largest PTO among all
+   paths.
 
 3.  Path Management
 

@@ -1198,6 +1198,9 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.5">
                 <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="auto internal xref">2.5</a>.  <a href="#name-key-phase-update-process" class="internal xref">Key Phase Update Process</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.6">
+                <p id="section-toc.1-1.2.2.6.1"><a href="#section-2.6" class="auto internal xref">2.6</a>.  <a href="#name-connection-closure" class="internal xref">Connection Closure</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
@@ -1569,7 +1572,8 @@ can solely rely on the Key Phase bit to determine the corresponding packet
 protection key, assuming that there is sufficient interval between two
 consecutive key updates (<span><a href="https://rfc-editor.org/rfc/rfc9001#section-6.5" class="relref">Section 6.5</a> of [<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>).<a href="#section-2.5-2" class="pilcrow">¶</a></p>
 <p id="section-2.5-3">When this specification is used, endpoints SHOULD wait for at least three times
-the largest PTO among all the paths before initiating a new key update
+the largest Probe Timeout (PTO) (see <span><a href="https://rfc-editor.org/rfc/rfc9002#section-6.2" class="relref">Section 6.2</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span>)
+among all the paths before initiating a new key update
 after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
 which used three times the PTO of the sole single path.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
@@ -1582,6 +1586,18 @@ and therefore limits the impact on performance.<a href="#section-2.5-4" class="p
 <p id="section-2.5-5">Following <span><a href="https://rfc-editor.org/rfc/rfc9001#section-5.4" class="relref">Section 5.4</a> of [<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>, the Key Phase bit is protected,
 so sending multiple packets with Key Phase bit flipping at the same time
 should not cause activity across different paths to be linkable by an observer.<a href="#section-2.5-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="connection-closure">
+<section id="section-2.6">
+        <h3 id="name-connection-closure">
+<a href="#section-2.6" class="section-number selfRef">2.6. </a><a href="#name-connection-closure" class="section-name selfRef">Connection Closure</a>
+        </h3>
+<p id="section-2.6-1">CONNECTION_CLOSE frames and their processing are unchanged from <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
+They can be sent on any open path. <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.2" class="relref">Section 10.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specifies that
+the closing and draining connection states "SHOULD persist for at least three times the current PTO".
+When this specification is used, these states SHOULD instead persist for at least three
+times the largest PTO among all paths.<a href="#section-2.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
