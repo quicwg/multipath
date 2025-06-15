@@ -1361,7 +1361,8 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
       </h2>
 <p id="section-1-1">This document specifies an extension to QUIC version 1 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 to enable the simultaneous usage of multiple paths for a single
-connection, using the same or different 4-tuples.<a href="#section-1-1" class="pilcrow">¶</a></p>
+connection, using the same or different 4-tuples (of source/destination
+port numbers and source/destination IP addresses).<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Connection migration as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 directs a peer to switch sending through
 a new preferred path, and, if successful, to release resources
@@ -1405,8 +1406,8 @@ only some basic implementation guidance is discussed in <a href="#impl-considera
 This extension can be used with different scheduling algorithms that,
 e.g., can range from support for failover to simulatenous
 use of the aggregated capacity across all open paths.
-There are currently no IETF specifications for simultaneously
-(concurrently) using multiple paths.<a href="#section-1-8" class="pilcrow">¶</a></p>
+There are currently no IETF specifications that define scheduling
+algorithms for simultaneously (concurrently) using multiple paths.<a href="#section-1-8" class="pilcrow">¶</a></p>
 <p id="section-1-9">Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
 it only temporarily uses two paths at the same time
@@ -1474,7 +1475,7 @@ endpoints can send the MAX_PATH_ID frame to increase the maximum allowed path ID
 is received, the receiver MUST close the connection with an error of type
 TRANSPORT_PARAMETER_ERROR.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
 <p id="section-2.1-6">When advertising the initial_max_path_id transport parameter, endpoints
-MUST use non-zero length Source and Destination Connection IDs.
+MUST use Source and Destination Connection IDs with non-zero lengths.
 If an initial_max_path_id transport
 parameter is received and the carrying packet contains a zero-length
 connection ID, the receiver MUST treat this as a connection error of type
@@ -1618,6 +1619,33 @@ issuing and retirement of per-path connection IDs (see
 path closure (see <a href="#path-close" class="auto internal xref">Section 3.4</a>).
 However, this document does not specify when a client decides to initiate or close a path,
 or how multiple open paths are used for sending.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">For path management this extension specifies the following frames in <a href="#frames" class="auto internal xref">Section 4</a>:<a href="#section-3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3-4.1">
+          <p id="section-3-4.1.1">PATH_ABANDON (see <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>)<a href="#section-3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.2">
+          <p id="section-3-4.2.1">PATH_BACKUP (see <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>)<a href="#section-3-4.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.3">
+          <p id="section-3-4.3.1">PATH_AVAILABLE (see <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>)<a href="#section-3-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.4">
+          <p id="section-3-4.4.1">PATH_NEW_CONNECTION_ID (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>)<a href="#section-3-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.5">
+          <p id="section-3-4.5.1">PATH_RETIRE_CONNECTION_ID (see <a href="#mp-retire-conn-id-frame" class="auto internal xref">Section 4.5</a>)<a href="#section-3-4.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.6">
+          <p id="section-3-4.6.1">MAX_PATH_ID (see <a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>)<a href="#section-3-4.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.7">
+          <p id="section-3-4.7.1">PATHS_BLOCKED (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>)<a href="#section-3-4.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.8">
+          <p id="section-3-4.8.1">PATH_CIDS_BLOCKED (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>)<a href="#section-3-4.8.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 <div id="path-initiation">
 <section id="section-3.1">
         <h3 id="name-path-initiation-and-validat">

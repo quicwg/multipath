@@ -127,7 +127,8 @@ Table of Contents
 
    This document specifies an extension to QUIC version 1
    [QUIC-TRANSPORT] to enable the simultaneous usage of multiple paths
-   for a single connection, using the same or different 4-tuples.
+   for a single connection, using the same or different 4-tuples (of
+   source/destination port numbers and source/destination IP addresses).
 
    Connection migration as specified in Section 9 of [QUIC-TRANSPORT]
    directs a peer to switch sending through a new preferred path, and,
@@ -182,8 +183,8 @@ Table of Contents
    extension can be used with different scheduling algorithms that,
    e.g., can range from support for failover to simulatenous use of the
    aggregated capacity across all open paths.  There are currently no
-   IETF specifications for simultaneously (concurrently) using multiple
-   paths.
+   IETF specifications that define scheduling algorithms for
+   simultaneously (concurrently) using multiple paths.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
    well-known multipath use case, it only temporarily uses two paths at
@@ -243,10 +244,10 @@ Table of Contents
    error of type TRANSPORT_PARAMETER_ERROR.
 
    When advertising the initial_max_path_id transport parameter,
-   endpoints MUST use non-zero length Source and Destination Connection
-   IDs.  If an initial_max_path_id transport parameter is received and
-   the carrying packet contains a zero-length connection ID, the
-   receiver MUST treat this as a connection error of type
+   endpoints MUST use Source and Destination Connection IDs with non-
+   zero lengths.  If an initial_max_path_id transport parameter is
+   received and the carrying packet contains a zero-length connection
+   ID, the receiver MUST treat this as a connection error of type
    PROTOCOL_VIOLATION and close the connection.
 
    Cipher suites with a nonce shorter than 12 bytes cannot be used
@@ -386,6 +387,25 @@ Table of Contents
    Section 3.4).  However, this document does not specify when a client
    decides to initiate or close a path, or how multiple open paths are
    used for sending.
+
+   For path management this extension specifies the following frames in
+   Section 4:
+
+   *  PATH_ABANDON (see Section 4.2)
+
+   *  PATH_BACKUP (see Section 4.3)
+
+   *  PATH_AVAILABLE (see Section 4.3)
+
+   *  PATH_NEW_CONNECTION_ID (see Section 4.4)
+
+   *  PATH_RETIRE_CONNECTION_ID (see Section 4.5)
+
+   *  MAX_PATH_ID (see Section 4.6)
+
+   *  PATHS_BLOCKED (see Section 4.7)
+
+   *  PATH_CIDS_BLOCKED (see Section 4.7)
 
 3.1.  Path Initiation and Validation
 
