@@ -89,7 +89,7 @@ enable the simultaneous usage of multiple paths for a single connection.
 This document specifies an extension to QUIC version 1 {{QUIC-TRANSPORT}}
 to enable the simultaneous usage of multiple paths for a single
 connection, using the same or different 4-tuples (of source/destination
-port number and source/destination IP address).
+port numbers and source/destination IP addresses).
 
 Connection migration as specified in {{Section 9 of QUIC-TRANSPORT}}
 directs a peer to switch sending through
