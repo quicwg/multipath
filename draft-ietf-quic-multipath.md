@@ -635,7 +635,7 @@ Therefore, knowledge of the
 connection IDs issued to the peer and of the state
 of the number space associated to the path SHOULD be retained for
 3 PTO after the PATH_ABANDON frame has been received.
-This avoids generating spurious stateless packets, as discussed in
+This avoids generating spurious stateless reset packets, as discussed in
 {{spurious-stateless-reset}}, and helps acknowledge any
 potentially reordered, outstanding packets from the peer (see {{ack-after-abandon}}).
 
