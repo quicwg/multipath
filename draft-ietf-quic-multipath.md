@@ -532,8 +532,8 @@ its current limit prevented the creation of the new path.
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses to another available one
 at any time during the connection. For the extension specified in
-this document, endpoints MUST only rotate to another connection IDs associated
-to the same path ID. Use of a connection ID associated with
+this document, endpoints MUST only rotate to another connection ID associated
+with the same path ID. Use of a connection ID associated with
 another path ID will be considered as an attempt to open a new path instead.
 
 An endpoint is supposed to retire any connection ID that is not being used,
