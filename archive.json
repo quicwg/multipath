@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-17T01:05:15.644576+00:00",
+  "timestamp": "2025-06-19T01:05:15.620232+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -63318,6 +63318,58 @@
           ]
         }
       ]
+    },
+    {
+      "number": 582,
+      "id": "PR_kwDOGNtpaM6a6mNd",
+      "title": "Stateless reset typo",
+      "url": "https://github.com/quicwg/multipath/pull/582",
+      "state": "OPEN",
+      "author": "flub",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-06-17T14:40:23Z",
+      "updatedAt": "2025-06-17T14:40:23Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "60d24b08120f767530ba3cbcd84f036dc0715f57",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/stateles-reset-typo",
+      "headRefOid": "f6a90c03cea36e3e79528ae82a8886ea71166c64",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 583,
+      "id": "PR_kwDOGNtpaM6a6wNg",
+      "title": "Typo in Section 3.2.2",
+      "url": "https://github.com/quicwg/multipath/pull/583",
+      "state": "OPEN",
+      "author": "tzaeschke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Proposal for minor correction in Section 3.2.2",
+      "createdAt": "2025-06-17T14:53:19Z",
+      "updatedAt": "2025-06-17T14:53:19Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "60d24b08120f767530ba3cbcd84f036dc0715f57",
+      "headRepository": "tzaeschke/multipath",
+      "headRefName": "patch-3",
+      "headRefOid": "549ca85add3e5e82072433e7dd0b455eba6cf510",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
