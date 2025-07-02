@@ -389,7 +389,7 @@ path ID 0 is already used for the initial path.
 
    (Provide new CIDs for path 1 on an existing path 0)
    1-RTT[X]: DCID=S0, PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
-           <-- 1-RTT[Y]: DCID=C0, 
+           <-- 1-RTT[Y]: DCID=C0,
                          PATH_NEW_CONNECTION_ID[S1, Seq=0, PathID=1],
                          PATH_ACK[PathID=0, PN=X]
            <-- 1-RTT[Y+1]: DCID=C0, PATH_NEW_CONNECTION_ID[S2, Seq=0,
