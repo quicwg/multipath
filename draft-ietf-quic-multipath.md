@@ -299,9 +299,9 @@ after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
 which used three times the PTO of the sole single path.
 
-The choice of three times the largest PTO is a trade-off.
-Packets that arrive after their decryption key has been discarded will be dropped.
-Longer delays reduce the probability of losing packets but keeping old keys
+As packets that arrive after their decryption key has been discarded will be dropped,
+the choice of three times the largest PTO is a trade-off: Longer delays
+reduce the probability of losing packets but keeping old keys
 longer can negatively impact the security of the protocol.
 The use of three times the largest PTO aims to minimize packet lost for all paths
 and therefore limits the impact on performance.
