@@ -695,7 +695,7 @@ sent by the peer will not cause the closure of the QUIC connection.
 
 ### Handling PATH_ACK for Abandoned Paths {#ack-after-abandon}
 
-When an endpoint sends a PATH_ABANDON frame, there mighht
+When an endpoint sends a PATH_ABANDON frame, there might
 still be some packets in transit from the peer.
 Further, if an endpoint receives a PATH_ABANDON frame, it might still receive
 reordered packets on the abandoned path. Endpoints SHOULD
