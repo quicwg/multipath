@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 December 2025                         Uber Technologies Inc.
+Expires: 3 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 December 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            13 June 2025
+                                                             2 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2025.
+   This Internet-Draft will expire on 3 January 2026.
 
 Copyright Notice
 
@@ -1258,16 +1258,17 @@ Table of Contents
    the actual RTT of a path cannot be calculated or may not be the right
    value to be used.
 
-   Instead of using the real RTT of a path, it is recommended to use the
-   sum of two one-way delays: the delay on the packet sending path and
-   the delay on the return path chosen for the acknowledgments.  When
-   different paths have different characteristics, the delays can vary
-   widely.  Consider for example a multipath transmission using both a
-   terrestrial path, with a latency of 50ms in each direction, and a
-   geostationary satellite path, with a latency of 300ms in each
-   direction.  The sum of the two one-way delays will depend on the
-   combination of paths used for the packet transmission and the
-   acknowledgement transmission, as shown in Table 1.
+   Instead of using the real RTT of a path, it is recommended to
+   consider the sum of two one-way delays: the delay on the packet
+   sending path and the delay on the return path chosen for the
+   acknowledgments.  When different paths have different
+   characteristics, the delays can vary widely.  Consider for example a
+   multipath transmission using both a terrestrial path, with a latency
+   of 50ms in each direction, and a geostationary satellite path, with a
+   latency of 300ms in each direction.  The sum of the two one-way
+   delays will depend on the combination of paths used for the packet
+   transmission and the acknowledgement transmission, as shown in
+   Table 1.
 
             +======================+=============+===========+
             | ACK Path \ Data path | Terrestrial | Satellite |
@@ -1290,21 +1291,21 @@ Table of Contents
    the PTO timeout: if a PATH_ACK is not received after more than 350ms,
    either the data packet or its PATH_ACK were probably lost.
 
-   The simplest implementation is to use the sum of the two one-way
-   delays to compute smoothed_rtt and rttvar per Section 5.3 of
-   [QUIC-RECOVERY] regardless of the path through which PATH_ACK frames
-   are received.  This approach will provide good results as long as
-   acknowledgements are sent consistently over the same paths.  If at
-   any time the sender revisits its sending preferences, this can also
-   change the paths that are used to send acknowledgements.  However,
-   this is not very different from route changes on a single path.  The
-   RTT, RTT variance and PTO estimates will rapidly converge to reflect
-   the new conditions.  There is one exception: the minimum RTT, which
-   is also a known challenge when route changes occurs on a single path.
-   An acknowledgement receiver can, however, remember the path over
-   which the PATH_ACK that produced the minimum RTT was received, and
-   restart the minimum RTT computation if that acknowledgement path
-   changes or is abandoned.
+   The simplest implementation is to use the the delays measured when
+   receiving new packet acknowledgements to compute smoothed_rtt and
+   rttvar per Section 5.3 of [QUIC-RECOVERY] regardless of the path
+   through which PATH_ACK frames are received.  This approach will
+   provide good results as long as acknowledgements are sent
+   consistently over the same paths.  If at any time the sender revisits
+   its sending preferences, this can also change the paths that are used
+   to send acknowledgements.  However, this is not very different from
+   route changes on a single path.  The RTT, RTT variance and PTO
+   estimates will rapidly converge to reflect the new conditions.  There
+   is one exception: the minimum RTT, which is also a known challenge
+   when route changes occurs on a single path.  An acknowledgement
+   receiver can, however, remember the path over which the PATH_ACK that
+   produced the minimum RTT was received, and restart the minimum RTT
+   computation if that acknowledgement path changes or is abandoned.
 
    Further, congestion control functions that rely on delay estimates
    needs to consider cases where acknowledgements are sent over multiple
