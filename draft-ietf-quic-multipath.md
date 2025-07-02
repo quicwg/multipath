@@ -406,7 +406,7 @@ path ID 0 is already used for the initial path.
 
 In {{fig-example-new-path}}, the endpoints first exchange
 new available connection IDs with the PATH_NEW_CONNECTION_ID frame,
-as further explained in the next section (see {{consume-retire-cid}}).
+as further explained in {{consume-retire-cid}}.
 In this example, the client provides one connection ID (C1 with
 path ID 1), and server provides two connection IDs
 (S1 with path ID 1, and S2 with path ID 2).
