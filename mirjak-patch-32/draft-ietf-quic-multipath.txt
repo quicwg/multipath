@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 December 2025                         Uber Technologies Inc.
+Expires: 3 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 December 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            13 June 2025
+                                                             2 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2025.
+   This Internet-Draft will expire on 3 January 2026.
 
 Copyright Notice
 
@@ -439,8 +439,9 @@ Table of Contents
 
       (Provide new CIDs for path 1 on an existing path 0)
       1-RTT[X]: DCID=S0, PATH_NEW_CONNECTION_ID[C1, Seq=0, PathID=1] -->
-              <-- 1-RTT[Y]: DCID=C0, PATH_NEW_CONNECTION_ID[S1, Seq=0,
-                                     PathID=1], PATH_ACK[PathID=0, PN=X]
+              <-- 1-RTT[Y]: DCID=C0,
+                            PATH_NEW_CONNECTION_ID[S1, Seq=0, PathID=1],
+                            PATH_ACK[PathID=0, PN=X]
               <-- 1-RTT[Y+1]: DCID=C0, PATH_NEW_CONNECTION_ID[S2, Seq=0,
                                                                PathID=2]
       ...
