@@ -456,7 +456,7 @@ limits for this path are respected.
 
 Though multipath offers clients with better options for use of different
 network paths, a server may receive a connection ID associated with a used path ID
-on different 4-tuples, e.g., due to NAT rebinding. 
+on different 4-tuples, e.g., due to NAT rebinding.
 Therefore a server MUST handle migration
 as specified in {{Section 9.3 of QUIC-TRANSPORT}}
 and MUST use a new connection ID for the same path ID
