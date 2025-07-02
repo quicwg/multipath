@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 December 2025                         Uber Technologies Inc.
+Expires: 3 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 December 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            13 June 2025
+                                                             2 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2025.
+   This Internet-Draft will expire on 3 January 2026.
 
 Copyright Notice
 
@@ -455,9 +455,9 @@ Table of Contents
 
    In Figure 1, the endpoints first exchange new available connection
    IDs with the PATH_NEW_CONNECTION_ID frame, as further explained in
-   the next section (see Section 3.2).  In this example, the client
-   provides one connection ID (C1 with path ID 1), and server provides
-   two connection IDs (S1 with path ID 1, and S2 with path ID 2).
+   Section 3.2.  In this example, the client provides one connection ID
+   (C1 with path ID 1), and server provides two connection IDs (S1 with
+   path ID 1, and S2 with path ID 2).
 
    Before the client opens a new path by sending a packet on that path
    with a PATH_CHALLENGE frame, it has to check whether there is an
