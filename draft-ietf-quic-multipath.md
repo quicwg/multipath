@@ -1194,7 +1194,7 @@ per path ID. However, depending on which path acknowledgements are
 sent, the actual RTT of a path cannot be calculated or may not be
 the right value to be used.
 
-Instead of using the real RTT of a path, it is recommended to use
+Instead of using the real RTT of a path, it is recommended to consider
 the sum of two one-way delays: the delay
 on the packet sending path and the delay on the return path chosen
 for the acknowledgments.  When different paths have different
@@ -1222,7 +1222,7 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to use the sum of the two one-way delays
+The simplest implementation is to use the the delays measured when receiving new packet acknowledgements
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
