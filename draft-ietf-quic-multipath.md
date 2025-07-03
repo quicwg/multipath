@@ -1242,8 +1242,7 @@ if that acknowledgement path changes or is abandoned.
 If acknowledgements are not send consistently over one path, the
 acknowledgement receiver can monitor over which path acknowledgement
 are received and only use samples for acknowledgements received on the same
-path than the data was sent, if any, or simply use only samples from the
-acknowledgement path with the largest delay.
+path than the data was sent, if any.
 
 
 Further, congestion control functions that rely on delay estimates needs
