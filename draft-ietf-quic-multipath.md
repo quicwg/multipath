@@ -1216,15 +1216,15 @@ per path ID. However, depending on which path acknowledgements are
 sent, the actual RTT of a path cannot be calculated or may not be
 the right value to be used.
 
-Instead of using RTT, we define the acknowledgment delays as
+Instead of using the real RTT of a path, it is recommended to consider
 the sum of two one-way delays: the delay
 on the packet sending path and the delay on the return path chosen
 for the acknowledgments.  When different paths have different
-characteristics, acknowledgment delays can vary
+characteristics, the delays can vary
 widely. Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in each
-direction.  The acknowledgment delay will depend on the combination
+direction.  The sum of the two one-way delays will depend on the combination
 of paths used for the packet transmission and the acknowledgement transmission,
 as shown in {{fig-example-ack-delay}}.
 
@@ -1244,7 +1244,7 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the data packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to use the acknowledgment delay
+The simplest implementation is to use the the delays measured when receiving new packet acknowledgements
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
