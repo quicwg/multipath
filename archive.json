@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-19T01:05:15.620232+00:00",
+  "timestamp": "2025-07-03T01:05:49.486342+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13072,14 +13072,14 @@
       "url": "https://github.com/quicwg/multipath/issues/544",
       "state": "OPEN",
       "author": "tfpauly",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "has PR"
       ],
       "body": "During my read-through of the document, I had the following comments. These are generally editorial. This is for draft-ietf-quic-multipath-14.\n\n### Section 1\n\n\"4-tuple\" is used without being directly defined, and I don't think that term is used in RFC 9000. Having a simple explanation of what tuple you mean would be good for people who aren't familiar. This is also used in section 5.2.\n\n> There are currently no IETF specifications for simultaneously (concurrently) using multiple paths.\n\nI think this would be more clear to explain that \"There are currently no IETF specifications _that define scheduling algorithms_ for...\". Without that clarification, it could sound like the IETF specifications prohibit simultaneous use (which isn't true) instead of just not specifying the algorithms for how to schedule them.\n\nThe intro defines the notion of \"path ID\" as part of the body of text, but it might be nice to have a separate sub-section that defines the normative aspects of the path ID. Right now, very crucial details about the path ID being an integer that monotonically increases, isn't reused, has special values for 0, etc, is mixed into the overview/conceptual text.\n\n### Section 2.1\n\n> When advertising the initial_max_path_id transport parameter, endpoints MUST use non-zero length Source and Destination Connection IDs.\n\nThe hyphens here feel a bit odd, like it should really be \"non-zero-length\". I suggest either one of these options:\n- \"endpoints MUST use Source and Destination Connection IDs with non-zero lengths.\"\n- \"endpoints MUST NOT use zero-length Source and Destination Connection IDs.\"\n\n### Section 2.3\n\n> The choice of three times the largest PTO is a trade-off.\n\nIt feels like this sentence should say \"is a trade-off between ___ and ___.\", for clarity.\n\n### Section 3\n\nThis is the first time that some of the new frame types are mentioned, such as `PATH_ABANDON`, `PATH_NEW_CONNECTION_ID`, `PATH_RETIRE_CONNECTION_ID`. These don't consistently provide references to the sections where they are defined below. Please either add the references on these first uses, or maybe have an overview at the top of section 3 that mentions all of the new frame types and provides references at that point; or just move the frame definitions up.\n\n### Section 4.3\n\nI have a slight preference to change `PATH_BACKUP` -> `PATH_IS_BACKUP` or something similar. \"BACKUP\" alone sounds like a verb like \"ABANDON\", so initially I read it as \"back this path up\", which doesn't make much sense. A path _being_ a backup, like it can be available, makes more sense.\n\n### Section 4.2.1\n\nThe error codes defined here seem specific to paths, but they go in the main error registry. Should their names have more clear path-related names?\n\n`APPLICATION_ABANDON` -> `APPLICATION_ABANDON_PATH`\n`RESOURCE_LIMIT_REACHED` -> `PATH_RESOURCE_LIMIT_REACHED` (although this one seems it could be more generic)\n`UNSTABLE_INTERFACE` -> `PATH_UNSTABLE_INTERFACE`\n`NO_CID_AVAILABLE` -> `PATH_NO_CID_AVAILABLE` / `NO_CID_AVAILABLE_FOR_PATH`\n\n",
       "createdAt": "2025-05-10T00:07:07Z",
-      "updatedAt": "2025-06-14T17:30:24Z",
+      "updatedAt": "2025-07-02T15:44:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -13105,10 +13105,17 @@
         },
         {
           "author": "tfpauly",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "For \"is a trade-off between\", if the trade-off is the next sentence, maybe the first should end in a colon, like:\n\n\"The choice of three times the largest PTO is a trade-off: longer delays reduce the probability of losing packets, but keeping old keys longer can negatively impact the security of the protocol.\"",
           "createdAt": "2025-06-14T17:30:24Z",
           "updatedAt": "2025-06-14T17:30:24Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created #584",
+          "createdAt": "2025-07-02T15:44:03Z",
+          "updatedAt": "2025-07-02T15:44:03Z"
         }
       ]
     },
@@ -13256,7 +13263,7 @@
       ],
       "body": "Section 3.1.2 talks about the relationship between this document and migration.  It isn't very clear.\n\nIt is unambiguous about involuntary migration to a new address tuple[^1].  It is not clear about whether a deliberate migration might happen, other than the explicit allowance for preferred address migration on Path ID 0. It does override the notion of probing vs. non-probing (a concept I'm not particularly wed to in QUIC, but an essential one if you are going to allow migration).\n\n[^1]: This draft uses 4-tuple, which is a separate problem. I believe that 5-tuple is more correct, as it captures IP version, but we avoided that entire debate in QUIC by minting a different term entirely.\n\nIf this is replacing the concept of migration with the concept of path additions and removals[^2], which is fine, then please say that directly.\n\n[^2]: With the exception of the preferred address thing, or \"under normal operation\", I guess, if you want to get pedantic.",
       "createdAt": "2025-05-11T23:45:57Z",
-      "updatedAt": "2025-06-16T07:19:54Z",
+      "updatedAt": "2025-07-02T15:57:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -13279,6 +13286,13 @@
           "body": "That link is broken.  I think that you mean https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.1\n\nSection 3.1.2 is where I would go to look for normative advice on the distinction.  But it's pretty vague, even in Section 5.1.\n\n> However, migration of a single path cannot be avoided \n\nThis could be more direct: Though multipath offers clients with better options for use of different network paths, a server implementation MUST handle migration, as defined in {{Section Foo of !QUIC}}.",
           "createdAt": "2025-06-16T07:19:54Z",
           "updatedAt": "2025-06-16T07:19:54Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created #585 trying to add your sentence in section 3.2.1. As it seemed redundant to just add your proposed sentence, I adjusted the existing one with your wording. However, I'm not sure that's better/right this way. Would be good to get more people to review and comment!\n",
+          "createdAt": "2025-07-02T15:57:46Z",
+          "updatedAt": "2025-07-02T15:57:46Z"
         }
       ]
     },
@@ -13412,7 +13426,7 @@
       "id": "I_kwDOGNtpaM62HDVr",
       "title": "Is it \"path ID\" or \"Path ID\"?",
       "url": "https://github.com/quicwg/multipath/issues/551",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13422,8 +13436,8 @@
       ],
       "body": "The document isn't consistent, for example:\n\n> For instance, if the maximum path ID limit is 2 and the endpoint wants to provide connection IDs for only one path ID inside range [1, 2], it should select path ID 1 (and not Path ID 2).",
       "createdAt": "2025-05-11T23:55:39Z",
-      "updatedAt": "2025-06-13T10:50:48Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-02T15:40:06Z",
+      "closedAt": "2025-07-02T15:40:06Z",
       "comments": [
         {
           "author": "mirjak",
@@ -13438,6 +13452,13 @@
           "body": "I only found two more occasions and the are covered by PR #569.",
           "createdAt": "2025-06-13T10:50:43Z",
           "updatedAt": "2025-06-13T10:50:43Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR has been merged",
+          "createdAt": "2025-07-02T15:40:06Z",
+          "updatedAt": "2025-07-02T15:40:06Z"
         }
       ]
     },
@@ -13995,9 +14016,17 @@
       "labels": [],
       "body": "From the Section `Paths Having Different PMTU Sizes`\n\n> As specified in {{Section 14.3 of QUIC-TRANSPORT}} the\n> DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.\n\nIs it worth clarifying (here or elsewhere) that QUIC-MP implementation should probably maintain MPS per path ID instead of the 4-tuple?\nWe can now have multiple paths per 4-tuple, and if we use an underlay that is capable of path aware networking, these paths may have different MPSs.\n\nSee also discussion here: https://github.com/quicwg/multipath/issues/561\n",
       "createdAt": "2025-06-16T09:06:15Z",
-      "updatedAt": "2025-06-16T11:50:18Z",
+      "updatedAt": "2025-07-02T15:39:20Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for flagging. However, this sentence is just citing what's written down in RFC9000:\n\n\"QUIC endpoints implementing DPLPMTUD maintain a DPLPMTUD Maximum Packet Size (MPS) ([Section 4.4](https://www.rfc-editor.org/rfc/rfc8899#section-4.4) of [[DPLPMTUD](https://datatracker.ietf.org/doc/html/rfc8899)]) for each combination of local and remote IP addresses.\"\n\nWe actually don't state any requirements. I guess we could add a sentence that explains that you could even have different MPS on the same 4-tuple given you can have multiple path on the same 4-tuple... would that help?",
+          "createdAt": "2025-07-02T15:39:20Z",
+          "updatedAt": "2025-07-02T15:39:20Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -62621,13 +62650,13 @@
       "labels": [],
       "body": "this was proposed by Tommy in issue #544",
       "createdAt": "2025-06-12T17:15:38Z",
-      "updatedAt": "2025-06-15T03:28:55Z",
+      "updatedAt": "2025-07-02T15:29:55Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
+      "baseRefOid": "f541450064cd4deb984aed7602a1a8bf5423c150",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-27",
-      "headRefOid": "b817daf107a37900f1780a5ee0dc60e563ae9a6a",
+      "headRefOid": "5d1a59469206c65971774c3a62cb7ecba34bd1b1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -62635,7 +62664,7 @@
       "comments": [
         {
           "author": "flub",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "The asymmetry between PATH_IS_BACKUP and PATH_AVAILABLE is now worse than the concern in the issue IMHO.  If the naming really needs to change then PATH_STATUS_BACKUP, PATH_STATUS_AVAILABLE is perhaps an other choice to consider? ",
           "createdAt": "2025-06-13T16:11:30Z",
           "updatedAt": "2025-06-13T16:11:30Z"
@@ -62646,6 +62675,13 @@
           "body": "Sure, I think @flub's suggestion would work well too",
           "createdAt": "2025-06-14T17:31:43Z",
           "updatedAt": "2025-06-14T17:31:43Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think I also like PATH_STATUS_* more. Should I update the PR?",
+          "createdAt": "2025-07-02T15:29:55Z",
+          "updatedAt": "2025-07-02T15:29:55Z"
         }
       ],
       "reviews": [
@@ -62744,7 +62780,7 @@
       ],
       "body": "fixes #546\r\n\r\nProposed rewrite by @huitema to make it more clear that using the same path does not automatically imply sending a PATH_RESPONSE",
       "createdAt": "2025-06-13T08:46:34Z",
-      "updatedAt": "2025-06-16T07:15:15Z",
+      "updatedAt": "2025-07-02T22:48:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
@@ -62802,6 +62838,46 @@
               "updatedAt": "2025-06-16T07:15:15Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xl55f",
+          "commit": {
+            "abbreviatedOid": "47dadb3"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T14:54:21Z",
+          "updatedAt": "2025-07-02T14:54:21Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "No, this one if only to say that if you send a PATH_RESPONSE it has to go on the same path/use the same path ID. The validate thing is a separate MUST but does not automatically imply that you have to sent a PATH_RESPONSE.\r\n\r\n@martinthomson does this clarification help? ",
+              "createdAt": "2025-07-02T14:54:21Z",
+              "updatedAt": "2025-07-02T14:54:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xrB4K",
+          "commit": {
+            "abbreviatedOid": "47dadb3"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T22:48:51Z",
+          "updatedAt": "2025-07-02T22:48:52Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "I'm not saying that the text is wrong, just that it is ordered strangely.",
+              "createdAt": "2025-07-02T22:48:51Z",
+              "updatedAt": "2025-07-02T22:48:52Z"
+            }
+          ]
         }
       ]
     },
@@ -62815,17 +62891,18 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #547",
       "createdAt": "2025-06-13T08:56:22Z",
-      "updatedAt": "2025-06-16T07:14:05Z",
+      "updatedAt": "2025-07-02T15:14:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-32",
-      "headRefOid": "7efde5a61ab354d3925cf6a75bf18c6269d3633f",
+      "headRefOid": "500696964a09721bc4f9a8a683a72bbce3bcc9dd",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -62877,6 +62954,26 @@
               "updatedAt": "2025-06-16T07:14:05Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmMMY",
+          "commit": {
+            "abbreviatedOid": "6ac3559"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:14:30Z",
+          "updatedAt": "2025-07-02T15:14:31Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\n           <-- 1-RTT[Y]: DCID=C0,\r\n```",
+              "createdAt": "2025-07-02T15:14:30Z",
+              "updatedAt": "2025-07-02T15:14:31Z"
+            }
+          ]
         }
       ]
     },
@@ -62890,17 +62987,18 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #548",
       "createdAt": "2025-06-13T09:05:10Z",
-      "updatedAt": "2025-06-16T03:25:01Z",
+      "updatedAt": "2025-07-02T14:59:20Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-33",
-      "headRefOid": "e03b0ae43f474fbb05f0a64f06a84cac067308d8",
+      "headRefOid": "e2223e493c234a0f3973e7dac0702a0ff08ad1a0",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -62952,6 +63050,26 @@
               "updatedAt": "2025-06-16T03:25:01Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xl-rn",
+          "commit": {
+            "abbreviatedOid": "e2223e4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T14:59:07Z",
+          "updatedAt": "2025-07-02T14:59:07Z",
+          "comments": [
+            {
+              "originalPosition": 52,
+              "body": "leaving it as could...",
+              "createdAt": "2025-07-02T14:59:07Z",
+              "updatedAt": "2025-07-02T14:59:07Z"
+            }
+          ]
         }
       ]
     },
@@ -62965,17 +63083,18 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #559",
       "createdAt": "2025-06-13T12:02:18Z",
-      "updatedAt": "2025-06-16T17:47:18Z",
+      "updatedAt": "2025-07-02T15:02:51Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-34",
-      "headRefOid": "9433fcac8fc18acda823de162715ea7e3f9d14e4",
+      "headRefOid": "2e97e3fcd87e007174723dd900364193acbdf109",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -63020,6 +63139,46 @@
               "updatedAt": "2025-06-16T17:47:18Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmA72",
+          "commit": {
+            "abbreviatedOid": "9433fca"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:01:27Z",
+          "updatedAt": "2025-07-02T15:01:27Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nInstead of using the real RTT of a path, it is recommended to consider\r\n```",
+              "createdAt": "2025-07-02T15:01:27Z",
+              "updatedAt": "2025-07-02T15:01:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmBcp",
+          "commit": {
+            "abbreviatedOid": "9433fca"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:02:03Z",
+          "updatedAt": "2025-07-02T15:02:04Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "```suggestion\r\nThe simplest implementation is to use the the delays measured when receiving new packet acknowledgements\r\n```",
+              "createdAt": "2025-07-02T15:02:04Z",
+              "updatedAt": "2025-07-02T15:02:04Z"
+            }
+          ]
         }
       ]
     },
@@ -63035,13 +63194,13 @@
       "labels": [],
       "body": "fixes #560",
       "createdAt": "2025-06-13T12:13:38Z",
-      "updatedAt": "2025-06-16T17:36:21Z",
+      "updatedAt": "2025-07-02T15:24:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "mirjak-patch-34",
       "baseRefOid": "9433fcac8fc18acda823de162715ea7e3f9d14e4",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-36",
-      "headRefOid": "70bc3510a5d7d67b2cd6f31bef5f826c932782d0",
+      "headRefOid": "26df124698a818170678c84d013f18840ed44ac8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -63100,6 +63259,86 @@
           "createdAt": "2025-06-16T17:35:53Z",
           "updatedAt": "2025-06-16T17:36:21Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmUg4",
+          "commit": {
+            "abbreviatedOid": "70bc351"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:19:47Z",
+          "updatedAt": "2025-07-02T15:19:47Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nas long as acknowledgements are sent consistently over one path.\r\n```",
+              "createdAt": "2025-07-02T15:19:47Z",
+              "updatedAt": "2025-07-02T15:19:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmU9e",
+          "commit": {
+            "abbreviatedOid": "70bc351"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:20:21Z",
+          "updatedAt": "2025-07-02T15:20:21Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nacknowledgement receiver can monitor over which path acknowledgement\r\n```",
+              "createdAt": "2025-07-02T15:20:21Z",
+              "updatedAt": "2025-07-02T15:20:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmWyj",
+          "commit": {
+            "abbreviatedOid": "81500dc"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:22:29Z",
+          "updatedAt": "2025-07-02T15:22:30Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\r\nare received and only use samples for acknowledgements received on the same\r\n```",
+              "createdAt": "2025-07-02T15:22:30Z",
+              "updatedAt": "2025-07-02T15:22:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmY7d",
+          "commit": {
+            "abbreviatedOid": "26df124"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:24:18Z",
+          "updatedAt": "2025-07-02T15:24:18Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "using the largest delay is simpler than monitoring all acks and it's on the safe side as it ensures timeouts work. Otherwise if you use a too small delay is used without logging the ack path that might cause spurious loss detection. This is also to cover the case where no acks are send on the data sending path.",
+              "createdAt": "2025-07-02T15:24:18Z",
+              "updatedAt": "2025-07-02T15:24:18Z"
+            }
+          ]
         }
       ]
     },
@@ -63113,17 +63352,18 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #561",
       "createdAt": "2025-06-13T12:19:19Z",
-      "updatedAt": "2025-06-16T03:30:21Z",
+      "updatedAt": "2025-07-02T15:03:49Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-37",
-      "headRefOid": "4eeb1690eb642307c7a9d7df1081a7932ca9913d",
+      "headRefOid": "dedb456a552b2fae136d52a9706bd40c03cd4357",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -63162,6 +63402,26 @@
           "createdAt": "2025-06-16T03:30:21Z",
           "updatedAt": "2025-06-16T03:30:21Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmCbF",
+          "commit": {
+            "abbreviatedOid": "4eeb169"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:03:17Z",
+          "updatedAt": "2025-07-02T15:03:17Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\neach path, which could also help to simplify retransmission processing.\r\n```",
+              "createdAt": "2025-07-02T15:03:17Z",
+              "updatedAt": "2025-07-02T15:03:17Z"
+            }
+          ]
         }
       ]
     },
@@ -63177,7 +63437,7 @@
       "labels": [],
       "body": "fixes #562",
       "createdAt": "2025-06-13T12:25:22Z",
-      "updatedAt": "2025-06-16T07:23:03Z",
+      "updatedAt": "2025-07-02T15:12:22Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
@@ -63188,7 +63448,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Looks reasonable. I wondered whether we should say that there is no need to send keep-alives on more than one path, but we don't have enough experience to make such recommendations.\r\n\r\nNot sure what to say here. I guess if you don't send on any path and want to keep the connection open, you have to send keep-alives on at least one path. Probably the last one that you were actively using is the most likely one where the keep-alives will actually make it though. But I guess it really depends on the use case; if it is really important for you to keep the connection open, maybe sending on all (when no path is actively used) is the right thing to do...?",
+          "createdAt": "2025-07-02T15:12:22Z",
+          "updatedAt": "2025-07-02T15:12:22Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM6ulCRb",
@@ -63254,6 +63522,26 @@
               "updatedAt": "2025-06-16T07:23:03Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmHEy",
+          "commit": {
+            "abbreviatedOid": "2875027"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:08:44Z",
+          "updatedAt": "2025-07-02T15:08:44Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I'm also not wed on this but the intention was to say that it might be a different story if you only have one open path but as long as you still have another usable path there is really no point in sending keeps-lives. This is really the multipath aspect of it rather than giving a general recommendation about keeps-lies in this extension.",
+              "createdAt": "2025-07-02T15:08:44Z",
+              "updatedAt": "2025-07-02T15:08:44Z"
+            }
+          ]
         }
       ]
     },
@@ -63267,17 +63555,18 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #552 maybe?",
       "createdAt": "2025-06-13T13:17:09Z",
-      "updatedAt": "2025-06-16T07:24:21Z",
+      "updatedAt": "2025-07-02T15:04:59Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-39",
-      "headRefOid": "b6b6be1c591633034c015bb5719fb7a3fd108cf3",
+      "headRefOid": "f1b23bd95dc20fe28c7664356d02397b1df75de1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -63316,6 +63605,26 @@
               "updatedAt": "2025-06-16T07:24:21Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xmDjz",
+          "commit": {
+            "abbreviatedOid": "b6b6be1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:04:28Z",
+          "updatedAt": "2025-07-02T15:04:28Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nas further explained in {{consume-retire-cid}}.\r\n```",
+              "createdAt": "2025-07-02T15:04:28Z",
+              "updatedAt": "2025-07-02T15:04:28Z"
+            }
+          ]
         }
       ]
     },
@@ -63324,20 +63633,94 @@
       "id": "PR_kwDOGNtpaM6a6mNd",
       "title": "Stateless reset typo",
       "url": "https://github.com/quicwg/multipath/pull/582",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "flub",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-06-17T14:40:23Z",
-      "updatedAt": "2025-06-17T14:40:23Z",
+      "updatedAt": "2025-07-02T19:05:42Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "60d24b08120f767530ba3cbcd84f036dc0715f57",
       "headRepository": "flub/multipath",
       "headRefName": "flub/stateles-reset-typo",
       "headRefOid": "f6a90c03cea36e3e79528ae82a8886ea71166c64",
+      "closedAt": "2025-07-02T15:13:06Z",
+      "mergedAt": "2025-07-02T15:13:06Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "b270c3bb1b5d3e068276d08cebb88c59fb6414d4"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks! Will merge!",
+          "createdAt": "2025-07-02T15:13:02Z",
+          "updatedAt": "2025-07-02T15:13:02Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 583,
+      "id": "PR_kwDOGNtpaM6a6wNg",
+      "title": "Typo in Section 3.2.2",
+      "url": "https://github.com/quicwg/multipath/pull/583",
+      "state": "MERGED",
+      "author": "tzaeschke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Proposal for minor correction in Section 3.2.2",
+      "createdAt": "2025-06-17T14:53:19Z",
+      "updatedAt": "2025-07-02T15:13:50Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "60d24b08120f767530ba3cbcd84f036dc0715f57",
+      "headRepository": "tzaeschke/multipath",
+      "headRefName": "patch-3",
+      "headRefOid": "549ca85add3e5e82072433e7dd0b455eba6cf510",
+      "closedAt": "2025-07-02T15:13:50Z",
+      "mergedAt": "2025-07-02T15:13:50Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "f541450064cd4deb984aed7602a1a8bf5423c150"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks! Will merge!",
+          "createdAt": "2025-07-02T15:13:47Z",
+          "updatedAt": "2025-07-02T15:13:47Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 584,
+      "id": "PR_kwDOGNtpaM6dG84C",
+      "title": "make trade-off clear",
+      "url": "https://github.com/quicwg/multipath/pull/584",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "last comments in #544",
+      "createdAt": "2025-07-02T15:43:44Z",
+      "updatedAt": "2025-07-02T15:44:39Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "f541450064cd4deb984aed7602a1a8bf5423c150",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-40",
+      "headRefOid": "19617325701d131e181a6920b348af7cfa2de03c",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -63346,30 +63729,77 @@
       "reviews": []
     },
     {
-      "number": 583,
-      "id": "PR_kwDOGNtpaM6a6wNg",
-      "title": "Typo in Section 3.2.2",
-      "url": "https://github.com/quicwg/multipath/pull/583",
+      "number": 585,
+      "id": "PR_kwDOGNtpaM6dHFCE",
+      "title": "MUST handle migration",
+      "url": "https://github.com/quicwg/multipath/pull/585",
       "state": "OPEN",
-      "author": "tzaeschke",
-      "authorAssociation": "CONTRIBUTOR",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "Proposal for minor correction in Section 3.2.2",
-      "createdAt": "2025-06-17T14:53:19Z",
-      "updatedAt": "2025-06-17T14:53:19Z",
+      "body": "fixes #549 \r\n\r\nThis PR adds a MUST for handling migration as proposed by @martinthomson in the issue. I first tried to simple add his proposed sentence here but that didn't make sense as it would say the same thing twice. So maybe this works?\r\n\r\nHowever, I personally am not convinced that this change is an improvement. We didn't want to repeat any MUSTs from RFC9000. So if we don't explicitly change it, those are still valid. Therefore we only added a MUST on the use of CID for the same path ID here. I really don't feel that new MUST here is necessary.",
+      "createdAt": "2025-07-02T15:55:13Z",
+      "updatedAt": "2025-07-02T22:53:26Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "60d24b08120f767530ba3cbcd84f036dc0715f57",
-      "headRepository": "tzaeschke/multipath",
-      "headRefName": "patch-3",
-      "headRefOid": "549ca85add3e5e82072433e7dd0b455eba6cf510",
+      "baseRefOid": "f541450064cd4deb984aed7602a1a8bf5423c150",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-41",
+      "headRefOid": "45b21bf81f29d02bc48c82af0862b14bbfcd1c59",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6xm3Lm",
+          "commit": {
+            "abbreviatedOid": "d8303ff"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T15:58:40Z",
+          "updatedAt": "2025-07-02T15:58:40Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\non different 4-tuples, e.g., due to NAT rebinding.\r\n```",
+              "createdAt": "2025-07-02T15:58:40Z",
+              "updatedAt": "2025-07-02T15:58:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6xrCug",
+          "commit": {
+            "abbreviatedOid": "45b21bf"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-07-02T22:51:12Z",
+          "updatedAt": "2025-07-02T22:53:26Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\nnetwork paths, a server could receive a connection ID associated with a used path ID\r\n```\r\nIsn't this \"endpoint\"?",
+              "createdAt": "2025-07-02T22:51:12Z",
+              "updatedAt": "2025-07-02T22:53:26Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "So I think that the first MUST here is appropriate: you are defining a new mechanism for using paths (or n-tuples), so making it clear that you are not removing the RFC 9000 requirements is useful.  The second MUST here is a problem, because that changes the rules.  In RFC 9000 if the client doesn't change connection ID on migration, the server does not have to.  It's only when the client changes connection ID that the server is required to.  Restating that requirement is not necessary.\r\n\r\n```suggestion\r\n.\r\n```",
+              "createdAt": "2025-07-02T22:53:15Z",
+              "updatedAt": "2025-07-02T22:53:26Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
