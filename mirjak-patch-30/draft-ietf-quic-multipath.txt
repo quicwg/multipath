@@ -395,7 +395,8 @@ Table of Contents
    anti-amplification limit from Section 8 of [QUIC-TRANSPORT] applies.
 
    If an endpoint sends a PATH_RESPONSE, it MUST be sent one the same
-   path as used by the packet that contained the PATH_CHALLENGE frame.
+   path as used by the packet that contained the PATH_CHALLENGE frame,
+   using a connection ID associated with the same path ID.
 
    The server may receive packets for a yet unused path ID that do not
    contain a PATH_CHALLENGE frame.  Such packets are valid if they can

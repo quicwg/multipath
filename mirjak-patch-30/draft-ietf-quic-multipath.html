@@ -1624,7 +1624,8 @@ Until the client's address is
 validated, the anti-amplification limit from <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 applies.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">If an endpoint sends a PATH_RESPONSE, it MUST be sent one the same path
-as used by the packet that contained the PATH_CHALLENGE frame.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+as used by the packet that contained the PATH_CHALLENGE frame,
+using a connection ID associated with the same path ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.1-5">The server may receive packets for a yet unused path ID that do not
 contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted
 given a valid connection ID.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
