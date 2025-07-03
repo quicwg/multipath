@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 3 January 2026                           Uber Technologies Inc.
+Expires: 4 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 3 January 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             2 July 2025
+                                                             3 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 January 2026.
+   This Internet-Draft will expire on 4 January 2026.
 
 Copyright Notice
 
@@ -96,7 +96,7 @@ Table of Contents
      4.1.  PATH_ACK Frame
      4.2.  PATH_ABANDON Frame
        4.2.1.  Error Codes
-     4.3.  PATH_AVAILABLE and PATH_IS_BACKUP frames
+     4.3.  PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames
      4.4.  PATH_NEW_CONNECTION_ID frame
      4.5.  PATH_RETIRE_CONNECTION_ID frame
      4.6.  MAX_PATH_ID frame
@@ -395,7 +395,7 @@ Table of Contents
 
    *  PATH_BACKUP (see Section 4.3)
 
-   *  PATH_AVAILABLE (see Section 4.3)
+   *  PATH_STATUS_AVAILABLE (see Section 4.3)
 
    *  PATH_NEW_CONNECTION_ID (see Section 4.4)
 
@@ -631,11 +631,12 @@ Table of Contents
 
 3.3.  Path Status Management
 
-   An endpoint can send PATH_IS_BACKUP and PATH_AVAILABLE frames (see
-   Section 4.3) to inform the peer that it should send packets on the
-   paths with the preference expressed by these frames.  Note that an
-   endpoint might not follow the peer’s advertisements, but these frames
-   are still a clear signal of the peer's preference of path usage.
+   An endpoint can send PATH_STATUS_BACKUP and PATH_STATUS_AVAILABLE
+   frames (see Section 4.3) to inform the peer that it should send
+   packets on the paths with the preference expressed by these frames.
+   Note that an endpoint might not follow the peer’s advertisements, but
+   these frames are still a clear signal of the peer's preference of
+   path usage.
 
    Each peer indicates its preference of path usage independently of the
    other peer.  That means that peers may have different usage
@@ -643,14 +644,14 @@ Table of Contents
    decisions, this may lead to usage of paths that have been indicated
    as "backup" by the peer or non-usage of some locally available paths.
 
-   PATH_AVAILABLE indicates that a path is "available", i.e., it
+   PATH_STATUS_AVAILABLE indicates that a path is "available", i.e., it
    suggests to the peer to use its own logic to split traffic among
    available paths.
 
-   PATH_IS_BACKUP suggests that a path should only be used as backup,
-   i.e., that no traffic should be sent on that path if another path is
-   available and usable.  If all established paths are indicated as
-   backup paths, no guidance is provided about which path should be
+   PATH_STATUS_BACKUP suggests that a path should only be used as
+   backup, i.e., that no traffic should be sent on that path if another
+   path is available and usable.  If all established paths are indicated
+   as backup paths, no guidance is provided about which path should be
    used.
 
    Similarly, if no frame indicating a path usage preference was
@@ -669,10 +670,10 @@ Table of Contents
    established, PING frames can potentially be used to quickly detect
    connectivity changes and switch back in a timely way.
 
-   The PATH_AVAILABLE and PATH_IS_BACKUP frames share a common, per-path
-   sequence number space to detect and ignore outdated information, as
-   further described in Section 4.3.  This is needed as they might
-   arrive out-of-order, e.g., if sent using different paths.
+   The PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames share a
+   common, per-path sequence number space to detect and ignore outdated
+   information, as further described in Section 4.3.  This is needed as
+   they might arrive out-of-order, e.g., if sent using different paths.
 
 3.4.  Path Close
 
@@ -909,36 +910,36 @@ Table of Contents
       connection ID for the path ID (or the packet containing the
       connection IDs has not arrived yet).
 
-4.3.  PATH_AVAILABLE and PATH_IS_BACKUP frames
+4.3.  PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames
 
-   PATH_AVAILABLE frames are used by endpoints to inform the peer that
-   the indicated path is available for sending.
+   PATH_STATUS_AVAILABLE frames are used by endpoints to inform the peer
+   that the indicated path is available for sending.
 
-   PATH_AVAILABLE frames are formatted as shown in Figure 5.
+   PATH_STATUS_AVAILABLE frames are formatted as shown in Figure 5.
 
-     PATH_AVAILABLE Frame {
+     PATH_STATUS_AVAILABLE Frame {
        Type (i) = TBD-04 (experiments use 0x15228c08),
        Path Identifier (i),
        Path Status Sequence Number (i),
      }
 
-                   Figure 5: PATH_AVAILABLE Frame Format
+                Figure 5: PATH_STATUS_AVAILABLE Frame Format
 
-   PATH_IS_BACKUP frames are used by endpoints to inform the peer about
-   its preference to not use the indicated path for sending.
+   PATH_STATUS_BACKUP frames are used by endpoints to inform the peer
+   about its preference to not use the indicated path for sending.
 
-   PATH_IS_BACKUP frames are formatted as shown in Figure 6.
+   PATH_STATUS_BACKUP frames are formatted as shown in Figure 6.
 
-     PATH_IS_BACKUP Frame {
+     PATH_STATUS_BACKUP Frame {
        Type (i) = TBD-03 (experiments use 0x15228c07)
        Path Identifier (i),
        Path Status Sequence Number (i),
      }
 
-                   Figure 6: PATH_IS_BACKUP Frame Format
+                 Figure 6: PATH_STATUS_BACKUP Frame Format
 
-   Both PATH_AVAILABLE and PATH_IS_BACKUP frames contain the following
-   fields:
+   Both PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames contain the
+   following fields:
 
    Path Identifier:  The path ID that the status update corresponds to.
       All path IDs below the maximum path ID limit can be indicated,
@@ -949,29 +950,33 @@ Table of Contents
 
    The sequence number space is common to the two frame types, and
    monotonically increasing values MUST be used when sending
-   PATH_AVAILABLE or PATH_IS_BACKUP frames for a given path ID.
+   PATH_STATUS_AVAILABLE or PATH_STATUS_BACKUP frames for a given path
+   ID.
 
    Frames may be received out of order.  A peer MUST ignore an incoming
-   PATH_AVAILABLE or PATH_IS_BACKUP frame if it previously received
-   another PATH_IS_BACKUP frame or PATH_AVAILABLE frame for the same
-   path ID with a Path Status sequence number equal to or higher than
-   the Path Status sequence number of the incoming frame.
+   PATH_STATUS_AVAILABLE or PATH_STATUS_BACKUP frame if it previously
+   received another PATH_STATUS_BACKUP frame or PATH_STATUS_AVAILABLE
+   frame for the same path ID with a Path Status sequence number equal
+   to or higher than the Path Status sequence number of the incoming
+   frame.
 
    The requirement of monotonically increasing sequence numbers is per
    path.  Receivers could very well receive the same sequence number for
-   PATH_AVAILABLE or PATH_IS_BACKUP Frames on different paths.  As such,
-   the receiver of the PATH_AVAILABLE or PATH_IS_BACKUP frame needs to
-   use and compare the sequence numbers separately for each path ID.
+   PATH_STATUS_AVAILABLE or PATH_STATUS_BACKUP Frames on different
+   paths.  As such, the receiver of the PATH_STATUS_AVAILABLE or
+   PATH_STATUS_BACKUP frame needs to use and compare the sequence
+   numbers separately for each path ID.
 
-   PATH_IS_BACKUP and PATH_AVAILABLE frames are ack-eliciting.  If a
-   packet containing a PATH_IS_BACKUP or PATH_AVAILABLE frame is
-   considered lost, the peer SHOULD resend the frame only if it contains
-   the last status sent for that path -- as indicated by the sequence
-   number.
+   PATH_STATUS_BACKUP and PATH_STATUS_AVAILABLE frames are ack-
+   eliciting.  If a packet containing a PATH_STATUS_BACKUP or
+   PATH_STATUS_AVAILABLE frame is considered lost, the peer SHOULD
+   resend the frame only if it contains the last status sent for that
+   path -- as indicated by the sequence number.
 
-   A PATH_IS_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a
-   PATH_NEW_CONNECTION_ID frame or a PATH_RESPONSE frame in order to
-   indicate the preferred path usage before or during path initiation.
+   A PATH_STATUS_BACKUP or a PATH_STATUS_AVAILABLE frame MAY be bundled
+   with a PATH_NEW_CONNECTION_ID frame or a PATH_RESPONSE frame in order
+   to indicate the preferred path usage before or during path
+   initiation.
 
 4.4.  PATH_NEW_CONNECTION_ID frame
 
@@ -1491,10 +1496,10 @@ Table of Contents
    | TBD-02 (experiments    | PATH_ABANDON              |Section 4.2  |
    | use 0x15228c05)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-03 (experiments    | PATH_IS_BACKUP            |Section 4.3  |
+   | TBD-03 (experiments    | PATH_STATUS_BACKUP        |Section 4.3  |
    | use 0x15228c07)        |                           |             |
    +------------------------+---------------------------+-------------+
-   | TBD-04 (experiments    | PATH_AVAILABLE            |Section 4.3  |
+   | TBD-04 (experiments    | PATH_STATUS_AVAILABLE     |Section 4.3  |
    | use 0x15228c08)        |                           |             |
    +------------------------+---------------------------+-------------+
    | TBD-05 (experiments    | PATH_NEW_CONNECTION_ID    |Section 4.4  |
