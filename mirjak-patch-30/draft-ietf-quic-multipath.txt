@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 December 2025                         Uber Technologies Inc.
+Expires: 4 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 December 2025                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            13 June 2025
+                                                             3 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2025.
+   This Internet-Draft will expire on 4 January 2026.
 
 Copyright Notice
 
@@ -378,16 +378,14 @@ Table of Contents
 3.1.  Path Initiation and Validation
 
    To open a new path, an endpoint MUST use a new connection ID
-   associated with an unused path ID.  When sending packets on the same
-   path, an endpoint MUST use a connection ID associated to the same
-   path ID as used in the packet received by the server.  If an endpoint
-   receives a PATH_CHALLENGE, the PATH_RESPONSE MUST be sent on the same
-   path as the packet that contained the PATH_CHALLENGE frame.
+   associated with an unused path ID.  An endpoint MUST use a connection
+   ID associated to the same path ID as used in the packet received by
+   the endpoint when it intends to send packets on the same path.
 
-   A client that wants to use an additional path MUST validate the
-   peer's address before sending any data packets as described in
-   Section 8.2 of [QUIC-TRANSPORT], unless it has previously validated
-   the 4-tuple used for that path.
+   A client that wants to use an new path MUST validate the peer's
+   address before sending any data packets as described in Section 8.2
+   of [QUIC-TRANSPORT], unless it has previously validated the 4-tuple
+   used for that path.
 
    After receiving packets from the client on a new path, if the server
    decides to use the new path, the server MUST validate the peer's
@@ -395,6 +393,9 @@ Table of Contents
    of [QUIC-TRANSPORT]), unless it has previously validated the 4-tuple
    used for that path.  Until the client's address is validated, the
    anti-amplification limit from Section 8 of [QUIC-TRANSPORT] applies.
+
+   If an endpoint sends a PATH_RESPONSE, it MUST be sent one the same
+   path as used by the packet that contained the PATH_CHALLENGE frame.
 
    The server may receive packets for a yet unused path ID that do not
    contain a PATH_CHALLENGE frame.  Such packets are valid if they can
