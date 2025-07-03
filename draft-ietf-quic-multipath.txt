@@ -893,20 +893,21 @@ Table of Contents
    following QUIC error codes are defined for use in the PATH_ABANDON
    frame:
 
-   APPLICATION_ABANDON (TBD-10):  The endpoint is abandoning the path at
-      the request of the application.
+   APPLICATION_ABANDON_PATH (TBD-10):  The endpoint is abandoning the
+      path at the request of the application.
 
-   RESOURCE_LIMIT_REACHED (TBD-11):  The endpoint is abandoning the path
-      because it cannot allocate sufficient resources to maintain it.
+   PATH_RESOURCE_LIMIT_REACHED (TBD-11):  The endpoint is abandoning the
+      path because it cannot allocate sufficient resources to maintain
+      it.
 
-   UNSTABLE_INTERFACE (TBD-12):  The endpoint is abandoning the path
-      because the used interface is considered to be unstable.  This
-      condition can occur, e.g., due to a weak wireless signal or
+   PATH_UNSTABLE_INTERFACE (TBD-12):  The endpoint is abandoning the
+      path because the used interface is considered to be unstable.
+      This condition can occur, e.g., due to a weak wireless signal or
       frequent handover events during high-speed mobility.
 
-   NO_CID_AVAILABLE (TBD-13):  The endpoint is abandoning the path due
-      to the lack of a connection ID for this path.  This might occur
-      when the peer initiates a new path but has not provided a
+   NO_CID_AVAILABLE_FOR_PATH (TBD-13):  The endpoint is abandoning the
+      path due to the lack of a connection ID for this path.  This might
+      occur when the peer initiates a new path but has not provided a
       corresponding connection ID for the path ID (or the packet
       containing the connection IDs has not arrived yet).
 
@@ -1518,35 +1519,35 @@ Table of Contents
    to the "QUIC Transport Error Codes" registry under the "QUIC
    Protocol" heading.
 
-   +===================+======================+=============+=============+
-   |Value              |Code                  |Description  |Specification|
-   +===================+======================+=============+=============+
-   |TBD-10 (experiments|APPLICATION_ABANDON   |Path         |Section 4.2.1|
-   |use                |                      |abandoned at |             |
-   |0x004150504142414e)|                      |the          |             |
-   |                   |                      |application's|             |
-   |                   |                      |request      |             |
-   +-------------------+----------------------+-------------+-------------+
-   |TBD-11 (experiments|RESOURCE_LIMIT_REACHED|Path         |Section 4.2.1|
-   |use                |                      |abandoned due|             |
-   |0x0052534c494d4954)|                      |to resource  |             |
-   |                   |                      |limitations  |             |
-   |                   |                      |in the       |             |
-   |                   |                      |transport    |             |
-   +-------------------+----------------------+-------------+-------------+
-   |TBD-12 (experiments|UNSTABLE_INTERFACE    |Path         |Section 4.2.1|
-   |use                |                      |abandoned due|             |
-   |0x00554e5f494e5446)|                      |to unstable  |             |
-   |                   |                      |interfaces   |             |
-   +-------------------+----------------------+-------------+-------------+
-   |TBD-13 (experiments|NO_CID_AVAILABLE      |Path         |Section 4.2.1|
-   |use                |                      |abandoned due|             |
-   |0x004e4f5f4349445f)|                      |to no        |             |
-   |                   |                      |available    |             |
-   |                   |                      |connection   |             |
-   |                   |                      |IDs for the  |             |
-   |                   |                      |path         |             |
-   +-------------------+----------------------+-------------+-------------+
+   +===================+===========================+=============+=============+
+   |Value              |Code                       |Description  |Specification|
+   +===================+===========================+=============+=============+
+   |TBD-10 (experiments|APPLICATION_ABANDON_PATH   |Path         |Section 4.2.1|
+   |use                |                           |abandoned at |             |
+   |0x004150504142414e)|                           |the          |             |
+   |                   |                           |application's|             |
+   |                   |                           |request      |             |
+   +-------------------+---------------------------+-------------+-------------+
+   |TBD-11 (experiments|PATH_RESOURCE_LIMIT_REACHED|Path         |Section 4.2.1|
+   |use                |                           |abandoned due|             |
+   |0x0052534c494d4954)|                           |to resource  |             |
+   |                   |                           |limitations  |             |
+   |                   |                           |in the       |             |
+   |                   |                           |transport    |             |
+   +-------------------+---------------------------+-------------+-------------+
+   |TBD-12 (experiments|PATH_UNSTABLE_INTERFACE    |Path         |Section 4.2.1|
+   |use                |                           |abandoned due|             |
+   |0x00554e5f494e5446)|                           |to unstable  |             |
+   |                   |                           |interfaces   |             |
+   +-------------------+---------------------------+-------------+-------------+
+   |TBD-13 (experiments|NO_CID_AVAILABLE_FOR_PATH  |Path         |Section 4.2.1|
+   |use                |                           |abandoned due|             |
+   |0x004e4f5f4349445f)|                           |to no        |             |
+   |                   |                           |available    |             |
+   |                   |                           |connection   |             |
+   |                   |                           |IDs for the  |             |
+   |                   |                           |path         |             |
+   +-------------------+---------------------------+-------------+-------------+
 
                   Table 4: Error Codes for Multipath QUIC
 
