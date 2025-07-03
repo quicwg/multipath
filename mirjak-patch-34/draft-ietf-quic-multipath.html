@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 3 January 2026</td>
+<td class="center">Expires 4 January 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-02" class="published">2 July 2025</time>
+<time datetime="2025-07-03" class="published">3 July 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-03">3 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-01-04">4 January 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1143,7 +1143,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2656,8 +2656,8 @@ than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#
 to compute smoothed_rtt and rttvar per
 <span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
-as long as acknowledgements are sent consistently over the same paths.
-If at any time the sender revisits its sending preferences,
+as long as acknowledgements are sent consistently over one path.
+If at any time the acknowledgement sender revisits its sending preferences,
 this can also change the paths that are used to send acknowledgements.
 However, this is not very
 different from route changes on a single path.
@@ -2668,7 +2668,11 @@ a known challenge when route changes occurs on a single path.
 An acknowledgement receiver
 can, however, remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
-if that acknowledgement path changes or is abandoned.<a href="#section-5.4-6" class="pilcrow">¶</a></p>
+if that acknowledgement path changes or is abandoned.
+If acknowledgements are not send consistently over one path, the
+acknowledgement receiver can monitor over which path acknowledgement
+are received and only use samples for acknowledgements received on the same
+path than the data was sent, if any.<a href="#section-5.4-6" class="pilcrow">¶</a></p>
 <p id="section-5.4-7">Further, congestion control functions that rely on delay estimates needs
 to consider cases where acknowledgements are sent over multiple paths
 with different delays explicitly.<a href="#section-5.4-7" class="pilcrow">¶</a></p>
