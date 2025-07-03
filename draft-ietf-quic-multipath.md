@@ -822,20 +822,20 @@ QUIC transport error codes are 62-bit unsigned integers
 NO_ERROR(0x0), the following QUIC error codes are defined
 for use in the PATH_ABANDON frame:
 
-APPLICATION_ABANDON (TBD-10):
+APPLICATION_ABANDON_PATH (TBD-10):
 : The endpoint is abandoning the path at the
   request of the application.
 
-RESOURCE_LIMIT_REACHED (TBD-11):
+PATH_RESOURCE_LIMIT_REACHED (TBD-11):
 : The endpoint is abandoning the path because
   it cannot allocate sufficient resources to maintain it.
 
-UNSTABLE_INTERFACE (TBD-12):
+PATH_UNSTABLE_INTERFACE (TBD-12):
 : The endpoint is abandoning the path because
   the used interface is considered to be unstable. This condition can occur, e.g.,
   due to a weak wireless signal or frequent handover events during high-speed mobility.
 
-NO_CID_AVAILABLE (TBD-13):
+NO_CID_AVAILABLE_FOR_PATH (TBD-13):
 : The endpoint is abandoning the path due to
   the lack of a connection ID for this path.
   This might occur when the peer initiates a new path
@@ -1412,10 +1412,10 @@ the "QUIC Protocol" heading.
 
 Value                       | Code                  | Description                   | Specification
 ----------------------------|-----------------------|-------------------------------|-------------------
-TBD-10 (experiments use 0x004150504142414e) | APPLICATION_ABANDON | Path abandoned at the application's request | {{error-codes}}
-TBD-11 (experiments use 0x0052534c494d4954) | RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
-TBD-12 (experiments use 0x00554e5f494e5446) | UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
-TBD-13 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE | Path abandoned due to no available connection IDs for the path | {{error-codes}}
+TBD-10 (experiments use 0x004150504142414e) | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
+TBD-11 (experiments use 0x0052534c494d4954) | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+TBD-12 (experiments use 0x00554e5f494e5446) | PATH_UNSTABLE_INTERFACE | Path abandoned due to unstable interfaces | {{error-codes}}
+TBD-13 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
 
 
