@@ -456,7 +456,7 @@ as long as the anti-amplification limits
 (see {{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
 
-An endpoint could receive a packet with a connection ID 
+An endpoint could receive a packet with a connection ID
 associated to an active path ID where the packet's 4-tuple does not match the 4-tuple
 currently used with that path ID. This MUST be treated as path migration,
 as specified in {{Section 9.3 of QUIC-TRANSPORT}}, with the constraint that
