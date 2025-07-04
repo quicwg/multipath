@@ -456,13 +456,12 @@ as long as the anti-amplification limits
 (see {{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
 
-Though multipath offers clients with better options for use of different
-network paths, an endpoint could receive a connection ID associated with a used path ID
-on different 4-tuples, e.g., due to NAT rebinding.
-Therefore a server MUST handle migration
-as specified in {{Section 9.3 of QUIC-TRANSPORT}}
-and MUST use a new connection ID for the same path ID
-for path validation.
+An endpoint could receive a packet with a connection ID 
+associated to an active path ID where the packet's 4-tuple does not match the 4-tuple
+currently used with that path ID. This MUST be treated as path migration,
+as specified in {{Section 9.3 of QUIC-TRANSPORT}}, with the constraint that
+all connection IDs used during path migration MUST be
+associated with the current path ID of the path being migrated.
 
 ### Address Validation Token
 
