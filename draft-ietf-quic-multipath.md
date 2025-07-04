@@ -337,7 +337,7 @@ For path management this extension specifies the following frames in {{frames}}:
 
 * PATH_ABANDON (see {{path-abandon-frame}})
 * PATH_BACKUP (see {{path-backup-available-frame}})
-* PATH_AVAILABLE (see {{path-backup-available-frame}})
+* PATH_STATUS_AVAILABLE (see {{path-backup-available-frame}})
 * PATH_NEW_CONNECTION_ID (see {{mp-new-conn-id-frame}})
 * PATH_RETIRE_CONNECTION_ID (see {{mp-retire-conn-id-frame}})
 * MAX_PATH_ID (see {{max-paths-frame}})
@@ -565,7 +565,7 @@ to use a different connection ID for the same path ID when doing so.
 
 ## Path Status Management {#path-state}
 
-An endpoint can send PATH_BACKUP and PATH_AVAILABLE frames (see
+An endpoint can send PATH_STATUS_BACKUP and PATH_STATUS_AVAILABLE frames (see
 {{path-backup-available-frame}}) to inform the peer that it should
 send packets on the paths with the preference expressed by these frames.
 Note that an endpoint might not follow the peer’s advertisements,
@@ -576,10 +576,10 @@ That means that peers could have different usage preferences for the same path.
 Depending on the data sender's decisions, this might lead to usage of paths that have been
 indicated as "backup" by the peer or non-usage of some locally available paths.
 
-PATH_AVAILABLE indicates that a path is "available", i.e., it suggests to
+PATH_STATUS_AVAILABLE indicates that a path is "available", i.e., it suggests to
 the peer to use its own logic to split traffic among available paths.
 
-PATH_BACKUP suggests that a path should only be used as backup, i.e., that no traffic
+PATH_STATUS_BACKUP suggests that a path should only be used as backup, i.e., that no traffic
 should be sent on that path if another path is available and usable.
 If all established paths are indicated as backup paths, no guidance is provided about
 which path should be used.
@@ -598,7 +598,7 @@ If the endpoints do not want to close the path immediately, as connectivity
 could be re-established, PING frames can potentially be used to quickly detect
 connectivity changes and switch back in a timely way.
 
-The PATH_AVAILABLE and PATH_BACKUP frames share a common, per-path sequence number space
+The PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames share a common, per-path sequence number space
 to detect and ignore outdated information, as further described in {{path-backup-available-frame}}.
 This is needed as they might arrive out-of-order,
 e.g., if sent using different paths.
@@ -842,37 +842,37 @@ NO_CID_AVAILABLE_FOR_PATH (TBD-13):
   but has not provided a corresponding connection ID for the path ID
   (or the packet containing the connection IDs has not arrived yet).
 
-## PATH_AVAILABLE and PATH_BACKUP frames {#path-backup-available-frame}
+## PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames {#path-backup-available-frame}
 
-PATH_AVAILABLE frames are used by endpoints to inform the peer
+PATH_STATUS_AVAILABLE frames are used by endpoints to inform the peer
 that the indicated path is available for sending.
 
-PATH_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
+PATH_STATUS_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
-  PATH_AVAILABLE Frame {
+  PATH_STATUS_AVAILABLE Frame {
     Type (i) = TBD-04 (experiments use 0x15228c08),
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
 ~~~
-{: #fig-path-available-format title="PATH_AVAILABLE Frame Format"}
+{: #fig-path-available-format title="PATH_STATUS_AVAILABLE Frame Format"}
 
-PATH_BACKUP frames are used by endpoints to inform the peer
+PATH_STATUS_BACKUP frames are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
 
-PATH_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
+PATH_STATUS_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 
 ~~~
-  PATH_BACKUP Frame {
+  PATH_STATUS_BACKUP Frame {
     Type (i) = TBD-03 (experiments use 0x15228c07)
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
 ~~~
-{: #fig-path-backup-format title="PATH_BACKUP Frame Format"}
+{: #fig-path-backup-format title="PATH_STATUS_BACKUP Frame Format"}
 
-Both PATH_AVAILABLE and PATH_BACKUP frames contain the following fields:
+Both PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames contain the following fields:
 
 Path Identifier:
 : The path ID that the status update corresponds to.
@@ -884,28 +884,28 @@ Path Status Sequence Number:
   this frame.
 
 The sequence number space is common to the two frame types,
-and monotonically increasing values MUST be used when sending PATH_AVAILABLE or
-PATH_BACKUP frames for a given path ID.
+and monotonically increasing values MUST be used when sending PATH_STATUS_AVAILABLE or
+PATH_STATUS_BACKUP frames for a given path ID.
 
 Frames might be received out of order. A peer MUST ignore an incoming
-PATH_AVAILABLE or
-PATH_BACKUP frame if it previously received another PATH_BACKUP frame
-or PATH_AVAILABLE frame for the same path ID with a Path Status sequence number
+PATH_STATUS_AVAILABLE or
+PATH_STATUS_BACKUP frame if it previously received another PATH_STATUS_BACKUP frame
+or PATH_STATUS_AVAILABLE frame for the same path ID with a Path Status sequence number
 equal to or higher than the Path Status sequence number of the incoming frame.
 
 The requirement of monotonically increasing sequence numbers
 is per path. Receivers could very well receive the
-same sequence number for PATH_AVAILABLE or PATH_BACKUP Frames
+same sequence number for PATH_STATUS_AVAILABLE or PATH_STATUS_BACKUP Frames
 on different paths. As such, the receiver of
-the PATH_AVAILABLE or PATH_BACKUP frame needs to use and compare the sequence numbers
+the PATH_STATUS_AVAILABLE or PATH_STATUS_BACKUP frame needs to use and compare the sequence numbers
 separately for each path ID.
 
-PATH_BACKUP and PATH_AVAILABLE frames are ack-eliciting. If a packet containing a
-PATH_BACKUP or PATH_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
+PATH_STATUS_BACKUP and PATH_STATUS_AVAILABLE frames are ack-eliciting. If a packet containing a
+PATH_STATUS_BACKUP or PATH_STATUS_AVAILABLE frame is considered lost, the peer SHOULD resend the frame
 only if it contains the last status sent for that path -- as indicated
 by the sequence number.
 
-A PATH_BACKUP or a PATH_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
+A PATH_STATUS_BACKUP or a PATH_STATUS_AVAILABLE frame MAY be bundled with a PATH_NEW_CONNECTION_ID frame or
 a PATH_RESPONSE frame in order to indicate the preferred path usage
 before or during path initiation.
 
@@ -1395,10 +1395,10 @@ the "QUIC Frame Types" registry under the "QUIC Protocol" heading.
 
 Value                                              | Frame Name          | Specification
 ---------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | PATH_ACK              | {{mp-ack-frame}}
+TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | PATH_ACK         | {{mp-ack-frame}}
 TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
-TBD-03 (experiments use 0x15228c07)                  | PATH_BACKUP        | {{path-backup-available-frame}}
-TBD-04 (experiments use 0x15228c08)                  | PATH_AVAILABLE      | {{path-backup-available-frame}}
+TBD-03 (experiments use 0x15228c07)                  | PATH_STATUS_BACKUP  | {{path-backup-available-frame}}
+TBD-04 (experiments use 0x15228c08)                  | PATH_STATUS_AVAILABLE      | {{path-backup-available-frame}}
 TBD-05 (experiments use 0x15228c09)                  | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
 TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
 TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
