@@ -346,14 +346,13 @@ For path management this extension specifies the following frames in {{frames}}:
 
 ## Path Initiation and Validation {#path-initiation}
 
-
 To open a new path, an endpoint MUST use a new connection ID associated
-with an unused path ID.
-When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to
-the same path ID as used in the packet that contained the PATH_CHALLENGE frame.
+with an unused path ID. An endpoint
+MUST use a connection ID associated to the same path ID as used in the packet
+received by the endpoint when it intends to send packets on the same path.
 
 A client that wants to use an
-additional path MUST validate the peer's address before sending any data packets
+new path MUST validate the peer's address before sending any data packets
 as described in {{Section 8.2 of QUIC-TRANSPORT}},
 unless it has previously validated the 4-tuple used for that path.
 
@@ -365,6 +364,10 @@ unless it has previously validated the 4-tuple used for that path.
 Until the client's address is
 validated, the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
 applies.
+
+If an endpoint sends a PATH_RESPONSE, it MUST be sent on the same path
+as used by the packet that contained the PATH_CHALLENGE frame,
+using a connection ID associated with the same path ID.
 
 The server might receive packets for a yet unused path ID that do not
 contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted
