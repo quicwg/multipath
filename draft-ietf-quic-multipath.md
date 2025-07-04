@@ -1331,10 +1331,10 @@ paths allows.
 ## Paths Having Different PMTU Sizes
 
 An implementation should take care to handle different PMTU sizes across
-multiple paths. PMTU size could even differ on the same 4-tuple given that
-multiple paths can use the same 4-tuple.
-As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
+multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
 DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
+Note that with the multipath extension multiple paths could even use the same 4-tuple
+which do not necessarily need to have the same MPS.
 One simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to
 each path. The benefit of such an approach is to simplify retransmission
 processing as the content of lost packets initially sent on one path can be sent
