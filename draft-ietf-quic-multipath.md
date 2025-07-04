@@ -1333,7 +1333,7 @@ paths allows.
 An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
 DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
-Note that with the multipath extension multiple paths could even use the same 4-tuple
+Note that with the multipath extension multiple paths could use the same 4-tuple
 which do not necessarily need to have the same MPS.
 One simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to
 each path. The benefit of such an approach is to simplify retransmission
