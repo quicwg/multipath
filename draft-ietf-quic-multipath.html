@@ -1652,11 +1652,11 @@ or how multiple open paths are used for sending.<a href="#section-3-2" class="pi
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-path-initiation-and-validat" class="section-name selfRef">Path Initiation and Validation</a>
         </h3>
 <p id="section-3.1-1">To open a new path, an endpoint MUST use a new connection ID associated
-with an unused path ID.
-When sending a PATH_RESPONSE frame, an endpoint MUST use a connection ID associated to
-the same path ID as used in the packet that contained the PATH_CHALLENGE frame.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+with an unused path ID. An endpoint
+MUST use a connection ID associated to the same path ID as used in the packet
+received by the endpoint when it intends to send packets on the same path.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">A client that wants to use an
-additional path MUST validate the peer's address before sending any data packets
+new path MUST validate the peer's address before sending any data packets
 as described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 unless it has previously validated the 4-tuple used for that path.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">After receiving packets from the
@@ -1667,32 +1667,35 @@ unless it has previously validated the 4-tuple used for that path.
 Until the client's address is
 validated, the anti-amplification limit from <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
 applies.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">The server might receive packets for a yet unused path ID that do not
+<p id="section-3.1-4">If an endpoint sends a PATH_RESPONSE, it MUST be sent on the same path
+as used by the packet that contained the PATH_CHALLENGE frame,
+using a connection ID associated with the same path ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">The server might receive packets for a yet unused path ID that do not
 contain a PATH_CHALLENGE frame. Such packets are valid if they can be properly decrypted
-given a valid connection ID.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
+given a valid connection ID.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-6">Each endpoint MUST also validate that a minimum QUIC packet MTU of 1200 bytes is supported
 on the path. This can be done during initial path validation or separately later if
-the amplification limit prevents it initially, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6">An endpoint that receives packets on a new path and does not want to establish
+the amplification limit prevents it initially, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">An endpoint that receives packets on a new path and does not want to establish
 this path is expected to close the path by sending a PATH_ABANDON
-on another path, as specified in <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7">An endpoint that has no active connection ID for this path or
+on another path, as specified in <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-8">An endpoint that has no active connection ID for this path or
 lacks other resource to immediately configure a new path could
 delay sending the PATH_RESPONSE until sufficient resource are available.
 Long delays might cause the peer to repeat the PATH_CHALLENGE and eventually
 send a PATH_ABANDON, in which case the procedures specified in
-Section <a href="#path-close" class="auto internal xref">Section 3.4</a> apply.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8">PATH_ACK frames (see <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>) can be returned on any path.
+Section <a href="#path-close" class="auto internal xref">Section 3.4</a> apply.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
+<p id="section-3.1-9">PATH_ACK frames (see <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>) can be returned on any path.
 If the PATH_ACK is preferred to be sent on the same path as the acknowledged
 packet (see <a href="#compute-rtt" class="auto internal xref">Section 5.4</a> for further guidance), it can be beneficial
 to bundle a PATH_ACK frame with the PATH_RESPONSE frame during
-path validation.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
-<p id="section-3.1-9">If validation succeeds, the client can continue to use the path.
+path validation.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+<p id="section-3.1-10">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
 As the used path ID is anyway consumed,
 the endpoint MUST explicitly close the path, as specified in
-<a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+<a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
 <div id="path-establishment-example">
 <section id="section-3.1.1">
           <h4 id="name-path-establishment-example">
