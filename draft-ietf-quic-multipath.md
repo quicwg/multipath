@@ -352,13 +352,13 @@ MUST use a connection ID associated to the same path ID as used in the packet
 received by the endpoint when it intends to send packets on the same path.
 
 A client that wants to use an
-new path MUST validate the peer's address before sending any data packets
+new path MUST validate the peer's address before sending any data
 as described in {{Section 8.2 of QUIC-TRANSPORT}},
 unless it has previously validated the 4-tuple used for that path.
 
 After receiving packets from the
 client on a new path, if the server decides to use the new path,
-the server MUST validate the peer's address before sending any data packets
+the server MUST validate the peer's address before sending any data
 as described in ({{Section 8.2 of QUIC-TRANSPORT}}),
 unless it has previously validated the 4-tuple used for that path.
 Until the client's address is
@@ -1246,7 +1246,7 @@ computed RTT value for the satellite path will be about 350ms. This is
 lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
-than 350ms, either the data packet or its PATH_ACK were probably lost.
+than 350ms, either the sent packet or its PATH_ACK were probably lost.
 
 The simplest implementation is to use the the delays measured when receiving new packet acknowledgements
 to compute smoothed_rtt and rttvar per
@@ -1272,7 +1272,7 @@ with different delays explicitly.
 
 ## Packet Scheduling {#packet-scheduling}
 
-The transmission of data packets is limited
+The transmission of packets containing data frames is limited
 by the arrival of data from the application and by congestion control.
 Generally, QUIC packets that increase the number of bytes in flight can only be sent
 when the congestion window for the selected path allows it.
