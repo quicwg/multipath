@@ -2825,15 +2825,17 @@ required to immediately reply (see <a href="#path-close" class="auto internal xr
 e.g., due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.2" class="relref">Section 19.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>) on that path to keep it alive.
-<span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> defines an optional keep alive process.
+However, this specification does not recommend sending keep-alives as it can
+create unnecessary overhead, especially if there are other, actively used paths.<a href="#section-5.9-3" class="pilcrow">¶</a></p>
+<p id="section-5.9-4"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> defines an optional keep alive process.
 This process can be applied to each path separately depending on application needs.
 Some applications could decide to not keep any not-actively used path alive,
 keep only one additional path alive, or multiple paths, e.g., for more redunancy.
 As discussed in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.1.2" class="relref">Section 10.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, the keep-alive interval
-needs to incorporate timeouts in middleboxes on the path.<a href="#section-5.9-3" class="pilcrow">¶</a></p>
-<p id="section-5.9-4">If a path was not actively used for a while and no keep alives have been sent,
+needs to incorporate timeouts in middleboxes on the path.<a href="#section-5.9-4" class="pilcrow">¶</a></p>
+<p id="section-5.9-5">If a path was not actively used for a while and no keep alives have been sent,
 an endpoint can probe it before switching to active use if there are still other paths
-that are currently usable.<a href="#section-5.9-4" class="pilcrow">¶</a></p>
+that are currently usable.<a href="#section-5.9-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
