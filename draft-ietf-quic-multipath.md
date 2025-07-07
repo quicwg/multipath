@@ -1335,8 +1335,7 @@ e.g. due to middlebox timeouts. To avoid such path breakage, endpoints
 can send ack-eliciting packets such as packets containing PING frames
 ({{Section 19.2 of QUIC-TRANSPORT}}) on that path to keep it alive.
 However, this specification does not recommend sending keep-alives as it can
-create unnecessary overhead, especially if there are other open paths that
-are actively used and therefore known to be working.
+create unnecessary overhead, especially if there are other, actively used paths.
 
 {{Section 5.3 of QUIC-TRANSPORT}} defines an optional keep alive process.
 This process can be applied to each path separately depending on application needs.
