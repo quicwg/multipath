@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 January 2026                           Uber Technologies Inc.
+Expires: 8 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 January 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             5 July 2025
+                                                             7 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 January 2026.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -1332,7 +1332,7 @@ Table of Contents
    600ms that would be measured if the PATH_ACK came over the satellite
    channel, but it is still the right value for computing for example
    the PTO timeout: if a PATH_ACK is not received after more than 350ms,
-   either the sent packet or its PATH_ACK were probably lost.
+   either the packet or its PATH_ACK were probably lost.
 
    The simplest implementation is to use the the delays measured when
    receiving new packet acknowledgements to compute smoothed_rtt and
