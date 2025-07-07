@@ -1246,7 +1246,7 @@ computed RTT value for the satellite path will be about 350ms. This is
 lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
-than 350ms, either the sent packet or its PATH_ACK were probably lost.
+than 350ms, either the packet or its PATH_ACK were probably lost.
 
 The simplest implementation is to use the the delays measured when receiving new packet acknowledgements
 to compute smoothed_rtt and rttvar per
