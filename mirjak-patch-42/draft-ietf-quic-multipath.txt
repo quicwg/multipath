@@ -1356,11 +1356,10 @@ Table of Contents
 
 5.5.  Packet Scheduling
 
-   The transmission of packets containing data frames is limited by the
-   arrival of data from the application and by congestion control.
-   Generally, QUIC packets that increase the number of bytes in flight
-   can only be sent when the congestion window for the selected path
-   allows it.
+   The transmission of packets containing data is limited by the arrival
+   of data from the application and by congestion control.  Generally,
+   QUIC packets that increase the number of bytes in flight can only be
+   sent when the congestion window for the selected path allows it.
 
    Most frames, including control frames (PATH_CHALLENGE and
    PATH_RESPONSE being the notable exceptions), can be sent and received
