@@ -1272,7 +1272,7 @@ with different delays explicitly.
 
 ## Packet Scheduling {#packet-scheduling}
 
-The transmission of packets containing data frames is limited
+The transmission of packets containing data is limited
 by the arrival of data from the application and by congestion control.
 Generally, QUIC packets that increase the number of bytes in flight can only be sent
 when the congestion window for the selected path allows it.
