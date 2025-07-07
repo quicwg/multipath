@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 4 January 2026                           Uber Technologies Inc.
+Expires: 8 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 4 January 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             3 July 2025
+                                                             7 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2026.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -1408,8 +1408,7 @@ Table of Contents
    containing PING frames (Section 19.2 of [QUIC-TRANSPORT]) on that
    path to keep it alive.  However, this specification does not
    recommend sending keep-alives as it can create unnecessary overhead,
-   especially if there are other open paths that are actively used and
-   therefore known to be working.
+   especially if there are other, actively used paths.
 
    Section 5.3 of [QUIC-TRANSPORT] defines an optional keep alive
    process.  This process can be applied to each path separately
