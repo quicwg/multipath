@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 5 January 2026                           Uber Technologies Inc.
+Expires: 8 January 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 5 January 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             4 July 2025
+                                                             7 July 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 January 2026.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -1426,10 +1426,11 @@ Table of Contents
    An implementation should take care to handle different PMTU sizes
    across multiple paths.  As specified in Section 14.3 of
    [QUIC-TRANSPORT] the DPLPMTUD Maximum Packet Size (MPS) is maintained
-   for each combination of local and remote IP addresses.  One simple
-   option, if the PMTUs are similar, is to apply the minimum PMTU of all
-   paths to each path, which could also help to simplify retransmission
-   processing.
+   for each combination of local and remote IP addresses.  Note that
+   with the multipath extension multiple paths could use the same
+   4-tuple but might have different MPS.  One simple option, if the
+   PMTUs are similar, is to apply the minimum PMTU of all paths to each
+   path, which could also help to simplify retransmission processing.
 
 5.9.  Idle Timeout and Keep-Alives
 
