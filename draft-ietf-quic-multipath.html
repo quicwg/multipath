@@ -1656,12 +1656,12 @@ with an unused path ID. An endpoint
 MUST use a connection ID associated to the same path ID as used in the packet
 received by the endpoint when it intends to send packets on the same path.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">A client that wants to use an
-new path MUST validate the peer's address before sending any data packets
+new path MUST validate the peer's address before sending any data
 as described in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 unless it has previously validated the 4-tuple used for that path.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">After receiving packets from the
 client on a new path, if the server decides to use the new path,
-the server MUST validate the peer's address before sending any data packets
+the server MUST validate the peer's address before sending any data
 as described in (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.2" class="relref">Section 8.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
 unless it has previously validated the 4-tuple used for that path.
 Until the client's address is
@@ -2702,7 +2702,7 @@ computed RTT value for the satellite path will be about 350ms. This is
 lower than the 600ms that would be measured if the PATH_ACK came over
 the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
-than 350ms, either the data packet or its PATH_ACK were probably lost.<a href="#section-5.4-5" class="pilcrow">¶</a></p>
+than 350ms, either the packet or its PATH_ACK were probably lost.<a href="#section-5.4-5" class="pilcrow">¶</a></p>
 <p id="section-5.4-6">The simplest implementation is to use the the delays measured when receiving new packet acknowledgements
 to compute smoothed_rtt and rttvar per
 <span><a href="https://rfc-editor.org/rfc/rfc9002#section-5.3" class="relref">Section 5.3</a> of [<a href="#QUIC-RECOVERY" class="cite xref">QUIC-RECOVERY</a>]</span> regardless of the path through which PATH_ACK frames are
@@ -2730,7 +2730,7 @@ with different delays explicitly.<a href="#section-5.4-7" class="pilcrow">¶</a>
         <h3 id="name-packet-scheduling">
 <a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-packet-scheduling" class="section-name selfRef">Packet Scheduling</a>
         </h3>
-<p id="section-5.5-1">The transmission of data packets is limited
+<p id="section-5.5-1">The transmission of packets containing data is limited
 by the arrival of data from the application and by congestion control.
 Generally, QUIC packets that increase the number of bytes in flight can only be sent
 when the congestion window for the selected path allows it.<a href="#section-5.5-1" class="pilcrow">¶</a></p>

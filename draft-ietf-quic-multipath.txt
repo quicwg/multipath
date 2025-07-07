@@ -415,14 +415,14 @@ Table of Contents
    the endpoint when it intends to send packets on the same path.
 
    A client that wants to use an new path MUST validate the peer's
-   address before sending any data packets as described in Section 8.2
-   of [QUIC-TRANSPORT], unless it has previously validated the 4-tuple
-   used for that path.
+   address before sending any data as described in Section 8.2 of
+   [QUIC-TRANSPORT], unless it has previously validated the 4-tuple used
+   for that path.
 
    After receiving packets from the client on a new path, if the server
    decides to use the new path, the server MUST validate the peer's
-   address before sending any data packets as described in (Section 8.2
-   of [QUIC-TRANSPORT]), unless it has previously validated the 4-tuple
+   address before sending any data as described in (Section 8.2 of
+   [QUIC-TRANSPORT]), unless it has previously validated the 4-tuple
    used for that path.  Until the client's address is validated, the
    anti-amplification limit from Section 8 of [QUIC-TRANSPORT] applies.
 
@@ -1334,7 +1334,7 @@ Table of Contents
    600ms that would be measured if the PATH_ACK came over the satellite
    channel, but it is still the right value for computing for example
    the PTO timeout: if a PATH_ACK is not received after more than 350ms,
-   either the data packet or its PATH_ACK were probably lost.
+   either the packet or its PATH_ACK were probably lost.
 
    The simplest implementation is to use the the delays measured when
    receiving new packet acknowledgements to compute smoothed_rtt and
@@ -1358,10 +1358,10 @@ Table of Contents
 
 5.5.  Packet Scheduling
 
-   The transmission of data packets is limited by the arrival of data
-   from the application and by congestion control.  Generally, QUIC
-   packets that increase the number of bytes in flight can only be sent
-   when the congestion window for the selected path allows it.
+   The transmission of packets containing data is limited by the arrival
+   of data from the application and by congestion control.  Generally,
+   QUIC packets that increase the number of bytes in flight can only be
+   sent when the congestion window for the selected path allows it.
 
    Most frames, including control frames (PATH_CHALLENGE and
    PATH_RESPONSE being the notable exceptions), can be sent and received
