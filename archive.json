@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-06T01:12:10.261840+00:00",
+  "timestamp": "2025-07-08T01:06:28.303293+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13260,7 +13260,7 @@
       "id": "I_kwDOGNtpaM62HCN_",
       "title": "Is path migration being replaced?",
       "url": "https://github.com/quicwg/multipath/issues/549",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13270,8 +13270,8 @@
       ],
       "body": "Section 3.1.2 talks about the relationship between this document and migration.  It isn't very clear.\n\nIt is unambiguous about involuntary migration to a new address tuple[^1].  It is not clear about whether a deliberate migration might happen, other than the explicit allowance for preferred address migration on Path ID 0. It does override the notion of probing vs. non-probing (a concept I'm not particularly wed to in QUIC, but an essential one if you are going to allow migration).\n\n[^1]: This draft uses 4-tuple, which is a separate problem. I believe that 5-tuple is more correct, as it captures IP version, but we avoided that entire debate in QUIC by minting a different term entirely.\n\nIf this is replacing the concept of migration with the concept of path additions and removals[^2], which is fine, then please say that directly.\n\n[^2]: With the exception of the preferred address thing, or \"under normal operation\", I guess, if you want to get pedantic.",
       "createdAt": "2025-05-11T23:45:57Z",
-      "updatedAt": "2025-07-04T10:51:18Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-07T08:28:47Z",
+      "closedAt": "2025-07-07T08:28:47Z",
       "comments": [
         {
           "author": "huitema",
@@ -13901,7 +13901,7 @@
       "id": "I_kwDOGNtpaM62HS96",
       "title": "Is the text about backup paths and timeouts encouraging waste?",
       "url": "https://github.com/quicwg/multipath/issues/562",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -13912,8 +13912,8 @@
       ],
       "body": "> To avoid such path breakage, endpoints can send ack-eliciting packets such as packets containing PING frames ([Section 19.2](https://rfc-editor.org/rfc/rfc9000#section-19.2) of [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)]) on that path to keep it alive.\n\nThere's obviously a balance to be struck, but this text doesn't really acknowledge the flipside of that balance.  It probably should.",
       "createdAt": "2025-05-12T01:04:53Z",
-      "updatedAt": "2025-06-13T12:25:48Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-07T08:28:04Z",
+      "closedAt": "2025-07-07T08:28:04Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14030,7 +14030,7 @@
       "id": "I_kwDOGNtpaM67tG0C",
       "title": "Implementation Consideration - PMTU management",
       "url": "https://github.com/quicwg/multipath/issues/581",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tzaeschke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -14039,8 +14039,8 @@
       ],
       "body": "From the Section `Paths Having Different PMTU Sizes`\n\n> As specified in {{Section 14.3 of QUIC-TRANSPORT}} the\n> DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.\n\nIs it worth clarifying (here or elsewhere) that QUIC-MP implementation should probably maintain MPS per path ID instead of the 4-tuple?\nWe can now have multiple paths per 4-tuple, and if we use an underlay that is capable of path aware networking, these paths may have different MPSs.\n\nSee also discussion here: https://github.com/quicwg/multipath/issues/561\n",
       "createdAt": "2025-06-16T09:06:15Z",
-      "updatedAt": "2025-07-04T10:52:24Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-07T08:30:47Z",
+      "closedAt": "2025-07-07T08:30:47Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14062,6 +14062,13 @@
           "body": "I think the less said the better. There is no guarantee that two paths sharing the same 4 tuple will in fact experience the same MTU. That might be true more than 99% of the time, but certainly not 100%. For example, paths using the same 4-tuple but different DS code points may very well be routed differently.",
           "createdAt": "2025-07-03T21:02:33Z",
           "updatedAt": "2025-07-03T21:02:33Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR merged",
+          "createdAt": "2025-07-07T08:30:47Z",
+          "updatedAt": "2025-07-07T08:30:47Z"
         }
       ]
     },
@@ -14079,7 +14086,7 @@
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-05T17:37:10Z",
+      "updatedAt": "2025-07-07T21:35:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -14088,6 +14095,48 @@
           "body": "I created PR #588. I think with these changes it is also more correct/clear now.",
           "createdAt": "2025-07-05T17:36:55Z",
           "updatedAt": "2025-07-05T17:36:55Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "So #588 replaces \"data packet\" with \"data\" or \"packets containing data\".  I'm personally still not clear on how to interpret this.  Are these packets containing \"*application* data\"?  I.e. STREAM or DATAGRAM (if negotiated) packets?  Just \"data\" can still mean a lot of things to me.  Or maybe I'm really missing some fundamental definitions somewhere?\n\nTo me this is making interpreting how to open a new path while respect anti-amplification limits really difficult to understand.  When reading it as \"packets containing STREAM or DATAGRAM frames\" I can make sense of the logic described.  But it is not really clear to me that is what is intended.",
+          "createdAt": "2025-07-07T12:48:53Z",
+          "updatedAt": "2025-07-07T12:48:53Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@flub I do understand the concern, however, the same anti-application limits as specified in RFC9000 are applied. There this issue is effectively rather an issue for RFC9000. We are not intending to change what is specified there.",
+          "createdAt": "2025-07-07T13:43:41Z",
+          "updatedAt": "2025-07-07T13:43:41Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The definition of \"data\" (or previously \"data packets\") as packets containing STREAM or DATAGRAM frames really makes a difference when reading https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.1.\n\n> A client that wants to use an new path MUST validate the peer's address before sending any data as described in {{Section 8.2 of QUIC-TRANSPORT}},\n\nMy current understanding of the multipath draft is that it is suggesting here that a client can send PATH_CHALLENGE frames to a new server address, even fully padded (and PATH_RESPONSE, ACK, etc), but has to hold off sending any STREAM or DATAGRAM frames until path validation succeeds.\n\nI don't think anything in section 8.2 of RFC9000 says anything about what frames you can send before validation succeeds.  The problem there is very different since only clients can migrate, while with multipath you can add a path that's a entire new 4-tuple instead of only the client-half.\n\nIf you can't send any \"data\", interpreted as \"any payload/datagram\", to the remote before path validation you don't have any anti-amplification budget for PATH_CHALLENGE frames in probing packets.  Hence why I'm kind of stuck on interpreting what \"data\" (or previously \"data packet\") means in this context.",
+          "createdAt": "2025-07-07T14:52:29Z",
+          "updatedAt": "2025-07-07T14:52:29Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I re-opened the issue, so we can continue the discussion now. I don't see how there is any different just because a different set of addresses might be used. You can always sent a PATH_CHALLENGE because that is how you open a path. The question is what the server can sent back. however, as the server received the PATH_CHALLENGE, it can at least sent a PATH_RESPONSE back.",
+          "createdAt": "2025-07-07T15:24:17Z",
+          "updatedAt": "2025-07-07T15:24:17Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for re-opening.  I appreciate the discussion is moving outside of the original subject though.\n\n> You can always sent a PATH_CHALLENGE because that is how you open a path.\n\nAh, this part is not obvious to me with the current text.  Hence my fixation on what \"data (packet)\" means.  But maybe I missed something.\n\nFor context I am working on an application where the server will suggest new socket addresses to the client on which the client could try to open paths.  So this could let a malicious server send the client to somewhere entirely different.  Though from an abuse view the client will only send a few 1200-byte PATH_CHALLENGE datagrams spaced out with at least the initial PTO time, so perhaps not that bad.  I wanted to be clear about whether the spec allows this or not, as I don't know all the abuse considerations.",
+          "createdAt": "2025-07-07T15:57:04Z",
+          "updatedAt": "2025-07-07T15:57:04Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@flub The concept you are looking for is \"path validating frame\". Non path validating frames can be sent with Path Challenge and Path response without changing the state of the path. If path validating frames are sent on a 4-tuple by the client, they imply to the server that the client want to use that path to send \"data\", i.e., not just probe packets. The list of non path validating frame is defined in RFC9000, see [12.4. ](https://www.rfc-editor.org/rfc/rfc9000.html#section-12.4)[Frames and Frame Types](https://www.rfc-editor.org/rfc/rfc9000.html#name-frames-and-frame-types). Look in the table for the frames that are marked \"P\", \"_Packets containing only frames with this marking can be used to probe new network paths during connection migration_\" -- the list includes Path Challenge, Path Response, New Connection ID and Padding. All other frames are treated as what we define loosely as \"data\" -- not just Stream Data, but also all the frames related to flow control, stream management, tokens, etc.\n",
+          "createdAt": "2025-07-07T21:35:28Z",
+          "updatedAt": "2025-07-07T21:35:28Z"
         }
       ]
     }
@@ -63776,24 +63825,26 @@
       "id": "PR_kwDOGNtpaM6aYizq",
       "title": "not required to send keep-alive",
       "url": "https://github.com/quicwg/multipath/pull/579",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #562",
       "createdAt": "2025-06-13T12:25:22Z",
-      "updatedAt": "2025-07-05T17:07:16Z",
+      "updatedAt": "2025-07-07T08:28:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "8afbf17bbd1d8b39d07cddf040d5a8367dd77bdb",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-38",
-      "headRefOid": "ef7aea042e3edd4c1a83443b07188e503470a810",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "fca2ab4cc2e51999d0b2e798c95f8cdf387f50c8",
+      "closedAt": "2025-07-07T08:28:03Z",
+      "mergedAt": "2025-07-07T08:28:03Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "2b99a4ee2ee962e29a82f56ad51fbae4222bf3f0"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -63986,6 +64037,26 @@
               "body": "I\u2019m not sure about the first sentence (\u201eKeep-alives are generally inadvisable.\u201c) as this is a general statement not connected to multipath. I know you want to see that statement @martinthomson but I don\u2019t think this is the right document for it. We should only point out considerations specific to multipath and not change general things in RFC9000.\r\n\r\nOther than this I think the current sentence is very similar to what you have. Here is a proposal for a slightly shorter version though:\r\n\r\n```suggestion\r\nHowever, this specification does not recommend sending keep-alives as it can\r\ncreate unnecessary overhead, especially if there are other, actively used paths.\r\n```",
               "createdAt": "2025-07-05T17:07:16Z",
               "updatedAt": "2025-07-05T17:07:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yYXPC",
+          "commit": {
+            "abbreviatedOid": "ef7aea0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T08:26:14Z",
+          "updatedAt": "2025-07-07T08:26:14Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I will merge the latest proposed, shorter wording now in order to submit an updated draft today. If people want to continue word smithing, please open a new issue/PR.",
+              "createdAt": "2025-07-07T08:26:14Z",
+              "updatedAt": "2025-07-07T08:26:15Z"
             }
           ]
         }
@@ -64290,24 +64361,26 @@
       "id": "PR_kwDOGNtpaM6dHFCE",
       "title": "MUST handle migration",
       "url": "https://github.com/quicwg/multipath/pull/585",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #549 \r\n\r\nThis PR adds a MUST for handling migration as proposed by @martinthomson in the issue. I first tried to simple add his proposed sentence here but that didn't make sense as it would say the same thing twice. So maybe this works?\r\n\r\nHowever, I personally am not convinced that this change is an improvement. We didn't want to repeat any MUSTs from RFC9000. So if we don't explicitly change it, those are still valid. Therefore we only added a MUST on the use of CID for the same path ID here. I really don't feel that new MUST here is necessary.",
       "createdAt": "2025-07-02T15:55:13Z",
-      "updatedAt": "2025-07-04T17:02:35Z",
+      "updatedAt": "2025-07-07T08:28:46Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "61b4df7b62bac4960e6baf72a3363e48ed28b066",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-41",
       "headRefOid": "9c6918c28dbb00416d05bf3de348c96278e0e988",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-07-07T08:28:46Z",
+      "mergedAt": "2025-07-07T08:28:46Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "42d7fa9c2b1bb005098ee7088b174c43bbdd313a"
+      },
       "comments": [],
       "reviews": [
         {
@@ -64635,24 +64708,26 @@
       "id": "PR_kwDOGNtpaM6dOrCt",
       "title": "Clarify PMTU management - #581",
       "url": "https://github.com/quicwg/multipath/pull/587",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tzaeschke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Clarify that a single 4-tuple can have multiple PMTU sizes. See #581",
       "createdAt": "2025-07-03T09:04:06Z",
-      "updatedAt": "2025-07-04T19:17:04Z",
+      "updatedAt": "2025-07-07T08:24:57Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "f541450064cd4deb984aed7602a1a8bf5423c150",
       "headRepository": "tzaeschke/multipath",
       "headRefName": "patch-4",
-      "headRefOid": "cec5ff43e7deebc136739de46076406d23e9eb4a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3aaab9d3d87f8648b382bcff2d677c43b02afb09",
+      "closedAt": "2025-07-07T08:24:57Z",
+      "mergedAt": "2025-07-07T08:24:57Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "d0cac0abe60d568a9fc021ebb65ac7d801c38c9e"
+      },
       "comments": [],
       "reviews": [
         {
@@ -64794,6 +64869,39 @@
               "updatedAt": "2025-07-04T19:17:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yTw0H",
+          "commit": {
+            "abbreviatedOid": "cec5ff4"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-06T17:20:47Z",
+          "updatedAt": "2025-07-06T17:20:47Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nNote that with the multipath extension multiple paths could use the same 4-tuple\r\nbut might have different MPS.\r\n```",
+              "createdAt": "2025-07-06T17:20:47Z",
+              "updatedAt": "2025-07-06T17:20:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yU2cO",
+          "commit": {
+            "abbreviatedOid": "3aaab9d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-06T23:08:51Z",
+          "updatedAt": "2025-07-06T23:08:51Z",
+          "comments": []
         }
       ]
     },
@@ -64802,7 +64910,7 @@
       "id": "PR_kwDOGNtpaM6dklSF",
       "title": "remove \"data packet\"",
       "url": "https://github.com/quicwg/multipath/pull/588",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -64811,17 +64919,19 @@
       ],
       "body": "fixes #586",
       "createdAt": "2025-07-05T17:35:45Z",
-      "updatedAt": "2025-07-05T20:33:31Z",
+      "updatedAt": "2025-07-07T08:30:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c104884b033a09a6126b8de9a2741d962e48a64e",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-42",
-      "headRefOid": "82e4dca9c7a3c5565f1ca4a0f55b4ee3cbf8db4a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e38d760ce40a4b85e0b57a044eaf00b66d38a7a3",
+      "closedAt": "2025-07-07T08:30:32Z",
+      "mergedAt": "2025-07-07T08:30:32Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "b2cccf86202ea6379d3b2c630fcc43cc9c3481da"
+      },
       "comments": [],
       "reviews": [
         {
@@ -64849,8 +64959,116 @@
               "updatedAt": "2025-07-05T20:33:31Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yTwDU",
+          "commit": {
+            "abbreviatedOid": "82e4dca"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-06T17:15:44Z",
+          "updatedAt": "2025-07-06T17:15:45Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "This sentence only talked about data packets (which should include datagrams yes). The next sentences covers all cc limited packets.",
+              "createdAt": "2025-07-06T17:15:45Z",
+              "updatedAt": "2025-07-06T17:15:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yTwMM",
+          "commit": {
+            "abbreviatedOid": "82e4dca"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-06T17:16:57Z",
+          "updatedAt": "2025-07-06T17:16:57Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "I can simply remove the word \u201eframe\u201c here to also cover datagrams:\r\n```suggestion\r\nThe transmission of packets containing data is limited\r\n```",
+              "createdAt": "2025-07-06T17:16:57Z",
+              "updatedAt": "2025-07-06T17:16:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yYZsT",
+          "commit": {
+            "abbreviatedOid": "82e4dca"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T08:29:17Z",
+          "updatedAt": "2025-07-07T08:29:17Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "```suggestion\r\nthan 350ms, either the packet or its PATH_ACK were probably lost.\r\n```",
+              "createdAt": "2025-07-07T08:29:17Z",
+              "updatedAt": "2025-07-07T08:29:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6yYabp",
+          "commit": {
+            "abbreviatedOid": "e38d760"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T08:30:19Z",
+          "updatedAt": "2025-07-07T08:30:19Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "I removed the word \"frames\". I'll merge this now and submit a new draft version. If further changes are needed, open a new PR please.",
+              "createdAt": "2025-07-07T08:30:19Z",
+              "updatedAt": "2025-07-07T08:30:20Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 589,
+      "id": "PR_kwDOGNtpaM6dxneb",
+      "title": "Small typo fix",
+      "url": "https://github.com/quicwg/multipath/pull/589",
+      "state": "MERGED",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-07T14:37:42Z",
+      "updatedAt": "2025-07-07T15:57:57Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "b2cccf86202ea6379d3b2c630fcc43cc9c3481da",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/typo-an",
+      "headRefOid": "3d4e11c801da422f977a4c19bf0826fb0c41dd7d",
+      "closedAt": "2025-07-07T15:17:20Z",
+      "mergedAt": "2025-07-07T15:17:20Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "80322a62ab57edbecdf45c021a838d071ad0009f"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
