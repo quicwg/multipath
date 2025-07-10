@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-08T01:06:28.303293+00:00",
+  "timestamp": "2025-07-10T01:07:16.700543+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14086,7 +14086,7 @@
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-07T21:35:28Z",
+      "updatedAt": "2025-07-09T10:56:37Z",
       "closedAt": null,
       "comments": [
         {
@@ -14137,6 +14137,65 @@
           "body": "@flub The concept you are looking for is \"path validating frame\". Non path validating frames can be sent with Path Challenge and Path response without changing the state of the path. If path validating frames are sent on a 4-tuple by the client, they imply to the server that the client want to use that path to send \"data\", i.e., not just probe packets. The list of non path validating frame is defined in RFC9000, see [12.4. ](https://www.rfc-editor.org/rfc/rfc9000.html#section-12.4)[Frames and Frame Types](https://www.rfc-editor.org/rfc/rfc9000.html#name-frames-and-frame-types). Look in the table for the frames that are marked \"P\", \"_Packets containing only frames with this marking can be used to probe new network paths during connection migration_\" -- the list includes Path Challenge, Path Response, New Connection ID and Padding. All other frames are treated as what we define loosely as \"data\" -- not just Stream Data, but also all the frames related to flow control, stream management, tokens, etc.\n",
           "createdAt": "2025-07-07T21:35:28Z",
           "updatedAt": "2025-07-07T21:35:28Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Look in the table for the frames that are marked \"P\", \"_Packets containing only frames with this marking can be used to probe new network paths during connection migration_\" -- the list includes Path Challenge, Path Response, New Connection ID and Padding. All other frames are treated as what we define loosely as \"data\" -- not just Stream Data, but also all the frames related to flow control, stream management, tokens, etc.\n\n\"Probing packets\" is indeed a concept which I think is clearly defined in RFC9000 (https://www.rfc-editor.org/rfc/rfc9000.html#name-probing-a-new-path).  If this is indeed what is intended I would much  prefer if https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.1-2 said something like:\n\n\"A client that wants to use a new path MUST validate the peer's address before sending any **non-probing packets** as described in Section 8.2 of [QUIC-TRANSPORT], unless it has previously validated the 4-tuple used for that path.\" (and similar for the next paragraph).\n\nI think that would be much clearer.",
+          "createdAt": "2025-07-08T09:04:04Z",
+          "updatedAt": "2025-07-08T09:04:04Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@flub Yes, the \"probing packets\" concept is close to what you discussed, but it is a bit clumsy. For one thing, while RFC 9000 provides a list of the \"non probing\" frames, there is no requirement to discuss the probing status of frames when defining extensions. If you look at the definition of datagrams in [RFC 9221](https://datatracker.ietf.org/doc/rfc9221/), you will not find a statement that says whether datagram frames are \"probing\" or \"non probing\". \n\nIn RFC 9000, the client tells the server that it can send data on a specified 4-tuple by sending \"non probing\" packets over that tuple. We replaced that in the multipath draft by the explicit \"path status\" frames. To get to your point about \"data packets\", the text now use the generic \"sending data\", and only uses it in the path validation section to say that each endpoint must validate the path before sending any data on it. I don't think that's ambiguous.",
+          "createdAt": "2025-07-08T19:23:56Z",
+          "updatedAt": "2025-07-08T19:23:56Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "So with the help of #590 I understand that the omission of probing/non-probing frames is entirely on purpose.  But this also means that using \"data\" in the context of discussing what is allowed to be sent on a path before it is validated in \u00a7 3.1 is *intentionally* vague?\n\nIs there a risk that implementations choose differently for which packets the anti-amplification limits apply and for which they don't?  To me this is currently still under-specified.",
+          "createdAt": "2025-07-09T10:56:37Z",
+          "updatedAt": "2025-07-09T10:56:37Z"
+        }
+      ]
+    },
+    {
+      "number": 590,
+      "id": "I_kwDOGNtpaM6_gS9D",
+      "title": "Should frames be defined as probing or non-probing?",
+      "url": "https://github.com/quicwg/multipath/issues/590",
+      "state": "OPEN",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[RFC 9000 \u00a7 9.1](https://www.rfc-editor.org/rfc/rfc9000.html#name-probing-a-new-path) defines probing frames, probing packets and also non-probing frames and packets.  The multipath draft does not do so about the new frames it defines.  Is this an oversight and should it?\n\nThere is a vague hint in [a paragraph of QUIC-MULTIPATH \u00a7 4.3](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-15.html#section-4.3-13) saying that PATH_STATUS_* frames MAY be bundled with a PATH_NEW_CONNECTION_ID of PATH_RESPONSE frame.  PATH_RESPONSE is a probing frame, NEW_CONNECTION_ID is also a probing frame.  So it is not unreasonable to expect PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames to also be probing frames.\n\nIn particular it would seem reasonable to bundle PATH_CHALLENGE, PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames all in one packet.  But as far as I can tell this is not currently allowed.  Declaring PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames as probing frames would solve this.",
+      "createdAt": "2025-07-08T15:11:32Z",
+      "updatedAt": "2025-07-09T10:48:48Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "No, we should not try to reintroduce the concept of probing packets in the multipath draft. That concept is superceded by the introduction of Path Status frames.\n\n\n\n",
+          "createdAt": "2025-07-08T19:27:37Z",
+          "updatedAt": "2025-07-08T19:27:37Z"
+        },
+        {
+          "author": "divagant-martian",
+          "authorAssociation": "NONE",
+          "body": "I think it's necessary? This is at least to correctly adapt any non-multipath logic that involves knowing if a packet is a probing packet or not, when such frames are present. \n\nTo be very specific, it would be useful to know if these frames are probing or not, in order to know if they are allowed in a probing packet or not. Both for building probing packets (as previously defined, not asking a redefinition by the spec) and for checking received packets",
+          "createdAt": "2025-07-09T04:32:43Z",
+          "updatedAt": "2025-07-09T04:35:35Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If I understand correctly you see the main motivation for probing/non-probing packets to select which path to send on.  In RFC 9000 this is the mechanism by which you trigger path migration.  And the multipath draft does mention that this is replaced with explicit PATH_STATUS_* frames in \u00a7 3.1.2.\n\nHowever I was also interpreting probing/non-probing frames for what is allowed to be used before a path is established.  I'm probably influenced from working with other drafts like the [quic-address-discovery](https://datatracker.ietf.org/doc/draft-ietf-quic-address-discovery/) and [quic-nat-traversal](https://datatracker.ietf.org/doc/draft-seemann-quic-nat-traversal/) which explicitly take part in probing/non-probing frames.\n\nIf I understand you correctly however, once multipath is negotiated you can completely ignore the probing/non-probing distinction and you are free to bundle any frames together as you see fit?  So the example in my initial message of combining PATH_CHALLENGE, PATH_NEW_CONNECTION_ID and PATH_STATUS_* in one packet is perfectly fine.  You could easily add a MAX_PATH_ID to this packet as well.\n\nMaybe it warrants calling this out slightly more explicit in this case.  To make it more obvious that the probing/non-probing distinction does not apply at all when probing/opening new paths, as this kind of eluded me from interpreting the current draft.",
+          "createdAt": "2025-07-09T10:48:48Z",
+          "updatedAt": "2025-07-09T10:48:48Z"
         }
       ]
     }
