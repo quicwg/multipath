@@ -451,10 +451,9 @@ associated with the same path ID.
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. A packet that contains at least
 one "non-probing" frame is a "non-probing" packet. When the multipath extension
-is negotiated, the reception of a "non-probing"
-packet on a new path with a new so far unused path ID
-does not impact the path status of any existing
-path. Therefore, any frame can be sent on a new path at any time
+is negotiated, no such distinction exist and opening new paths does
+not affect the status of any existing path.
+Therefore, any frame can be sent on a new path at any time
 as long as the anti-amplification limits
 (see {{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
 limits for this path are respected.
