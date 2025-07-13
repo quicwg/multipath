@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-10T01:07:16.700543+00:00",
+  "timestamp": "2025-07-13T01:14:13.952482+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14086,7 +14086,7 @@
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-09T10:56:37Z",
+      "updatedAt": "2025-07-11T08:55:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -14158,6 +14158,27 @@
           "body": "So with the help of #590 I understand that the omission of probing/non-probing frames is entirely on purpose.  But this also means that using \"data\" in the context of discussing what is allowed to be sent on a path before it is validated in \u00a7 3.1 is *intentionally* vague?\n\nIs there a risk that implementations choose differently for which packets the anti-amplification limits apply and for which they don't?  To me this is currently still under-specified.",
           "createdAt": "2025-07-09T10:56:37Z",
           "updatedAt": "2025-07-09T10:56:37Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The anti-amplification limit applies to every packet. It is entirely about traffic volume, not about the specific content of the packet. It is applied as long as the 4-tuple is not validated. That's all specified in RFC 9000.",
+          "createdAt": "2025-07-10T19:58:35Z",
+          "updatedAt": "2025-07-10T20:00:00Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> The anti-amplification limit applies to every packet. It is entirely about traffic volume, not about the specific content of the packet. It is applied as long as the 4-tuple is not validated. That's all specified in RFC 9000.\n\nI still can not make any sense of this part, apologies if this should be obvious.  You can only send up to 3 times as much data as you have received for the anti-amplification limit.  How can the client validate a new server address?  Because it never received anything from this address (a server can not initiate a path), so it can not send a PATH_CHALLENGE because it can not send *anything* according to the anti-amplification limit.",
+          "createdAt": "2025-07-11T08:42:06Z",
+          "updatedAt": "2025-07-11T08:42:06Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The anti-amplification limit applies to response traffic. So a client may sends a path challenge to start the process. The server in this case are then limited in how much response traffic, which commonly would be both a path_validation frame and the server's own path_challenge. \n\nSo the sending of new traffic on a non-validated frame falls under RFC 9002 section 6.2.2: https://www.rfc-editor.org/rfc/rfc9002.html#name-handshakes-and-new-paths \n\nThus, a client can always send one packet on a path it hasn't sent on before. Then it needs to follow the PTO retransmission rules if it doesn't get a answer and gets the path validated in its send direction. ",
+          "createdAt": "2025-07-11T08:55:44Z",
+          "updatedAt": "2025-07-11T08:55:44Z"
         }
       ]
     },
@@ -65127,6 +65148,40 @@
         "oid": "80322a62ab57edbecdf45c021a838d071ad0009f"
       },
       "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 591,
+      "id": "PR_kwDOGNtpaM6eeq89",
+      "title": "Clarify probing packets do not exist",
+      "url": "https://github.com/quicwg/multipath/pull/591",
+      "state": "OPEN",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This tweaks the language wrt to probing to make it more clear that probing and non-probing packets no longer exist.\r\n\r\nCloses #590",
+      "createdAt": "2025-07-11T11:35:28Z",
+      "updatedAt": "2025-07-11T16:06:47Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/no-probing",
+      "headRefOid": "89e8493a260bf5acb32829e56201771f96aacfc4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "divagant-martian",
+          "authorAssociation": "NONE",
+          "body": "There's also this mention, if any packet \"probes\" a path it's perhaps clearer to no introduce the \"distinction\" of being a probing packet here as well:\r\n\r\n> Similarly, the server MAY wait for a\r\n   short, limited time such as one PTO if a path probing packet is\r\n   received on a new path before sending the CONNECTION_CLOSE frame.\r\n",
+          "createdAt": "2025-07-11T16:06:47Z",
+          "updatedAt": "2025-07-11T16:06:47Z"
+        }
+      ],
       "reviews": []
     }
   ]
