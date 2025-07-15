@@ -351,9 +351,12 @@ with an unused path ID. An endpoint
 MUST use a connection ID associated to the same path ID as used in the packet
 received by the endpoint when it intends to send packets on the same path.
 
-A client that wants to use a
-new path MUST validate the peer's address before sending any data
-as described in {{Section 8.2 of QUIC-TRANSPORT}},
+A client can always start address validation by sending an initial
+PATH_CHALLENGE and its retransmits as specified in {{Section 6.2.2.1
+of QUIC-RECOVERY}}.
+However a client that wants to  use a
+new path MUST validate the peer's address before sending any data as
+described in {{Section 8.2 of QUIC-TRANSPORT}},
 unless it has previously validated the 4-tuple used for that path.
 
 After receiving packets from the
