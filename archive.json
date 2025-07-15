@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-13T01:14:13.952482+00:00",
+  "timestamp": "2025-07-15T01:10:54.990446+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14082,11 +14082,11 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "has PR"
+        "no-action-needed"
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-11T08:55:44Z",
+      "updatedAt": "2025-07-14T10:46:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -14179,6 +14179,13 @@
           "body": "The anti-amplification limit applies to response traffic. So a client may sends a path challenge to start the process. The server in this case are then limited in how much response traffic, which commonly would be both a path_validation frame and the server's own path_challenge. \n\nSo the sending of new traffic on a non-validated frame falls under RFC 9002 section 6.2.2: https://www.rfc-editor.org/rfc/rfc9002.html#name-handshakes-and-new-paths \n\nThus, a client can always send one packet on a path it hasn't sent on before. Then it needs to follow the PTO retransmission rules if it doesn't get a answer and gets the path validated in its send direction. ",
           "createdAt": "2025-07-11T08:55:44Z",
           "updatedAt": "2025-07-11T08:55:44Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "To summarise:\n\n- The concept of \"probing\" packets only applies to RFC9000 migration because sending non-probing packet is the signal to switch over to the new path. This is not needed when opening a new path as it can be used in parallel to existing paths.\n- Any frame can be send on a new path using a new, so-far-unused path ID (see section 3.1.2 https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-relation-to-probing-and-mig): \"...any frame can be sent on a new path at any time...\"\n- Amplification limits only apply to the server/receiver of a \"PATH_CHALLENGE\" frame (because otherwise it would never be possible to open a new path). This is already the case in RFC9000 and specified there.\n\nCan we close this issue?",
+          "createdAt": "2025-07-14T10:41:52Z",
+          "updatedAt": "2025-07-14T10:41:52Z"
         }
       ]
     },
@@ -14191,10 +14198,12 @@
       "author": "flub",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "no-action-needed"
+      ],
       "body": "[RFC 9000 \u00a7 9.1](https://www.rfc-editor.org/rfc/rfc9000.html#name-probing-a-new-path) defines probing frames, probing packets and also non-probing frames and packets.  The multipath draft does not do so about the new frames it defines.  Is this an oversight and should it?\n\nThere is a vague hint in [a paragraph of QUIC-MULTIPATH \u00a7 4.3](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-15.html#section-4.3-13) saying that PATH_STATUS_* frames MAY be bundled with a PATH_NEW_CONNECTION_ID of PATH_RESPONSE frame.  PATH_RESPONSE is a probing frame, NEW_CONNECTION_ID is also a probing frame.  So it is not unreasonable to expect PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames to also be probing frames.\n\nIn particular it would seem reasonable to bundle PATH_CHALLENGE, PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames all in one packet.  But as far as I can tell this is not currently allowed.  Declaring PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames as probing frames would solve this.",
       "createdAt": "2025-07-08T15:11:32Z",
-      "updatedAt": "2025-07-09T10:48:48Z",
+      "updatedAt": "2025-07-14T23:55:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -14217,6 +14226,48 @@
           "body": "If I understand correctly you see the main motivation for probing/non-probing packets to select which path to send on.  In RFC 9000 this is the mechanism by which you trigger path migration.  And the multipath draft does mention that this is replaced with explicit PATH_STATUS_* frames in \u00a7 3.1.2.\n\nHowever I was also interpreting probing/non-probing frames for what is allowed to be used before a path is established.  I'm probably influenced from working with other drafts like the [quic-address-discovery](https://datatracker.ietf.org/doc/draft-ietf-quic-address-discovery/) and [quic-nat-traversal](https://datatracker.ietf.org/doc/draft-seemann-quic-nat-traversal/) which explicitly take part in probing/non-probing frames.\n\nIf I understand you correctly however, once multipath is negotiated you can completely ignore the probing/non-probing distinction and you are free to bundle any frames together as you see fit?  So the example in my initial message of combining PATH_CHALLENGE, PATH_NEW_CONNECTION_ID and PATH_STATUS_* in one packet is perfectly fine.  You could easily add a MAX_PATH_ID to this packet as well.\n\nMaybe it warrants calling this out slightly more explicit in this case.  To make it more obvious that the probing/non-probing distinction does not apply at all when probing/opening new paths, as this kind of eluded me from interpreting the current draft.",
           "createdAt": "2025-07-09T10:48:48Z",
           "updatedAt": "2025-07-09T10:48:48Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think this is stated very explicit here:\n\n\"any frame can be sent on a new path at any time as long as the anti-amplification limits (see [Section 21.1.1.1](https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)]) and the congestion control limits for this path are respected.\"",
+          "createdAt": "2025-07-14T10:37:16Z",
+          "updatedAt": "2025-07-14T10:37:16Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "And once again, the probing concept is only useful for the receiver to know when to switch over to the new path in case of migration. This is not needed if you simply open a new, separate path, as there is on \"switch-over\". The probing concept does not limit sending; the initial congestion window limits sending on the client side (as it also does when you open the first path of a connection) and in addition the amplification limit (which is often below the congestion window at the beginning) limits sending on the server/receiver side for any non-validated path.\n\nCan we close this issue?",
+          "createdAt": "2025-07-14T10:46:36Z",
+          "updatedAt": "2025-07-14T10:46:36Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "I could very well be missing something, but is it true that the multipath extension does not need the distinction between probing and non-probing packets?\n\nI ask this because [section 5.1](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-connection-id-changes-migra) states that _migration of a single path cannot be avoided in case of NAT rebinding, or if the server requests migration to a \"preferred address\" during the handshake._\n\nTo decide to migrate a \"single path,\" the server needs to distinguish between probing and non-probing packets, because they _do not send non-probing packets toward a client address until they see a non-probing packet from that address_ ([section 9 of RFC 9000](https://datatracker.ietf.org/doc/html/rfc9000#section-9-6)).",
+          "createdAt": "2025-07-14T12:23:01Z",
+          "updatedAt": "2025-07-14T12:23:01Z"
+        },
+        {
+          "author": "divagant-martian",
+          "authorAssociation": "NONE",
+          "body": "a probing packet in rfc9000 is defined as\n> A packet containing only probing frames is a \"probing packet\"\n\neven if there's no requirement for extensions to define frames as probing and non probing, it's often done. Or said in better words, the list of probing frames in rfc9000 is not meant to be _the only_ frames considered probing, and can be expended.\n\nThat said, a packet that contains probing frames defined in rfc9000 + PATH_STATUS_AVAILABLE, would this be considered a probing packet nonetheless?",
+          "createdAt": "2025-07-14T13:14:41Z",
+          "updatedAt": "2025-07-14T13:14:41Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "All frames are by default \"non-probing\" is not defined explicitly differently, as stated in RFC9000 section 9.1:\n\n\"PATH_CHALLENGE, PATH_RESPONSE, NEW_CONNECTION_ID, and PADDING frames are \"probing frames\", and all other frames are \"non-probing frames\". \"\n\n\n@kazuho Probing frames are still defined and needed for RFC-9000-sytle migration but not if you open a new path using a new, so-far-unused Path ID. This is what is specified in this extension. And I think the currently text is clear that's what  is the only thing considered here (\"new path using a new path ID\").\n\n",
+          "createdAt": "2025-07-14T13:44:42Z",
+          "updatedAt": "2025-07-14T13:44:42Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "@mirjak Thank you for the clarifications. That sounds good to me.",
+          "createdAt": "2025-07-14T23:55:58Z",
+          "updatedAt": "2025-07-14T23:55:58Z"
         }
       ]
     }
@@ -65162,7 +65213,7 @@
       "labels": [],
       "body": "This tweaks the language wrt to probing to make it more clear that probing and non-probing packets no longer exist.\r\n\r\nCloses #590",
       "createdAt": "2025-07-11T11:35:28Z",
-      "updatedAt": "2025-07-11T16:06:47Z",
+      "updatedAt": "2025-07-14T13:50:20Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65180,9 +65231,79 @@
           "body": "There's also this mention, if any packet \"probes\" a path it's perhaps clearer to no introduce the \"distinction\" of being a probing packet here as well:\r\n\r\n> Similarly, the server MAY wait for a\r\n   short, limited time such as one PTO if a path probing packet is\r\n   received on a new path before sending the CONNECTION_CLOSE frame.\r\n",
           "createdAt": "2025-07-11T16:06:47Z",
           "updatedAt": "2025-07-11T16:06:47Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This change is not correct. The probing concept still exists in the context of RFC9000 migration; this means if you receive a packet with a new 4-tuple using an active path ID. Please note however that the next sentence is the really the important one to answer you question in #586:\r\n\r\n\"any frame can be sent on a new path at any time as long as the anti-amplification limits (see [Section 21.1.1.1](https://rfc-editor.org/rfc/rfc9000#section-21.1.1.1) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)]) and the congestion control limits for this path are respected.\"",
+          "createdAt": "2025-07-14T10:33:15Z",
+          "updatedAt": "2025-07-14T10:33:15Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> There's also this mention, if any packet \"probes\" a path it's perhaps clearer to no introduce the \"distinction\" of being a probing packet here as well:\r\n> \r\n> > Similarly, the server MAY wait for a\r\n> > short, limited time such as one PTO if a path probing packet is\r\n> > received on a new path before sending the CONNECTION_CLOSE frame.\r\n\r\nYes, I think that is an oversight that we didn't change after removing the probing concept and we can simply remove \"path probing\" here. I'll create a PR.",
+          "createdAt": "2025-07-14T10:34:43Z",
+          "updatedAt": "2025-07-14T10:34:43Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> This change is not correct. The probing concept still exists in the context of RFC9000 migration; this means if you receive a packet with a new 4-tuple using an active path ID.\r\n\r\nI don't understand how the probing concept is still needed for this.  An RFC9000 migration is only allowed for involuntary migrations I think, because \"To open a new path, an endpoint MUST use a new connection ID associated with an unused path ID\".  So voluntary RFC9000-style migrations are disallowed.  And as this section (3.1.2) clearly states that probing or non-probing packets do not affect the path status when an RFC9000 migration happens.  So whether the RFC9000-style migration did happen with a probing packet or not does not make any difference.",
+          "createdAt": "2025-07-14T12:42:05Z",
+          "updatedAt": "2025-07-14T12:42:05Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "RFC9000 migration is not disallowed, it is just \"discouraged\". The text you cite above with the MUST is only considering \"opening a new path\" (as specified in this extension) and not \"migrating an existing path\" (RFC9000 migration). This is also further explained in section 5.2 see https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-connection-id-changes-migra\r\n\r\n```\r\nFor any given path, connection ID rotation, NAT rebinding, or client initiated migration as specified in [QUIC-TRANSPORT] might occur, like on a single path. These events do not change the path ID, and do not affect the packet number space associated with the path.\u00b6\r\n\r\nIt is generally preferable to use multipath mechanisms such as creating a new path and later abandoning the old path, rather than doing migration of a single path as specified in [QUIC-TRANSPORT]. \r\n```",
+          "createdAt": "2025-07-14T13:50:20Z",
+          "updatedAt": "2025-07-14T13:50:20Z"
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 592,
+      "id": "PR_kwDOGNtpaM6exq2v",
+      "title": "remove \"path probing\"",
+      "url": "https://github.com/quicwg/multipath/pull/592",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "",
+      "createdAt": "2025-07-14T10:35:51Z",
+      "updatedAt": "2025-07-14T12:26:20Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-43",
+      "headRefOid": "b8e3a00f790dd372554438bab7f828e03de2d534",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM6zxqSf",
+          "commit": {
+            "abbreviatedOid": "b8e3a00"
+          },
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-14T12:26:20Z",
+          "updatedAt": "2025-07-14T12:26:20Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
