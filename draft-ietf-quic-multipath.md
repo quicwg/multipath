@@ -718,7 +718,7 @@ packets, but it cannot completely avoid that risk.
 {{Section 10.3 of QUIC-TRANSPORT}} specified that the Stateless Reset Tokens
 associated with retired connection IDs cannot be used to identify Stateless Reset packets.
 Considering the connection IDs received from the peer as immediately retired for an abandoned
-path guarantees that suprious Stateless Reset packets
+path guarantees that spurious Stateless Reset packets
 sent by the peer will not cause the closure of the QUIC connection.
 
 ### Handling PATH_ACK for Abandoned Paths {#ack-after-abandon}
