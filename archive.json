@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-15T01:10:54.990446+00:00",
+  "timestamp": "2025-07-17T01:09:42.008657+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14086,7 +14086,7 @@
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-14T10:46:53Z",
+      "updatedAt": "2025-07-16T14:43:30Z",
       "closedAt": null,
       "comments": [
         {
@@ -14186,6 +14186,48 @@
           "body": "To summarise:\n\n- The concept of \"probing\" packets only applies to RFC9000 migration because sending non-probing packet is the signal to switch over to the new path. This is not needed when opening a new path as it can be used in parallel to existing paths.\n- Any frame can be send on a new path using a new, so-far-unused path ID (see section 3.1.2 https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-relation-to-probing-and-mig): \"...any frame can be sent on a new path at any time...\"\n- Amplification limits only apply to the server/receiver of a \"PATH_CHALLENGE\" frame (because otherwise it would never be possible to open a new path). This is already the case in RFC9000 and specified there.\n\nCan we close this issue?",
           "createdAt": "2025-07-14T10:41:52Z",
           "updatedAt": "2025-07-14T10:41:52Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for the clarifications @gloinul and @mirjak!  Puzzling all this together is still not simple, we indeed have considered some of behaviours as possible interpretations but could not figure out if that would be correct.\n\nSo I do think there's still room to improve the descriptions.  In particular \u00a7 3.1.2 is still confusing even with this additional understanding.  The 2nd paragraph say that receipt of a **packet** is treated as a path migration.  But you seem to suggest here that since the probing and non-probing distinction still exists only a non-probing packet would trigger such a migration.",
+          "createdAt": "2025-07-15T13:50:09Z",
+          "updatedAt": "2025-07-15T13:50:09Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "No also if you receive a non-probing packet that's migration; the difference is that you need to switch over to the new path immediately while a probing packet doesn't change the path state of the existing path right away. I understand that this concept is confusing, however, this is all part of RFC9000 and not this extension.",
+          "createdAt": "2025-07-15T15:17:48Z",
+          "updatedAt": "2025-07-15T15:17:48Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We had a discussion about that before. The question was, \"should we still support RFC 9000 style migration\" (which RFC 9000 calls path migration). The answer was yes, because we at least need to support migration of path 0 to the \"Preferred Address\". That being settled, we have two ways of achieving something like \"switch from Wi-Fi to 5G\":\n\n1. The RFC 9000 way: assuming path 0 is using WiFi, send another path challenge from the 5G interface, using a CID linked to path 0. If the challenge succeeds, the client update the 4 tuple used for path 0. The server notice \"non probing\" traffic coming from the new address, and thus also updates the 4 tuple used for path 0.\n\n2. The multipath way: send a path challenge from the 5G interface, using a CID linked to path 1. If the challenge succeeds, the client can send packets on both path 0 and path 1. If the client sets the status of path 1 to available, the server will send traffic on path 1. If the client abandons path 0, all the traffic moves to path 1.\n\nThe second way is much easier to manage -- it is a proper implementation of \"make before break\", and does not require making distinctions for probing packets. That's why it is encouraged. But endpoints may still need to support the old ways -- if only to support the \"Preferred Address\" feature -- and that means supporting the distinction between probing and non probing packet for these old style migrations.\n\nMaybe we can do a future version in which \"preferred address\" is implemented using multipath feature, and then stop supporting old style  migration. But that's for the future. ",
+          "createdAt": "2025-07-15T19:01:26Z",
+          "updatedAt": "2025-07-15T19:01:26Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> > So I do think there's still room to improve the descriptions. In particular \u00a7 3.1.2 is still confusing even with this additional understanding. The 2nd paragraph say that receipt of a packet is treated as a path migration. But you seem to suggest here that since the probing and non-probing distinction still exists only a non-probing packet would trigger such a migration.\n>\n> No also if you receive a non-probing packet that's migration; the difference is that you need to switch over to the new path immediately while a probing packet doesn't change the path state of the existing path right away. I understand that this concept is confusing, however, this is all part of RFC9000 and not this extension.\n\nI think we are both saying the same here?  An RFC9000-style migration requires a non-probing packet for the migration to happen.  Yet the current wording of \u00a7 3.1.2 says \"An endpoint could receive a packet with a CID [...] This MUST be treated as path migration, [...]\".\n\nThat however, suggests also a probing packet would be a path migration.  But it is only a non-probing packet that migrates the path.  Especially since the section referred to talks about receipt of a non-probing packet.\n\nPerhaps wording like this would be an improvement:\n\nProbing and non-probing packets received with a connection ID associated to an active path ID where the packet's 4-tuple does not match the 4-tuple currently used with that path ID, MUST be treated as path-probing and path migration as specified in {{Section 9 of QUIC-TRANSPORT}}.  Additionally all connection IDs used during such path migration MUST be associated with the current path ID of the path being migrated.",
+          "createdAt": "2025-07-16T08:18:14Z",
+          "updatedAt": "2025-07-16T08:18:14Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If you look at section 9 in RFC9000 it is titled \"connection migration\" and subsection 9.1. is on \"probing a new path\" there the concept of \"connection migration\" as defined in RFC9000 implies both probing and the actual switch over. Again if this is not clear, this is a problem in RFC9000 that we can't fix in this document.",
+          "createdAt": "2025-07-16T11:12:51Z",
+          "updatedAt": "2025-07-16T11:12:51Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I realize that I was a bit lax in my description of how \"multipath\" migration  works. This really is:\n\n2. The multipath way: send ~a path challenge~ *any packet* from the 5G interface, using a CID linked to path 1. ~If the challenge succeeds,~ *If the 4-tuple is verified,* the client can send packets on both path 0 and path 1. If the client sets the status of path 1 to available, the server will send traffic on path 1. If the client abandons path 0, all the traffic moves to path 1.\n\nThat is, the only thing that matters for the \"multipath\" state machine are the CID, which define the path identifiers, and the path status and path abandon messages. The path challenge and path response are not changing the state of path per se. They are merely helping decide whether the 4-tuple is *verified*, because of their special property of always being sent on the 4 tuple associated with the path -- which distinguishes them from simple ping/ack.\n",
+          "createdAt": "2025-07-16T14:43:30Z",
+          "updatedAt": "2025-07-16T14:43:30Z"
         }
       ]
     },
@@ -14194,7 +14236,7 @@
       "id": "I_kwDOGNtpaM6_gS9D",
       "title": "Should frames be defined as probing or non-probing?",
       "url": "https://github.com/quicwg/multipath/issues/590",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "flub",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -14203,8 +14245,8 @@
       ],
       "body": "[RFC 9000 \u00a7 9.1](https://www.rfc-editor.org/rfc/rfc9000.html#name-probing-a-new-path) defines probing frames, probing packets and also non-probing frames and packets.  The multipath draft does not do so about the new frames it defines.  Is this an oversight and should it?\n\nThere is a vague hint in [a paragraph of QUIC-MULTIPATH \u00a7 4.3](https://www.ietf.org/archive/id/draft-ietf-quic-multipath-15.html#section-4.3-13) saying that PATH_STATUS_* frames MAY be bundled with a PATH_NEW_CONNECTION_ID of PATH_RESPONSE frame.  PATH_RESPONSE is a probing frame, NEW_CONNECTION_ID is also a probing frame.  So it is not unreasonable to expect PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames to also be probing frames.\n\nIn particular it would seem reasonable to bundle PATH_CHALLENGE, PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames all in one packet.  But as far as I can tell this is not currently allowed.  Declaring PATH_NEW_CONNECTION_ID and PATH_STATUS_* frames as probing frames would solve this.",
       "createdAt": "2025-07-08T15:11:32Z",
-      "updatedAt": "2025-07-14T23:55:58Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-16T09:29:40Z",
+      "closedAt": "2025-07-16T09:29:40Z",
       "comments": [
         {
           "author": "huitema",
@@ -14258,9 +14300,9 @@
         {
           "author": "mirjak",
           "authorAssociation": "COLLABORATOR",
-          "body": "All frames are by default \"non-probing\" is not defined explicitly differently, as stated in RFC9000 section 9.1:\n\n\"PATH_CHALLENGE, PATH_RESPONSE, NEW_CONNECTION_ID, and PADDING frames are \"probing frames\", and all other frames are \"non-probing frames\". \"\n\n\n@kazuho Probing frames are still defined and needed for RFC-9000-sytle migration but not if you open a new path using a new, so-far-unused Path ID. This is what is specified in this extension. And I think the currently text is clear that's what  is the only thing considered here (\"new path using a new path ID\").\n\n",
+          "body": "All frames are by default \"non-probing\" if not defined explicitly differently, as stated in RFC9000 section 9.1:\n\n\"PATH_CHALLENGE, PATH_RESPONSE, NEW_CONNECTION_ID, and PADDING frames are \"probing frames\", and all other frames are \"non-probing frames\". \"\n\n\n@kazuho Probing frames are still defined and needed for RFC-9000-sytle migration but not if you open a new path using a new, so-far-unused Path ID. This is what is specified in this extension. And I think the currently text is clear that's what  is the only thing considered here (\"new path using a new path ID\").\n\n",
           "createdAt": "2025-07-14T13:44:42Z",
-          "updatedAt": "2025-07-14T13:44:42Z"
+          "updatedAt": "2025-07-15T08:11:25Z"
         },
         {
           "author": "kazuho",
@@ -14268,6 +14310,20 @@
           "body": "@mirjak Thank you for the clarifications. That sounds good to me.",
           "createdAt": "2025-07-14T23:55:58Z",
           "updatedAt": "2025-07-14T23:55:58Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Given all frames are by default defined as \"non-probing\" in RFC9000, can we close this issue? @flub @divagant-martian ",
+          "createdAt": "2025-07-15T08:13:51Z",
+          "updatedAt": "2025-07-15T08:13:51Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I'm fine with closing.",
+          "createdAt": "2025-07-16T08:39:59Z",
+          "updatedAt": "2025-07-16T08:39:59Z"
         }
       ]
     }
@@ -65206,21 +65262,21 @@
       "id": "PR_kwDOGNtpaM6eeq89",
       "title": "Clarify probing packets do not exist",
       "url": "https://github.com/quicwg/multipath/pull/591",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "flub",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This tweaks the language wrt to probing to make it more clear that probing and non-probing packets no longer exist.\r\n\r\nCloses #590",
       "createdAt": "2025-07-11T11:35:28Z",
-      "updatedAt": "2025-07-14T13:50:20Z",
+      "updatedAt": "2025-07-15T13:52:47Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "flub/multipath",
       "headRefName": "flub/no-probing",
       "headRefOid": "89e8493a260bf5acb32829e56201771f96aacfc4",
-      "closedAt": null,
+      "closedAt": "2025-07-15T13:52:46Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -65259,6 +65315,13 @@
           "body": "RFC9000 migration is not disallowed, it is just \"discouraged\". The text you cite above with the MUST is only considering \"opening a new path\" (as specified in this extension) and not \"migrating an existing path\" (RFC9000 migration). This is also further explained in section 5.2 see https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-connection-id-changes-migra\r\n\r\n```\r\nFor any given path, connection ID rotation, NAT rebinding, or client initiated migration as specified in [QUIC-TRANSPORT] might occur, like on a single path. These events do not change the path ID, and do not affect the packet number space associated with the path.\u00b6\r\n\r\nIt is generally preferable to use multipath mechanisms such as creating a new path and later abandoning the old path, rather than doing migration of a single path as specified in [QUIC-TRANSPORT]. \r\n```",
           "createdAt": "2025-07-14T13:50:20Z",
           "updatedAt": "2025-07-14T13:50:20Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Closing this as it seems to be the wrong way to interpret this.  Though some re-wording here is still desirable I think, see #586.",
+          "createdAt": "2025-07-15T13:52:46Z",
+          "updatedAt": "2025-07-15T13:52:46Z"
         }
       ],
       "reviews": []
@@ -65277,7 +65340,7 @@
       ],
       "body": "",
       "createdAt": "2025-07-14T10:35:51Z",
-      "updatedAt": "2025-07-14T12:26:20Z",
+      "updatedAt": "2025-07-15T05:34:10Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65301,6 +65364,113 @@
           "body": "",
           "createdAt": "2025-07-14T12:26:20Z",
           "updatedAt": "2025-07-14T12:26:20Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM6z7gCd",
+          "commit": {
+            "abbreviatedOid": "b8e3a00"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-15T05:34:10Z",
+          "updatedAt": "2025-07-15T05:34:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 593,
+      "id": "PR_kwDOGNtpaM6e_6TC",
+      "title": "Attempt to clarify initial path probing behaviour",
+      "url": "https://github.com/quicwg/multipath/pull/593",
+      "state": "CLOSED",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is an attempt to improve understanding one of the two issues discussed in #586.  I'm not particularly happy with this wording, but do think it does add important context to understand what is allowed.  Even if it is not strictly needed from a normative perspective.",
+      "createdAt": "2025-07-15T14:12:21Z",
+      "updatedAt": "2025-07-16T08:33:17Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/path-validation",
+      "headRefOid": "4d50c3477b1483d1cafd8d974d45b53a207be2ba",
+      "closedAt": "2025-07-16T08:33:11Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I feel this change is still not correct. Path validation and probing are two different things. The path validation requirements are the same for RFC9000 migration and opening a new path as described in this extension. Only probing doesn't exists, which simply means that the path can be used immediately without impact the state of any existing path. While with RFC9000 migration, you might sending only probing packets first and validate the path and then only when the client decided to send the first non-probing packet on that path, the server also need to switch over and start using the new and can't not use the old path anymore which then is implicitly closed.",
+          "createdAt": "2025-07-15T15:24:19Z",
+          "updatedAt": "2025-07-15T15:24:19Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The wording suggested here isn't much of an improvement.  The existing wording already does not mention the anti-amplification limit for the client side, while explicitly mentioning it for the server.  This is probably sufficient.",
+          "createdAt": "2025-07-16T08:32:54Z",
+          "updatedAt": "2025-07-16T08:32:54Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 594,
+      "id": "PR_kwDOGNtpaM6fAVen",
+      "title": "Make it clear the CIDs are not actually retired",
+      "url": "https://github.com/quicwg/multipath/pull/594",
+      "state": "CLOSED",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The way this was worded suggested that the CIDs are really retired, but that would involve sending PATH_RETIRE_CONNECTION_ID frames for all CIDs of an abandoned path.  This is not required by \u00a7 3.4 which only says you need to \"treat the CIDs as immediately retired\".\r\n\r\nAligning this wording here makes the intention clearer.",
+      "createdAt": "2025-07-15T14:43:28Z",
+      "updatedAt": "2025-07-16T14:49:49Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/spurious-reset-cid-retirement",
+      "headRefOid": "b23e5d17a3b3827c1c4743cabe1da115f6a0353a",
+      "closedAt": "2025-07-16T14:49:49Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM60U68l",
+          "commit": {
+            "abbreviatedOid": "b23e5d1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-16T14:46:26Z",
+          "updatedAt": "2025-07-16T14:46:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM60U96b",
+          "commit": {
+            "abbreviatedOid": "b23e5d1"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Uh no, this is wrong, the text means exactly what is said. Sending Abandon implicitly retires all CID defined for that path-ID by the server. There is no conditional, and the endpoint will not send explicit \"retire CID\" messages for these CID.",
+          "createdAt": "2025-07-16T14:48:49Z",
+          "updatedAt": "2025-07-16T14:48:49Z",
           "comments": []
         }
       ]
