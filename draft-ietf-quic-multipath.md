@@ -448,23 +448,14 @@ associated with the same path ID.
 
 ### Relation to Probing and Migration
 
-{{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
-"probing" and "non-probing" frames. A packet that contains at least
-one "non-probing" frame is a "non-probing" packet. When the multipath extension
-is negotiated, the reception of a "non-probing"
-packet on a new path with a new so far unused path ID
-does not impact the path status of any existing
-path. Therefore, any frame can be sent on a new path at any time
-as long as the anti-amplification limits
-(see {{Section 21.1.1.1 of QUIC-TRANSPORT}}) and the congestion control
-limits for this path are respected.
+The connection migration system described in {{Section 9 of
+QUIC-TRANSPORT}} remains fully supported when the multipath extension
+is negotiated and MUST be accepted. Such a migration does not change
+the path ID, and as such the connection ID used on the new new path
+MUST be associated with the path ID of the path being migrated.
 
-An endpoint could receive a packet with a connection ID
-associated to an active path ID where the packet's 4-tuple does not match the 4-tuple
-currently used with that path ID. This MUST be treated as path migration,
-as specified in {{Section 9.3 of QUIC-TRANSPORT}}, with the constraint that
-all connection IDs used during path migration MUST be
-associated with the current path ID of the path being migrated.
+Additionally such a migration does not affect the path status of any
+existing path when the multipath extension is migrated.
 
 ### Address Validation Token
 
