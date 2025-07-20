@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-17T01:09:42.008657+00:00",
+  "timestamp": "2025-07-20T01:16:05.228159+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13318,7 +13318,7 @@
       ],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-06-13T13:08:35Z",
+      "updatedAt": "2025-07-19T12:54:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -13425,6 +13425,13 @@
           "body": "This whole discussion sounds to me that we don't want to change the design here. It is also not clear if or what clarification could be made. So it looks like either someone (@martinthomson?) proposes some text, or we should simply close this issue with no action.",
           "createdAt": "2025-06-13T13:08:14Z",
           "updatedAt": "2025-06-13T13:08:14Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@martinthomson here again: can we close or do you want to discuss at the meeting?",
+          "createdAt": "2025-07-19T12:54:36Z",
+          "updatedAt": "2025-07-19T12:54:36Z"
         }
       ]
     },
@@ -13579,7 +13586,7 @@
       ],
       "body": "In reading this...\n\n> An endpoint may also decide to abandon an unused path for any other reason, for example, removing a hole from the sequence of path IDs in use. This is not an error.\n\n(Is that MAY?)\n\n... it occurred that maybe, if the endpoint had a strong desire to defragment the path ID space, it might choose to use a connection ID from a new path ID for subsequent packets on a very old path.  In that case, it's really the same path, so you would not expect to need to perform address validation.  However, there are a bunch of requirements in the document that would likely be violated by that arrangement.\n\nThe specification assumes that use of new path ID activates a bunch of new requirements that don't seem to be necessary in all cases.  Even acknowledging that would be helpful, even if no special allowance is made for this case, which is a bit unusual (I wouldn't personally bother with defragmentation like that).",
       "createdAt": "2025-05-12T00:21:53Z",
-      "updatedAt": "2025-06-13T13:23:44Z",
+      "updatedAt": "2025-07-19T12:53:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -13602,6 +13609,13 @@
           "body": "Can we close this issue?",
           "createdAt": "2025-06-13T13:23:44Z",
           "updatedAt": "2025-06-13T13:23:44Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@martinthomson can you close this issue, or do you want to discuss this at the meeting?",
+          "createdAt": "2025-07-19T12:53:50Z",
+          "updatedAt": "2025-07-19T12:53:50Z"
         }
       ]
     },
@@ -13660,7 +13674,7 @@
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-05-20T01:25:02Z",
+      "updatedAt": "2025-07-19T13:00:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -13683,6 +13697,20 @@
           "body": "Section 3.4.2 says:\n\n> The rule to \"retain knowledge of connection ID for 3 PTO after receiving a PATH_ABANDON\" is intended to reduce the risk of sending such spurious stateless packets, but it cannot completely avoid that risk.\n\nWhich rule is that?  This is quoting something, but it doesn't correspond to any text elsewhere in the document.  Maybe you could say this directly.  Is it a rule though, or a recommendation?\n\nSection 3.4 says:\n\n> If a peer sends a PATH_ABANDON frame but never receives a corresponding PATH_ABANDON frame, it might not be able to remove path state. It is left to the implementation to handle this unexpected behavior as it does not impact interoperability. If the endpoint is no longer willing to process the issued connection IDs for the abandoned path, it MAY close the connection, but SHOULD wait at least 3 PTOs after sending the PATH_ABANDON frame.\n\nWait 3 PTOs before doing what exactly?\n\nIt seems like you both believe that this is a requirement of sorts, but I can't work out what.",
           "createdAt": "2025-05-20T01:25:01Z",
           "updatedAt": "2025-05-20T01:25:01Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Section 3.4 says:\n> \n> > If a peer sends a PATH_ABANDON frame but never receives a corresponding PATH_ABANDON frame, it might not be able to remove path state. It is left to the implementation to handle this unexpected behavior as it does not impact interoperability. If the endpoint is no longer willing to process the issued connection IDs for the abandoned path, it MAY close the connection, but SHOULD wait at least 3 PTOs after sending the PATH_ABANDON frame.\n> \n> Wait 3 PTOs before doing what exactly?\n\nWait 3 PTOs after sending the PATH_ABANDON frame before closing the connection/sending a CLOSE_CONNECTION frame.\n\nI think this is actually crystal clear.  No? @martinthomson ",
+          "createdAt": "2025-07-19T12:57:18Z",
+          "updatedAt": "2025-07-19T12:57:18Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Section 3.4.2 says:\n> \n> > The rule to \"retain knowledge of connection ID for 3 PTO after receiving a PATH_ABANDON\" is intended to reduce the risk of sending such spurious stateless packets, but it cannot completely avoid that risk.\n> \n> Which rule is that? This is quoting something, but it doesn't correspond to any text elsewhere in the document. Maybe you could say this directly. Is it a rule though, or a recommendation?\n\nThis corresponds to the text further up in section 3.4:\n\n> When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding PATH_ABANDON frame, if it has not already done so, and respectively treat all connection IDs received from the peer for that path as immediately retired. While that means retired connection IDs received from the peer cannot be used for sending anymore, packets from the peer might still be in transit. Therefore, knowledge of the connection IDs issued to the peer and of the state of the number space associated to the path SHOULD be retained for 3 PTO after the PATH_ABANDON frame has been received. This avoids generating spurious stateless reset packets, as discussed in [Section 3.4.2](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#spurious-stateless-reset), and helps acknowledge any potentially reordered, outstanding packets from the peer (see [Section 3.4.3](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#ack-after-abandon)).[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.4-4)\n\n\nThis is a SHOULD. I guess we can say recommendation instead of rule but I think rule is the better word, however, it is a SHOULD because you can't enforce that.",
+          "createdAt": "2025-07-19T13:00:25Z",
+          "updatedAt": "2025-07-19T13:00:25Z"
         }
       ]
     },
@@ -14086,7 +14114,7 @@
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-16T14:43:30Z",
+      "updatedAt": "2025-07-17T11:04:51Z",
       "closedAt": null,
       "comments": [
         {
@@ -14228,6 +14256,20 @@
           "body": "I realize that I was a bit lax in my description of how \"multipath\" migration  works. This really is:\n\n2. The multipath way: send ~a path challenge~ *any packet* from the 5G interface, using a CID linked to path 1. ~If the challenge succeeds,~ *If the 4-tuple is verified,* the client can send packets on both path 0 and path 1. If the client sets the status of path 1 to available, the server will send traffic on path 1. If the client abandons path 0, all the traffic moves to path 1.\n\nThat is, the only thing that matters for the \"multipath\" state machine are the CID, which define the path identifiers, and the path status and path abandon messages. The path challenge and path response are not changing the state of path per se. They are merely helping decide whether the 4-tuple is *verified*, because of their special property of always being sent on the 4 tuple associated with the path -- which distinguishes them from simple ping/ack.\n",
           "createdAt": "2025-07-16T14:43:30Z",
           "updatedAt": "2025-07-16T14:43:30Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "To be clear: (I think) I now understand the intention of the draft and I agree that the current wording does say all of this.  I still think the current wording is not the clearest way to convey these ideas.\n\nWhat \u00a7 3.1.2 needs to convey:\n\n- Connection migration of RFC9000 \u00a79 remains fully supported.\n  - If doing such a migration, the CIDs used should not change the path ID.\n- Such migration has no influence on the path status as defined in multipath.\n\nIt *does* say this currently, but not really in a very clear way.  At least for me.\n\nFor example, suddenly switching to re-iterate that for multipath you can send any frame on a path as long as the anti-amplification limit and congestion control allows, is confusing.  This is already covered in \u00a7 3.1.\n\nIt could be nice to add some motivation: saying that it is not the preferred way to change paths and this remains supported primarily for path 0 preferred-address migration is useful context.",
+          "createdAt": "2025-07-17T08:07:58Z",
+          "updatedAt": "2025-07-17T08:07:58Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think this is what is written down in section 5.1 https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-connection-id-changes-migra\n\n```\nFor any given path, connection ID rotation, NAT rebinding, or client initiated migration as specified in [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)] might occur, like on a single path. These events do not change the path ID, and do not affect the packet number space associated with the path.[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.1-2)\n\nIt is generally preferable to use multipath mechanisms such as creating a new path and later abandoning the old path, rather than doing migration of a single path as specified in [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)].\n```\n\nIf this is not clear for you, you would need to try and propose concrete text changes again. But also note that we had already a bunch of discussion about this topic in multiple issues and therefore I think it is already carefully worded.",
+          "createdAt": "2025-07-17T11:04:50Z",
+          "updatedAt": "2025-07-17T11:04:50Z"
         }
       ]
     },
@@ -65474,6 +65516,40 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 595,
+      "id": "PR_kwDOGNtpaM6fj_R0",
+      "title": "Simplify the relation to RFC9000-style migration text",
+      "url": "https://github.com/quicwg/multipath/pull/595",
+      "state": "OPEN",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is an attempt to address #586 and aims to reduce the number of confusing references.\r\n\r\n- This removes referring to probing and non-probing packets.  This is purely a mechanism concernging RFC9000-style migration and does not affect anything in multipath.\r\n\r\n- Do not re-iterate how anit-amplification and congestion control interacts with anything.  Those are already described in this draft and RFC9000 respectively.  There is no special interaction with those so no need to repeat them.\r\n\r\n- Do still describe that the path ID remains the same and thus CIDs must all be of the same path ID.\r\n\r\n- Do still point out that such a migration does not affect any path status.",
+      "createdAt": "2025-07-18T11:46:52Z",
+      "updatedAt": "2025-07-18T14:05:02Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/probing-migration",
+      "headRefOid": "5e17231323a79bf206d6b0fdc0f90fda79b0696a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The text in that section was added based on the discussion in various previous issue, therefore I don't think we can simply remove it completely again. See e.g. #549, #458, #422, #347",
+          "createdAt": "2025-07-18T14:05:01Z",
+          "updatedAt": "2025-07-18T14:05:01Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
