@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-20T01:16:05.228159+00:00",
+  "timestamp": "2025-07-22T01:09:30.209992+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13670,11 +13670,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
+        "editorial",
         "no-action-needed"
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-07-19T13:00:25Z",
+      "updatedAt": "2025-07-21T12:35:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -13711,6 +13712,20 @@
           "body": "> Section 3.4.2 says:\n> \n> > The rule to \"retain knowledge of connection ID for 3 PTO after receiving a PATH_ABANDON\" is intended to reduce the risk of sending such spurious stateless packets, but it cannot completely avoid that risk.\n> \n> Which rule is that? This is quoting something, but it doesn't correspond to any text elsewhere in the document. Maybe you could say this directly. Is it a rule though, or a recommendation?\n\nThis corresponds to the text further up in section 3.4:\n\n> When an endpoint receives a PATH_ABANDON frame, it MUST send a corresponding PATH_ABANDON frame, if it has not already done so, and respectively treat all connection IDs received from the peer for that path as immediately retired. While that means retired connection IDs received from the peer cannot be used for sending anymore, packets from the peer might still be in transit. Therefore, knowledge of the connection IDs issued to the peer and of the state of the number space associated to the path SHOULD be retained for 3 PTO after the PATH_ABANDON frame has been received. This avoids generating spurious stateless reset packets, as discussed in [Section 3.4.2](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#spurious-stateless-reset), and helps acknowledge any potentially reordered, outstanding packets from the peer (see [Section 3.4.3](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#ack-after-abandon)).[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-3.4-4)\n\n\nThis is a SHOULD. I guess we can say recommendation instead of rule but I think rule is the better word, however, it is a SHOULD because you can't enforce that.",
           "createdAt": "2025-07-19T13:00:25Z",
           "updatedAt": "2025-07-19T13:00:25Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "This is just editorial feedback.  I don't think that there is anything to fix technically.  I do think that the \"retain knowledge of connection ID ...\" quoted text is a bit imprecise.",
+          "createdAt": "2025-07-21T12:30:25Z",
+          "updatedAt": "2025-07-21T12:30:25Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Do you have a better proposal?",
+          "createdAt": "2025-07-21T12:35:41Z",
+          "updatedAt": "2025-07-21T12:35:41Z"
         }
       ]
     },
