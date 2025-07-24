@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-22T01:09:30.209992+00:00",
+  "timestamp": "2025-07-24T01:09:44.002645+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13314,11 +13314,11 @@
       "assignees": [],
       "labels": [
         "design",
-        "no-action-needed"
+        "needs-discussion"
       ],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-07-19T12:54:36Z",
+      "updatedAt": "2025-07-23T12:52:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -13432,6 +13432,27 @@
           "body": "@martinthomson here again: can we close or do you want to discuss at the meeting?",
           "createdAt": "2025-07-19T12:54:36Z",
           "updatedAt": "2025-07-19T12:54:36Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Christian's example here makes it clear that we need to say something more than the draft already does.  I do not agree that it is acceptable to have the token recipient assume that the token vendor is able to remember EVERY address that was in use.  Having this be path bound would be far cleaner (adding paths isn't a big deal, but a fresh connection has performance implications).\n\nThe WG needs to discuss this issue.  (I might have a conflict on Thursday, sadly.)",
+          "createdAt": "2025-07-22T15:14:43Z",
+          "updatedAt": "2025-07-22T15:14:43Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "+1 to editorial improvements; e.g. that clients might want to resume a connection from an address associated with an abandoned path.\n\n@martinthomson \n> Having this be path bound would be far cleaner \n\nThe downside is that the server would receive previous information for only one path, rather than all the paths that were used previously and might get reused.",
+          "createdAt": "2025-07-22T15:50:39Z",
+          "updatedAt": "2025-07-22T15:50:39Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Assume that the server provides tokens for each path. In my example, the server would have provided tokens for path 0 (A1), path 1 (A2) and path 2 (A3). The client is connecting again. We could imagine that it has remembered all the tokens, that it has organized its token store to match token and the IP address of the path on which they were received, and that it is capable of retrieving the IP address on which it tries to establish a new connection. If all that is true, the client will pick the token that best matches its current IP address, and life will be good. But I am concerned that the hypotheses are not all valid. Leaving apart the increases resource necessary to store all these tokens, the big issue for me is whether the client knows its outgoing IP address. Consider:\n\n* Client behind a NAT: there is no guarantee that the NAT binding will not change between the two connections, and that the server will see the same IP address\n* Cellular network: if the client starts a new session, will it be assigned the same IP address?\n* Wi-Fi hot spot: the IP address will only stay the same for a \"session\" (DHCP or IPv6 address configuration).\n\nThese are not exactly new problems -- we have the same issues without multipath. These issues mostly affect the time to live of the tokens. No problem if the time to live is measured in seconds, definitely an issue if tokens are valid for several hours.",
+          "createdAt": "2025-07-23T03:59:44Z",
+          "updatedAt": "2025-07-23T03:59:44Z"
         }
       ]
     },
@@ -13577,7 +13598,7 @@
       "id": "I_kwDOGNtpaM62HJIS",
       "title": "Can an endpoint use a second path ID on the same path?",
       "url": "https://github.com/quicwg/multipath/issues/554",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13586,8 +13607,8 @@
       ],
       "body": "In reading this...\n\n> An endpoint may also decide to abandon an unused path for any other reason, for example, removing a hole from the sequence of path IDs in use. This is not an error.\n\n(Is that MAY?)\n\n... it occurred that maybe, if the endpoint had a strong desire to defragment the path ID space, it might choose to use a connection ID from a new path ID for subsequent packets on a very old path.  In that case, it's really the same path, so you would not expect to need to perform address validation.  However, there are a bunch of requirements in the document that would likely be violated by that arrangement.\n\nThe specification assumes that use of new path ID activates a bunch of new requirements that don't seem to be necessary in all cases.  Even acknowledging that would be helpful, even if no special allowance is made for this case, which is a bit unusual (I wouldn't personally bother with defragmentation like that).",
       "createdAt": "2025-05-12T00:21:53Z",
-      "updatedAt": "2025-07-19T12:53:50Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-22T15:15:42Z",
+      "closedAt": "2025-07-22T15:15:42Z",
       "comments": [
         {
           "author": "huitema",
@@ -13616,6 +13637,13 @@
           "body": "@martinthomson can you close this issue, or do you want to discuss this at the meeting?",
           "createdAt": "2025-07-19T12:53:50Z",
           "updatedAt": "2025-07-19T12:53:50Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Yeah, this is fine-ish (one can always wish for drafts to be clearer and this is one of those cases, but this is up to editor discretion, especially when I'm not able to provide alternative text).",
+          "createdAt": "2025-07-22T15:15:42Z",
+          "updatedAt": "2025-07-22T15:15:42Z"
         }
       ]
     },
@@ -13675,7 +13703,7 @@
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-07-21T12:35:48Z",
+      "updatedAt": "2025-07-23T13:01:04Z",
       "closedAt": null,
       "comments": [
         {
@@ -13726,6 +13754,13 @@
           "body": "Do you have a better proposal?",
           "createdAt": "2025-07-21T12:35:41Z",
           "updatedAt": "2025-07-21T12:35:41Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The text is \n\n>  knowledge of the connection IDs issued to the peer and of the state of the number space associated to the path SHOULD be retained for 3 PTO\n\nWe already refined this text to be concrete about CIDs and PN space state, rather than just talking about \"resources\" (see #232 maybe). Not sure what's wrong about the term \"retain\". For me that seems clear. What's missing for you?",
+          "createdAt": "2025-07-23T13:01:04Z",
+          "updatedAt": "2025-07-23T13:01:04Z"
         }
       ]
     },
@@ -14118,18 +14153,19 @@
     {
       "number": 586,
       "id": "I_kwDOGNtpaM6-o2d_",
-      "title": "Use of \"data packet\"",
+      "title": "Migration/Probing (was: Use of \"data packet\")",
       "url": "https://github.com/quicwg/multipath/issues/586",
       "state": "OPEN",
       "author": "gloinul",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
+        "editorial",
         "no-action-needed"
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-17T11:04:51Z",
+      "updatedAt": "2025-07-23T13:02:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -65544,7 +65580,7 @@
       "labels": [],
       "body": "This is an attempt to address #586 and aims to reduce the number of confusing references.\r\n\r\n- This removes referring to probing and non-probing packets.  This is purely a mechanism concernging RFC9000-style migration and does not affect anything in multipath.\r\n\r\n- Do not re-iterate how anit-amplification and congestion control interacts with anything.  Those are already described in this draft and RFC9000 respectively.  There is no special interaction with those so no need to repeat them.\r\n\r\n- Do still describe that the path ID remains the same and thus CIDs must all be of the same path ID.\r\n\r\n- Do still point out that such a migration does not affect any path status.",
       "createdAt": "2025-07-18T11:46:52Z",
-      "updatedAt": "2025-07-18T14:05:02Z",
+      "updatedAt": "2025-07-22T12:24:20Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65562,6 +65598,27 @@
           "body": "The text in that section was added based on the discussion in various previous issue, therefore I don't think we can simply remove it completely again. See e.g. #549, #458, #422, #347",
           "createdAt": "2025-07-18T14:05:01Z",
           "updatedAt": "2025-07-18T14:05:01Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I checked those issues and I don't think any information from them is lost.  They all ended up tweaking these paragraphs without taking a step back for readability.\r\n\r\n- #549 seeks to clarify whether path migration is being replaced.  The text here makes this very clear.\r\n- #458 is concerned with whether RFC9000-style migrations are supported at all again, same so far.  But also clearly wants to recommend **not** using this mechanism if possible.  This is covered very clearly in \u00a7 5.1.\r\n- #422 is concerned about the anti-amplification limit.  This is clearly covered in the first few paragraphs of \u00a7 3.1 already.\r\n- #347 is wondering about what frames are probing frames.  This is basically a very similar question route that I went on because the current language is confusing and makes you think this matters.  But as you say, all new frames are non-probing by the RFC9000 definition, no need to change this.\r\n\r\nSo I don't think any of these issues are blockers to this change.",
+          "createdAt": "2025-07-22T08:29:28Z",
+          "updatedAt": "2025-07-22T08:30:13Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> * [Is path migration being replaced?\u00a0#549](https://github.com/quicwg/multipath/issues/549) seeks to clarify whether path migration is being replaced.  The text here makes this very clear.\r\n\r\nI think it's a matter of taste which text is perceived as more clear. However, as we just recently extended the text, I wouldn't want to change it again easily without broad support that there is an issue that needs change.\r\n\r\n> * [Clarification on Path Migration in relation to opening a new path\u00a0#458](https://github.com/quicwg/multipath/issues/458) is concerned with whether RFC9000-style migrations are supported at all again, same so far.  But also clearly wants to recommend **not** using this mechanism if possible.  This is covered very clearly in \u00a7 5.1.\r\n\r\nThe point of this change was to also add something to 3.1 which contains all the normative text and not only in 5.1 which is \"just\" implementation guidance.\r\n\r\n> * [Anti-amplification limits\u00a0#422](https://github.com/quicwg/multipath/issues/422) is concerned about the anti-amplification limit.  This is clearly covered in the first few paragraphs of \u00a7 3.1 already.\r\n\r\nMost of this text moved somewhere else already. This issues was just another examples of the large amount of discussion we already had.\r\n\r\n> * [Are MP_PATH_(AVAILABLE|STANDBY) probing frames?\u00a0#347](https://github.com/quicwg/multipath/issues/347) is wondering about what frames are probing frames.  This is basically a very similar question route that I went on because the current language is confusing and makes you think this matters.  But as you say, all new frames are non-probing by the RFC9000 definition, no need to change this.\r\n\r\nI disagree here. As this comes up over and over again, it's better to be explicit than say nothing. We can rather add another sentence pointing out that by default all frames are non-probing but I so far felt that is not necessary. \r\n\r\n> So I don't think any of these issues are blockers to this change.\r\n\r\nIt's not about blocking but it's showing that there was already a huge amount of discussion which lead to the current text. Therefore I don't want to change this text easily again if there is no technical issue. Editorial changes can be a matter of taste and with all the discussion we had, it's not clear if there is a general problem about clarity here. It's not an easy matter but I think the current text is carefully focused on the things that were identified by previous discussions.\r\n\r\n",
+          "createdAt": "2025-07-22T10:58:14Z",
+          "updatedAt": "2025-07-22T10:58:14Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "After chasing various wrong interpretations of the current text and being corrected on how to interpret it in #586, I was asked to suggest improvements to make it clearer.  That is all I tried to do here while taking the previous discussions into account as best I could.",
+          "createdAt": "2025-07-22T12:24:20Z",
+          "updatedAt": "2025-07-22T12:24:20Z"
         }
       ],
       "reviews": []
