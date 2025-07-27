@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-24T01:09:44.002645+00:00",
+  "timestamp": "2025-07-27T01:16:23.829008+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13318,7 +13318,7 @@
       ],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-07-23T12:52:09Z",
+      "updatedAt": "2025-07-24T14:51:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -13453,6 +13453,20 @@
           "body": "Assume that the server provides tokens for each path. In my example, the server would have provided tokens for path 0 (A1), path 1 (A2) and path 2 (A3). The client is connecting again. We could imagine that it has remembered all the tokens, that it has organized its token store to match token and the IP address of the path on which they were received, and that it is capable of retrieving the IP address on which it tries to establish a new connection. If all that is true, the client will pick the token that best matches its current IP address, and life will be good. But I am concerned that the hypotheses are not all valid. Leaving apart the increases resource necessary to store all these tokens, the big issue for me is whether the client knows its outgoing IP address. Consider:\n\n* Client behind a NAT: there is no guarantee that the NAT binding will not change between the two connections, and that the server will see the same IP address\n* Cellular network: if the client starts a new session, will it be assigned the same IP address?\n* Wi-Fi hot spot: the IP address will only stay the same for a \"session\" (DHCP or IPv6 address configuration).\n\nThese are not exactly new problems -- we have the same issues without multipath. These issues mostly affect the time to live of the tokens. No problem if the time to live is measured in seconds, definitely an issue if tokens are valid for several hours.",
           "createdAt": "2025-07-23T03:59:44Z",
           "updatedAt": "2025-07-23T03:59:44Z"
+        },
+        {
+          "author": "MikeBishop",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "While there are larger issues in this issue that it sounds like we've decided to live with, one that we can close trivially is the question of \"EVERY address\" and unbounded state/size commitment. The draft currently says \"SHOULD [cover] any of the previously validated addresses.\" The SHOULD gives enough cover to omit some for the sake of size.\n\nBut where there's a SHOULD, it's good practice to describe why you wouldn't, so a sentence acknowledging that the number of validated addresses might exceed what will fit in the token would be that explanation. Just something like \"Including more addresses increases the probability that the token will be useful in the future, but at the cost of a larger token.\"",
+          "createdAt": "2025-07-24T13:20:35Z",
+          "updatedAt": "2025-07-24T13:20:35Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I agree with @MikeBishop about leaving flexibility to servers. At the end of the day, the list of address for which the token is valid is chosen by the server. The server choice is a tradeoff between the risk that the token be useless and resource usage, such as how many addresses it can remember and how long it wants the token. So, resource usage on one side, risk of causing an additional RTT in the handshake on the other side. Different servers are going to use different tradeoffs.",
+          "createdAt": "2025-07-24T14:51:31Z",
+          "updatedAt": "2025-07-24T14:51:31Z"
         }
       ]
     },
