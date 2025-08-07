@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-27T01:16:23.829008+00:00",
+  "timestamp": "2025-08-07T01:11:47.790981+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13313,12 +13313,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "design",
-        "needs-discussion"
+        "has PR",
+        "editorial"
       ],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-07-24T14:51:31Z",
+      "updatedAt": "2025-08-05T17:25:47Z",
       "closedAt": null,
       "comments": [
         {
@@ -13467,6 +13467,13 @@
           "body": "I agree with @MikeBishop about leaving flexibility to servers. At the end of the day, the list of address for which the token is valid is chosen by the server. The server choice is a tradeoff between the risk that the token be useless and resource usage, such as how many addresses it can remember and how long it wants the token. So, resource usage on one side, risk of causing an additional RTT in the handshake on the other side. Different servers are going to use different tradeoffs.",
           "createdAt": "2025-07-24T14:51:31Z",
           "updatedAt": "2025-07-24T14:51:31Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created the editorial PR #596 with @MikeBishop's proposed sentence. Please review and approve, so we can merge and close this issue!",
+          "createdAt": "2025-08-05T17:25:25Z",
+          "updatedAt": "2025-08-05T17:25:25Z"
         }
       ]
     },
@@ -13717,7 +13724,7 @@
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-07-23T13:01:04Z",
+      "updatedAt": "2025-08-05T17:26:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -13775,6 +13782,13 @@
           "body": "The text is \n\n>  knowledge of the connection IDs issued to the peer and of the state of the number space associated to the path SHOULD be retained for 3 PTO\n\nWe already refined this text to be concrete about CIDs and PN space state, rather than just talking about \"resources\" (see #232 maybe). Not sure what's wrong about the term \"retain\". For me that seems clear. What's missing for you?",
           "createdAt": "2025-07-23T13:01:04Z",
           "updatedAt": "2025-07-23T13:01:04Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@martinthomson please make an editorial proposal or I will simply close this issue as the text seems rather clear for me....",
+          "createdAt": "2025-08-05T17:26:48Z",
+          "updatedAt": "2025-08-05T17:26:48Z"
         }
       ]
     },
@@ -13789,11 +13803,11 @@
       "assignees": [],
       "labels": [
         "design",
-        "needs-discussion"
+        "no-action-needed"
       ],
       "body": "Interface instability is a local choice, which maybe some implementations can detect.  However, I would consider loss of the ability to communicate on a path to be a pretty strong reason for PATH_ABANDON, so maybe COMMUNICATION_FAILED.\n\nThen there is the case where a path, such as a backup back, simply times out.  TIMED_OUT.\n\nAnd then there are a bunch of cases where the choice is not application-driven, but driven by other considerations, like POOR_PERFORMANCE.\n\nWhat other things have implementation and deployment experience with the protocol revealed?",
       "createdAt": "2025-05-12T00:36:35Z",
-      "updatedAt": "2025-06-13T11:55:22Z",
+      "updatedAt": "2025-08-05T17:42:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -13809,6 +13823,13 @@
           "body": "I agree with @huitema \"poor performance\" is what we cover by interface instability and \"communication failed\" seems to be just an extreme case of that. We do have a per-path timer in quic, so a time-out would rather occur on connection level. I'm not against adding further error code because we said we should be liberate with that but also not sure that's really needed. So maybe the only action would be to rename \"instable interface\"...?\n\nMore input from others would be welcome",
           "createdAt": "2025-06-13T11:55:14Z",
           "updatedAt": "2025-06-13T11:55:14Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was discussed at IETF-123 but there was no further feedback on the need of additional error codes. I will leave this issue open for another week or two, at least until all current PRs are reviewed and approved. However, If there is no further feedback by then, the plan is to close without action.\n\n@LPardue I think you said you might want to re-review that. Please do so soon if possible!",
+          "createdAt": "2025-08-05T17:42:10Z",
+          "updatedAt": "2025-08-05T17:42:10Z"
         }
       ]
     },
@@ -13822,11 +13843,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "needs-discussion"
+        "has PR",
+        "clarification"
       ],
       "body": "> Uncoordinated abandon \\[sic] of both endpoints may result in deleting both paths instead of just one. To avoid this pitfall, endpoints could adopt a simple coordination rule, such as only letting the client initiate closure of duplicate paths, or perhaps relying on the application protocol to decide which paths should be closed.\n\nThis seems like a great recipe for interoperability failure.\n\nWhy does the specification not indicate which endpoint is responsible for abandonment?  Given that a client is the only one that initiate paths, this seems like a pretty unrealistic scenario to begin with (#554 notwithstanding).  If this is possible, is there any reason to allow servers to do anything other than request that a client act to close a path?  At what layer does that decision-making occur?\n\n",
       "createdAt": "2025-05-12T00:45:20Z",
-      "updatedAt": "2025-06-13T11:57:03Z",
+      "updatedAt": "2025-08-05T17:42:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -13842,6 +13864,13 @@
           "body": "We started discussing this at a time before we allowed more than one path ID per 4-tuple. Without this restriction I think the most likely case is just to keep both. However, I think it's fine to still keep this text but I would also be okay to simply remove it. Anybody insisting on removing it?",
           "createdAt": "2025-05-19T09:41:51Z",
           "updatedAt": "2025-05-19T09:41:51Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed at IETF 123, PR #597 removes this paragraph. Please double-check if I removed the right part or if people thinks that even the sentence before this should be removed...?",
+          "createdAt": "2025-08-05T17:36:47Z",
+          "updatedAt": "2025-08-05T17:36:47Z"
         }
       ]
     },
@@ -65594,7 +65623,7 @@
       "labels": [],
       "body": "This is an attempt to address #586 and aims to reduce the number of confusing references.\r\n\r\n- This removes referring to probing and non-probing packets.  This is purely a mechanism concernging RFC9000-style migration and does not affect anything in multipath.\r\n\r\n- Do not re-iterate how anit-amplification and congestion control interacts with anything.  Those are already described in this draft and RFC9000 respectively.  There is no special interaction with those so no need to repeat them.\r\n\r\n- Do still describe that the path ID remains the same and thus CIDs must all be of the same path ID.\r\n\r\n- Do still point out that such a migration does not affect any path status.",
       "createdAt": "2025-07-18T11:46:52Z",
-      "updatedAt": "2025-07-22T12:24:20Z",
+      "updatedAt": "2025-08-05T17:31:34Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65633,8 +65662,83 @@
           "body": "After chasing various wrong interpretations of the current text and being corrected on how to interpret it in #586, I was asked to suggest improvements to make it clearer.  That is all I tried to do here while taking the previous discussions into account as best I could.",
           "createdAt": "2025-07-22T12:24:20Z",
           "updatedAt": "2025-07-22T12:24:20Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@flub thanks for your engagement and effort in order to clarify things! As I think I said already, I know this is a pain point. However, given the past discussion we had on this already, I prefer to keep the current text rather than basically reverting some of the additions we made over time. I hope that is okay for you and I would therefore like to close this PR without merging. If you still have smaller wording improvements, I'm happy to consider them but I don't think this proposed change makes it necessarily more clear for all readers.",
+          "createdAt": "2025-08-05T17:31:34Z",
+          "updatedAt": "2025-08-05T17:31:34Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 596,
+      "id": "PR_kwDOGNtpaM6iPTJ1",
+      "title": "sentence token/address tradeoff",
+      "url": "https://github.com/quicwg/multipath/pull/596",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #550 (hopefully)\r\n\r\nas proposed by @MikeBishop",
+      "createdAt": "2025-08-05T17:24:22Z",
+      "updatedAt": "2025-08-06T00:31:15Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-44",
+      "headRefOid": "4973baa007f4c4c2a24c070f68de9cf97091414a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM64Lnoc",
+          "commit": {
+            "abbreviatedOid": "4973baa"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-06T00:31:15Z",
+          "updatedAt": "2025-08-06T00:31:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 597,
+      "id": "PR_kwDOGNtpaM6iPaB-",
+      "title": "Remove paragraph on uncoordinated close \"rule\"",
+      "url": "https://github.com/quicwg/multipath/pull/597",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #558",
+      "createdAt": "2025-08-05T17:35:40Z",
+      "updatedAt": "2025-08-05T17:35:40Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-45",
+      "headRefOid": "2a7a1147bc3dba3758f18b0defd22ccec2bb89bd",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
