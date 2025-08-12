@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 8 January 2026                           Uber Technologies Inc.
+Expires: 13 February 2026                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 8 January 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             7 July 2025
+                                                          12 August 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2026.
+   This Internet-Draft will expire on 13 February 2026.
 
 Copyright Notice
 
@@ -782,10 +782,11 @@ Table of Contents
    Due to network delays, packets sent on an abandoned path can arrive
    well after the connection IDs have been retired.  If not recognized
    as bound to the local connection, such packet triggers the peer to
-   send a Stateless Reset packet.  The rule to "retain knowledge of
-   connection ID for 3 PTO after receiving a PATH_ABANDON" is intended
-   to reduce the risk of sending such spurious stateless packets, but it
-   cannot completely avoid that risk.
+   send a Stateless Reset packet.  The requirement to retain knowledge
+   of connection ID and about the packet number space for 3 PTOs after
+   receiving a PATH_ABANDON frame, as specified in Section 3.4 above, is
+   intended to reduce the risk of sending such spurious stateless
+   packets, but it cannot completely avoid that risk.
 
    Section 10.3 of [QUIC-TRANSPORT] specified that the Stateless Reset
    Tokens associated with retired connection IDs cannot be used to
