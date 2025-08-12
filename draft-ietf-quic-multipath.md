@@ -710,8 +710,9 @@ Due to network delays, packets sent on an abandoned path can
 arrive well after the connection IDs have been retired.
 If not recognized as bound to the local
 connection, such packet triggers the peer to send a Stateless Reset
-packet. The rule to "retain knowledge of connection ID for 3 PTO
-after receiving a PATH_ABANDON"
+packet. The requirement to retain knowledge of connection ID and about
+the packet number space for 3 PTOs
+after receiving a PATH_ABANDON frame, as specified in {{path-close}} above,
 is intended to reduce the risk of sending such spurious stateless
 packets, but it cannot completely avoid that risk.
 
