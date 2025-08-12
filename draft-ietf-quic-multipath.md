@@ -450,7 +450,7 @@ associated with the same path ID.
 
 {{Section 9.1 of QUIC-TRANSPORT}} introduces the concept of
 "probing" and "non-probing" frames. A packet that contains at least
-one "non-probing" frame is a "non-probing" packet. 
+one "non-probing" frame is a "non-probing" packet.
 Migration as specified in {{Section 9.2 of QUIC-TRANSPORT}} is initiated
 by sending packets containing non-probing frames on a new (validated) path,
 however, using the same path ID as on the old path.
