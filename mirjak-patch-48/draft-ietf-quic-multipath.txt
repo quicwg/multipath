@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 15 January 2026                          Uber Technologies Inc.
+Expires: 14 February 2026                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 15 January 2026                          Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            14 July 2025
+                                                          13 August 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 January 2026.
+   This Internet-Draft will expire on 14 February 2026.
 
 Copyright Notice
 
@@ -743,8 +743,8 @@ Table of Contents
    to open a new path, if available, and only initiate connection
    closure if path validation fails or a CONNECTION_CLOSE frame is
    received from the server.  Similarly, the server MAY wait for a
-   short, limited time such as one PTO if a packet is received on a new
-   path before sending the CONNECTION_CLOSE frame.
+   short, limited time such as one PTO if a path probing packet is
+   received on a new path before sending the CONNECTION_CLOSE frame.
 
    Note that other explicit closing mechanisms of [QUIC-TRANSPORT] still
    apply on the whole connection.  In particular, the reception of
@@ -906,10 +906,11 @@ Table of Contents
       path because it cannot allocate sufficient resources to maintain
       it.
 
-   PATH_UNSTABLE_INTERFACE (TBD-12):  The endpoint is abandoning the
-      path because the used interface is considered to be unstable.
-      This condition can occur, e.g., due to a weak wireless signal or
-      frequent handover events during high-speed mobility.
+   PATH_UNSTABLE_OR_POOR (TBD-12):  The endpoint is abandoning the path
+      because the used interface is observed to be unstable or
+      performance is consider poor.  This condition can occur, e.g., due
+      to frequent handover events during high-speed mobility or due to a
+      weak wireless signal.
 
    NO_CID_AVAILABLE_FOR_PATH (TBD-13):  The endpoint is abandoning the
       path due to the lack of a connection ID for this path.  This might
@@ -1550,7 +1551,7 @@ Table of Contents
    |                   |                           |in the       |             |
    |                   |                           |transport    |             |
    +-------------------+---------------------------+-------------+-------------+
-   |TBD-12 (experiments|PATH_UNSTABLE_INTERFACE    |Path         |Section 4.2.1|
+   |TBD-12 (experiments|PATH_UNSTABLE_OR_POOR      |Path         |Section 4.2.1|
    |use                |                           |abandoned due|             |
    |0x00554e5f494e5446)|                           |to unstable  |             |
    |                   |                           |interfaces   |             |
