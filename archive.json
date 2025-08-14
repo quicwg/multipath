@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-07T01:11:47.790981+00:00",
+  "timestamp": "2025-08-14T01:06:34.940243+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13719,12 +13719,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "editorial",
-        "no-action-needed"
+        "has PR",
+        "editorial"
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-08-05T17:26:48Z",
+      "updatedAt": "2025-08-12T16:00:51Z",
       "closedAt": null,
       "comments": [
         {
@@ -13789,6 +13789,13 @@
           "body": "@martinthomson please make an editorial proposal or I will simply close this issue as the text seems rather clear for me....",
           "createdAt": "2025-08-05T17:26:48Z",
           "updatedAt": "2025-08-05T17:26:48Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Okay, looking at this again, it seems to be mainly about the term rule (which out proper reference). PR #598 propose a small rewording to address this.",
+          "createdAt": "2025-08-12T16:00:38Z",
+          "updatedAt": "2025-08-12T16:00:38Z"
         }
       ]
     },
@@ -13802,12 +13809,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
-        "design",
-        "no-action-needed"
+        "has PR",
+        "design"
       ],
       "body": "Interface instability is a local choice, which maybe some implementations can detect.  However, I would consider loss of the ability to communicate on a path to be a pretty strong reason for PATH_ABANDON, so maybe COMMUNICATION_FAILED.\n\nThen there is the case where a path, such as a backup back, simply times out.  TIMED_OUT.\n\nAnd then there are a bunch of cases where the choice is not application-driven, but driven by other considerations, like POOR_PERFORMANCE.\n\nWhat other things have implementation and deployment experience with the protocol revealed?",
       "createdAt": "2025-05-12T00:36:35Z",
-      "updatedAt": "2025-08-05T17:42:42Z",
+      "updatedAt": "2025-08-13T15:56:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -13830,6 +13837,20 @@
           "body": "This was discussed at IETF-123 but there was no further feedback on the need of additional error codes. I will leave this issue open for another week or two, at least until all current PRs are reviewed and approved. However, If there is no further feedback by then, the plan is to close without action.\n\n@LPardue I think you said you might want to re-review that. Please do so soon if possible!",
           "createdAt": "2025-08-05T17:42:10Z",
           "updatedAt": "2025-08-05T17:42:10Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "I tend to sgree with Christian. I like the idea of one error code but the name PATH_UNSTABLE_INTERFACE seems like too specific a name to me. PATH_UNSTABLE_OR_POOR seems good enough based on what's captured on this issue (with some minor prose change to the error code definition in 4.2.1 to cover an example of poor performance).\n\nError codes are cheap. If we find future deployments could benefit from a richer codespace, future work can define some more codes IMO",
+          "createdAt": "2025-08-13T13:27:00Z",
+          "updatedAt": "2025-08-13T13:27:00Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I personally have absolutely no opinion here but PR #600 implements the proposed renaming and adds a few words to the explanation. Hope that makes it easy for people to review/comment/approve!",
+          "createdAt": "2025-08-13T15:56:23Z",
+          "updatedAt": "2025-08-13T15:56:23Z"
         }
       ]
     },
@@ -14203,12 +14224,12 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
-        "editorial",
-        "no-action-needed"
+        "has PR",
+        "editorial"
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-07-23T13:02:39Z",
+      "updatedAt": "2025-08-12T16:16:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -14364,6 +14385,13 @@
           "body": "I think this is what is written down in section 5.1 https://quicwg.org/multipath/draft-ietf-quic-multipath.html#name-connection-id-changes-migra\n\n```\nFor any given path, connection ID rotation, NAT rebinding, or client initiated migration as specified in [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)] might occur, like on a single path. These events do not change the path ID, and do not affect the packet number space associated with the path.[\u00b6](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#section-5.1-2)\n\nIt is generally preferable to use multipath mechanisms such as creating a new path and later abandoning the old path, rather than doing migration of a single path as specified in [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)].\n```\n\nIf this is not clear for you, you would need to try and propose concrete text changes again. But also note that we had already a bunch of discussion about this topic in multiple issues and therefore I think it is already carefully worded.",
           "createdAt": "2025-07-17T11:04:50Z",
           "updatedAt": "2025-07-17T11:04:50Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I created PR #599 in the hope that helps to further clarify. It adds more words, rather than trying to simplify but I hope being explicitly helps to clarify and avoid any further future confusion. Please review!",
+          "createdAt": "2025-08-12T16:16:31Z",
+          "updatedAt": "2025-08-12T16:16:31Z"
         }
       ]
     },
@@ -65472,11 +65500,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "",
       "createdAt": "2025-07-14T10:35:51Z",
-      "updatedAt": "2025-07-15T05:34:10Z",
+      "updatedAt": "2025-08-12T15:48:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65616,21 +65645,21 @@
       "id": "PR_kwDOGNtpaM6fj_R0",
       "title": "Simplify the relation to RFC9000-style migration text",
       "url": "https://github.com/quicwg/multipath/pull/595",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "flub",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This is an attempt to address #586 and aims to reduce the number of confusing references.\r\n\r\n- This removes referring to probing and non-probing packets.  This is purely a mechanism concernging RFC9000-style migration and does not affect anything in multipath.\r\n\r\n- Do not re-iterate how anit-amplification and congestion control interacts with anything.  Those are already described in this draft and RFC9000 respectively.  There is no special interaction with those so no need to repeat them.\r\n\r\n- Do still describe that the path ID remains the same and thus CIDs must all be of the same path ID.\r\n\r\n- Do still point out that such a migration does not affect any path status.",
       "createdAt": "2025-07-18T11:46:52Z",
-      "updatedAt": "2025-08-05T17:31:34Z",
+      "updatedAt": "2025-08-12T16:17:18Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "flub/multipath",
       "headRefName": "flub/probing-migration",
       "headRefOid": "5e17231323a79bf206d6b0fdc0f90fda79b0696a",
-      "closedAt": null,
+      "closedAt": "2025-08-12T16:17:18Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -65669,6 +65698,13 @@
           "body": "@flub thanks for your engagement and effort in order to clarify things! As I think I said already, I know this is a pain point. However, given the past discussion we had on this already, I prefer to keep the current text rather than basically reverting some of the additions we made over time. I hope that is okay for you and I would therefore like to close this PR without merging. If you still have smaller wording improvements, I'm happy to consider them but I don't think this proposed change makes it necessarily more clear for all readers.",
           "createdAt": "2025-08-05T17:31:34Z",
           "updatedAt": "2025-08-05T17:31:34Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Again thanks for the discussion, engagement, and help! I'm closing this PR for now.",
+          "createdAt": "2025-08-12T16:17:18Z",
+          "updatedAt": "2025-08-12T16:17:18Z"
         }
       ],
       "reviews": []
@@ -65683,11 +65719,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready-to-merge"
       ],
       "body": "fixes #550 (hopefully)\r\n\r\nas proposed by @MikeBishop",
       "createdAt": "2025-08-05T17:24:22Z",
-      "updatedAt": "2025-08-06T00:31:15Z",
+      "updatedAt": "2025-08-13T06:01:58Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65712,6 +65749,32 @@
           "createdAt": "2025-08-06T00:31:15Z",
           "updatedAt": "2025-08-06T00:31:15Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65mUgY",
+          "commit": {
+            "abbreviatedOid": "4973baa"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-13T03:34:38Z",
+          "updatedAt": "2025-08-13T03:34:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65nLBq",
+          "commit": {
+            "abbreviatedOid": "4973baa"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-13T06:01:58Z",
+          "updatedAt": "2025-08-13T06:01:58Z",
+          "comments": []
         }
       ]
     },
@@ -65727,7 +65790,7 @@
       "labels": [],
       "body": "fixes #558",
       "createdAt": "2025-08-05T17:35:40Z",
-      "updatedAt": "2025-08-05T17:35:40Z",
+      "updatedAt": "2025-08-14T00:02:20Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65739,7 +65802,178 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM652c6e",
+          "commit": {
+            "abbreviatedOid": "2a7a114"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Yes, suppressing this paragraph is the right thing to do at this stage.",
+          "createdAt": "2025-08-14T00:02:20Z",
+          "updatedAt": "2025-08-14T00:02:20Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 598,
+      "id": "PR_kwDOGNtpaM6jTb-h",
+      "title": "3 PTOs \"rule\"",
+      "url": "https://github.com/quicwg/multipath/pull/598",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #556 \r\n\r\nMinor rewording to hopefully make things more clear.",
+      "createdAt": "2025-08-12T15:59:35Z",
+      "updatedAt": "2025-08-14T00:06:48Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-46",
+      "headRefOid": "763659e85fc447f472ecbf257be1f31d1e6841f6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM65lyAb",
+          "commit": {
+            "abbreviatedOid": "763659e"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-13T01:21:42Z",
+          "updatedAt": "2025-08-13T01:21:42Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM652eAe",
+          "commit": {
+            "abbreviatedOid": "763659e"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I do not object.\r\n\r\nI am a bit concerned that someone will be trigger by \"it cannot completely avoid that risk\". The risk is actually fairly minimal, because the peer has deleted the \"reset secret\" state for these CIDs when sending the Abandon. The spurious Stateless Reset packet will be discarded, and will not cause any damage, apart from the extra energy spent handling a useless packet.",
+          "createdAt": "2025-08-14T00:06:48Z",
+          "updatedAt": "2025-08-14T00:06:48Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 599,
+      "id": "PR_kwDOGNtpaM6jTmmb",
+      "title": "Further clarifications on \"probing\"",
+      "url": "https://github.com/quicwg/multipath/pull/599",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "fixes #586 \r\n\r\nThis is another attempt to further clarify the text on probing. It'a adding more words rather than having less, however, given we have an own section about this because the question came up repeatedly, it might be better to be as explicit as possible...?",
+      "createdAt": "2025-08-12T16:14:06Z",
+      "updatedAt": "2025-08-14T00:08:36Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-47",
+      "headRefOid": "93ad8f55bd42c319dba717f8f8a4f8d49f813aaf",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM65edek",
+          "commit": {
+            "abbreviatedOid": "c2f405f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-08-12T16:18:09Z",
+          "updatedAt": "2025-08-12T16:18:10Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\none \"non-probing\" frame is a \"non-probing\" packet.\r\n```",
+              "createdAt": "2025-08-12T16:18:10Z",
+              "updatedAt": "2025-08-12T16:18:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM652ejC",
+          "commit": {
+            "abbreviatedOid": "93ad8f5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "OK.",
+          "createdAt": "2025-08-14T00:08:36Z",
+          "updatedAt": "2025-08-14T00:08:36Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 600,
+      "id": "PR_kwDOGNtpaM6jg9RH",
+      "title": "Rename PATH_INTERFACE_UNSTABLE to PATH_UNSTABLE_OR_POOR",
+      "url": "https://github.com/quicwg/multipath/pull/600",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #557",
+      "createdAt": "2025-08-13T15:54:50Z",
+      "updatedAt": "2025-08-14T00:12:47Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-48",
+      "headRefOid": "131104bb31a9b2a3aa6df211637d620a4dd44443",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM652fuz",
+          "commit": {
+            "abbreviatedOid": "131104b"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Sure, why not. But why keep the textual description unchanged?",
+          "createdAt": "2025-08-14T00:12:47Z",
+          "updatedAt": "2025-08-14T00:12:47Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
