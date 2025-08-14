@@ -749,8 +749,8 @@ Table of Contents
    to open a new path, if available, and only initiate connection
    closure if path validation fails or a CONNECTION_CLOSE frame is
    received from the server.  Similarly, the server MAY wait for a
-   short, limited time such as one PTO if a path probing packet is
-   received on a new path before sending the CONNECTION_CLOSE frame.
+   short, limited time such as one PTO if a packet is received on a new
+   path before sending the CONNECTION_CLOSE frame.
 
    Note that other explicit closing mechanisms of [QUIC-TRANSPORT] still
    apply on the whole connection.  In particular, the reception of
