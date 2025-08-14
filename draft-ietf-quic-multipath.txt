@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 8 January 2026                           Uber Technologies Inc.
+Expires: 15 February 2026                         Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 8 January 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                             7 July 2025
+                                                          14 August 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2026.
+   This Internet-Draft will expire on 15 February 2026.
 
 Copyright Notice
 
@@ -510,11 +510,15 @@ Table of Contents
 
    Section 9.1 of [QUIC-TRANSPORT] introduces the concept of "probing"
    and "non-probing" frames.  A packet that contains at least one "non-
-   probing" frame is a "non-probing" packet.  When the multipath
-   extension is negotiated, the reception of a "non-probing" packet on a
-   new path with a new so far unused path ID does not impact the path
-   status of any existing path.  Therefore, any frame can be sent on a
-   new path at any time as long as the anti-amplification limits (see
+   probing" frame is a "non-probing" packet.  Migration as specified in
+   Section 9.2 of [QUIC-TRANSPORT] is initiated by sending packets
+   containing non-probing frames on a new (validated) path, however,
+   using the same path ID as on the old path.  When the multipath
+   extension is negotiated, the reception of any packet, no matter if
+   "probing " or "non-probing", on a new path with a new, so far unused
+   path ID does not impact the path status of any existing path.
+   Therefore, any frame can be sent on a new path with a new path ID at
+   any time as long as the anti-amplification limits (see
    Section 21.1.1.1 of [QUIC-TRANSPORT]) and the congestion control
    limits for this path are respected.
 
