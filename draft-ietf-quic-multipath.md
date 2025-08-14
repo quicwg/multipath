@@ -1177,11 +1177,6 @@ source and destination ports:
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint could want to close one of them.
-Uncoordinated abandon of both endpoints could result in deleting
-both paths instead of just one. To avoid this pitfall, endpoints could
-adopt a simple coordination rule, such as only letting the client
-initiate closure of duplicate paths, or perhaps relying on
-the application protocol to decide which paths should be closed.
 
 ## Congestion Control {#congestion-control}
 
