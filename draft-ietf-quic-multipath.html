@@ -1788,8 +1788,9 @@ to pick the "right" token among multiple tokens obtained in a previous connectio
 The client is likely to fall back to the strategy specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
 i.e., pick the last received token. To avoid issues when clients make the "wrong" choice,
 a server SHOULD issue tokens that are capable of validating
-any of the previously validated addresses. Further guidance on token usage can be
-found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+any of the previously validated addresses. Including more addresses increases the
+probability that the token will be useful in the future, but at the cost of a larger token.
+Further guidance on token usage can be found in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8.1.3" class="relref">Section 8.1.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
