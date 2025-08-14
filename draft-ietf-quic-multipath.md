@@ -673,8 +673,8 @@ connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. Alternatively, a client MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly,
-the server MAY wait for a short, limited time such as one PTO if a path
-probing packet is received on a new path before sending the
+the server MAY wait for a short, limited time such as one PTO if a
+packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
 Note that other explicit closing mechanisms of {{QUIC-TRANSPORT}} still
