@@ -2031,8 +2031,9 @@ PATH_ABANDON frame.<a href="#section-3.4.1-3" class="pilcrow">¶</a></p>
 arrive well after the connection IDs have been retired.
 If not recognized as bound to the local
 connection, such packet triggers the peer to send a Stateless Reset
-packet. The rule to "retain knowledge of connection ID for 3 PTO
-after receiving a PATH_ABANDON"
+packet. The requirement to retain knowledge of connection ID and about
+the packet number space for 3 PTOs
+after receiving a PATH_ABANDON frame, as specified in <a href="#path-close" class="auto internal xref">Section 3.4</a> above,
 is intended to reduce the risk of sending such spurious stateless
 packets, but it cannot completely avoid that risk.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.4.2-2"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-10.3" class="relref">Section 10.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> specified that the Stateless Reset Tokens
