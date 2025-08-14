@@ -912,10 +912,11 @@ Table of Contents
       path because it cannot allocate sufficient resources to maintain
       it.
 
-   PATH_UNSTABLE_INTERFACE (TBD-12):  The endpoint is abandoning the
-      path because the used interface is considered to be unstable.
-      This condition can occur, e.g., due to a weak wireless signal or
-      frequent handover events during high-speed mobility.
+   PATH_UNSTABLE_OR_POOR (TBD-12):  The endpoint is abandoning the path
+      because the used interface is observed to be unstable or
+      performance is consider poor.  This condition can occur, e.g., due
+      to frequent handover events during high-speed mobility or due to a
+      weak wireless signal.
 
    NO_CID_AVAILABLE_FOR_PATH (TBD-13):  The endpoint is abandoning the
       path due to the lack of a connection ID for this path.  This might
@@ -1551,10 +1552,12 @@ Table of Contents
    |                   |                           |in the       |             |
    |                   |                           |transport    |             |
    +-------------------+---------------------------+-------------+-------------+
-   |TBD-12 (experiments|PATH_UNSTABLE_INTERFACE    |Path         |Section 4.2.1|
+   |TBD-12 (experiments|PATH_UNSTABLE_OR_POOR      |Path         |Section 4.2.1|
    |use                |                           |abandoned due|             |
    |0x00554e5f494e5446)|                           |to unstable  |             |
-   |                   |                           |interfaces   |             |
+   |                   |                           |interfaces or|             |
+   |                   |                           |poor         |             |
+   |                   |                           |performance  |             |
    +-------------------+---------------------------+-------------+-------------+
    |TBD-13 (experiments|NO_CID_AVAILABLE_FOR_PATH  |Path         |Section 4.2.1|
    |use                |                           |abandoned due|             |
