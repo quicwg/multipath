@@ -479,8 +479,9 @@ to pick the "right" token among multiple tokens obtained in a previous connectio
 The client is likely to fall back to the strategy specified in {{Section 8.1.3 of QUIC-TRANSPORT}},
 i.e., pick the last received token. To avoid issues when clients make the "wrong" choice,
 a server SHOULD issue tokens that are capable of validating
-any of the previously validated addresses. Further guidance on token usage can be
-found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
+any of the previously validated addresses. Including more addresses increases the
+probability that the token will be useful in the future, but at the cost of a larger token.
+Further guidance on token usage can be found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
 
 ## Handling Connection IDs {#consume-retire-cid}
 
