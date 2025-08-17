@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-14T01:06:34.940243+00:00",
+  "timestamp": "2025-08-17T01:11:14.850903+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -13308,7 +13308,7 @@
       "id": "I_kwDOGNtpaM62HDFy",
       "title": "Why isn't NEW_TOKEN path-specific?",
       "url": "https://github.com/quicwg/multipath/issues/550",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13318,8 +13318,8 @@
       ],
       "body": "This seems like it was a deliberate choice, but that choice imposes costs on servers that manifest in (much) larger tokens.  If you look at fairly typical address validation token in non-multipath QUIC, you can bind the client reflexive address to that token without spending any bytes by putting it in the AAD.  The client - if the token is remains current - will supply the address you need to validate the token when it connects.\n\nIf you have to allow for multiple addresses, that's no longer an option.  You have to add every valid address to the token explicitly, which means making it variable-length as well.  When addresses are 16 bytes each, that's a pretty significant increase.  More so if you consider that the server might want to encode additional per-address information, like CC, BDP, and RTT observations for each of those paths.\n\nThis also means that each token is much more powerful.  A server is expected to tolerate connections from any address in a set, rather than a single token.\n\nThe alternative is to make NEW_TOKEN path-specific.  That creates smaller and less powerful tokens.\n\nI don't recall seeing that discussion on the list; but I wasn't tracking it closely.  It would be good if some discussion of these trade-offs were included in the draft, and ideally some discussion of implementation strategies that might be necessary to achieve good outcomes or avoid bad outcomes.",
       "createdAt": "2025-05-11T23:53:30Z",
-      "updatedAt": "2025-08-05T17:25:47Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-14T13:08:33Z",
+      "closedAt": "2025-08-14T13:08:33Z",
       "comments": [
         {
           "author": "huitema",
@@ -13714,7 +13714,7 @@
       "id": "I_kwDOGNtpaM62HLQH",
       "title": "3 PTO requirement for PATH_ABANDON",
       "url": "https://github.com/quicwg/multipath/issues/556",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13724,8 +13724,8 @@
       ],
       "body": "The text observes that packets can arrive on a path after it has been abandoned.  At a minimum, there is a one RTT window, plus variance, in which this is unavoidable.\n\nThe text correctly recommends that PATH_ACK be sent on another path.  But it makes no recommendation about how long an endpoint retain state.  I would recommend that 3 PTO is the best recommendation we could give for that.  Again, this is a \"SHOULD\" not \"MUST\" as the only consequence is loss of packets, which the protocol is resilient enough to handle.",
       "createdAt": "2025-05-12T00:31:48Z",
-      "updatedAt": "2025-08-12T16:00:51Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-14T16:54:03Z",
+      "closedAt": "2025-08-14T16:54:03Z",
       "comments": [
         {
           "author": "huitema",
@@ -13804,7 +13804,7 @@
       "id": "I_kwDOGNtpaM62HMe7",
       "title": "Missing PATH_ABANDON codes",
       "url": "https://github.com/quicwg/multipath/issues/557",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13814,8 +13814,8 @@
       ],
       "body": "Interface instability is a local choice, which maybe some implementations can detect.  However, I would consider loss of the ability to communicate on a path to be a pretty strong reason for PATH_ABANDON, so maybe COMMUNICATION_FAILED.\n\nThen there is the case where a path, such as a backup back, simply times out.  TIMED_OUT.\n\nAnd then there are a bunch of cases where the choice is not application-driven, but driven by other considerations, like POOR_PERFORMANCE.\n\nWhat other things have implementation and deployment experience with the protocol revealed?",
       "createdAt": "2025-05-12T00:36:35Z",
-      "updatedAt": "2025-08-13T15:56:31Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-14T16:52:22Z",
+      "closedAt": "2025-08-14T16:52:22Z",
       "comments": [
         {
           "author": "huitema",
@@ -13859,7 +13859,7 @@
       "id": "I_kwDOGNtpaM62HOhD",
       "title": "Uncoordinated abandonment of paths",
       "url": "https://github.com/quicwg/multipath/issues/558",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -13869,8 +13869,8 @@
       ],
       "body": "> Uncoordinated abandon \\[sic] of both endpoints may result in deleting both paths instead of just one. To avoid this pitfall, endpoints could adopt a simple coordination rule, such as only letting the client initiate closure of duplicate paths, or perhaps relying on the application protocol to decide which paths should be closed.\n\nThis seems like a great recipe for interoperability failure.\n\nWhy does the specification not indicate which endpoint is responsible for abandonment?  Given that a client is the only one that initiate paths, this seems like a pretty unrealistic scenario to begin with (#554 notwithstanding).  If this is possible, is there any reason to allow servers to do anything other than request that a client act to close a path?  At what layer does that decision-making occur?\n\n",
       "createdAt": "2025-05-12T00:45:20Z",
-      "updatedAt": "2025-08-05T17:42:53Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-14T13:08:14Z",
+      "closedAt": "2025-08-14T13:08:14Z",
       "comments": [
         {
           "author": "huitema",
@@ -14219,7 +14219,7 @@
       "id": "I_kwDOGNtpaM6-o2d_",
       "title": "Migration/Probing (was: Use of \"data packet\")",
       "url": "https://github.com/quicwg/multipath/issues/586",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gloinul",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -14229,8 +14229,8 @@
       ],
       "body": "There are four occasions of \"data packet\" in the specification. This term is not defined, but I assume it means a QUIC packet that contains one or more STREAM or DATAGRAM frames.\n\nEither define it or rewrite those occurances. The term is only used a few time in RFC 9000 and also not defined there. So I think avoiding it is probably for the better. \n\nThis issue was noticed by Floris Bruynooghe.",
       "createdAt": "2025-07-03T07:34:50Z",
-      "updatedAt": "2025-08-12T16:16:38Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-14T13:06:35Z",
+      "closedAt": "2025-08-14T13:06:35Z",
       "comments": [
         {
           "author": "mirjak",
@@ -65495,7 +65495,7 @@
       "id": "PR_kwDOGNtpaM6exq2v",
       "title": "remove \"path probing\"",
       "url": "https://github.com/quicwg/multipath/pull/592",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -65505,17 +65505,19 @@
       ],
       "body": "",
       "createdAt": "2025-07-14T10:35:51Z",
-      "updatedAt": "2025-08-12T15:48:04Z",
+      "updatedAt": "2025-08-14T13:08:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-43",
       "headRefOid": "b8e3a00f790dd372554438bab7f828e03de2d534",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-08-14T13:08:48Z",
+      "mergedAt": "2025-08-14T13:08:48Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "40b75d9c3a5506b01b6a6684d2d56129fdf89820"
+      },
       "comments": [],
       "reviews": [
         {
@@ -65542,6 +65544,19 @@
           "body": "",
           "createdAt": "2025-07-15T05:34:10Z",
           "updatedAt": "2025-07-15T05:34:10Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65_jgb",
+          "commit": {
+            "abbreviatedOid": "b8e3a00"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-14T12:41:41Z",
+          "updatedAt": "2025-08-14T12:41:41Z",
           "comments": []
         }
       ]
@@ -65714,7 +65729,7 @@
       "id": "PR_kwDOGNtpaM6iPTJ1",
       "title": "sentence token/address tradeoff",
       "url": "https://github.com/quicwg/multipath/pull/596",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -65724,17 +65739,19 @@
       ],
       "body": "fixes #550 (hopefully)\r\n\r\nas proposed by @MikeBishop",
       "createdAt": "2025-08-05T17:24:22Z",
-      "updatedAt": "2025-08-13T06:01:58Z",
+      "updatedAt": "2025-08-14T13:08:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-44",
       "headRefOid": "4973baa007f4c4c2a24c070f68de9cf97091414a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-08-14T13:08:32Z",
+      "mergedAt": "2025-08-14T13:08:32Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "c729d461650de5478d1458701633c3f4c4c53037"
+      },
       "comments": [],
       "reviews": [
         {
@@ -65775,6 +65792,19 @@
           "createdAt": "2025-08-13T06:01:58Z",
           "updatedAt": "2025-08-13T06:01:58Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65_iuY",
+          "commit": {
+            "abbreviatedOid": "4973baa"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-14T12:40:35Z",
+          "updatedAt": "2025-08-14T12:40:35Z",
+          "comments": []
         }
       ]
     },
@@ -65783,24 +65813,26 @@
       "id": "PR_kwDOGNtpaM6iPaB-",
       "title": "Remove paragraph on uncoordinated close \"rule\"",
       "url": "https://github.com/quicwg/multipath/pull/597",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #558",
       "createdAt": "2025-08-05T17:35:40Z",
-      "updatedAt": "2025-08-14T00:02:20Z",
+      "updatedAt": "2025-08-14T13:08:13Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-45",
       "headRefOid": "2a7a1147bc3dba3758f18b0defd22ccec2bb89bd",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-08-14T13:08:13Z",
+      "mergedAt": "2025-08-14T13:08:13Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "429a7e6ec753d8bc07fc25a4a946affef2ed3582"
+      },
       "comments": [],
       "reviews": [
         {
@@ -65815,6 +65847,19 @@
           "createdAt": "2025-08-14T00:02:20Z",
           "updatedAt": "2025-08-14T00:02:20Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65_h03",
+          "commit": {
+            "abbreviatedOid": "2a7a114"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I'm okay with deleting the text, basically it's depend on implementation.",
+          "createdAt": "2025-08-14T12:39:22Z",
+          "updatedAt": "2025-08-14T12:39:22Z",
+          "comments": []
         }
       ]
     },
@@ -65823,7 +65868,7 @@
       "id": "PR_kwDOGNtpaM6jTb-h",
       "title": "3 PTOs \"rule\"",
       "url": "https://github.com/quicwg/multipath/pull/598",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -65832,18 +65877,35 @@
       ],
       "body": "fixes #556 \r\n\r\nMinor rewording to hopefully make things more clear.",
       "createdAt": "2025-08-12T15:59:35Z",
-      "updatedAt": "2025-08-14T00:06:48Z",
+      "updatedAt": "2025-08-14T16:54:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-46",
       "headRefOid": "763659e85fc447f472ecbf257be1f31d1e6841f6",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2025-08-14T16:54:02Z",
+      "mergedAt": "2025-08-14T16:54:02Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "331bdec83e74c877ff95c030076e996b1620b6ad"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'd be okay to simply remove the \"but it cannot completely avoid that risk\" part but note that I didn't change that; it's already in the draft.",
+          "createdAt": "2025-08-14T13:07:44Z",
+          "updatedAt": "2025-08-14T13:07:44Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Okay, I'll merge now and not touch the \"it cannot completely avoid that risk\" part but if anybody strongly feels that this should be removed, please create a separate small PR!",
+          "createdAt": "2025-08-14T16:53:59Z",
+          "updatedAt": "2025-08-14T16:53:59Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM65lyAb",
@@ -65870,6 +65932,32 @@
           "createdAt": "2025-08-14T00:06:48Z",
           "updatedAt": "2025-08-14T00:06:48Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65_gdM",
+          "commit": {
+            "abbreviatedOid": "763659e"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2025-08-14T12:37:26Z",
+          "updatedAt": "2025-08-14T12:37:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM66BOyW",
+          "commit": {
+            "abbreviatedOid": "763659e"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Ok.",
+          "createdAt": "2025-08-14T14:44:38Z",
+          "updatedAt": "2025-08-14T14:44:38Z",
+          "comments": []
         }
       ]
     },
@@ -65878,7 +65966,7 @@
       "id": "PR_kwDOGNtpaM6jTmmb",
       "title": "Further clarifications on \"probing\"",
       "url": "https://github.com/quicwg/multipath/pull/599",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -65887,17 +65975,19 @@
       ],
       "body": "fixes #586 \r\n\r\nThis is another attempt to further clarify the text on probing. It'a adding more words rather than having less, however, given we have an own section about this because the question came up repeatedly, it might be better to be as explicit as possible...?",
       "createdAt": "2025-08-12T16:14:06Z",
-      "updatedAt": "2025-08-14T00:08:36Z",
+      "updatedAt": "2025-08-14T13:06:34Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-47",
       "headRefOid": "93ad8f55bd42c319dba717f8f8a4f8d49f813aaf",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-08-14T13:06:34Z",
+      "mergedAt": "2025-08-14T13:06:34Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "41a35ad82fe6125c7602475de35263ef74c5f3d4"
+      },
       "comments": [],
       "reviews": [
         {
@@ -65932,6 +66022,19 @@
           "createdAt": "2025-08-14T00:08:36Z",
           "updatedAt": "2025-08-14T00:08:36Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65_f-6",
+          "commit": {
+            "abbreviatedOid": "93ad8f5"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-14T12:36:48Z",
+          "updatedAt": "2025-08-14T12:36:48Z",
+          "comments": []
         }
       ]
     },
@@ -65940,25 +66043,49 @@
       "id": "PR_kwDOGNtpaM6jg9RH",
       "title": "Rename PATH_INTERFACE_UNSTABLE to PATH_UNSTABLE_OR_POOR",
       "url": "https://github.com/quicwg/multipath/pull/600",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #557",
       "createdAt": "2025-08-13T15:54:50Z",
-      "updatedAt": "2025-08-14T00:12:47Z",
+      "updatedAt": "2025-08-14T16:52:22Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-48",
-      "headRefOid": "131104bb31a9b2a3aa6df211637d620a4dd44443",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "cb4547f67965bdc6ba36208ef334c0d37f92374d",
+      "closedAt": "2025-08-14T16:52:22Z",
+      "mergedAt": "2025-08-14T16:52:21Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "0488640a2e6131ae070e574f6bf2efff5eafb3d1"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I thought updating the text would make this also more clear. Any real concerns about this @huitema ?",
+          "createdAt": "2025-08-14T13:05:35Z",
+          "updatedAt": "2025-08-14T13:05:35Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "No concern. That's what we want to say.",
+          "createdAt": "2025-08-14T14:29:25Z",
+          "updatedAt": "2025-08-14T14:29:25Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, the issue was the missed change in the table... okay, good catch, thanks! Will merge now!",
+          "createdAt": "2025-08-14T16:52:18Z",
+          "updatedAt": "2025-08-14T16:52:18Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM652fuz",
@@ -65971,6 +66098,52 @@
           "body": "Sure, why not. But why keep the textual description unchanged?",
           "createdAt": "2025-08-14T00:12:47Z",
           "updatedAt": "2025-08-14T00:12:47Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM65_R0p",
+          "commit": {
+            "abbreviatedOid": "131104b"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Agree about the idea. Error code description also need to be updated.",
+          "createdAt": "2025-08-14T12:17:29Z",
+          "updatedAt": "2025-08-14T12:19:52Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nTBD-12 (experiments use 0x00554e5f494e5446) | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}\r\n```",
+              "createdAt": "2025-08-14T12:17:29Z",
+              "updatedAt": "2025-08-14T13:04:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM66BA-V",
+          "commit": {
+            "abbreviatedOid": "cb4547f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "With the error description fixed, we are good.",
+          "createdAt": "2025-08-14T14:30:09Z",
+          "updatedAt": "2025-08-14T14:30:09Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM66BPhu",
+          "commit": {
+            "abbreviatedOid": "cb4547f"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Ok",
+          "createdAt": "2025-08-14T14:45:32Z",
+          "updatedAt": "2025-08-14T14:45:32Z",
           "comments": []
         }
       ]
