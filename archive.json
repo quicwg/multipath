@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-17T01:11:14.850903+00:00",
+  "timestamp": "2025-08-19T01:03:36.760368+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -65975,7 +65975,7 @@
       ],
       "body": "fixes #586 \r\n\r\nThis is another attempt to further clarify the text on probing. It'a adding more words rather than having less, however, given we have an own section about this because the question came up repeatedly, it might be better to be as explicit as possible...?",
       "createdAt": "2025-08-12T16:14:06Z",
-      "updatedAt": "2025-08-14T13:06:34Z",
+      "updatedAt": "2025-08-18T18:13:25Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "80322a62ab57edbecdf45c021a838d071ad0009f",
@@ -65988,7 +65988,15 @@
       "mergeCommit": {
         "oid": "41a35ad82fe6125c7602475de35263ef74c5f3d4"
       },
-      "comments": [],
+      "comments": [
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks, I think this helps.",
+          "createdAt": "2025-08-18T18:13:25Z",
+          "updatedAt": "2025-08-18T18:13:25Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM65edek",
