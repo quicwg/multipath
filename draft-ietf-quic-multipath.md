@@ -1254,8 +1254,8 @@ The simplest implementation is to use the the delays measured when receiving new
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
-as long as acknowledgements are sent consistently over the same paths.
-If at any time the sender revisits its sending preferences,
+as long as acknowledgements are sent consistently over one path.
+If at any time the acknowledgement sender revisits its sending preferences,
 this can also change the paths that are used to send acknowledgements.
 However, this is not very
 different from route changes on a single path.
@@ -1267,6 +1267,11 @@ An acknowledgement receiver
 can, however, remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
 if that acknowledgement path changes or is abandoned.
+If acknowledgements are not send consistently over one path, the
+acknowledgement receiver can monitor over which path acknowledgement
+are received and only use samples for acknowledgements received on the same
+path than the data was sent, if any.
+
 
 Further, congestion control functions that rely on delay estimates needs
 to consider cases where acknowledgements are sent over multiple paths
