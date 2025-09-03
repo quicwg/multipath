@@ -1077,7 +1077,7 @@ PATHS_BLOCKED Frame {
   Maximum Path Identifier (i),
 }
 ~~~
-{: #fig-paths-blocked-frame-format title="MAX_PATH_ID_BLOCKED Frame Format"}
+{: #fig-paths-blocked-frame-format title="PATHS_BLOCKED Frame Format"}
 
 PATHS_BLOCKED frames contain the following field:
 
