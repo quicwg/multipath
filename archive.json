@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-24T01:08:30.573182+00:00",
+  "timestamp": "2025-09-04T00:56:56.939485+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -66181,6 +66181,32 @@
       "mergeCommit": {
         "oid": "c6b552b717127161e36c610a7386553e9865a69d"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 602,
+      "id": "PR_kwDOGNtpaM6moecs",
+      "title": "Typo: MAX_PATH_ID_BLOCKED",
+      "url": "https://github.com/quicwg/multipath/pull/602",
+      "state": "OPEN",
+      "author": "tzaeschke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Typo: `MAX_PATH_ID_BLOCKED` -> `PATHS_BLOCKED`",
+      "createdAt": "2025-09-03T11:38:37Z",
+      "updatedAt": "2025-09-03T11:40:28Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
+      "headRepository": "tzaeschke/multipath",
+      "headRefName": "patch-5",
+      "headRefOid": "5f9b0ab584c547985b4c745e664b35531f8a987f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
