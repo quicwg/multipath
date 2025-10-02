@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-30T00:59:21.925496+00:00",
+  "timestamp": "2025-10-02T00:57:37.328573+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14505,9 +14505,24 @@
       ],
       "body": "This seems like a minor grammar error\n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (concurrently) using multiple paths.",
       "createdAt": "2025-09-28T14:34:48Z",
-      "updatedAt": "2025-09-28T14:34:48Z",
+      "updatedAt": "2025-10-01T14:27:40Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sorry what's the error?",
+          "createdAt": "2025-10-01T13:35:40Z",
+          "updatedAt": "2025-10-01T13:35:40Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "I think the passive voice is affecting readability. Does this proposal hold the same meaning?\n\n> There are currently no IETF specifications that define scheduling algorithms for multiple simultaneous (i.e., concurrent) paths.\n\n",
+          "createdAt": "2025-10-01T14:27:40Z",
+          "updatedAt": "2025-10-01T14:27:40Z"
+        }
+      ]
     },
     {
       "number": 604,
@@ -14521,9 +14536,24 @@
       "labels": [],
       "body": "In Section 1.1, the draft says:\n\n> We assume that the reader is familiar with the terminology used in [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)].\n\n1. It might help to drop the `we assume` part here, the reader needs to understand the QUIC terminology or else they are unlikely to be albe to use the extension. \n\n2. It might help to state the use of QUIC notational conventions too",
       "createdAt": "2025-09-28T14:42:41Z",
-      "updatedAt": "2025-09-28T14:42:41Z",
+      "updatedAt": "2025-10-01T14:22:35Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What's exactly do you mean by \"notational conventions\"?",
+          "createdAt": "2025-10-01T13:36:24Z",
+          "updatedAt": "2025-10-01T13:36:24Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "For example, in HTTP/3 doc it states explicitly \n\nhttps://www.rfc-editor.org/rfc/rfc9114.html#section-2.2-2\n\n> This document uses the variable-length integer encoding from [QUIC-TRANSPORT].\n\nAnd in https://www.rfc-editor.org/rfc/rfc9114.html#section-2.2-7\n\n> Packet diagrams in this document use the format defined in Section 1.3 of [QUIC-TRANSPORT] to illustrate the order and size of fields.\n\nThis makes it abundantly clear how to read the definitions in the extensiin\n\n",
+          "createdAt": "2025-10-01T14:22:35Z",
+          "updatedAt": "2025-10-01T14:22:35Z"
+        }
+      ]
     },
     {
       "number": 605,
@@ -14569,9 +14599,45 @@
       "labels": [],
       "body": "Per https://www.rfc-editor.org/rfc/rfc9000.html#section-7.4.1, \n\n> The definition of a new transport parameter ([Section 7.4.2](https://www.rfc-editor.org/rfc/rfc9000.html#new-transport-parameters)) MUST specify whether storing the transport parameter for 0-RTT is mandatory, optional, or prohibited. A client need not store a transport parameter it cannot process.\n\nThis extension has some text on 0-RTT but it doesn't appear to address the requirement above.",
       "createdAt": "2025-09-28T14:57:40Z",
-      "updatedAt": "2025-09-28T14:57:40Z",
+      "updatedAt": "2025-10-01T14:17:03Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I thought we did address that at some point but maybe not... however, the multipath extension is effectively only used in 1-RTT, so there is no benefit in storing it.",
+          "createdAt": "2025-10-01T13:41:32Z",
+          "updatedAt": "2025-10-01T13:41:32Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Ah yes, all new frames defi ed here are restricted to us in 1-RTT packets. \n\nPerhaps we should explicitly state storage of  the TP for 0-RTT is prohibited",
+          "createdAt": "2025-10-01T13:57:34Z",
+          "updatedAt": "2025-10-01T13:57:34Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I actually thought we should say it should not be stored (because you don't get anything from it)...?",
+          "createdAt": "2025-10-01T14:05:49Z",
+          "updatedAt": "2025-10-01T14:05:49Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "I think we are agreeing :-)",
+          "createdAt": "2025-10-01T14:09:50Z",
+          "updatedAt": "2025-10-01T14:09:50Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, we do. Sorry I wasn't reading your comment correctly... will propose a small PR.",
+          "createdAt": "2025-10-01T14:17:03Z",
+          "updatedAt": "2025-10-01T14:17:03Z"
+        }
+      ]
     },
     {
       "number": 608,
@@ -14585,9 +14651,24 @@
       "labels": [],
       "body": "2.6 deals with Connection Closure, while section 2 is titled Transport Handshake and Cryptographic Packet Protection\n\nMaybe better if it was its own top-level section or put somewhere else as it doesn't seem to relate to the section topics",
       "createdAt": "2025-09-28T15:03:59Z",
-      "updatedAt": "2025-09-28T15:03:59Z",
+      "updatedAt": "2025-10-01T14:08:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The reason to put is there was to more connection-level stuff in section 2 and path level stuff in section 3. But I agree that the heading on section 2 doesn't cover this. Maybe we heading is still not fitting that well...?",
+          "createdAt": "2025-10-01T13:43:44Z",
+          "updatedAt": "2025-10-01T13:43:44Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Thanks  for the contex. Due to the change to AEAD I agree following immediately to it in the same section is nice.\n\nPerhaps renaming to simply \"Connection lifecycle and Packet Protection\" might work; leaving section 2.6 where it is",
+          "createdAt": "2025-10-01T14:07:56Z",
+          "updatedAt": "2025-10-01T14:08:26Z"
+        }
+      ]
     },
     {
       "number": 609,
@@ -14651,9 +14732,45 @@
       "labels": [],
       "body": "Section 5.1 says\n\n> With the multipath extension, each path uses a separate packet number space. This is a major difference from [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)], which only defines three number spaces (Initial, Handshake and Application packets).\n\nRFC 9000 seems to use the term \"application data packet number space\" so I think you'll want to add the \"data\" qualifier",
       "createdAt": "2025-09-28T15:51:39Z",
-      "updatedAt": "2025-09-28T15:51:39Z",
+      "updatedAt": "2025-10-01T14:23:23Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Why?",
+          "createdAt": "2025-10-01T13:47:01Z",
+          "updatedAt": "2025-10-01T13:47:01Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "The text cites a document and claims it defines a packet space it doesn't,  that's confusing for a reader. Using \"Application data\" is consistent with the protocol this is extending",
+          "createdAt": "2025-10-01T13:59:48Z",
+          "updatedAt": "2025-10-01T13:59:48Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Not sure I understand. RFC9000 also uses \"packet number space(s)\" without \"application data\".",
+          "createdAt": "2025-10-01T14:05:05Z",
+          "updatedAt": "2025-10-01T14:05:05Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "The way I read the text in 5.1, it claims that RFC 9000 defines the following three packet spaces\n\n* Initial\n* Handshake\n* Application \n\nWhereas this is what https://datatracker.ietf.org/doc/html/rfc9000#section-12.3 states\n\nPacket numbers are divided into three spaces in QUIC:\n\nInitial space:\n\n    All Initial packets ([Section 17.2.2](https://datatracker.ietf.org/doc/html/rfc9000#packet-initial)) are in this space.\n\nHandshake space:\n\n    All Handshake packets ([Section 17.2.4](https://datatracker.ietf.org/doc/html/rfc9000#packet-handshake)) are in this space.\n\nApplication data space:\n\n    All 0-RTT ([Section 17.2.3](https://datatracker.ietf.org/doc/html/rfc9000#packet-0rtt)) and 1-RTT ([Section 17.3.1](https://datatracker.ietf.org/doc/html/rfc9000#packet-1rtt)) packets are in this space.\n\nFor consistency, this document should say (bold for emphasis)\n\n> With the multipath extension, each path uses a separate packet number space. This is a major difference from [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)], which only defines three number spaces (Initial, Handshake and Application **data** packets).\n",
+          "createdAt": "2025-10-01T14:17:45Z",
+          "updatedAt": "2025-10-01T14:18:12Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, sorry yes, we can/should do that! I was confused where you wanted to add the word \"data\". because effectively we are adding a new application data packet space for each path. But not sure if that would be useful to say it that way....",
+          "createdAt": "2025-10-01T14:22:49Z",
+          "updatedAt": "2025-10-01T14:23:23Z"
+        }
+      ]
     }
   ],
   "pulls": [
