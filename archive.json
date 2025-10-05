@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-02T00:57:37.328573+00:00",
+  "timestamp": "2025-10-05T01:04:00.896527+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14505,7 +14505,7 @@
       ],
       "body": "This seems like a minor grammar error\n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (concurrently) using multiple paths.",
       "createdAt": "2025-09-28T14:34:48Z",
-      "updatedAt": "2025-10-01T14:27:40Z",
+      "updatedAt": "2025-10-02T09:49:16Z",
       "closedAt": null,
       "comments": [
         {
@@ -14521,6 +14521,13 @@
           "body": "I think the passive voice is affecting readability. Does this proposal hold the same meaning?\n\n> There are currently no IETF specifications that define scheduling algorithms for multiple simultaneous (i.e., concurrent) paths.\n\n",
           "createdAt": "2025-10-01T14:27:40Z",
           "updatedAt": "2025-10-01T14:27:40Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "yes and no. I don't that paths can be simultaneous though. Paths can be simultaneously used or open....",
+          "createdAt": "2025-10-02T09:49:16Z",
+          "updatedAt": "2025-10-02T09:49:16Z"
         }
       ]
     },
