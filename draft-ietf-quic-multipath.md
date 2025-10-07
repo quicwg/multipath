@@ -80,10 +80,8 @@ Emerging networking experiments and technologies, ACM"
 --- abstract
 
 This document specifies a multipath extension for the QUIC protocol to
-enable the creation and management of multiple paths for a single connection.
-It proposes a standard way to create and delete paths or to manage
-path identifiers and the numbering of packets, adding the
-capability to use multiple paths simultaneously for data transmission.
+enable the simultaneous usage of multiple paths for a single connection.
+It proposes a standard way to create, delete, and manage paths using identifiers.
 It does not specify address discovery or management, nor
 how applications using QUIC schedule traffic over multiple paths.
 
