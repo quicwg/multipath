@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-05T01:04:00.896527+00:00",
+  "timestamp": "2025-10-07T00:58:19.830500+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14776,6 +14776,30 @@
           "body": "Ah, sorry yes, we can/should do that! I was confused where you wanted to add the word \"data\". because effectively we are adding a new application data packet space for each path. But not sure if that would be useful to say it that way....",
           "createdAt": "2025-10-01T14:22:49Z",
           "updatedAt": "2025-10-01T14:23:23Z"
+        }
+      ]
+    },
+    {
+      "number": 613,
+      "id": "I_kwDOGNtpaM7P5rt7",
+      "title": "Title and introduction imply too much about the extension's capabilities",
+      "url": "https://github.com/quicwg/multipath/issues/613",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "As part of the WGLC, @larseggert made the following comment on the mailing list [1]\n\n> I just briefly rechecked -16:\n> \n> The title is still very generic, implying that this is a (*the*?) multipath extension for QUIC. Same in the abstract.\n> \n> The last three paragraphs of the introduction then have some text that was maybe added to address the raised concern, i.e., that this doc specifies extensions for *managing multiple paths* for QUIC connection. But that that alone is not resulting in \"multipath QUIC\", i.e., an IETF standard for how you actually safely and effectively utilize those multiple paths at the same time. I think the document needs to be much more blunt in stating that caveat (\"We give you paths. We don't tell you how to use them. This is a required piece of multipath QUIC, but not a complete standard.\")\n> \n> I hope this makes my concern a bit clearer. It's not that I disagree that what the doc normativley describes isn't ready for PS, it's that the doc is titled and introduced as if that was all the pieces needed for multipath QUIC when that's not the case.\n> \n> Proposal: Title change to \"Managing multiple paths for a QUIC connection\". Abstract and introduction accurately summarize standardized content. \n\n[1] https://mailarchive.ietf.org/arch/msg/quic/qaZvLwrkNyLVUn_CxcfWzM7Z5VM/",
+      "createdAt": "2025-10-06T16:07:59Z",
+      "updatedAt": "2025-10-06T19:04:05Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am preparing a PR to do that.",
+          "createdAt": "2025-10-06T19:04:04Z",
+          "updatedAt": "2025-10-06T19:04:04Z"
         }
       ]
     }
@@ -66484,7 +66508,7 @@
       "labels": [],
       "body": "Typo: `MAX_PATH_ID_BLOCKED` -> `PATHS_BLOCKED`",
       "createdAt": "2025-09-03T11:38:37Z",
-      "updatedAt": "2025-09-03T11:40:28Z",
+      "updatedAt": "2025-10-06T18:58:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
@@ -66496,7 +66520,235 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7FF76R",
+          "commit": {
+            "abbreviatedOid": "5f9b0ab"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Thanks. Yes, we should apply this fix.",
+          "createdAt": "2025-10-06T18:58:38Z",
+          "updatedAt": "2025-10-06T18:58:38Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 614,
+      "id": "PR_kwDOGNtpaM6sWVqb",
+      "title": "Addressing concerns about title and abstract",
+      "url": "https://github.com/quicwg/multipath/pull/614",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
+      "createdAt": "2025-10-06T19:18:50Z",
+      "updatedAt": "2025-10-07T00:46:04Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "fix-after-2nd-wglc",
+      "headRefOid": "1c42ff20a4d37e739ec3b865608ed519feea6b97",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<img width=\"772\" height=\"769\" alt=\"image\" src=\"https://github.com/user-attachments/assets/ee3c4b31-b31e-427e-b11f-a2572957e70a\" />\r\n\r\nBike shed, meet paint... I should have guessed.",
+          "createdAt": "2025-10-06T22:18:31Z",
+          "updatedAt": "2025-10-06T22:18:31Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7FGhI8",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T19:26:13Z",
+          "updatedAt": "2025-10-06T19:26:13Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Seems we should update the abbrev too? We never wanted to call this \"multipath QUIC\" even with the old title",
+              "createdAt": "2025-10-06T19:26:13Z",
+              "updatedAt": "2025-10-06T19:26:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FGioO",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "larseggert",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-06T19:27:06Z",
+          "updatedAt": "2025-10-06T19:27:06Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FIJ1X",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T20:45:52Z",
+          "updatedAt": "2025-10-06T20:45:52Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Suggestion?",
+              "createdAt": "2025-10-06T20:45:52Z",
+              "updatedAt": "2025-10-06T20:45:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FIzRj",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T21:12:51Z",
+          "updatedAt": "2025-10-06T21:12:51Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "`Multiple paths for QUIC` ?",
+              "createdAt": "2025-10-06T21:12:51Z",
+              "updatedAt": "2025-10-06T21:12:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FJQVh",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T21:38:51Z",
+          "updatedAt": "2025-10-06T21:43:46Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "If we are to change the title. why not be accurate? Both QUIC v1 and this draft support use of multiple paths. The difference is that the latter supports simultaneous data transfer over the paths being established.\r\n\r\nTherefore, to me it seems that something along the lines of \"Simultaneous Data Transmission over Multiple Paths of QUIC.\"",
+              "createdAt": "2025-10-06T21:38:51Z",
+              "updatedAt": "2025-10-06T21:44:03Z"
+            },
+            {
+              "originalPosition": 12,
+              "body": "I'm concerned this change obscures the key difference (the capability to use multiple paths simultaneously for data transmission).\r\n\r\nWhy not say something like: This document specifies an extension for the QUIC protocol that enables simultaneous data transfer over multiple paths?",
+              "createdAt": "2025-10-06T21:43:35Z",
+              "updatedAt": "2025-10-06T21:43:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FJ6SC",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T22:31:42Z",
+          "updatedAt": "2025-10-06T22:31:42Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Changed to \"Multiple paths for QUIC\"",
+              "createdAt": "2025-10-06T22:31:42Z",
+              "updatedAt": "2025-10-06T22:31:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FJ6iK",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T22:32:22Z",
+          "updatedAt": "2025-10-06T22:32:22Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Added the suggested line \"capability to use multiple paths simultaneously for data transmission\" to the abstract.",
+              "createdAt": "2025-10-06T22:32:22Z",
+              "updatedAt": "2025-10-06T22:32:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FJ95-",
+          "commit": {
+            "abbreviatedOid": "1c42ff2"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-06T22:39:06Z",
+          "updatedAt": "2025-10-06T22:39:06Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Thank you. I think the change will reduce confusion, but I am still concerned with the change to the first sentence.\r\n\r\nRFC 9000 defines methods to probe new paths and migrate between them, so IMO it is confusing to claim that this document enables \"the creation and management of multiple paths.\" Compared to that, the original sentence did not have the problem, as it talked about \"simultaneous usage of multiple paths.\"",
+              "createdAt": "2025-10-06T22:39:06Z",
+              "updatedAt": "2025-10-06T22:39:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FKzyn",
+          "commit": {
+            "abbreviatedOid": "1c42ff2"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-07T00:46:00Z",
+          "updatedAt": "2025-10-07T00:46:04Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "Maybe something along the lines of:\r\n```suggestion\r\nenable the simultaneous usage of multiple paths for a single connection.\r\nIt proposes a standard way to create, delete, and manage paths using identifiers.\r\n```\r\n\r\nThe intent is to:\r\n* retain the original first sentence that clarifies the key difference to applications (the capability to simultaneously transfer data over multiple paths), and\r\n* in the second sentence point out the difference regarding how the paths are managed.",
+              "createdAt": "2025-10-07T00:46:00Z",
+              "updatedAt": "2025-10-07T00:46:04Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
