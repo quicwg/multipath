@@ -1,6 +1,6 @@
 ---
 title: Managing multiple paths for a QUIC connection
-abbrev: Multiple paths for QUIC
+abbrev: Multiple Paths for QUIC
 docname: draft-ietf-quic-multipath-latest
 date: {DATE}
 category: std
