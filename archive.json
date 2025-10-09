@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-07T00:58:19.830500+00:00",
+  "timestamp": "2025-10-09T00:59:00.567192+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14787,11 +14787,13 @@
       "state": "OPEN",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
-      "assignees": [],
+      "assignees": [
+        "huitema"
+      ],
       "labels": [],
       "body": "As part of the WGLC, @larseggert made the following comment on the mailing list [1]\n\n> I just briefly rechecked -16:\n> \n> The title is still very generic, implying that this is a (*the*?) multipath extension for QUIC. Same in the abstract.\n> \n> The last three paragraphs of the introduction then have some text that was maybe added to address the raised concern, i.e., that this doc specifies extensions for *managing multiple paths* for QUIC connection. But that that alone is not resulting in \"multipath QUIC\", i.e., an IETF standard for how you actually safely and effectively utilize those multiple paths at the same time. I think the document needs to be much more blunt in stating that caveat (\"We give you paths. We don't tell you how to use them. This is a required piece of multipath QUIC, but not a complete standard.\")\n> \n> I hope this makes my concern a bit clearer. It's not that I disagree that what the doc normativley describes isn't ready for PS, it's that the doc is titled and introduced as if that was all the pieces needed for multipath QUIC when that's not the case.\n> \n> Proposal: Title change to \"Managing multiple paths for a QUIC connection\". Abstract and introduction accurately summarize standardized content. \n\n[1] https://mailarchive.ietf.org/arch/msg/quic/qaZvLwrkNyLVUn_CxcfWzM7Z5VM/",
       "createdAt": "2025-10-06T16:07:59Z",
-      "updatedAt": "2025-10-06T19:04:05Z",
+      "updatedAt": "2025-10-07T01:32:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -66501,24 +66503,26 @@
       "id": "PR_kwDOGNtpaM6moecs",
       "title": "Typo: MAX_PATH_ID_BLOCKED",
       "url": "https://github.com/quicwg/multipath/pull/602",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tzaeschke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Typo: `MAX_PATH_ID_BLOCKED` -> `PATHS_BLOCKED`",
       "createdAt": "2025-09-03T11:38:37Z",
-      "updatedAt": "2025-10-06T18:58:38Z",
+      "updatedAt": "2025-10-07T09:34:54Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
       "headRepository": "tzaeschke/multipath",
       "headRefName": "patch-5",
       "headRefOid": "5f9b0ab584c547985b4c745e664b35531f8a987f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-10-07T09:34:54Z",
+      "mergedAt": "2025-10-07T09:34:54Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "054925bab226b355a20591e08e72eac48a175fe5"
+      },
       "comments": [],
       "reviews": [
         {
@@ -66548,26 +66552,18 @@
       "labels": [],
       "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
       "createdAt": "2025-10-06T19:18:50Z",
-      "updatedAt": "2025-10-07T00:46:04Z",
+      "updatedAt": "2025-10-07T14:50:17Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-after-2nd-wglc",
-      "headRefOid": "1c42ff20a4d37e739ec3b865608ed519feea6b97",
+      "headRefOid": "53bdfb188d724f0ad98aeddd0147dbf764aab1c8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [
-        {
-          "author": "huitema",
-          "authorAssociation": "CONTRIBUTOR",
-          "body": "<img width=\"772\" height=\"769\" alt=\"image\" src=\"https://github.com/user-attachments/assets/ee3c4b31-b31e-427e-b11f-a2572957e70a\" />\r\n\r\nBike shed, meet paint... I should have guessed.",
-          "createdAt": "2025-10-06T22:18:31Z",
-          "updatedAt": "2025-10-06T22:18:31Z"
-        }
-      ],
+      "comments": [],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM7FGhI8",
@@ -66747,6 +66743,92 @@
               "updatedAt": "2025-10-07T00:46:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FLMSW",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-07T02:02:08Z",
+          "updatedAt": "2025-10-07T02:02:09Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I merged your suggestion.",
+              "createdAt": "2025-10-07T02:02:09Z",
+              "updatedAt": "2025-10-07T02:02:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FMEYK",
+          "commit": {
+            "abbreviatedOid": "0bd692b"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Thank you for the changes. LGTM.\r\n\r\nI anticipate that we would be having a bikeshed about the name at the next IETF, but I'm fine with anything as long as it is not technically incorrect. \"Multiple Paths for QUIC\" passes that test.",
+          "createdAt": "2025-10-07T04:17:50Z",
+          "updatedAt": "2025-10-07T04:19:53Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nabbrev: Multiple Paths for QUIC\r\n```",
+              "createdAt": "2025-10-07T04:17:50Z",
+              "updatedAt": "2025-10-07T04:19:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FMjVj",
+          "commit": {
+            "abbreviatedOid": "3b55904"
+          },
+          "author": "larseggert",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-07T05:13:47Z",
+          "updatedAt": "2025-10-07T05:13:47Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "But the doc doesn't specify \"Simultaneous Data Transmission\". That's my main point.",
+              "createdAt": "2025-10-07T05:13:47Z",
+              "updatedAt": "2025-10-07T05:13:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FMj5R",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "larseggert",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-07T05:14:41Z",
+          "updatedAt": "2025-10-07T05:14:41Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7FUmMS",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "martinduke",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "Thanks for the changes.\r\n\r\nI would prefer adding the term \"concurrent\" to \"multiple paths\" everywhere, but will not lie down in the road over it.",
+          "createdAt": "2025-10-07T14:50:17Z",
+          "updatedAt": "2025-10-07T14:50:17Z",
+          "comments": []
         }
       ]
     }
