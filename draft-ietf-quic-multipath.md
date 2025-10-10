@@ -160,18 +160,22 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
 
-We assume that the reader is familiar with the terminology used in
-{{QUIC-TRANSPORT}}. When this document uses the term "path", it refers
+This document uses the terminology defined in {{QUIC-TRANSPORT}}.
+When this document uses the term "path", it refers
 to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
-# Transport Handshake and Cryptographic Packet Protection
+Further, this document uses the variable-length integer encoding from {{QUIC-TRANSPORT}}.
+And packet diagrams in this document use the format defined in
+{{Section 1.3 of [QUIC-TRANSPORT}} to illustrate the order and size of fields.
+
+# Connection Lifecycle and Packet Protection
 
 This document defines a new transport parameter initial_max_path_id
 to indicate the support of the multipath extension.
-If any of the endpoints does not advertise the initial_max_path_id transport
-parameter, then the endpoints MUST NOT use any frame or
+If either of the endpoints does not advertise the initial_max_path_id transport
+parameter, then both endpoints MUST NOT use any frame or
 mechanism defined in this document.
-If the use of the multipath extension is agreed after handshake completion,
+If both endpoints advertise the initial_max_path_id transport parameter, once the handshake is completed
 a new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}}
 and new paths can be used, as specified in Section {{path-management}}.
 
@@ -336,7 +340,7 @@ or how multiple open paths are used for sending.
 For path management this extension specifies the following frames in {{frames}}:
 
 * PATH_ABANDON (see {{path-abandon-frame}})
-* PATH_BACKUP (see {{path-backup-available-frame}})
+* PATH_STATUS_BACKUP (see {{path-backup-available-frame}})
 * PATH_STATUS_AVAILABLE (see {{path-backup-available-frame}})
 * PATH_NEW_CONNECTION_ID (see {{mp-new-conn-id-frame}})
 * PATH_RETIRE_CONNECTION_ID (see {{mp-retire-conn-id-frame}})
@@ -365,8 +369,8 @@ Until the client's address is
 validated, the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
 applies.
 
-If an endpoint sends a PATH_RESPONSE, it MUST be sent on the same path
-as used by the packet that contained the PATH_CHALLENGE frame,
+If an endpoint sends a PATH_RESPONSE({{Section 19.18 of QUIC-TRANSPORT}}), it MUST be sent on the same path
+as used by the packet that contained the PATH_CHALLENGE frame ({{Section 19.17 of QUIC-TRANSPORT}}),
 using a connection ID associated with the same path ID.
 
 The server might receive packets for a yet unused path ID that do not
@@ -383,7 +387,7 @@ on another path, as specified in {{path-close}}.
 
 An endpoint that has no active connection ID for this path or
 lacks other resource to immediately configure a new path could
-delay sending the PATH_RESPONSE until sufficient resource are available.
+delay sending the PATH_RESPONSE until sufficient resources are available.
 Long delays might cause the peer to repeat the PATH_CHALLENGE and eventually
 send a PATH_ABANDON, in which case the procedures specified in
 Section {{path-close}} apply.
@@ -1127,7 +1131,7 @@ With the multipath extension, each
 path uses a separate packet number space.
 This is a major difference from
 {{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
-Handshake and Application packets).
+Handshake and Application data packets).
 
 For any given path, connection ID rotation, NAT rebinding, or client initiated migration
 as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
