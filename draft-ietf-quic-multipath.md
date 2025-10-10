@@ -166,7 +166,7 @@ to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
 Further, this document uses the variable-length integer encoding from {{QUIC-TRANSPORT}}.
 And packet diagrams in this document use the format defined in
-{{Section 1.3 of [QUIC-TRANSPORT}} to illustrate the order and size of fields.
+{{Section 1.3 of QUIC-TRANSPORT}} to illustrate the order and size of fields.
 
 # Connection Lifecycle and Packet Protection
 
