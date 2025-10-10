@@ -174,6 +174,9 @@ mechanism defined in this document.
 If the use of the multipath extension is agreed after handshake completion,
 a new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}}
 and new paths can be used, as specified in Section {{path-management}}.
+As this extension only defines new behavior that applies after the handshake is completed,
+the initial_max_path_id transport parameter is prohibited to be store for 0-RTT
+but needs to be newly advertised for each new connection instead.
 
 ## initial_max_path_id Transport Parameter {#nego}
 
