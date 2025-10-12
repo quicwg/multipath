@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-09T00:59:00.567192+00:00",
+  "timestamp": "2025-10-12T01:01:32.874711+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14505,7 +14505,7 @@
       ],
       "body": "This seems like a minor grammar error\n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (concurrently) using multiple paths.",
       "createdAt": "2025-09-28T14:34:48Z",
-      "updatedAt": "2025-10-02T09:49:16Z",
+      "updatedAt": "2025-10-10T15:43:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -14525,9 +14525,16 @@
         {
           "author": "mirjak",
           "authorAssociation": "COLLABORATOR",
-          "body": "yes and no. I don't that paths can be simultaneous though. Paths can be simultaneously used or open....",
+          "body": "yes and no. I don't think that paths can be simultaneous though. Paths can be simultaneously used or open....",
           "createdAt": "2025-10-02T09:49:16Z",
-          "updatedAt": "2025-10-02T09:49:16Z"
+          "updatedAt": "2025-10-10T15:42:31Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'd prefer the current sentence and I don't really see what's wrong with it. Can you explain again what the problem is?",
+          "createdAt": "2025-10-10T15:43:10Z",
+          "updatedAt": "2025-10-10T15:43:10Z"
         }
       ]
     },
@@ -66552,7 +66559,7 @@
       "labels": [],
       "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
       "createdAt": "2025-10-06T19:18:50Z",
-      "updatedAt": "2025-10-07T14:50:17Z",
+      "updatedAt": "2025-10-10T16:07:21Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
@@ -66829,6 +66836,133 @@
           "createdAt": "2025-10-07T14:50:17Z",
           "updatedAt": "2025-10-07T14:50:17Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GKFOp",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-10T16:07:21Z",
+          "updatedAt": "2025-10-10T16:07:21Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 615,
+      "id": "PR_kwDOGNtpaM6tIADF",
+      "title": "Mostly editorial comments by Lucas",
+      "url": "https://github.com/quicwg/multipath/pull/615",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #604, #605, #606, #608, #609, #610, #611, #612",
+      "createdAt": "2025-10-10T15:57:59Z",
+      "updatedAt": "2025-10-11T05:51:31Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-1",
+      "headRefOid": "a1ff6c63de6123a23a93cf417a2527b04e5046f6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7GKCGk",
+          "commit": {
+            "abbreviatedOid": "ea72aa0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-10T16:04:52Z",
+          "updatedAt": "2025-10-10T16:04:52Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\r\n{{Section 1.3 of QUIC-TRANSPORT}} to illustrate the order and size of fields.\r\n```",
+              "createdAt": "2025-10-10T16:04:52Z",
+              "updatedAt": "2025-10-10T16:04:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GSUzE",
+          "commit": {
+            "abbreviatedOid": "a1ff6c6"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I made a small suggestion for a better text in lines 167..170, but otherwise this is fine.",
+          "createdAt": "2025-10-11T05:50:03Z",
+          "updatedAt": "2025-10-11T05:51:31Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "I was always warned against starting a sentence with And or But... How about:\r\n\r\nThe packet diagrams in this document uses the conventions defined  in {{Section 1.3 of QUIC-TRANSPORT}},\r\nincluding the notation `(i)` to denote variable-length integers, encoded as specified in {{Section 16 of QUIC-TRANSPORT}}.",
+              "createdAt": "2025-10-11T05:50:03Z",
+              "updatedAt": "2025-10-11T05:51:31Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 616,
+      "id": "PR_kwDOGNtpaM6tIC8B",
+      "title": "don't store initial_max_path_id for 0-RTT",
+      "url": "https://github.com/quicwg/multipath/pull/616",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fixes #607",
+      "createdAt": "2025-10-10T16:01:58Z",
+      "updatedAt": "2025-10-11T06:05:31Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-2",
+      "headRefOid": "85aab938ccae44060e35799e6efd18c2cd30ba82",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7GSXV-",
+          "commit": {
+            "abbreviatedOid": "85aab93"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Proposing alternate writing.",
+          "createdAt": "2025-10-11T06:05:00Z",
+          "updatedAt": "2025-10-11T06:05:31Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "How about we stick to established practice and say:\r\n\r\nEndpoints MUST NOT remember the value of the `initial_max_path_id` transport parameter they received for use in a subsequent connection. Consequently,  none of the new frames frames can be sent in 0-RTT packets, as per [Section 7.4.1](https://rfc-editor.org/rfc/rfc9000#section-7.4.1) of [[QUIC-TRANSPORT](https://www.ietf.org/archive/id/draft-ietf-quic-ack-frequency-11.html#QUIC-TRANSPORT)].",
+              "createdAt": "2025-10-11T06:05:00Z",
+              "updatedAt": "2025-10-11T06:05:31Z"
+            }
+          ]
         }
       ]
     }
