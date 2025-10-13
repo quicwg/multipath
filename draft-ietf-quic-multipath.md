@@ -164,9 +164,9 @@ This document uses the terminology defined in {{QUIC-TRANSPORT}}.
 When this document uses the term "path", it refers
 to the notion of "network path" used in {{QUIC-TRANSPORT}}.
 
-Further, this document uses the variable-length integer encoding from {{QUIC-TRANSPORT}}.
-And packet diagrams in this document use the format defined in
-{{Section 1.3 of QUIC-TRANSPORT}} to illustrate the order and size of fields.
+The packet diagrams in this document uses the conventions defined
+in {{Section 1.3 of QUIC-TRANSPORT}}, including the notation (i) to denote
+variable-length integers, encoded as specified in {{Section 16 of QUIC-TRANSPORT}}.
 
 # Connection Lifecycle and Packet Protection
 
