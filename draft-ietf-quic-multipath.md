@@ -369,7 +369,7 @@ Until the client's address is
 validated, the anti-amplification limit from {{Section 8 of QUIC-TRANSPORT}}
 applies.
 
-If an endpoint sends a PATH_RESPONSE({{Section 19.18 of QUIC-TRANSPORT}}), it MUST be sent on the same path
+If an endpoint sends a PATH_RESPONSE ({{Section 19.18 of QUIC-TRANSPORT}}), it MUST be sent on the same path
 as used by the packet that contained the PATH_CHALLENGE frame ({{Section 19.17 of QUIC-TRANSPORT}}),
 using a connection ID associated with the same path ID.
 
