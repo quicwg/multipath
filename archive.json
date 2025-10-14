@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-12T01:01:32.874711+00:00",
+  "timestamp": "2025-10-14T00:58:57.627255+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -66559,7 +66559,7 @@
       "labels": [],
       "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
       "createdAt": "2025-10-06T19:18:50Z",
-      "updatedAt": "2025-10-10T16:07:21Z",
+      "updatedAt": "2025-10-13T17:12:03Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
@@ -66570,7 +66570,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Paging @gorryfair as well to take a final look",
+          "createdAt": "2025-10-13T17:12:03Z",
+          "updatedAt": "2025-10-13T17:12:03Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM7FGhI8",
@@ -66864,13 +66872,13 @@
       "labels": [],
       "body": "fixes #604, #605, #606, #608, #609, #610, #611, #612",
       "createdAt": "2025-10-10T15:57:59Z",
-      "updatedAt": "2025-10-11T05:51:31Z",
+      "updatedAt": "2025-10-13T17:17:10Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-1",
-      "headRefOid": "a1ff6c63de6123a23a93cf417a2527b04e5046f6",
+      "headRefOid": "612c6d9ec55b9d7cc5318909efe02e78f86f6b93",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -66916,6 +66924,99 @@
               "updatedAt": "2025-10-11T05:51:31Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoLBY",
+          "commit": {
+            "abbreviatedOid": "a1ff6c6"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:13:05Z",
+          "updatedAt": "2025-10-13T17:13:05Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "Either works for me. You editors fight it out \ud83d\ude04 ",
+              "createdAt": "2025-10-13T17:13:05Z",
+              "updatedAt": "2025-10-13T17:13:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoL9N",
+          "commit": {
+            "abbreviatedOid": "a1ff6c6"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:13:40Z",
+          "updatedAt": "2025-10-13T17:13:41Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nIf an endpoint sends a PATH_RESPONSE ({{Section 19.18 of QUIC-TRANSPORT}}), it MUST be sent on the same path\r\n```",
+              "createdAt": "2025-10-13T17:13:41Z",
+              "updatedAt": "2025-10-13T17:13:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoMmR",
+          "commit": {
+            "abbreviatedOid": "a1ff6c6"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "LGTM modulo nits. Thanks!",
+          "createdAt": "2025-10-13T17:14:04Z",
+          "updatedAt": "2025-10-13T17:14:04Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoOHS",
+          "commit": {
+            "abbreviatedOid": "292400c"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:15:58Z",
+          "updatedAt": "2025-10-13T17:15:59Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\r\nThe packet diagrams in this document uses the conventions defined\r\nin {{Section 1.3 of QUIC-TRANSPORT}}, including the notation (i) to denote\r\nvariable-length integers, encoded as specified in {{Section 16 of QUIC-TRANSPORT}}.\r\n```",
+              "createdAt": "2025-10-13T17:15:58Z",
+              "updatedAt": "2025-10-13T17:16:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoO1i",
+          "commit": {
+            "abbreviatedOid": "612c6d9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:17:10Z",
+          "updatedAt": "2025-10-13T17:17:10Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "updated",
+              "createdAt": "2025-10-13T17:17:10Z",
+              "updatedAt": "2025-10-13T17:17:10Z"
+            }
+          ]
         }
       ]
     },
@@ -66931,13 +67032,13 @@
       "labels": [],
       "body": "fixes #607",
       "createdAt": "2025-10-10T16:01:58Z",
-      "updatedAt": "2025-10-11T06:05:31Z",
+      "updatedAt": "2025-10-13T18:38:48Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-2",
-      "headRefOid": "85aab938ccae44060e35799e6efd18c2cd30ba82",
+      "headRefOid": "ab19e0341a61d6df1b011626e52396d9f2474141",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -66961,6 +67062,86 @@
               "body": "How about we stick to established practice and say:\r\n\r\nEndpoints MUST NOT remember the value of the `initial_max_path_id` transport parameter they received for use in a subsequent connection. Consequently,  none of the new frames frames can be sent in 0-RTT packets, as per [Section 7.4.1](https://rfc-editor.org/rfc/rfc9000#section-7.4.1) of [[QUIC-TRANSPORT](https://www.ietf.org/archive/id/draft-ietf-quic-ack-frequency-11.html#QUIC-TRANSPORT)].",
               "createdAt": "2025-10-11T06:05:00Z",
               "updatedAt": "2025-10-11T06:05:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoNrj",
+          "commit": {
+            "abbreviatedOid": "85aab93"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:15:14Z",
+          "updatedAt": "2025-10-13T17:15:15Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "I like this suggestion",
+              "createdAt": "2025-10-13T17:15:15Z",
+              "updatedAt": "2025-10-13T17:15:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoPNt",
+          "commit": {
+            "abbreviatedOid": "85aab93"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:17:49Z",
+          "updatedAt": "2025-10-13T17:17:49Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nthe initial_max_path_id transport parameter is prohibited to be stored for 0-RTT\r\n```",
+              "createdAt": "2025-10-13T17:17:49Z",
+              "updatedAt": "2025-10-13T17:17:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GoQwk",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T17:19:47Z",
+          "updatedAt": "2025-10-13T17:19:47Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Okay for me but isn't it the other way around? Because we only define changes for 1-RTT, it is not meaningful to store the transport parameter.",
+              "createdAt": "2025-10-13T17:19:47Z",
+              "updatedAt": "2025-10-13T17:19:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7GpEx1",
+          "commit": {
+            "abbreviatedOid": "85aab93"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-13T18:38:48Z",
+          "updatedAt": "2025-10-13T18:38:48Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "OK. Let's rephrase. I care about the MUST NOT, because it encompasses data like MAX_PATH_ID that are not directly linked to frames. But you are correct about 1RTT frames. So we would have:\r\n\r\nEndpoints MUST NOT remember the value of the initial_max_path_id transport parameter they received for use\r\nin a subsequent connection. As specified in {{frames}}, the new frames frames defined in this document MUST\r\nonly be sent in 1RTT packets.\r\n\r\nOr maybe just:\r\n\r\nEndpoints MUST NOT remember the value of the initial_max_path_id transport parameter they received for use\r\nin a subsequent connection.\r\n\r\n... which would avoid duplicating a requirement from the \"new frames\" section.",
+              "createdAt": "2025-10-13T18:38:48Z",
+              "updatedAt": "2025-10-13T18:38:49Z"
             }
           ]
         }
