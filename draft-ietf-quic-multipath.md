@@ -1517,5 +1517,5 @@ one of the original proposals are:
 # Acknowledgments
 
 Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop,
-Lucas Pardue, Michael Eriksson, Yu Zhu, and Gorry Fairhurst
+Lucas Pardue, Michael Eriksson, Yu Zhu, Gorry Fairhurst, Zäschke Tilmann, and Tommy Pauly
 for their thorough reviews and valuable contributions.
