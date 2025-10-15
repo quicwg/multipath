@@ -172,7 +172,7 @@ If any of the endpoints does not advertise the initial_max_path_id transport
 parameter, then the endpoints MUST NOT use any frame or
 mechanism defined in this document.
 If the use of the multipath extension is agreed after handshake completion,
-a new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}}
+a new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}},
 and new paths can be used, as specified in Section {{path-management}}.
 
 ## initial_max_path_id Transport Parameter {#nego}
