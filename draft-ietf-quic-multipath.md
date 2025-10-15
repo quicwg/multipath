@@ -141,7 +141,7 @@ This extension can be used with different scheduling algorithms that,
 e.g., can range from support for failover to simulatenous
 use of the aggregated capacity across all open paths.
 There are currently no IETF specifications that define scheduling
-algorithms for simultaneously (concurrently) using multiple paths.
+algorithms for simultaneously (i.e., concurrently) using multiple paths.
 
 Specifically, while failover between Wi-Fi
 and mobile networks is a well-known multipath use case,
