@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 16 April 2026                            Uber Technologies Inc.
+Expires: 18 April 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 16 April 2026                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         13 October 2025
+                                                         15 October 2025
 
 
                       Multipath Extension for QUIC
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 April 2026.
+   This Internet-Draft will expire on 18 April 2026.
 
 Copyright Notice
 
@@ -213,7 +213,7 @@ Table of Contents
    parameter, then the endpoints MUST NOT use any frame or mechanism
    defined in this document.  If the use of the multipath extension is
    agreed after handshake completion, a new AEAD usage applies to all
-   1-RTT packets, as specified in Section Section 2.4 and new paths can
+   1-RTT packets, as specified in Section Section 2.4, and new paths can
    be used, as specified in Section Section 3.  As this extension only
    defines new behavior that applies after the handshake is completed,
    the initial_max_path_id transport parameter is prohibited to be
