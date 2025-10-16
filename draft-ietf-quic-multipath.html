@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Multipath Extension for QUIC</title>
+<title>Managing multiple paths for a QUIC connection</title>
 <meta content="刘彦梅 (Yanmei Liu)" name="author">
 <meta content="马云飞 (Yunfei Ma)" name="author">
 <meta content="Quentin De Coninck" name="author">
@@ -13,7 +13,10 @@
 <meta content="Mirja Kuehlewind" name="author">
 <meta content="
        This document specifies a multipath extension for the QUIC protocol to
-enable the simultaneous usage of multiple paths for a single connection. 
+enable the simultaneous usage of multiple paths for a single connection.
+It proposes a standard way to create, delete, and manage paths using identifiers.
+It does not specify address discovery or management, nor
+how applications using QUIC schedule traffic over multiple paths. 
     " name="description">
 <meta content="xml2rfc 3.30.2" name="generator">
 <meta content="Internet-Draft" name="keyword">
@@ -1049,12 +1052,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">Multipath QUIC</td>
+<td class="center">Multiple Paths for QUIC</td>
 <td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 18 April 2026</td>
+<td class="center">Expires 19 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-15" class="published">15 October 2025</time>
+<time datetime="2025-10-16" class="published">16 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-18">18 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-19">19 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1107,11 +1110,14 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">Multipath Extension for QUIC</h1>
+<h1 id="title">Managing multiple paths for a QUIC connection</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document specifies a multipath extension for the QUIC protocol to
-enable the simultaneous usage of multiple paths for a single connection.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+enable the simultaneous usage of multiple paths for a single connection.
+It proposes a standard way to create, delete, and manage paths using identifiers.
+It does not specify address discovery or management, nor
+how applications using QUIC schedule traffic over multiple paths.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-discussion-venues">
@@ -1143,7 +1149,7 @@ enable the simultaneous usage of multiple paths for a single connection.<a href=
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 19 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
