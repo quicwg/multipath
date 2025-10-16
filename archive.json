@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-14T00:58:57.627255+00:00",
+  "timestamp": "2025-10-16T00:59:57.594443+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14505,7 +14505,7 @@
       ],
       "body": "This seems like a minor grammar error\n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (concurrently) using multiple paths.",
       "createdAt": "2025-09-28T14:34:48Z",
-      "updatedAt": "2025-10-10T15:43:10Z",
+      "updatedAt": "2025-10-15T10:41:06Z",
       "closedAt": null,
       "comments": [
         {
@@ -14535,6 +14535,13 @@
           "body": "I'd prefer the current sentence and I don't really see what's wrong with it. Can you explain again what the problem is?",
           "createdAt": "2025-10-10T15:43:10Z",
           "updatedAt": "2025-10-10T15:43:10Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "How about \n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (i.e., concurrently) using multiple paths.",
+          "createdAt": "2025-10-15T10:41:06Z",
+          "updatedAt": "2025-10-15T10:41:06Z"
         }
       ]
     },
@@ -14547,10 +14554,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "clarification"
+      ],
       "body": "In Section 1.1, the draft says:\n\n> We assume that the reader is familiar with the terminology used in [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)].\n\n1. It might help to drop the `we assume` part here, the reader needs to understand the QUIC terminology or else they are unlikely to be albe to use the extension. \n\n2. It might help to state the use of QUIC notational conventions too",
       "createdAt": "2025-09-28T14:42:41Z",
-      "updatedAt": "2025-10-01T14:22:35Z",
+      "updatedAt": "2025-10-15T10:16:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -14578,10 +14588,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "AFAIK there are only ever two endpoints involved in a QUIC connection, so using \"any\" is a bit broad. consider\n\nold\n\n> If any of the endpoints does not advertise the initial_max_path_id transport parameter, then the endpoints MUST NOT use any frame or mechanism defined in this document.\n\nnew\n\n> If either of the endpoints does not advertise the initial_max_path_id transport parameter, then both endpoints MUST NOT use any frame or mechanism defined in this document.",
       "createdAt": "2025-09-28T14:47:22Z",
-      "updatedAt": "2025-09-28T14:47:22Z",
+      "updatedAt": "2025-10-15T10:16:43Z",
       "closedAt": null,
       "comments": []
     },
@@ -14594,10 +14607,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "Related to https://github.com/quicwg/multipath/issues/605\n\nIs it right to assume that \"agreement\" here means that both endpoints send the TP (even if one sends a value of 0)? If so, perhaps just state it differently like\n\nold \n\n> If the use of the multipath extension is agreed after handshake completion, ...\n\nnew\n\n> If both endpoints advertise the initial_max_path_id transport parameter, once the handshake completes ...",
       "createdAt": "2025-09-28T14:52:01Z",
-      "updatedAt": "2025-09-28T14:52:01Z",
+      "updatedAt": "2025-10-15T10:16:22Z",
       "closedAt": null,
       "comments": []
     },
@@ -14610,10 +14626,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "clarification"
+      ],
       "body": "Per https://www.rfc-editor.org/rfc/rfc9000.html#section-7.4.1, \n\n> The definition of a new transport parameter ([Section 7.4.2](https://www.rfc-editor.org/rfc/rfc9000.html#new-transport-parameters)) MUST specify whether storing the transport parameter for 0-RTT is mandatory, optional, or prohibited. A client need not store a transport parameter it cannot process.\n\nThis extension has some text on 0-RTT but it doesn't appear to address the requirement above.",
       "createdAt": "2025-09-28T14:57:40Z",
-      "updatedAt": "2025-10-01T14:17:03Z",
+      "updatedAt": "2025-10-15T10:16:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -14662,10 +14681,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "2.6 deals with Connection Closure, while section 2 is titled Transport Handshake and Cryptographic Packet Protection\n\nMaybe better if it was its own top-level section or put somewhere else as it doesn't seem to relate to the section topics",
       "createdAt": "2025-09-28T15:03:59Z",
-      "updatedAt": "2025-10-01T14:08:26Z",
+      "updatedAt": "2025-10-15T10:17:11Z",
       "closedAt": null,
       "comments": [
         {
@@ -14693,10 +14715,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "I think this should be \n\nPATH_STATUS_BACKUP (see [Section 4.3](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath#path-backup-available-frame))",
       "createdAt": "2025-09-28T15:06:57Z",
-      "updatedAt": "2025-09-28T15:06:57Z",
+      "updatedAt": "2025-10-15T10:17:23Z",
       "closedAt": null,
       "comments": []
     },
@@ -14709,10 +14734,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "Section 3 deals with path management and the frames that relate to that. On the first occurence of frames already defined in RFC 9000 it is not obvious (to me at least) that these are not new frames. Consider\n\nold\n\n> If an endpoint sends a PATH_RESPONSE, it MUST be sent on the same path as used by the packet that contained the PATH_CHALLENGE frame, using a connection ID associated with the same path ID.\n\nnew\n\n> If an endpoint sends a PATH_RESPONSE frame (Section 19.18 of [QUIC-TRANSPORT]), it MUST be sent on the same path as used by the packet that contained the PATH_CHALLENGE frame (Section 19.17 of [QUIC-TRANSPORT]), using a connection ID associated with the same path ID.",
       "createdAt": "2025-09-28T15:12:29Z",
-      "updatedAt": "2025-09-28T15:12:29Z",
+      "updatedAt": "2025-10-15T10:17:36Z",
       "closedAt": null,
       "comments": []
     },
@@ -14726,11 +14754,12 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
+        "has PR",
         "editorial"
       ],
       "body": "\nold\ndelay sending the PATH_RESPONSE until sufficient resource are available\n\nnew\ndelay sending the PATH_RESPONSE until sufficient resources are available",
       "createdAt": "2025-09-28T15:15:52Z",
-      "updatedAt": "2025-09-28T15:15:52Z",
+      "updatedAt": "2025-10-15T10:17:48Z",
       "closedAt": null,
       "comments": []
     },
@@ -14743,10 +14772,13 @@
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "Section 5.1 says\n\n> With the multipath extension, each path uses a separate packet number space. This is a major difference from [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)], which only defines three number spaces (Initial, Handshake and Application packets).\n\nRFC 9000 seems to use the term \"application data packet number space\" so I think you'll want to add the \"data\" qualifier",
       "createdAt": "2025-09-28T15:51:39Z",
-      "updatedAt": "2025-10-01T14:23:23Z",
+      "updatedAt": "2025-10-15T10:17:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -14797,10 +14829,13 @@
       "assignees": [
         "huitema"
       ],
-      "labels": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
       "body": "As part of the WGLC, @larseggert made the following comment on the mailing list [1]\n\n> I just briefly rechecked -16:\n> \n> The title is still very generic, implying that this is a (*the*?) multipath extension for QUIC. Same in the abstract.\n> \n> The last three paragraphs of the introduction then have some text that was maybe added to address the raised concern, i.e., that this doc specifies extensions for *managing multiple paths* for QUIC connection. But that that alone is not resulting in \"multipath QUIC\", i.e., an IETF standard for how you actually safely and effectively utilize those multiple paths at the same time. I think the document needs to be much more blunt in stating that caveat (\"We give you paths. We don't tell you how to use them. This is a required piece of multipath QUIC, but not a complete standard.\")\n> \n> I hope this makes my concern a bit clearer. It's not that I disagree that what the doc normativley describes isn't ready for PS, it's that the doc is titled and introduced as if that was all the pieces needed for multipath QUIC when that's not the case.\n> \n> Proposal: Title change to \"Managing multiple paths for a QUIC connection\". Abstract and introduction accurately summarize standardized content. \n\n[1] https://mailarchive.ietf.org/arch/msg/quic/qaZvLwrkNyLVUn_CxcfWzM7Z5VM/",
       "createdAt": "2025-10-06T16:07:59Z",
-      "updatedAt": "2025-10-07T01:32:27Z",
+      "updatedAt": "2025-10-15T10:18:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -66559,7 +66594,7 @@
       "labels": [],
       "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
       "createdAt": "2025-10-06T19:18:50Z",
-      "updatedAt": "2025-10-13T17:12:03Z",
+      "updatedAt": "2025-10-15T11:14:16Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
@@ -66857,6 +66892,19 @@
           "createdAt": "2025-10-10T16:07:21Z",
           "updatedAt": "2025-10-10T16:07:21Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HEeA8",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Thank you. I like how the text avoids using the term concurrent in the title and abstract. Since Martin [can live with that](https://github.com/quicwg/multipath/pull/614#pullrequestreview-3310510866), LGM",
+          "createdAt": "2025-10-15T11:12:33Z",
+          "updatedAt": "2025-10-15T11:14:16Z",
+          "comments": []
         }
       ]
     },
@@ -66872,18 +66920,26 @@
       "labels": [],
       "body": "fixes #604, #605, #606, #608, #609, #610, #611, #612",
       "createdAt": "2025-10-10T15:57:59Z",
-      "updatedAt": "2025-10-13T17:17:10Z",
+      "updatedAt": "2025-10-15T12:16:53Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-1",
-      "headRefOid": "612c6d9ec55b9d7cc5318909efe02e78f86f6b93",
+      "headRefOid": "708ebfa0ec5659b394d73e28f2b8cb38413fabe0",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "fixes #603 now as well",
+          "createdAt": "2025-10-15T12:16:53Z",
+          "updatedAt": "2025-10-15T12:16:53Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM7GKCGk",
@@ -67032,13 +67088,13 @@
       "labels": [],
       "body": "fixes #607",
       "createdAt": "2025-10-10T16:01:58Z",
-      "updatedAt": "2025-10-13T18:38:48Z",
+      "updatedAt": "2025-10-15T23:30:21Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-2",
-      "headRefOid": "ab19e0341a61d6df1b011626e52396d9f2474141",
+      "headRefOid": "10e32e943b0b0043545e17301f2d42914a45c39f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -67142,6 +67198,266 @@
               "body": "OK. Let's rephrase. I care about the MUST NOT, because it encompasses data like MAX_PATH_ID that are not directly linked to frames. But you are correct about 1RTT frames. So we would have:\r\n\r\nEndpoints MUST NOT remember the value of the initial_max_path_id transport parameter they received for use\r\nin a subsequent connection. As specified in {{frames}}, the new frames frames defined in this document MUST\r\nonly be sent in 1RTT packets.\r\n\r\nOr maybe just:\r\n\r\nEndpoints MUST NOT remember the value of the initial_max_path_id transport parameter they received for use\r\nin a subsequent connection.\r\n\r\n... which would avoid duplicating a requirement from the \"new frames\" section.",
               "createdAt": "2025-10-13T18:38:48Z",
               "updatedAt": "2025-10-13T18:38:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HCaU1",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T09:17:04Z",
+          "updatedAt": "2025-10-15T09:17:04Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\r\nAs specified in {{frames}}, the new frames defined in this document can\r\nonly be sent in 1-RTT packets. As such, endpoints MUST NOT remember the value\r\nof the initial_max_path_id transport parameter for use in a subsequent connection. \r\n```",
+              "createdAt": "2025-10-15T09:17:04Z",
+              "updatedAt": "2025-10-15T17:12:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HCaqy",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T09:17:21Z",
+          "updatedAt": "2025-10-15T09:17:21Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "@huitema is this okay?",
+              "createdAt": "2025-10-15T09:17:21Z",
+              "updatedAt": "2025-10-15T09:17:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HCbEi",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T09:17:32Z",
+          "updatedAt": "2025-10-15T09:17:32Z",
+          "comments": [
+            {
+              "originalPosition": 2,
+              "body": "```suggestion\r\na new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}},\r\n```",
+              "createdAt": "2025-10-15T09:17:32Z",
+              "updatedAt": "2025-10-15T09:17:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HKb-9",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T16:42:46Z",
+          "updatedAt": "2025-10-15T16:42:46Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "No, because \"remembering\" is about more than frames, and because it is a decision per se. I don't like the causality implies by \"As such\". Let's just flip the order of sentences in this paragraph to:\r\n\r\nEndpoints MUST NOT remember the value\r\nof the initial_max_path_id transport parameter for use in a subsequent connection.\r\nAs specified in {{frames}}, the new frames frames defined in this document can\r\nonly be sent in 1-RTT packets, after negotiation of the transport parameter.\r\n",
+              "createdAt": "2025-10-15T16:42:46Z",
+              "updatedAt": "2025-10-15T16:42:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HKjEy",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T16:51:59Z",
+          "updatedAt": "2025-10-15T16:51:59Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I was think \"As such\" would refer the two sentences before that sentence. ",
+              "createdAt": "2025-10-15T16:51:59Z",
+              "updatedAt": "2025-10-15T16:53:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HKjqw",
+          "commit": {
+            "abbreviatedOid": "ef6e928"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T16:52:48Z",
+          "updatedAt": "2025-10-15T16:52:48Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "But I can simply remove the \"as such\" then?",
+              "createdAt": "2025-10-15T16:52:48Z",
+              "updatedAt": "2025-10-15T16:52:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HKmtA",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T16:56:23Z",
+          "updatedAt": "2025-10-15T16:56:23Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Actually just to add why my initial proposal didn't have normative language: given that all changes only apply to 1-RTT it actually doesn't matter if you store the value or not. Storing the value would have no impact. However, I also okay to have a MUST NOT. I just think it's not needed for interoperability. ",
+              "createdAt": "2025-10-15T16:56:23Z",
+              "updatedAt": "2025-10-15T16:56:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HKwcQ",
+          "commit": {
+            "abbreviatedOid": "ef6e928"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T17:08:24Z",
+          "updatedAt": "2025-10-15T17:08:24Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\na new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}}\r\n```",
+              "createdAt": "2025-10-15T17:08:24Z",
+              "updatedAt": "2025-10-15T17:08:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HKyUt",
+          "commit": {
+            "abbreviatedOid": "c5b1225"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T17:10:44Z",
+          "updatedAt": "2025-10-15T17:10:44Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Or alternatively I could move the sentence further above like this:\r\n```suggestion\r\nEndpoints MUST NOT remember the value\r\nof the initial_max_path_id transport parameter for use in a subsequent connection. \r\nIf the use of the multipath extension is agreed after handshake completion,\r\na new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}}\r\nand new paths can be used, as specified in Section {{path-management}}.\r\nAs specified in {{frames}}, the new frames defined in this document can\r\nonly be sent in 1-RTT packets. \r\n```",
+              "createdAt": "2025-10-15T17:10:44Z",
+              "updatedAt": "2025-10-15T17:11:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HPKAa",
+          "commit": {
+            "abbreviatedOid": "5f6cef4"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-15T23:27:29Z",
+          "updatedAt": "2025-10-15T23:27:29Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HPK2m",
+          "commit": {
+            "abbreviatedOid": "ab19e03"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T23:30:21Z",
+          "updatedAt": "2025-10-15T23:30:21Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I approved your suggestion.",
+              "createdAt": "2025-10-15T23:30:21Z",
+              "updatedAt": "2025-10-15T23:30:21Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 617,
+      "id": "PR_kwDOGNtpaM6t2Zjy",
+      "title": "update ack sec",
+      "url": "https://github.com/quicwg/multipath/pull/617",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-10-15T10:23:33Z",
+      "updatedAt": "2025-10-15T10:24:49Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-3",
+      "headRefOid": "5c39edcfa7f91919da5ac7ca6396a4a4bba7249a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7HDqMB",
+          "commit": {
+            "abbreviatedOid": "9dd0db9"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-15T10:24:41Z",
+          "updatedAt": "2025-10-15T10:24:42Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\nLucas Pardue, Michael Eriksson, Yu Zhu, Gorry Fairhurst, Tilmann Z\u00e4schke, and Tommy Pauly\r\n```",
+              "createdAt": "2025-10-15T10:24:41Z",
+              "updatedAt": "2025-10-15T10:24:42Z"
             }
           ]
         }
