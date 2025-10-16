@@ -1,6 +1,6 @@
 ---
-title: Multipath Extension for QUIC
-abbrev: Multipath QUIC
+title: Managing multiple paths for a QUIC connection
+abbrev: Multiple Paths for QUIC
 docname: draft-ietf-quic-multipath-latest
 date: {DATE}
 category: std
@@ -81,6 +81,9 @@ Emerging networking experiments and technologies, ACM"
 
 This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection.
+It proposes a standard way to create, delete, and manage paths using identifiers.
+It does not specify address discovery or management, nor
+how applications using QUIC schedule traffic over multiple paths.
 
 --- middle
 
