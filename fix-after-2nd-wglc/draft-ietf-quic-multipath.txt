@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 10 April 2026                            Uber Technologies Inc.
+Expires: 19 April 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 10 April 2026                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          7 October 2025
+                                                         16 October 2025
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 April 2026.
+   This Internet-Draft will expire on 19 April 2026.
 
 Copyright Notice
 
@@ -75,7 +75,6 @@ Table of Contents
 
    1.  Introduction
      1.1.  Conventions and Definitions
-     1.2.  Notational conventions
    2.  Transport Handshake and Cryptographic Packet Protection
      2.1.  initial_max_path_id Transport Parameter
      2.2.  Relation to Other Transport Parameters
@@ -208,8 +207,6 @@ Table of Contents
    We assume that the reader is familiar with the terminology used in
    [QUIC-TRANSPORT].  When this document uses the term "path", it refers
    to the notion of "network path" used in [QUIC-TRANSPORT].
-
-1.2.  Notational conventions
 
 2.  Transport Handshake and Cryptographic Packet Protection
 
