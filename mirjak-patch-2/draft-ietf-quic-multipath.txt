@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 18 April 2026                            Uber Technologies Inc.
+Expires: 20 April 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,17 +14,20 @@ Expires: 18 April 2026                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         15 October 2025
+                                                         17 October 2025
 
 
-                      Multipath Extension for QUIC
+             Managing multiple paths for a QUIC connection
                     draft-ietf-quic-multipath-latest
 
 Abstract
 
    This document specifies a multipath extension for the QUIC protocol
    to enable the simultaneous usage of multiple paths for a single
-   connection.
+   connection.  It proposes a standard way to create, delete, and manage
+   paths using identifiers.  It does not specify address discovery or
+   management, nor how applications using QUIC schedule traffic over
+   multiple paths.
 
 Discussion Venues
 
@@ -52,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 April 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -72,7 +75,7 @@ Table of Contents
 
    1.  Introduction
      1.1.  Conventions and Definitions
-   2.  Transport Handshake and Cryptographic Packet Protection
+   2.  Connection Lifecycle and Packet Protection
      2.1.  initial_max_path_id Transport Parameter
      2.2.  Relation to Other Transport Parameters
      2.3.  Handling ACK and PATH_ACK in 0-RTT and 1-RTT
@@ -184,7 +187,7 @@ Table of Contents
    e.g., can range from support for failover to simulatenous use of the
    aggregated capacity across all open paths.  There are currently no
    IETF specifications that define scheduling algorithms for
-   simultaneously (concurrently) using multiple paths.
+   simultaneously (i.e., concurrently) using multiple paths.
 
    Specifically, while failover between Wi-Fi and mobile networks is a
    well-known multipath use case, it only temporarily uses two paths at
@@ -201,23 +204,29 @@ Table of Contents
    14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-   We assume that the reader is familiar with the terminology used in
-   [QUIC-TRANSPORT].  When this document uses the term "path", it refers
-   to the notion of "network path" used in [QUIC-TRANSPORT].
+   This document uses the terminology defined in [QUIC-TRANSPORT].  When
+   this document uses the term "path", it refers to the notion of
+   "network path" used in [QUIC-TRANSPORT].
 
-2.  Transport Handshake and Cryptographic Packet Protection
+   The packet diagrams in this document uses the conventions defined in
+   Section 1.3 of [QUIC-TRANSPORT], including the notation (i) to denote
+   variable-length integers, encoded as specified in Section 16 of
+   [QUIC-TRANSPORT].
+
+2.  Connection Lifecycle and Packet Protection
 
    This document defines a new transport parameter initial_max_path_id
-   to indicate the support of the multipath extension.  If any of the
+   to indicate the support of the multipath extension.  If either of the
    endpoints does not advertise the initial_max_path_id transport
-   parameter, then the endpoints MUST NOT use any frame or mechanism
+   parameter, then both endpoints MUST NOT use any frame or mechanism
    defined in this document.  Endpoints MUST NOT remember the value of
    the initial_max_path_id transport parameter for use in a subsequent
-   connection.  If the use of the multipath extension is agreed after
-   handshake completion, a new AEAD usage applies to all 1-RTT packets,
-   as specified in Section Section 2.4 and new paths can be used, as
-   specified in Section Section 3.  As specified in Section 4, the new
-   frames defined in this document can only be sent in 1-RTT packets.
+   connection.  If both endpoints advertise the initial_max_path_id
+   transport parameter, once the handshake is completed a new AEAD usage
+   applies to all 1-RTT packets, as specified in Section Section 2.4,
+   and new paths can be used, as specified in Section Section 3.  As
+   specified in Section 4, the new frames defined in this document can
+   only be sent in 1-RTT packets.
 
 2.1.  initial_max_path_id Transport Parameter
 
@@ -396,7 +405,7 @@ Table of Contents
 
    *  PATH_ABANDON (see Section 4.2)
 
-   *  PATH_BACKUP (see Section 4.3)
+   *  PATH_STATUS_BACKUP (see Section 4.3)
 
    *  PATH_STATUS_AVAILABLE (see Section 4.3)
 
@@ -429,9 +438,11 @@ Table of Contents
    used for that path.  Until the client's address is validated, the
    anti-amplification limit from Section 8 of [QUIC-TRANSPORT] applies.
 
-   If an endpoint sends a PATH_RESPONSE, it MUST be sent on the same
-   path as used by the packet that contained the PATH_CHALLENGE frame,
-   using a connection ID associated with the same path ID.
+   If an endpoint sends a PATH_RESPONSE (Section 19.18 of
+   [QUIC-TRANSPORT]), it MUST be sent on the same path as used by the
+   packet that contained the PATH_CHALLENGE frame (Section 19.17 of
+   [QUIC-TRANSPORT]), using a connection ID associated with the same
+   path ID.
 
    The server might receive packets for a yet unused path ID that do not
    contain a PATH_CHALLENGE frame.  Such packets are valid if they can
@@ -449,7 +460,7 @@ Table of Contents
 
    An endpoint that has no active connection ID for this path or lacks
    other resource to immediately configure a new path could delay
-   sending the PATH_RESPONSE until sufficient resource are available.
+   sending the PATH_RESPONSE until sufficient resources are available.
    Long delays might cause the peer to repeat the PATH_CHALLENGE and
    eventually send a PATH_ABANDON, in which case the procedures
    specified in Section Section 3.4 apply.
@@ -1202,7 +1213,7 @@ Table of Contents
 
    With the multipath extension, each path uses a separate packet number
    space.  This is a major difference from [QUIC-TRANSPORT], which only
-   defines three number spaces (Initial, Handshake and Application
+   defines three number spaces (Initial, Handshake and Application data
    packets).
 
    For any given path, connection ID rotation, NAT rebinding, or client
