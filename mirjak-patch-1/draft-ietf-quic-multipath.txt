@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 18 April 2026                            Uber Technologies Inc.
+Expires: 20 April 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,17 +14,20 @@ Expires: 18 April 2026                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         15 October 2025
+                                                         17 October 2025
 
 
-                      Multipath Extension for QUIC
+             Managing multiple paths for a QUIC connection
                     draft-ietf-quic-multipath-latest
 
 Abstract
 
    This document specifies a multipath extension for the QUIC protocol
    to enable the simultaneous usage of multiple paths for a single
-   connection.
+   connection.  It proposes a standard way to create, delete, and manage
+   paths using identifiers.  It does not specify address discovery or
+   management, nor how applications using QUIC schedule traffic over
+   multiple paths.
 
 Discussion Venues
 
@@ -52,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 April 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -219,7 +222,7 @@ Table of Contents
    defined in this document.  If both endpoints advertise the
    initial_max_path_id transport parameter, once the handshake is
    completed a new AEAD usage applies to all 1-RTT packets, as specified
-   in Section Section 2.4 and new paths can be used, as specified in
+   in Section Section 2.4, and new paths can be used, as specified in
    Section Section 3.
 
 2.1.  initial_max_path_id Transport Parameter
