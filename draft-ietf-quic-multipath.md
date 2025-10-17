@@ -177,10 +177,13 @@ This document defines a new transport parameter initial_max_path_id
 to indicate the support of the multipath extension.
 If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then both endpoints MUST NOT use any frame or
-mechanism defined in this document.
+mechanism defined in this document. Endpoints MUST NOT remember the value
+of the initial_max_path_id transport parameter for use in a subsequent connection.
 If both endpoints advertise the initial_max_path_id transport parameter, once the handshake is completed
 a new AEAD usage applies to all 1-RTT packets, as specified in Section {{nonce}},
 and new paths can be used, as specified in Section {{path-management}}.
+As specified in {{frames}}, the new frames defined in this document can
+only be sent in 1-RTT packets.
 
 ## initial_max_path_id Transport Parameter {#nego}
 
