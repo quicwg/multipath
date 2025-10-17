@@ -1515,17 +1515,11 @@ This specification changes the AEAD calculation by using the path ID as part of
 AEAD nonce (see {{nonce}}). To ensure unique nonces, path IDs
 are limited to 32 bits and cannot be reused for another path of the same connection.
 
-# Contributors
-
-This document is a collaboration of authors that combines work from
-three proposals. Further contributors that were also involved
-one of the original proposals are:
-
-* Qing An
-* Zhenyu Li
-
 # Acknowledgments
 
+This document is a collaboration of authors that combines work from
+three proposals. Further authors of one of the original proposals are Qing An and Zhenyu Li.
+
 Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop,
-Lucas Pardue, Michael Eriksson, Yu Zhu, and Gorry Fairhurst
+Lucas Pardue, Michael Eriksson, Yu Zhu, Gorry Fairhurst, Tilmann Zäschke, and Tommy Pauly
 for their thorough reviews and valuable contributions.
