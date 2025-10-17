@@ -1451,10 +1451,13 @@ variable-length integers, encoded as specified in <span><a href="https://rfc-edi
 to indicate the support of the multipath extension.
 If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then both endpoints MUST NOT use any frame or
-mechanism defined in this document.
+mechanism defined in this document. Endpoints MUST NOT remember the value
+of the initial_max_path_id transport parameter for use in a subsequent connection.
 If both endpoints advertise the initial_max_path_id transport parameter, once the handshake is completed
 a new AEAD usage applies to all 1-RTT packets, as specified in Section <a href="#nonce" class="auto internal xref">Section 2.4</a>,
-and new paths can be used, as specified in Section <a href="#path-management" class="auto internal xref">Section 3</a>.<a href="#section-2-1" class="pilcrow">¶</a></p>
+and new paths can be used, as specified in Section <a href="#path-management" class="auto internal xref">Section 3</a>.
+As specified in <a href="#frames" class="auto internal xref">Section 4</a>, the new frames defined in this document can
+only be sent in 1-RTT packets.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="nego">
 <section id="section-2.1">
         <h3 id="name-initial_max_path_id-transpo">
