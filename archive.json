@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-16T00:59:57.594443+00:00",
+  "timestamp": "2025-10-19T01:06:57.099895+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14550,7 +14550,7 @@
       "id": "I_kwDOGNtpaM7OWgCg",
       "title": "Importing of RFC 9000 terms",
       "url": "https://github.com/quicwg/multipath/issues/604",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14560,8 +14560,8 @@
       ],
       "body": "In Section 1.1, the draft says:\n\n> We assume that the reader is familiar with the terminology used in [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)].\n\n1. It might help to drop the `we assume` part here, the reader needs to understand the QUIC terminology or else they are unlikely to be albe to use the extension. \n\n2. It might help to state the use of QUIC notational conventions too",
       "createdAt": "2025-09-28T14:42:41Z",
-      "updatedAt": "2025-10-15T10:16:31Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-17T12:44:30Z",
+      "closedAt": "2025-10-17T12:44:30Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14622,7 +14622,7 @@
       "id": "I_kwDOGNtpaM7OWmXR",
       "title": "Use of the TP in 0-RTT",
       "url": "https://github.com/quicwg/multipath/issues/607",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14632,8 +14632,8 @@
       ],
       "body": "Per https://www.rfc-editor.org/rfc/rfc9000.html#section-7.4.1, \n\n> The definition of a new transport parameter ([Section 7.4.2](https://www.rfc-editor.org/rfc/rfc9000.html#new-transport-parameters)) MUST specify whether storing the transport parameter for 0-RTT is mandatory, optional, or prohibited. A client need not store a transport parameter it cannot process.\n\nThis extension has some text on 0-RTT but it doesn't appear to address the requirement above.",
       "createdAt": "2025-09-28T14:57:40Z",
-      "updatedAt": "2025-10-15T10:16:57Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-17T12:46:39Z",
+      "closedAt": "2025-10-17T12:46:39Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14844,6 +14844,47 @@
           "body": "I am preparing a PR to do that.",
           "createdAt": "2025-10-06T19:04:04Z",
           "updatedAt": "2025-10-06T19:04:04Z"
+        }
+      ]
+    },
+    {
+      "number": 618,
+      "id": "I_kwDOGNtpaM7R16ud",
+      "title": "Do we still need the \"Contributors\" section?",
+      "url": "https://github.com/quicwg/multipath/issues/618",
+      "state": "OPEN",
+      "author": "qdeconinck",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "has PR",
+        "editorial"
+      ],
+      "body": "Creating this after reviewing #617. Now that we are in the final stages of this document, and given the presence of the \"Acknowledgment\" section, would it make sense to remove the \"Contributors\" one? Or at least, if we want to acknowledge these people, we can still add their names in the \"Acknowledgment\" section. ",
+      "createdAt": "2025-10-16T06:56:03Z",
+      "updatedAt": "2025-10-17T12:43:24Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\"contributors\" are typically \"additional authors, but we already have too many.\" So that's why we have the section.\n\nBut yes, in practice, having a sentence in the acknowledgement detailing the contribution of each of them would be just as nice, if not nicer.\n\nOr, ask them...",
+          "createdAt": "2025-10-16T07:15:00Z",
+          "updatedAt": "2025-10-16T07:15:00Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We added the section when we merged the draft because those two people were additional authors on the Alibaba draft. However, given that we have basically rewritten the entire document since, I agree that it would be more appropriate to move them to the ack section. @Yanmei-Liu can you maybe check with them?",
+          "createdAt": "2025-10-16T10:17:53Z",
+          "updatedAt": "2025-10-16T10:17:53Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I moved the text into the ack section and removed the separate contributor section in PR #617. If some people could have a quick look and approve that changed PR that would be great!",
+          "createdAt": "2025-10-17T12:43:24Z",
+          "updatedAt": "2025-10-17T12:43:24Z"
         }
       ]
     }
@@ -66587,24 +66628,26 @@
       "id": "PR_kwDOGNtpaM6sWVqb",
       "title": "Addressing concerns about title and abstract",
       "url": "https://github.com/quicwg/multipath/pull/614",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
       "createdAt": "2025-10-06T19:18:50Z",
-      "updatedAt": "2025-10-15T11:14:16Z",
+      "updatedAt": "2025-10-16T13:30:07Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
       "headRepository": "quicwg/multipath",
       "headRefName": "fix-after-2nd-wglc",
-      "headRefOid": "53bdfb188d724f0ad98aeddd0147dbf764aab1c8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "2234a975d4926c15dc6f77d1d2ae24b648b90288",
+      "closedAt": "2025-10-16T13:30:07Z",
+      "mergedAt": "2025-10-16T13:30:07Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "13b0b1d97a126e7afa5b2ba80a39d807dec5f138"
+      },
       "comments": [
         {
           "author": "LPardue",
@@ -66905,6 +66948,92 @@
           "createdAt": "2025-10-15T11:12:33Z",
           "updatedAt": "2025-10-15T11:14:16Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HQBPR",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-16T02:33:22Z",
+          "updatedAt": "2025-10-16T02:33:22Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HRrw9",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Globally ok, but a (minor) comment",
+          "createdAt": "2025-10-16T06:50:45Z",
+          "updatedAt": "2025-10-16T06:51:12Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "Is it normal to introduce a new, empty subsection?",
+              "createdAt": "2025-10-16T06:50:46Z",
+              "updatedAt": "2025-10-16T06:51:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HUgJC",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-16T10:06:34Z",
+          "updatedAt": "2025-10-16T10:06:35Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "No, I think there was text here in the first version of this PR which got later moved. Will delete it. Thanks for catching it!",
+              "createdAt": "2025-10-16T10:06:34Z",
+              "updatedAt": "2025-10-16T10:06:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HUgR8",
+          "commit": {
+            "abbreviatedOid": "53bdfb1"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-16T10:06:46Z",
+          "updatedAt": "2025-10-16T10:06:46Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2025-10-16T10:06:46Z",
+              "updatedAt": "2025-10-16T10:06:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HXlGp",
+          "commit": {
+            "abbreviatedOid": "2234a97"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-16T13:26:19Z",
+          "updatedAt": "2025-10-16T13:26:19Z",
+          "comments": []
         }
       ]
     },
@@ -66913,24 +67042,26 @@
       "id": "PR_kwDOGNtpaM6tIADF",
       "title": "Mostly editorial comments by Lucas",
       "url": "https://github.com/quicwg/multipath/pull/615",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #604, #605, #606, #608, #609, #610, #611, #612",
       "createdAt": "2025-10-10T15:57:59Z",
-      "updatedAt": "2025-10-15T12:16:53Z",
+      "updatedAt": "2025-10-17T12:44:29Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
+      "baseRefOid": "13b0b1d97a126e7afa5b2ba80a39d807dec5f138",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-1",
-      "headRefOid": "708ebfa0ec5659b394d73e28f2b8cb38413fabe0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "2267e749706673db015587ad8056c6e53ef535d5",
+      "closedAt": "2025-10-17T12:44:29Z",
+      "mergedAt": "2025-10-17T12:44:29Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "f0aaa60fcd4ecb0672f113bb6a39bb0c62b41f29"
+      },
       "comments": [
         {
           "author": "mirjak",
@@ -67073,6 +67204,19 @@
               "updatedAt": "2025-10-13T17:17:10Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HRtJG",
+          "commit": {
+            "abbreviatedOid": "708ebfa"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2025-10-16T06:52:49Z",
+          "updatedAt": "2025-10-16T06:52:49Z",
+          "comments": []
         }
       ]
     },
@@ -67081,24 +67225,26 @@
       "id": "PR_kwDOGNtpaM6tIC8B",
       "title": "don't store initial_max_path_id for 0-RTT",
       "url": "https://github.com/quicwg/multipath/pull/616",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "fixes #607",
       "createdAt": "2025-10-10T16:01:58Z",
-      "updatedAt": "2025-10-15T23:30:21Z",
+      "updatedAt": "2025-10-17T12:46:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
+      "baseRefOid": "f0aaa60fcd4ecb0672f113bb6a39bb0c62b41f29",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-2",
-      "headRefOid": "10e32e943b0b0043545e17301f2d42914a45c39f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e8849454dd420ecbb4428d60b2febcf622c17f97",
+      "closedAt": "2025-10-17T12:46:38Z",
+      "mergedAt": "2025-10-17T12:46:38Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "8eab7ae394e2bae1431a0ade4bb79f4657c4c194"
+      },
       "comments": [],
       "reviews": [
         {
@@ -67413,13 +67559,26 @@
               "updatedAt": "2025-10-15T23:30:21Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HRteP",
+          "commit": {
+            "abbreviatedOid": "10e32e9"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Good to me.",
+          "createdAt": "2025-10-16T06:53:21Z",
+          "updatedAt": "2025-10-16T06:53:21Z",
+          "comments": []
         }
       ]
     },
     {
       "number": 617,
       "id": "PR_kwDOGNtpaM6t2Zjy",
-      "title": "update ack sec",
+      "title": "update ack sec and move contributors",
       "url": "https://github.com/quicwg/multipath/pull/617",
       "state": "OPEN",
       "author": "mirjak",
@@ -67428,13 +67587,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-10-15T10:23:33Z",
-      "updatedAt": "2025-10-15T10:24:49Z",
+      "updatedAt": "2025-10-17T13:19:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-3",
-      "headRefOid": "5c39edcfa7f91919da5ac7ca6396a4a4bba7249a",
+      "headRefOid": "f1b2a165699296d10ce056f117af9469a7b7f133",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -67460,6 +67619,32 @@
               "updatedAt": "2025-10-15T10:24:42Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HRuJ9",
+          "commit": {
+            "abbreviatedOid": "5c39edc"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-16T06:54:25Z",
+          "updatedAt": "2025-10-16T06:54:25Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7HsjWC",
+          "commit": {
+            "abbreviatedOid": "f1b2a16"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-17T13:19:04Z",
+          "updatedAt": "2025-10-17T13:19:04Z",
+          "comments": []
         }
       ]
     }
