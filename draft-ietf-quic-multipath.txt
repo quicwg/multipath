@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 20 April 2026                            Uber Technologies Inc.
+Expires: 23 April 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 20 April 2026                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         17 October 2025
+                                                         20 October 2025
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 April 2026.
+   This Internet-Draft will expire on 23 April 2026.
 
 Copyright Notice
 
@@ -119,11 +119,10 @@ Table of Contents
      7.1.  Memory Allocation for Per-Path Resources
      7.2.  Denial of Service with Multiple Paths
      7.3.  Cryptographic Handshake and AEAD Nonce
-   8.  Contributors
-   9.  Acknowledgments
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   8.  Acknowledgments
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -1668,26 +1667,20 @@ Table of Contents
    path IDs are limited to 32 bits and cannot be reused for another path
    of the same connection.
 
-8.  Contributors
+8.  Acknowledgments
 
    This document is a collaboration of authors that combines work from
-   three proposals.  Further contributors that were also involved one of
-   the original proposals are:
-
-   *  Qing An
-
-   *  Zhenyu Li
-
-9.  Acknowledgments
+   three proposals.  Further authors of one of the original proposals
+   are Qing An and Zhenyu Li.
 
    Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus
-   Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, Yu Zhu, and
-   Gorry Fairhurst for their thorough reviews and valuable
-   contributions.
+   Westerlund, Mike Bishop, Lucas Pardue, Michael Eriksson, Yu Zhu,
+   Gorry Fairhurst, Tilmann Zäschke, and Tommy Pauly for their thorough
+   reviews and valuable contributions.
 
-10.  References
+9.  References
 
-10.1.  Normative References
+9.1.  Normative References
 
    [QUIC-RECOVERY]
               Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
@@ -1713,7 +1706,7 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-10.2.  Informative References
+9.2.  Informative References
 
    [OLIA]     Khalili, R., Gast, N., Popovic, M., Upadhyay, U., and J.
               Le Boudec, "MPTCP is not pareto-optimal: performance
