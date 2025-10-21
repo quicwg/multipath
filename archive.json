@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-19T01:06:57.099895+00:00",
+  "timestamp": "2025-10-21T01:01:38.939181+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -67580,24 +67580,28 @@
       "id": "PR_kwDOGNtpaM6t2Zjy",
       "title": "update ack sec and move contributors",
       "url": "https://github.com/quicwg/multipath/pull/617",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "",
       "createdAt": "2025-10-15T10:23:33Z",
-      "updatedAt": "2025-10-17T13:19:04Z",
+      "updatedAt": "2025-10-20T15:26:04Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "054925bab226b355a20591e08e72eac48a175fe5",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-3",
       "headRefOid": "f1b2a165699296d10ce056f117af9469a7b7f133",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-10-20T15:26:04Z",
+      "mergedAt": "2025-10-20T15:26:04Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d"
+      },
       "comments": [],
       "reviews": [
         {
