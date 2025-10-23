@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-21T01:01:38.939181+00:00",
+  "timestamp": "2025-10-23T01:00:56.232651+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14496,7 +14496,7 @@
       "id": "I_kwDOGNtpaM7OWcYM",
       "title": "grammar: simultaneously (concurrently) using multiple paths",
       "url": "https://github.com/quicwg/multipath/issues/603",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14505,8 +14505,8 @@
       ],
       "body": "This seems like a minor grammar error\n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (concurrently) using multiple paths.",
       "createdAt": "2025-09-28T14:34:48Z",
-      "updatedAt": "2025-10-15T10:41:06Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-22T17:09:31Z",
+      "closedAt": "2025-10-22T17:09:31Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14542,6 +14542,13 @@
           "body": "How about \n\n> There are currently no IETF specifications that define scheduling algorithms for simultaneously (i.e., concurrently) using multiple paths.",
           "createdAt": "2025-10-15T10:41:06Z",
           "updatedAt": "2025-10-15T10:41:06Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:09:31Z",
+          "updatedAt": "2025-10-22T17:09:31Z"
         }
       ]
     },
@@ -14584,7 +14591,7 @@
       "id": "I_kwDOGNtpaM7OWh_p",
       "title": "any of the endpoints does not advertise -> either endpoint does not advertise",
       "url": "https://github.com/quicwg/multipath/issues/605",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14594,16 +14601,24 @@
       ],
       "body": "AFAIK there are only ever two endpoints involved in a QUIC connection, so using \"any\" is a bit broad. consider\n\nold\n\n> If any of the endpoints does not advertise the initial_max_path_id transport parameter, then the endpoints MUST NOT use any frame or mechanism defined in this document.\n\nnew\n\n> If either of the endpoints does not advertise the initial_max_path_id transport parameter, then both endpoints MUST NOT use any frame or mechanism defined in this document.",
       "createdAt": "2025-09-28T14:47:22Z",
-      "updatedAt": "2025-10-15T10:16:43Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-22T17:09:15Z",
+      "closedAt": "2025-10-22T17:09:15Z",
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:09:15Z",
+          "updatedAt": "2025-10-22T17:09:15Z"
+        }
+      ]
     },
     {
       "number": 606,
       "id": "I_kwDOGNtpaM7OWjzh",
       "title": "\"If the use of the multipath extension is agreed after handshake completion\"",
       "url": "https://github.com/quicwg/multipath/issues/606",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14613,9 +14628,17 @@
       ],
       "body": "Related to https://github.com/quicwg/multipath/issues/605\n\nIs it right to assume that \"agreement\" here means that both endpoints send the TP (even if one sends a value of 0)? If so, perhaps just state it differently like\n\nold \n\n> If the use of the multipath extension is agreed after handshake completion, ...\n\nnew\n\n> If both endpoints advertise the initial_max_path_id transport parameter, once the handshake completes ...",
       "createdAt": "2025-09-28T14:52:01Z",
-      "updatedAt": "2025-10-15T10:16:22Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-22T17:09:00Z",
+      "closedAt": "2025-10-22T17:09:00Z",
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:09:00Z",
+          "updatedAt": "2025-10-22T17:09:00Z"
+        }
+      ]
     },
     {
       "number": 607,
@@ -14677,7 +14700,7 @@
       "id": "I_kwDOGNtpaM7OWo84",
       "title": "Section 2.6 seems misplaced",
       "url": "https://github.com/quicwg/multipath/issues/608",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14687,8 +14710,8 @@
       ],
       "body": "2.6 deals with Connection Closure, while section 2 is titled Transport Handshake and Cryptographic Packet Protection\n\nMaybe better if it was its own top-level section or put somewhere else as it doesn't seem to relate to the section topics",
       "createdAt": "2025-09-28T15:03:59Z",
-      "updatedAt": "2025-10-15T10:17:11Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-22T17:08:48Z",
+      "closedAt": "2025-10-22T17:08:47Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14703,6 +14726,13 @@
           "body": "Thanks  for the contex. Due to the change to AEAD I agree following immediately to it in the same section is nice.\n\nPerhaps renaming to simply \"Connection lifecycle and Packet Protection\" might work; leaving section 2.6 where it is",
           "createdAt": "2025-10-01T14:07:56Z",
           "updatedAt": "2025-10-01T14:08:26Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:08:48Z",
+          "updatedAt": "2025-10-22T17:08:48Z"
         }
       ]
     },
@@ -14711,7 +14741,7 @@
       "id": "I_kwDOGNtpaM7OWqXR",
       "title": "PATH_BACKUP (see Section 4.3)",
       "url": "https://github.com/quicwg/multipath/issues/609",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14721,16 +14751,24 @@
       ],
       "body": "I think this should be \n\nPATH_STATUS_BACKUP (see [Section 4.3](https://datatracker.ietf.org/doc/html/draft-ietf-quic-multipath#path-backup-available-frame))",
       "createdAt": "2025-09-28T15:06:57Z",
-      "updatedAt": "2025-10-15T10:17:23Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-22T17:08:34Z",
+      "closedAt": "2025-10-22T17:08:34Z",
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:08:34Z",
+          "updatedAt": "2025-10-22T17:08:34Z"
+        }
+      ]
     },
     {
       "number": 610,
       "id": "I_kwDOGNtpaM7OWtXU",
       "title": "Consider citing RFC 9000 when referring to frames",
       "url": "https://github.com/quicwg/multipath/issues/610",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14740,16 +14778,24 @@
       ],
       "body": "Section 3 deals with path management and the frames that relate to that. On the first occurence of frames already defined in RFC 9000 it is not obvious (to me at least) that these are not new frames. Consider\n\nold\n\n> If an endpoint sends a PATH_RESPONSE, it MUST be sent on the same path as used by the packet that contained the PATH_CHALLENGE frame, using a connection ID associated with the same path ID.\n\nnew\n\n> If an endpoint sends a PATH_RESPONSE frame (Section 19.18 of [QUIC-TRANSPORT]), it MUST be sent on the same path as used by the packet that contained the PATH_CHALLENGE frame (Section 19.17 of [QUIC-TRANSPORT]), using a connection ID associated with the same path ID.",
       "createdAt": "2025-09-28T15:12:29Z",
-      "updatedAt": "2025-10-15T10:17:36Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-22T17:08:20Z",
+      "closedAt": "2025-10-22T17:08:20Z",
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:08:20Z",
+          "updatedAt": "2025-10-22T17:08:20Z"
+        }
+      ]
     },
     {
       "number": 611,
       "id": "I_kwDOGNtpaM7OWvbu",
       "title": "grammar: delay sending the PATH_RESPONSE until sufficient resource are available",
       "url": "https://github.com/quicwg/multipath/issues/611",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14759,16 +14805,24 @@
       ],
       "body": "\nold\ndelay sending the PATH_RESPONSE until sufficient resource are available\n\nnew\ndelay sending the PATH_RESPONSE until sufficient resources are available",
       "createdAt": "2025-09-28T15:15:52Z",
-      "updatedAt": "2025-10-15T10:17:48Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-22T17:08:06Z",
+      "closedAt": "2025-10-22T17:08:06Z",
+      "comments": [
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:08:06Z",
+          "updatedAt": "2025-10-22T17:08:06Z"
+        }
+      ]
     },
     {
       "number": 612,
       "id": "I_kwDOGNtpaM7OXAiG",
       "title": "Application or Application data space?",
       "url": "https://github.com/quicwg/multipath/issues/612",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -14778,8 +14832,8 @@
       ],
       "body": "Section 5.1 says\n\n> With the multipath extension, each path uses a separate packet number space. This is a major difference from [[QUIC-TRANSPORT](https://www.rfc-editor.org/rfc/rfc9000)], which only defines three number spaces (Initial, Handshake and Application packets).\n\nRFC 9000 seems to use the term \"application data packet number space\" so I think you'll want to add the \"data\" qualifier",
       "createdAt": "2025-09-28T15:51:39Z",
-      "updatedAt": "2025-10-15T10:17:59Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-22T17:07:08Z",
+      "closedAt": "2025-10-22T17:07:07Z",
       "comments": [
         {
           "author": "mirjak",
@@ -14815,6 +14869,13 @@
           "body": "Ah, sorry yes, we can/should do that! I was confused where you wanted to add the word \"data\". because effectively we are adding a new application data packet space for each path. But not sure if that would be useful to say it that way....",
           "createdAt": "2025-10-01T14:22:49Z",
           "updatedAt": "2025-10-01T14:23:23Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:07:08Z",
+          "updatedAt": "2025-10-22T17:07:08Z"
         }
       ]
     },
@@ -14823,7 +14884,7 @@
       "id": "I_kwDOGNtpaM7P5rt7",
       "title": "Title and introduction imply too much about the extension's capabilities",
       "url": "https://github.com/quicwg/multipath/issues/613",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -14835,8 +14896,8 @@
       ],
       "body": "As part of the WGLC, @larseggert made the following comment on the mailing list [1]\n\n> I just briefly rechecked -16:\n> \n> The title is still very generic, implying that this is a (*the*?) multipath extension for QUIC. Same in the abstract.\n> \n> The last three paragraphs of the introduction then have some text that was maybe added to address the raised concern, i.e., that this doc specifies extensions for *managing multiple paths* for QUIC connection. But that that alone is not resulting in \"multipath QUIC\", i.e., an IETF standard for how you actually safely and effectively utilize those multiple paths at the same time. I think the document needs to be much more blunt in stating that caveat (\"We give you paths. We don't tell you how to use them. This is a required piece of multipath QUIC, but not a complete standard.\")\n> \n> I hope this makes my concern a bit clearer. It's not that I disagree that what the doc normativley describes isn't ready for PS, it's that the doc is titled and introduced as if that was all the pieces needed for multipath QUIC when that's not the case.\n> \n> Proposal: Title change to \"Managing multiple paths for a QUIC connection\". Abstract and introduction accurately summarize standardized content. \n\n[1] https://mailarchive.ietf.org/arch/msg/quic/qaZvLwrkNyLVUn_CxcfWzM7Z5VM/",
       "createdAt": "2025-10-06T16:07:59Z",
-      "updatedAt": "2025-10-15T10:18:10Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-22T17:07:48Z",
+      "closedAt": "2025-10-22T17:07:48Z",
       "comments": [
         {
           "author": "huitema",
@@ -14844,6 +14905,13 @@
           "body": "I am preparing a PR to do that.",
           "createdAt": "2025-10-06T19:04:04Z",
           "updatedAt": "2025-10-06T19:04:04Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was heavily reviewed and merged so closing this",
+          "createdAt": "2025-10-22T17:07:48Z",
+          "updatedAt": "2025-10-22T17:07:48Z"
         }
       ]
     },
@@ -14852,7 +14920,7 @@
       "id": "I_kwDOGNtpaM7R16ud",
       "title": "Do we still need the \"Contributors\" section?",
       "url": "https://github.com/quicwg/multipath/issues/618",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "qdeconinck",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -14862,8 +14930,8 @@
       ],
       "body": "Creating this after reviewing #617. Now that we are in the final stages of this document, and given the presence of the \"Acknowledgment\" section, would it make sense to remove the \"Contributors\" one? Or at least, if we want to acknowledge these people, we can still add their names in the \"Acknowledgment\" section. ",
       "createdAt": "2025-10-16T06:56:03Z",
-      "updatedAt": "2025-10-17T12:43:24Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-22T17:06:50Z",
+      "closedAt": "2025-10-22T17:06:50Z",
       "comments": [
         {
           "author": "huitema",
@@ -14885,6 +14953,13 @@
           "body": "I moved the text into the ack section and removed the separate contributor section in PR #617. If some people could have a quick look and approve that changed PR that would be great!",
           "createdAt": "2025-10-17T12:43:24Z",
           "updatedAt": "2025-10-17T12:43:24Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Pr was merged so closing this",
+          "createdAt": "2025-10-22T17:06:50Z",
+          "updatedAt": "2025-10-22T17:06:50Z"
         }
       ]
     }
