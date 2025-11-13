@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-23T01:00:56.232651+00:00",
+  "timestamp": "2025-11-13T01:03:32.718268+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -67726,6 +67726,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 619,
+      "id": "PR_kwDOGNtpaM6y7whC",
+      "title": "Editorial rewording",
+      "url": "https://github.com/quicwg/multipath/pull/619",
+      "state": "OPEN",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "If I understood this correctly this change is editorial.\n\n\"The peers that ...\" reads rather strange combined with \"... from the\npeer ...\" later in that sentence.  I think using \"Endpoints\" makes\nthis sentence easier to read.  I appreciate this is subjective though.",
+      "createdAt": "2025-11-12T09:09:25Z",
+      "updatedAt": "2025-11-12T09:09:25Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d",
+      "headRepository": "flub/multipath",
+      "headRefName": "flub/the-peers",
+      "headRefOid": "f26edc59610e53579e28e8a6b1ee8f5f3ee52efc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
