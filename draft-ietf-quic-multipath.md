@@ -1406,7 +1406,7 @@ the QUIC WG as contact to the respective registries under
 <https://www.iana.org/assignments/quic/quic.xhtml>.
 
 The following entry in {{transport-parameters}} should be added to
-the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
+the "QUIC Transport Parameters" registry.
 
 Value | Parameter Name.     | Specification
 ------|---------------------|-----------------
@@ -1415,10 +1415,10 @@ TBD   | initial_max_path_id | {{nego}}
 
 
 The following frame types defined in {{frame-types}} should be added to
-the "QUIC Frame Types" registry under the "QUIC Protocol" heading.
+the "QUIC Frame Types" registry.
 
 
-Value           | Frame Name               | Specification
+Value           | Frame Type Name          | Specification
 ----------------|--------------------------|-----------------
 TBD-00 - TBD-01 | PATH_ACK                 | {{mp-ack-frame}}
 TBD-02          | PATH_ABANDON             | {{path-abandon-frame}}
@@ -1432,8 +1432,7 @@ TBD-09          | PATH_CIDS_BLOCKED        | {{paths-and-cids-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
-be added to the "QUIC Transport Error Codes" registry under
-the "QUIC Protocol" heading.
+be added to the "QUIC Transport Error Codes" registry.
 
 |Value                       | Code                  | Description                   | Specification
 |----------------------------|-----------------------|-------------------------------|-------------------
@@ -1460,7 +1459,7 @@ defined in this document.
 The experiments use the values defined in {{frame-types-exp}} for the additional frame types
 defined in this document.
 
-| Frame Name       | Value used in experiments |
+| Frame Type Name  | Value used in experiments |
 |------------------|---------------------------|
 | PATH_ACK | 0x15228c00-0x15228c01 |
 | PATH_ABANDON | 0x15228c05 |
