@@ -634,7 +634,7 @@ from implicit signals such as an idle time-out (see {{idle-time-close}})
 or packet losses as well as for any other reason such as management
 of local resources.
 
-The peers that send a PATH_ABANDON frame MUST treat all connection
+Endpoints that send a PATH_ABANDON frame MUST treat all connection
 IDs received from the peer for the path ID indicated in the PATH_ABANDON as immediately
 retired, and subsequently cannot send any packet on that path anymore.
 Note that while abandoning a path will cause
