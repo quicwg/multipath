@@ -1460,7 +1460,7 @@ defined in this document.
 The experiments use the values defined in {{frame-types-exp}} for the additional frame types
 defined in this document.
 
-| Frame Name       | Value used in experiments |                                   
+| Frame Name       | Value used in experiments |
 |------------------|---------------------------|
 | PATH_ACK | 0x15228c00-0x15228c01 |
 | PATH_ABANDON | 0x15228c05 |
@@ -1476,12 +1476,12 @@ defined in this document.
 
 The experiments use the error code values defined in {{tab-error-code-exp}}.
 
-|Error code  | Value used in experiments | 
+|Error code  | Value used in experiments |
 |-------|--------------------|
-|APPLICATION_ABANDON_PATH | 0x004150504142414e) | 
+|APPLICATION_ABANDON_PATH | 0x004150504142414e) |
 |PATH_RESOURCE_LIMIT_REACHED| 0x0052534c494d4954) |
 |PATH_UNSTABLE_OR_POOR| 0x00554e5f494e5446) |
-|NO_CID_AVAILABLE_FOR_PATH| 0x004e4f5f4349445f) | 
+|NO_CID_AVAILABLE_FOR_PATH| 0x004e4f5f4349445f) |
 {: #tab-error-code-exp title="Error Codes Values for Multipath QUIC experiments"}
 
 
