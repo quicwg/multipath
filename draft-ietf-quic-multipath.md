@@ -1408,9 +1408,9 @@ the QUIC WG as contact to the respective registries under
 The following entry in {{transport-parameters}} should be added to
 the "QUIC Transport Parameters" registry under the "QUIC Protocol" heading.
 
-Value                                         | Parameter Name.   | Specification
-----------------------------------------------|-------------------|-----------------
-TBD (current version uses 0x0f739bbc1b666d0d) | initial_max_path_id | {{nego}}
+Value | Parameter Name.     | Specification
+------|---------------------|-----------------
+TBD   | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -1418,30 +1418,71 @@ The following frame types defined in {{frame-types}} should be added to
 the "QUIC Frame Types" registry under the "QUIC Protocol" heading.
 
 
-Value                                              | Frame Name          | Specification
----------------------------------------------------|---------------------|-----------------
-TBD-00 - TBD-01 (experiments use 0x15228c00-0x15228c01) | PATH_ACK         | {{mp-ack-frame}}
-TBD-02 (experiments use 0x15228c05)                  | PATH_ABANDON        | {{path-abandon-frame}}
-TBD-03 (experiments use 0x15228c07)                  | PATH_STATUS_BACKUP  | {{path-backup-available-frame}}
-TBD-04 (experiments use 0x15228c08)                  | PATH_STATUS_AVAILABLE      | {{path-backup-available-frame}}
-TBD-05 (experiments use 0x15228c09)                  | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
-TBD-06 (experiments use 0x15228c0a)                  | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-TBD-07 (experiments use 0x15228c0c)                  | MAX_PATH_ID            | {{max-paths-frame}}
-TBD-08 (experiments use 0x15228c0d)                  | PATHS_BLOCKED     | {{paths-and-cids-blocked-frame}}
-TBD-09 (experiments use 0x15228c0e)                  | PATH_CIDS_BLOCKED | {{paths-and-cids-blocked-frame}}
+Value           | Frame Name               | Specification
+----------------|--------------------------|-----------------
+TBD-00 - TBD-01 | PATH_ACK                 | {{mp-ack-frame}}
+TBD-02          | PATH_ABANDON             | {{path-abandon-frame}}
+TBD-03          | PATH_STATUS_BACKUP       | {{path-backup-available-frame}}
+TBD-04          | PATH_STATUS_AVAILABLE    | {{path-backup-available-frame}}
+TBD-05          | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
+TBD-06          | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
+TBD-07          | MAX_PATH_ID              | {{max-paths-frame}}
+TBD-08          | PATHS_BLOCKED            | {{paths-and-cids-blocked-frame}}
+TBD-09          | PATH_CIDS_BLOCKED        | {{paths-and-cids-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
 be added to the "QUIC Transport Error Codes" registry under
 the "QUIC Protocol" heading.
 
-Value                       | Code                  | Description                   | Specification
-----------------------------|-----------------------|-------------------------------|-------------------
-TBD-10 (experiments use 0x004150504142414e) | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
-TBD-11 (experiments use 0x0052534c494d4954) | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
-TBD-12 (experiments use 0x00554e5f494e5446) | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}
-TBD-13 (experiments use 0x004e4f5f4349445f) | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
+|Value                       | Code                  | Description                   | Specification
+|----------------------------|-----------------------|-------------------------------|-------------------
+|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
+|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}
+|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
+
+## Values used in experiments
+
+RFC Editor's Note: Please remove this section prior to publication of
+a final version of this document.
+
+The experiments use the value defined in {{transport-parameters-exp}} for the transport parameter
+defined in this document.
+
+| Parameter Name.     | Value              |
+|---------------------|--------------------|
+| initial_max_path_id | 0x0f739bbc1b666d0d |
+{: #transport-parameters-exp title="Experimental Transport Parameter Value"}
+
+
+The experiments use the values defined in {{frame-types-exp}} for the additional frame types
+defined in this document.
+
+| Frame Name       | Value used in experiments |                                   
+|------------------|---------------------------|
+| PATH_ACK | 0x15228c00-0x15228c01 |
+| PATH_ABANDON | 0x15228c05 |
+| PATH_STATUS_BACKUP | 0x15228c07 |
+| PATH_STATUS_AVAILABLE | 0x15228c08 |
+| PATH_NEW_CONNECTION_ID | 0x15228c09 |
+| PATH_RETIRE_CONNECTION_ID | 0x15228c0a |
+| MAX_PATH_ID | 0x15228c0c |
+| PATHS_BLOCKED | 0x15228c0d |
+| PATH_CIDS_BLOCKED | 0x15228c0e |
+{: #frame-types-exp title="Experimental values for additions to QUIC Frame Types Entries"}
+
+
+The experiments use the error code values defined in {{tab-error-code-exp}}.
+
+|Error code  | Value used in experiments | 
+|-------|--------------------|
+|APPLICATION_ABANDON_PATH | 0x004150504142414e) | 
+|PATH_RESOURCE_LIMIT_REACHED| 0x0052534c494d4954) |
+|PATH_UNSTABLE_OR_POOR| 0x00554e5f494e5446) |
+|NO_CID_AVAILABLE_FOR_PATH| 0x004e4f5f4349445f) | 
+{: #tab-error-code-exp title="Error Codes Values for Multipath QUIC experiments"}
 
 
 # Security Considerations
