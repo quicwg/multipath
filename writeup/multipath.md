@@ -121,13 +121,14 @@ the best of your knowledge, have all required disclosures been filed? If
 not, explain why. If yes, summarize any relevant discussion, including links
 to publicly-available messages when applicable.
 
-TBC: each author responded
+Yes. All authors have been reminded and have indicated they are not aware of any
+IPR related to the document.
 
 13. Has each author, editor, and contributor shown their willingness to be
 listed as such? If the total number of authors and editors on the front page
 is greater than five, please provide a justification.
 
-TBC: each author responded
+Yes. All authors have confirmed their willingness.
 
 The number of authors on the front page is 6. This was discussed extensively in
 the lead up to adoption with the author group, chairs and the responsible AD at
