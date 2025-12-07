@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-13T01:03:32.718268+00:00",
+  "timestamp": "2025-12-07T01:11:27.766791+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -14960,6 +14960,91 @@
           "body": "Pr was merged so closing this",
           "createdAt": "2025-10-22T17:06:50Z",
           "updatedAt": "2025-10-22T17:06:50Z"
+        }
+      ]
+    },
+    {
+      "number": 620,
+      "id": "I_kwDOGNtpaM7cGlis",
+      "title": "I-D nits",
+      "url": "https://github.com/quicwg/multipath/issues/620",
+      "state": "CLOSED",
+      "author": "LPardue",
+      "authorAssociation": "MEMBER",
+      "assignees": [
+        "huitema"
+      ],
+      "labels": [],
+      "body": "As part of the shepherds writeup, I have run the I-D nits tool and it's picked up a few things that should be addressed. Source https://author-tools.ietf.org/api/idnits?url=https://www.ietf.org/archive/id/draft-ietf-quic-multipath-17.txt\n\n```\n** There are 31 instances of too long lines in the document, the longest\n     one being 8 characters in excess of 72.\n\n  -- The document has examples using IPv4 documentation addresses according\n     to RFC6890, but does not use any IPv6 documentation addresses.  Maybe\n     there should be IPv6 examples, too?\n```",
+      "createdAt": "2025-12-04T03:31:46Z",
+      "updatedAt": "2025-12-05T19:53:21Z",
+      "closedAt": "2025-12-05T19:51:44Z",
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am handling this.",
+          "createdAt": "2025-12-05T00:51:49Z",
+          "updatedAt": "2025-12-05T00:51:49Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The \"excess lines\" are in a series of \"text tables\", encoded in the draft as markdown tables.\nIt seems that this is an issue with kramdown. Normally, table cells should be automatically\nformatted to meet the 72 columns requirement.",
+          "createdAt": "2025-12-05T01:00:24Z",
+          "updatedAt": "2025-12-05T01:00:24Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This seems to be all in the table of error codes. It is indeed too wide:\n\n~~~\n   +===================+===========================+=============+=============+\n   |Value              |Code                       |Description  |Specification|\n   +===================+===========================+=============+=============+\n   |TBD-10 (experiments|APPLICATION_ABANDON_PATH   |Path         |Section 4.2.1|\n   |use                |                           |abandoned at |             |\n   |0x004150504142414e)|                           |the          |             |\n   |                   |                           |application's|             |\n   |                   |                           |request      |             |\n   +-------------------+---------------------------+-------------+-------------+\n~~~\n\nMarkdown is trying, but the size is constrained by the size of the largest word in each column:\n\n- `0x004150504142414e)`: 19\n- `PATH_RESOURCE_LIMIT_REACHED`: 27\n- `application's`: 13\n- `Section 4.2.1`: 13\n- Total: 72 + five `|` = 77\n\nTo fix that, I have to remove some data such as \"(experiments use 0x004150504142414e)\" and move it to a secondary table.\n\n",
+          "createdAt": "2025-12-05T01:20:42Z",
+          "updatedAt": "2025-12-05T01:20:42Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have entered PR #623 to fix the issue. I checked it by running kramdown and xml2rfc, and verified that there was no complaints about line lengths.\n\nI did not add IPv6 examples, because the document has exactly one example, and realistic examples can only use one address family. The alternative would be to duplicate that example, stating that, \"this is the same flow using IPv6 addresses\", but that's not really attractive. Another possibility would be to replace all addresses in the example by IPv6 addresses, but then we would get the same question, does it work on IPv4?\n\nFell free to propose suggestions in the PR!",
+          "createdAt": "2025-12-05T06:22:08Z",
+          "updatedAt": "2025-12-05T19:53:21Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "I'm happy with the responses, feel free to close the issue once you land the PR.",
+          "createdAt": "2025-12-05T14:18:49Z",
+          "updatedAt": "2025-12-05T14:18:49Z"
+        }
+      ]
+    },
+    {
+      "number": 621,
+      "id": "I_kwDOGNtpaM7cGsWT",
+      "title": "IANA section feedback",
+      "url": "https://github.com/quicwg/multipath/issues/621",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "1. Registration of QUIC frame types should use the term \"Frame Type Name\n\n2. There are several statements of the form\n\n> The following <snip> should be added to the <foo> registry under the \"QUIC Protocol\" heading. \n\nWhat is \"the \"QUIC Protocol\" heading\"? The instructions name the registry and that seems clear enough as an instruction to IANA. \n",
+      "createdAt": "2025-12-04T03:46:22Z",
+      "updatedAt": "2025-12-05T20:10:26Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yes, the IANA has a section dedicated to QUIC, which includes tables for transport parameters, frame types and error code. If I understand correctly, your suggestion is to replace entries like:\n\n~~~\nThe following entry in {{transport-parameters}} should be added to\nthe \"QUIC Transport Parameters\" registry under the \"QUIC Protocol\" heading.\n~~~\n\nBy just saying:\n\n~~~\nThe following entry in {{transport-parameters}} should be added to\nthe \"QUIC Transport Parameters\" registry.\n~~~\n\nAlso, the frame type table has a column header \"Frame Name\". Your suggestion is to replace it by \"Frame Type Name\", to match the column header in the IANA table.\n\n@LPardue is that correct?",
+          "createdAt": "2025-12-05T20:08:10Z",
+          "updatedAt": "2025-12-05T20:08:10Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Yes, both of those would make me happy.",
+          "createdAt": "2025-12-05T20:10:26Z",
+          "updatedAt": "2025-12-05T20:10:26Z"
         }
       ]
     }
@@ -67739,13 +67824,136 @@
       "labels": [],
       "body": "If I understood this correctly this change is editorial.\n\n\"The peers that ...\" reads rather strange combined with \"... from the\npeer ...\" later in that sentence.  I think using \"Endpoints\" makes\nthis sentence easier to read.  I appreciate this is subjective though.",
       "createdAt": "2025-11-12T09:09:25Z",
-      "updatedAt": "2025-11-12T09:09:25Z",
+      "updatedAt": "2025-12-05T20:20:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d",
       "headRepository": "flub/multipath",
       "headRefName": "flub/the-peers",
       "headRefOid": "f26edc59610e53579e28e8a6b1ee8f5f3ee52efc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7TYGvG",
+          "commit": {
+            "abbreviatedOid": "f26edc5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Yes, this reads better.",
+          "createdAt": "2025-12-05T20:20:11Z",
+          "updatedAt": "2025-12-05T20:20:11Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 622,
+      "id": "PR_kwDOGNtpaM6293D2",
+      "title": "Add Shepherd Writeup",
+      "url": "https://github.com/quicwg/multipath/pull/622",
+      "state": "MERGED",
+      "author": "LPardue",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "Awaiting responses from authors to address questions 12 and 13",
+      "createdAt": "2025-12-04T03:52:13Z",
+      "updatedAt": "2025-12-06T14:56:57Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "shepherd-writeup",
+      "headRefOid": "e8a2b8ae48ec8b9c71258061e833b2f558c6261c",
+      "closedAt": "2025-12-06T14:56:57Z",
+      "mergedAt": "2025-12-06T14:56:57Z",
+      "mergedBy": "LPardue",
+      "mergeCommit": {
+        "oid": "67dca7890e31bbdc90baee97356dbdbc9e099e2c"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 623,
+      "id": "PR_kwDOGNtpaM63Oe1-",
+      "title": "Rework IANA section to shrink table widths",
+      "url": "https://github.com/quicwg/multipath/pull/623",
+      "state": "MERGED",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes issue #620 \r\n",
+      "createdAt": "2025-12-05T06:12:31Z",
+      "updatedAt": "2025-12-05T19:51:50Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "lines-too-long",
+      "headRefOid": "20b379543b36e93e1aa55b493be96d2bbc21affb",
+      "closedAt": "2025-12-05T19:50:44Z",
+      "mergedAt": "2025-12-05T19:50:43Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "005167009eb5d87c4a22533e0346a6baea53c5b3"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7TPTu_",
+          "commit": {
+            "abbreviatedOid": "20b3795"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2025-12-05T10:08:23Z",
+          "updatedAt": "2025-12-05T10:08:23Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7TTxp6",
+          "commit": {
+            "abbreviatedOid": "20b3795"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-05T15:10:01Z",
+          "updatedAt": "2025-12-05T15:10:01Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 624,
+      "id": "PR_kwDOGNtpaM63XRW9",
+      "title": "Heed IANA section feedback",
+      "url": "https://github.com/quicwg/multipath/pull/624",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Close #621 ",
+      "createdAt": "2025-12-05T20:16:13Z",
+      "updatedAt": "2025-12-05T20:16:55Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "005167009eb5d87c4a22533e0346a6baea53c5b3",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "iana-registry-names",
+      "headRefOid": "aaa1d46b61cffa31a3f717fb3b60128d23ad7bb7",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
