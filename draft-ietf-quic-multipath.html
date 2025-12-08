@@ -1950,7 +1950,7 @@ This is true whether the decision to close the path results
 from implicit signals such as an idle time-out (see <a href="#idle-time-close" class="auto internal xref">Section 5.9</a>)
 or packet losses as well as for any other reason such as management
 of local resources.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">The peers that send a PATH_ABANDON frame MUST treat all connection
+<p id="section-3.4-2">Endpoints that send a PATH_ABANDON frame MUST treat all connection
 IDs received from the peer for the path ID indicated in the PATH_ABANDON as immediately
 retired, and subsequently cannot send any packet on that path anymore.
 Note that while abandoning a path will cause
