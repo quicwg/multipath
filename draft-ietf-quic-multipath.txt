@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 9 June 2026                              Uber Technologies Inc.
+Expires: 11 June 2026                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 9 June 2026                              Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         6 December 2025
+                                                         8 December 2025
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 June 2026.
+   This Internet-Draft will expire on 11 June 2026.
 
 Copyright Notice
 
@@ -1504,7 +1504,7 @@ Table of Contents
    (https://www.iana.org/assignments/quic/quic.xhtml).
 
    The following entry in Table 2 should be added to the "QUIC Transport
-   Parameters" registry under the "QUIC Protocol" heading.
+   Parameters" registry.
 
               +=======+=====================+===============+
               | Value | Parameter Name.     | Specification |
@@ -1516,10 +1516,10 @@ Table of Contents
                              Parameters Entries
 
    The following frame types defined in Table 3 should be added to the
-   "QUIC Frame Types" registry under the "QUIC Protocol" heading.
+   "QUIC Frame Types" registry.
 
       +=================+===========================+===============+
-      | Value           | Frame Name                | Specification |
+      | Value           | Frame Type Name           | Specification |
       +=================+===========================+===============+
       | TBD-00 - TBD-01 | PATH_ACK                  | Section 4.1   |
       +-----------------+---------------------------+---------------+
@@ -1543,8 +1543,7 @@ Table of Contents
                Table 3: Addition to QUIC Frame Types Entries
 
    The following transport error code defined in Table 4 are to be added
-   to the "QUIC Transport Error Codes" registry under the "QUIC
-   Protocol" heading.
+   to the "QUIC Transport Error Codes" registry.
 
    +======+=============================+==============+===============+
    |Value | Code                        |Description   | Specification |
@@ -1601,7 +1600,7 @@ Table of Contents
    frame types defined in this document.
 
          +===========================+===========================+
-         | Frame Name                | Value used in experiments |
+         | Frame Type Name           | Value used in experiments |
          +===========================+===========================+
          | PATH_ACK                  | 0x15228c00-0x15228c01     |
          +---------------------------+---------------------------+
