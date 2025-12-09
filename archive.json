@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-07T01:11:27.766791+00:00",
+  "timestamp": "2025-12-09T01:05:10.083889+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15022,15 +15022,15 @@
       "id": "I_kwDOGNtpaM7cGsWT",
       "title": "IANA section feedback",
       "url": "https://github.com/quicwg/multipath/issues/621",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "1. Registration of QUIC frame types should use the term \"Frame Type Name\n\n2. There are several statements of the form\n\n> The following <snip> should be added to the <foo> registry under the \"QUIC Protocol\" heading. \n\nWhat is \"the \"QUIC Protocol\" heading\"? The instructions name the registry and that seems clear enough as an instruction to IANA. \n",
       "createdAt": "2025-12-04T03:46:22Z",
-      "updatedAt": "2025-12-05T20:10:26Z",
-      "closedAt": null,
+      "updatedAt": "2025-12-08T17:33:55Z",
+      "closedAt": "2025-12-08T17:33:55Z",
       "comments": [
         {
           "author": "huitema",
@@ -66795,7 +66795,7 @@
       "labels": [],
       "body": "This PR aims at resolving concerns expressed by @larseggert and @martinduke during the WGLC, and in issue #613. It applies the proposed title change, and also adds text to the abstract better specifying the scope of what is standardized.",
       "createdAt": "2025-10-06T19:18:50Z",
-      "updatedAt": "2025-10-16T13:30:07Z",
+      "updatedAt": "2025-12-08T17:35:38Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c6b552b717127161e36c610a7386553e9865a69d",
@@ -67817,25 +67817,35 @@
       "id": "PR_kwDOGNtpaM6y7whC",
       "title": "Editorial rewording",
       "url": "https://github.com/quicwg/multipath/pull/619",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "flub",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "If I understood this correctly this change is editorial.\n\n\"The peers that ...\" reads rather strange combined with \"... from the\npeer ...\" later in that sentence.  I think using \"Endpoints\" makes\nthis sentence easier to read.  I appreciate this is subjective though.",
       "createdAt": "2025-11-12T09:09:25Z",
-      "updatedAt": "2025-12-05T20:20:11Z",
+      "updatedAt": "2025-12-08T17:34:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d",
       "headRepository": "flub/multipath",
       "headRefName": "flub/the-peers",
       "headRefOid": "f26edc59610e53579e28e8a6b1ee8f5f3ee52efc",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2025-12-08T17:34:32Z",
+      "mergedAt": "2025-12-08T17:34:32Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86"
+      },
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for the fix, @flub ",
+          "createdAt": "2025-12-08T17:34:26Z",
+          "updatedAt": "2025-12-08T17:34:26Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM7TYGvG",
@@ -67848,6 +67858,32 @@
           "body": "Yes, this reads better.",
           "createdAt": "2025-12-05T20:20:11Z",
           "updatedAt": "2025-12-05T20:20:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7Tl5EG",
+          "commit": {
+            "abbreviatedOid": "f26edc5"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-08T02:47:41Z",
+          "updatedAt": "2025-12-08T02:47:41Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7TuDjU",
+          "commit": {
+            "abbreviatedOid": "f26edc5"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-08T13:19:56Z",
+          "updatedAt": "2025-12-08T13:19:56Z",
           "comments": []
         }
       ]
@@ -67940,26 +67976,55 @@
       "id": "PR_kwDOGNtpaM63XRW9",
       "title": "Heed IANA section feedback",
       "url": "https://github.com/quicwg/multipath/pull/624",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Close #621 ",
       "createdAt": "2025-12-05T20:16:13Z",
-      "updatedAt": "2025-12-05T20:16:55Z",
+      "updatedAt": "2025-12-08T17:35:26Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "005167009eb5d87c4a22533e0346a6baea53c5b3",
       "headRepository": "quicwg/multipath",
       "headRefName": "iana-registry-names",
       "headRefOid": "aaa1d46b61cffa31a3f717fb3b60128d23ad7bb7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-12-08T17:33:54Z",
+      "mergedAt": "2025-12-08T17:33:54Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "6fd726ba8e97a2d9257c795baa9d5b8a182247c2"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7Tl6ZY",
+          "commit": {
+            "abbreviatedOid": "aaa1d46"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good. This is exactly what we need.",
+          "createdAt": "2025-12-08T02:50:32Z",
+          "updatedAt": "2025-12-08T02:50:32Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7TuD9x",
+          "commit": {
+            "abbreviatedOid": "aaa1d46"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-08T13:20:15Z",
+          "updatedAt": "2025-12-08T13:20:15Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
