@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-09T01:05:10.083889+00:00",
+  "timestamp": "2025-12-11T01:07:33.457295+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -67824,7 +67824,7 @@
       "labels": [],
       "body": "If I understood this correctly this change is editorial.\n\n\"The peers that ...\" reads rather strange combined with \"... from the\npeer ...\" later in that sentence.  I think using \"Endpoints\" makes\nthis sentence easier to read.  I appreciate this is subjective though.",
       "createdAt": "2025-11-12T09:09:25Z",
-      "updatedAt": "2025-12-08T17:34:32Z",
+      "updatedAt": "2025-12-09T19:54:05Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "c12be7dba53a8cf9e0047fb593e0f9c58358572d",
