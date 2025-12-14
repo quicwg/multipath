@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-11T01:07:33.457295+00:00",
+  "timestamp": "2025-12-14T01:11:54.468270+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15045,6 +15045,100 @@
           "body": "Yes, both of those would make me happy.",
           "createdAt": "2025-12-05T20:10:26Z",
           "updatedAt": "2025-12-05T20:10:26Z"
+        }
+      ]
+    },
+    {
+      "number": 625,
+      "id": "I_kwDOGNtpaM7dkh_E",
+      "title": "Agree of required size for IANA parameters",
+      "url": "https://github.com/quicwg/multipath/issues/625",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We have a request from IANA to specify the required size of parameters. I am inclined to answer with the following:\n\nValue | Transport Parameter Name.     | Desired length\n------|---------------------|-----------------\nTBD   | initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\nTBD-00 - TBD-01 | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\nTBD-02          | PATH_ABANDON             | 8 bits would be nice, 16 bits probably OK: used once per path\nTBD-03          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\nTBD-04          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\nTBD-05          | PATH_NEW_CONNECTION_ID   | 8 bits would be nice, 16  bits probably OK. N times per path\nTBD-06          | PATH_RETIRE_CONNECTION_ID| either 8 or 16. Used less often than  PATH_NEW_CONNECTION_ID\nTBD-07          | MAX_PATH_ID              | 8 bits would be nice, 16  bits probably OK. Used about once per path\nTBD-08          | PATHS_BLOCKED            | 16 bits, maybe 32: used only in error conditions\nTBD-09          | PATH_CIDS_BLOCKED        | 16 bits, maybe 32: used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits would be nice, 16 bits probably OK. Once per path\n|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16 bits, 32 probably OK, error condition\n|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16 bits, 32 probably OK, error condition\n|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16 bits, 32  probably OK, error condition\n",
+      "createdAt": "2025-12-11T01:27:04Z",
+      "updatedAt": "2025-12-12T11:48:17Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "https://martinthomson.github.io/quic-pick/ might be worth trying out for this.  For example: https://martinthomson.github.io/quic-pick/#seed=draft-ietf-quic-multipath-PATH_ABANDON;field=frame;codepoint=0x2641;size=2",
+          "createdAt": "2025-12-11T01:32:27Z",
+          "updatedAt": "2025-12-11T01:32:27Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Using the see \"I maybe wrong but I doubt it\" followed by the parameter name, your tool gives the following values. There were a few cases of collision between proposed 8 bits value and already allocated frame types.\n\nValue | Transport Parameter Name. | Desired length\n-- | -- | --\n0x33 initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\n0x32, 0x33 | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\n0x39 or 0x390d          | PATH_ABANDON             | 8 bits would be nice, 16 bits probably OK: used once per path\n0x0fc7          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\n0x034d          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\n0x2c or 0x2c21  | PATH_NEW_CONNECTION_ID   | 8 bits would be nice, 16  bits probably OK. N times per path\n0x2a or 0x2a6e   | PATH_RETIRE_CONNECTION_ID+ | either 8 or 16. Used less often than  PATH_NEW_CONNECTION_ID\n0x3e or 0x0b2a   | MAX_PATH_ID              | 8 bits would be nice, 16  bits probably OK. Used about once per path\n0x0ec1 or 0x0ec18685  | PATHS_BLOCKED            | 16 bits, maybe 32: used only in error conditions\n0x3fe4 or 0x3fe49b08         | PATH_CIDS_BLOCKED        | 16 bits, maybe 32: used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n| 0x25 or 0x2504 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits would be nice, 16 bits probably OK. Once per path\n|0x1b04 or 0x1b04078a | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16 bits, 32 probably OK, error condition\n|0x176a or 0x176ac253 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16 bits, 32 probably OK, error condition\n|0x1e13 or 0x1e13126f | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16 bits, 32  probably OK, error condition",
+          "createdAt": "2025-12-11T02:00:31Z",
+          "updatedAt": "2025-12-11T02:00:31Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Through the table, I'd prefer to choose the shorter value for each frame / error code type, especially for PATH_NEW_CONNECTION_ID / PATH_RETIRE_CONNECTION_ID+ / MAX_PATH_ID / PATH_ABANDON and error codes. \nFor example, 8 bits value would be nice for PATH_NEW_CONNECTION_ID.\n\nShorter encoding means higher efficiency in frequently used scenarios. \n",
+          "createdAt": "2025-12-11T07:38:42Z",
+          "updatedAt": "2025-12-11T07:38:42Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "body": "Not that I have a strong preference, however:\n* Aside from PATH_ACK, I would prefer the frames to use 2-byte codepoints. For the single-byte codepoints, we have only 31 left (31 used by QUIC v1, plus IMMEDIATE ACK and RESET_STREAM_AT). ACK_FREQUENCY uses 2-byte codepoints. Unless we believe that path management is generally done as frequently as stream management, I would argue that using 2-byte codepoints would be better on balance.\n* Assuming that 2-byte codepoints would be used, could we use contiguous numbers? RFC 9000 explicitly permits such choice; see https://datatracker.ietf.org/doc/html/rfc9000#name-selecting-codepoints.\n\nPS. Re transport parameter, both ack-frequency and reliable-reset-stream use 8-byte codepoints. I think multipath can do the same?",
+          "createdAt": "2025-12-11T08:08:51Z",
+          "updatedAt": "2025-12-11T08:15:34Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I tend to agree with @kazuho. If we require them \"for each frame / error code type, especially for PATH_NEW_CONNECTION_ID / PATH_RETIRE_CONNECTION_ID+ / MAX_PATH_ID / PATH_ABANDON\" as @Yanmei-Liu, we would consume 6 values out of the remaining 31, accelerating the exhaustion of that resource. I think that we should only request the 8 bit frame type values for PATH_ACK and PATH_ACK_ECN. The PATH_NEW_CONNECTION_ID, PATH_RETIRE_CONNECTION_ID, MAX_PATH_ID and PATH_ABANDON would be used about 3-4 times per path for the PATH_NEW_CONNECTION_ID, once per path for MAX_PATH_ID and PATH_ABANDON, and fewer than that for PATH_RETIRE_CONNECTION_ID because connection IDs can be retired implicitly with PATH_ABANDON. If they used 2 bytes instead of 1, we are probably looking at a typical overhead of 3-4 paths times 5-6 frames, so 15 to 24 bytes for the typical connection. I don't think that's going to significantly affect performance.\n\nFor the transport parameter value, the situation is less tense -- only 18 allocations so far, 46 available, and we only need one value. I see that there is an 8 bit values allocated for the \"max_datagram_frame_size\" parameter (RFC9221) and \"Compatible Version Negotiation for QUIC\" (RFC 9368). We can certainly do the same for multipath.  \nFor the error codes, there are 17 values reserved so far, just 1 of those defined after RFC9000 (for RFC 9368). That means we can certainly have one 8 bit code for APPLICATION_ABANDON_PATH, the default error code for the Path Abandon that will be used in the vast majority of cases.\n\nFor the other numbers, using 16 bit values is probably appropriate. This is not a rare resource, there are more that 16,000 available values.\n\nI also think, as Kazuho suggests, that requesting consecutive numbers makes sense. ",
+          "createdAt": "2025-12-11T20:35:03Z",
+          "updatedAt": "2025-12-11T20:35:03Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Here is a proposed set of values in line with the discussion so far. I think that we have rough consensus on:\n\n- 8 bit value for the transport parameter\n- 8 bit value for the two PATH_ACK frames\n- 8 bit value for the APPLICATION_ABANDON_PATH error type\n- consecutive 16 bit values for all other parameters.\n\nI am using the tool https://martinthomson.github.io/quic-pick/ to pick the value. The seed \"Multipath Extension for QUIC\" result in the same 8 bit value 0x3e for TP, frame type and error code, and suggests the 16 bits value 0x3e75 for frame type and error code. The tool does not have an option for consecutive frame types, so I manually verified that 0x3f is an available frame type in the QUIC Frame Type registry, and that the consecutive values after 0x3e75 are available in the QUIC Frame Type registry and the the QUIC Error Code registry.\n\nThis results in the following allocations:\n\nValue | Transport Parameter Name. | Desired length\n-- | -- | --\n0x3e | initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\n0x3e - 0x3f | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\n0x3e75          | PATH_ABANDON             | 16 bits: used once per path\n0x3e76          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\n0x3e77          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\n0x3e78  | PATH_NEW_CONNECTION_ID   |  16  bits: N times per path\n0x3e79   | PATH_RETIRE_CONNECTION_ID+ | 16  bits:  Used less often than  PATH_NEW_CONNECTION_ID\n0x3e7a   | MAX_PATH_ID              | 16  bits:  Used about once per path\n0x3e7b  | PATHS_BLOCKED            | 16  bits:  used only in error conditions\n0x3e7c         | PATH_CIDS_BLOCKED        | 16  bits:  used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n| 0x3e | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits: Once per path\n| 0x3e75 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16  bits:  error condition\n| 0x3e76 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16  bits: error condition\n| 0x3e77 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16  bits: error condition\n\nCan we verify that we have at least \"rough\" consensus?",
+          "createdAt": "2025-12-11T20:54:23Z",
+          "updatedAt": "2025-12-11T20:54:23Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "MEMBER",
+          "body": "Did you confirm the values are not in the grease set? It would be good if the tool could do that too",
+          "createdAt": "2025-12-11T21:56:14Z",
+          "updatedAt": "2025-12-11T21:56:14Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "Give me a short while...",
+          "createdAt": "2025-12-11T23:47:39Z",
+          "updatedAt": "2025-12-11T23:47:39Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "MEMBER",
+          "body": "OK, that was more work than anticipated, but I think that it all works.\n\nhttps://martinthomson.github.io/quic-pick/#seed=Multipath%20Extension%20for%20QUIC;field=frame;codepoint=0x3e%20%E2%80%93%200x3f;count=2;size=1\nhttps://martinthomson.github.io/quic-pick/#seed=Multipath%20Extension%20for%20QUIC;field=frame;codepoint=0x3e75%20%E2%80%93%200x3e7c;count=8;size=2\nhttps://martinthomson.github.io/quic-pick/#seed=Multipath%20Extension%20for%20QUIC;field=error;codepoint=0x3e;size=1\nhttps://martinthomson.github.io/quic-pick/#seed=Multipath%20Extension%20for%20QUIC;field=error;codepoint=0x3e75%20%E2%80%93%200x3e77;count=3;size=2\n\nSame results, even. :)\n\nNote: There are no grease interactions.  Frame and error codepoints are not greased in QUIC.",
+          "createdAt": "2025-12-12T00:53:54Z",
+          "updatedAt": "2025-12-12T01:16:28Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@qdeconinck, @mirjak if you object, please chime in.",
+          "createdAt": "2025-12-12T01:47:02Z",
+          "updatedAt": "2025-12-12T01:47:02Z"
+        },
+        {
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The latest table proposed by @huitema (https://github.com/quicwg/multipath/issues/625#issuecomment-3643741881) looks good to me.",
+          "createdAt": "2025-12-12T11:48:17Z",
+          "updatedAt": "2025-12-12T11:48:17Z"
         }
       ]
     }
