@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-16T01:08:03.581651+00:00",
+  "timestamp": "2025-12-18T01:04:19.389156+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15060,7 +15060,7 @@
       "labels": [],
       "body": "We have a request from IANA to specify the required size of parameters. I am inclined to answer with the following:\n\nValue | Transport Parameter Name.     | Desired length\n------|---------------------|-----------------\nTBD   | initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\nTBD-00 - TBD-01 | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\nTBD-02          | PATH_ABANDON             | 8 bits would be nice, 16 bits probably OK: used once per path\nTBD-03          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\nTBD-04          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\nTBD-05          | PATH_NEW_CONNECTION_ID   | 8 bits would be nice, 16  bits probably OK. N times per path\nTBD-06          | PATH_RETIRE_CONNECTION_ID| either 8 or 16. Used less often than  PATH_NEW_CONNECTION_ID\nTBD-07          | MAX_PATH_ID              | 8 bits would be nice, 16  bits probably OK. Used about once per path\nTBD-08          | PATHS_BLOCKED            | 16 bits, maybe 32: used only in error conditions\nTBD-09          | PATH_CIDS_BLOCKED        | 16 bits, maybe 32: used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits would be nice, 16 bits probably OK. Once per path\n|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16 bits, 32 probably OK, error condition\n|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16 bits, 32 probably OK, error condition\n|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16 bits, 32  probably OK, error condition\n",
       "createdAt": "2025-12-11T01:27:04Z",
-      "updatedAt": "2025-12-12T11:48:17Z",
+      "updatedAt": "2025-12-17T12:04:08Z",
       "closedAt": null,
       "comments": [
         {
@@ -15139,6 +15139,13 @@
           "body": "The latest table proposed by @huitema (https://github.com/quicwg/multipath/issues/625#issuecomment-3643741881) looks good to me.",
           "createdAt": "2025-12-12T11:48:17Z",
           "updatedAt": "2025-12-12T11:48:17Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I didn\u2019t have time to check this in detail but no objections from my side.",
+          "createdAt": "2025-12-17T12:04:08Z",
+          "updatedAt": "2025-12-17T12:04:08Z"
         }
       ]
     },
