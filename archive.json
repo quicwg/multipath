@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-21T01:11:32.656345+00:00",
+  "timestamp": "2025-12-23T01:07:01.237696+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -68166,6 +68166,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 628,
+      "id": "PR_kwDOGNtpaM66FDQ3",
+      "title": "nits from ARTART review",
+      "url": "https://github.com/quicwg/multipath/pull/628",
+      "state": "OPEN",
+      "author": "cabo",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-12-22T07:10:39Z",
+      "updatedAt": "2025-12-22T07:10:39Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
+      "headRepository": "cabo/quic-multipath",
+      "headRefName": "artart-nits",
+      "headRefOid": "2dd73f567722e83d74c1b4dcf52582cabb28cf69",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
