@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-23T01:07:01.237696+00:00",
+  "timestamp": "2025-12-25T01:06:58.250367+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15060,7 +15060,7 @@
       "labels": [],
       "body": "We have a request from IANA to specify the required size of parameters. I am inclined to answer with the following:\n\nValue | Transport Parameter Name.     | Desired length\n------|---------------------|-----------------\nTBD   | initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\nTBD-00 - TBD-01 | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\nTBD-02          | PATH_ABANDON             | 8 bits would be nice, 16 bits probably OK: used once per path\nTBD-03          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\nTBD-04          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\nTBD-05          | PATH_NEW_CONNECTION_ID   | 8 bits would be nice, 16  bits probably OK. N times per path\nTBD-06          | PATH_RETIRE_CONNECTION_ID| either 8 or 16. Used less often than  PATH_NEW_CONNECTION_ID\nTBD-07          | MAX_PATH_ID              | 8 bits would be nice, 16  bits probably OK. Used about once per path\nTBD-08          | PATHS_BLOCKED            | 16 bits, maybe 32: used only in error conditions\nTBD-09          | PATH_CIDS_BLOCKED        | 16 bits, maybe 32: used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits would be nice, 16 bits probably OK. Once per path\n|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16 bits, 32 probably OK, error condition\n|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16 bits, 32 probably OK, error condition\n|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16 bits, 32  probably OK, error condition\n",
       "createdAt": "2025-12-11T01:27:04Z",
-      "updatedAt": "2025-12-17T12:04:08Z",
+      "updatedAt": "2025-12-24T02:58:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -15146,6 +15146,13 @@
           "body": "I didn\u2019t have time to check this in detail but no objections from my side.",
           "createdAt": "2025-12-17T12:04:08Z",
           "updatedAt": "2025-12-17T12:04:08Z"
+        },
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The latest table suggested by @huitema also works for me. Considering the limited resource of left 8-bit frame type value, only reserve 8-bit value for PATH_ACK is reasonable, and other frames using consecutive values from 16-bit is quite elegant.",
+          "createdAt": "2025-12-24T02:58:09Z",
+          "updatedAt": "2025-12-24T02:58:09Z"
         }
       ]
     },
@@ -15186,6 +15193,22 @@
       "body": "Document: draft-ietf-quic-multipath\nTitle: Managing multiple paths for a QUIC connection\nReviewer: Meral Shirazipour\nReview result: Ready with Nits\n\nI am the assigned Gen-ART reviewer for this draft. The General Area\nReview Team (Gen-ART) reviews all IETF documents being processed\nby the IESG for the IETF Chair.  Please treat these comments just\nlike any other last call comments.\n\nFor more information, please see the FAQ at\n\n[<https://wiki.ietf.org/en/group/gen/GenArtFAQ>](https://wiki.ietf.org/en/group/gen/GenArtFAQ).\n\nDocument: draft-ietf-quic-multipath-18\nReviewer: Meral Shirazipour\nReview Date: 2025-12-19\nIETF LC End Date: 2025-12-22\nIESG Telechat date: Not scheduled for a telechat\n\nSummary:This draft is ready to be published as Standards Track RFC, no other\ncomment than those on the list.\n\nMajor issues:\n\nMinor issues:\n\nNits/editorial comments:\n[Page 20], 4.2, \"in section Section 3.4\"-->\"in Section 3.4\"\n\n[Page 29], 5.4, \"use the the delays\"-->\"use the delays\"\n\n[Page 30], 5.4, \"acknowledgements are not send\"-->\"acknowledgements are not\nsent\"\n\n[Page 32], 5.9, \"more redunancy\"-->\"more redundancy\"",
       "createdAt": "2025-12-20T21:28:06Z",
       "updatedAt": "2025-12-20T21:28:06Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 629,
+      "id": "I_kwDOGNtpaM7f24a5",
+      "title": "draft-ietf-quic-multipath-18 ietf last call Artart review",
+      "url": "https://github.com/quicwg/multipath/issues/629",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\n\nDocument: draft-ietf-quic-multipath\nTitle: Managing multiple paths for a QUIC connection\nReviewer: Carsten Bormann\nReview result: Ready with Nits\n\n[Insert ARTART boilerplate here]\n\nThis specification builds on QUIC's capabilities for connection\nmigration to use multiple paths simultaneously for a single\nconnection.\nIt provides a mechanism for managing state necessary for running the\nQUIC protocol with multiple concurrent paths, but deliberately leaves\naddress discovery, scheduling of packets over multiple paths, and\ncongestion control out of scope.\n\nIt is refreshing to see that the mechanism for multipath is being\nspecified before the obvious blanks (congestion control, scheduling)\ncan be filled in in a normative way.\n\nThe word \u201capplication\u201d occurs about a dozen times, often in constructs\nsuch as \u201csuit the needs of the application\u201d.\nFor example, the \"[...]decision to setup or tear down paths are\nassumed to be handled by the application\" (introduction).\nThis reader expects some considerable innovation in how these needs\nand decisions are communicated to the QUIC implementation, or, where\nthe application is in control, modulated by the state of the QUIC\nimplementation.\n\n## General editorial\n\nIn some places, the document is heavy on passive usage.\nOn the passive sentences, it is not always clear to a new reader who\nthe actor is, or whether the verb is actually used as an adjective\n(e.g., see last sentence of 3.1.2).\n\n## Minor\n\n2.1:\nPath ID is supposed to be an unsigned integer < 2**32, but then 2.4\ntalks about the \u201cleast significant 32 bits of path_id\u201d.\n(It is also confusing that the term \u201cvalue\u201d is used for both the type,\nwhich is a 60-bit number during the experiment phase, and the value of\nthe transport parameter.)\n\n3.2.1: Is the \u201cmaximum path ID limit\u201d discussed here related to\ninitial_max_path_id/MAX_PATH_ID?\nIs the \u201cactive path limit\u201d the same thing?\n4.7 has a \u201cmaximum path ID that was allowed\u201d \u2014 by whom?\n(Maybe it would be worth to introduce clear terms for the most\nrecently unilaterally declared [ignoring non-monotonic MAX_PATH\nmessages] and the combined value state.)\n\nThis reader does not understand how concurrent allocation on the\nshared number space of path IDs is managed.\nDo the peer applications have to run some protocol to agree on how\nwhich path ID is used for what?\nWhat happens when this protocol and the protocol specified here run\nout of sync?\nWho controls the parameters (e.g., diffserv markings) used with a\nspecific path ID?\n\n4.3 and elsewhere (3 times):\ns/monotonically increasing/strictly increasing/\n\n5.4:\nWhat is \u201cconnection control\u201d in this context?\n\n6:\nWhen the allocations are inserted into the registry, the specification\nlinks need to mention the RFC number (RFC XXXX).\n\n7.2:\nWhere QUIC has arrived at rather heavy normative amplification limits\n(good!), this section is at the level of \u201cmight consider\u201d.\n(Maybe we need to understand potential attacks more before they can be\neffectively mitigated, but this looks like it is introducing a period\nof instability.)\n\n## Nits\n\nA couple dozen nits are addressed in\nhttps://github.com/quicwg/multipath/pull/628\n\n(This includes internally consistent spelling for \"acknowledgements\",\nusing the spelling from RFC 7322.)\n\n7.3:\n\u201cThis specification changes the AEAD calculation\u201d:\nI hope not.\nIt changes the calculation of the *input* to the AEAD.\n\n\n\n",
+      "createdAt": "2025-12-23T01:24:42Z",
+      "updatedAt": "2025-12-23T01:24:42Z",
       "closedAt": null,
       "comments": []
     }
@@ -68179,7 +68202,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-22T07:10:39Z",
-      "updatedAt": "2025-12-22T07:10:39Z",
+      "updatedAt": "2025-12-23T05:53:07Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
@@ -68191,7 +68214,34 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7W8scy",
+          "commit": {
+            "abbreviatedOid": "2dd73f5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "The proposed fixes look good, indeed improve the document!",
+          "createdAt": "2025-12-23T01:27:15Z",
+          "updatedAt": "2025-12-23T01:27:15Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7W-Sf_",
+          "commit": {
+            "abbreviatedOid": "2dd73f5"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-23T05:53:07Z",
+          "updatedAt": "2025-12-23T05:53:07Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
