@@ -189,7 +189,7 @@ only be sent in 1-RTT packets.
 
 The new transport parameter is defined as follows:
 
-- initial_max_path_id (0x3e): a
+- initial_max_path_id (parameter type 0x3e): parameter value is a
   variable-length integer specifying the maximum path ID
   an endpoint is willing to maintain at connection initiation.
   This value MUST NOT exceed 2<sup>32</sup>-1, the maximum allowed value for the path ID due to
