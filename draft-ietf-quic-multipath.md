@@ -254,7 +254,7 @@ acknowledge 1-RTT packets.
 Compared to the ACK frame, as specified in {{Section 19.3 of QUIC-TRANSPORT}}, the PATH_ACK frame additionally
 contains the path ID to identify the path-specific packet number space.
 ACK frames when used with the multipath extension acknowledge packets for the path with path ID 0.
-As multipath support is unknown during the handshake, acknowledgements of
+As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.
 
 After the handshake concluded with support for the multipath extension,
