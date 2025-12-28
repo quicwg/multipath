@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-25T01:06:58.250367+00:00",
+  "timestamp": "2025-12-28T01:15:26.572978+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15060,7 +15060,7 @@
       "labels": [],
       "body": "We have a request from IANA to specify the required size of parameters. I am inclined to answer with the following:\n\nValue | Transport Parameter Name.     | Desired length\n------|---------------------|-----------------\nTBD   | initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\nTBD-00 - TBD-01 | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\nTBD-02          | PATH_ABANDON             | 8 bits would be nice, 16 bits probably OK: used once per path\nTBD-03          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\nTBD-04          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\nTBD-05          | PATH_NEW_CONNECTION_ID   | 8 bits would be nice, 16  bits probably OK. N times per path\nTBD-06          | PATH_RETIRE_CONNECTION_ID| either 8 or 16. Used less often than  PATH_NEW_CONNECTION_ID\nTBD-07          | MAX_PATH_ID              | 8 bits would be nice, 16  bits probably OK. Used about once per path\nTBD-08          | PATHS_BLOCKED            | 16 bits, maybe 32: used only in error conditions\nTBD-09          | PATH_CIDS_BLOCKED        | 16 bits, maybe 32: used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits would be nice, 16 bits probably OK. Once per path\n|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16 bits, 32 probably OK, error condition\n|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16 bits, 32 probably OK, error condition\n|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16 bits, 32  probably OK, error condition\n",
       "createdAt": "2025-12-11T01:27:04Z",
-      "updatedAt": "2025-12-24T02:58:09Z",
+      "updatedAt": "2025-12-27T01:53:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -15153,6 +15153,13 @@
           "body": "The latest table suggested by @huitema also works for me. Considering the limited resource of left 8-bit frame type value, only reserve 8-bit value for PATH_ACK is reasonable, and other frames using consecutive values from 16-bit is quite elegant.",
           "createdAt": "2025-12-24T02:58:09Z",
           "updatedAt": "2025-12-24T02:58:09Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "PR #630 applies the values to the document, so the next draft can be easily processed by IANA.",
+          "createdAt": "2025-12-27T01:53:15Z",
+          "updatedAt": "2025-12-27T01:53:15Z"
         }
       ]
     },
@@ -15168,7 +15175,7 @@
       "labels": [],
       "body": "Document: draft-ietf-quic-multipath\nTitle: Managing multiple paths for a QUIC connection\nReviewer: Adrian Farrel\nReview result: Has Issues\n\nHi,\n\nThank you for your work on this document.\n\nI have been selected as the Operational Directorate (opsdir) reviewer\nfor this Internet-Draft.\n\nThe Operational Directorate reviews all operational and management-\nrelated Internet-Drafts to ensure alignment with operational best\npractices and that adequate operational considerations are covered.\n\nA complete set of \"Guidelines for Considering Operations and Management\nin IETF Specifications\" can be found at\nhttps://datatracker.ietf.org/doc/draft-opsarea-rfc5706bis/.\n\nWhile these comments are primarily for the Operations and Management\nArea Directors (Ops ADs), the authors should consider them alongside\nother feedback received. Please feel free to contact me for\nclarification and/or discussion\n\nApologies for the nits: I can't read a document without noting them.\n\nI'd be happy to discuss any of these points with you.\n\nRegards,\nAdrian\n\n======\n\nDocument: draft-ietf-quic-multipath-18\n\nTitle: Managing multiple paths for a QUIC connection\n\nReviewer: Adrian Farrel ([adrian@olddog.co.uk](mailto:adrian@olddog.co.uk))\n\nReview Date: 2025-12-12\n\nIntended Status: Standards Track\n\nIETF last call ends: 2025-12-22\n\nReview result: Has Issues: I have some minor concerns about this document that\nI think should be resolved before publication.\n\n== Summary ==\n\nThis document describes a way to use multiple QUIC paths to support a\nsingle connection by using path identifiers. It deliberately puts the\nassignment of addresses to these paths/connections and the steering of\ntraffic over the different paths out of scope.\n\n== Operational Considerations ==\n\nThis document does not call out operational or manageability\nconsiderations. It does discuss \"path management\" but this is in the\ncontext of the QUIC protocol itself, not the management of QUIC or of\nthe implementations.\n\nIt would be best if the document included an Operational Considerations\nsection following the guidance in draft-ietf-opsawg-rfc5706bis. But\nthere is currently no immediate requirement to do that.\n\nIn the absence of a full section, the following points do need to be\ndiscussed:\n\n- How is this feature incrementally deployed? Does it matter? I think it\n  is as simple as noting that implementations only use the feature if the\n  remote endpoint also support it, otherwise they continue as before.\n\n- What things need to be configured? I see:\n  - Max Path ID\n  - Whether to attempt multi-path system-wide or per connection\n  - How to behave if the remote endpoint does not support this function\n    (revert to single path, give up, log the situation)\n  Anything else?\n\n- What needs to be available for monitoring (via inspection or logs)?\n  - Number of paths in use\n  - Churn in paths\n  - Failure incidents\n\n- What OAM tools are needed to monitor correct operation?\n\n- What is the impact on other OAM tools? In particular, what happens\n  when end-to-end traffic is monitored, but the monitoring goes on one\n  path and the user traffic goes on another path?\n\n== Major Issues ==\n\nNone.\n\n== Minor Issues ==\n\nLimits on the path ID\n\nSection 1 states:\n   Path IDs are\n   generated monotonically increasing and cannot be reused.\n\nAnd we know that the path ID is limited to 2^32-1 or possibly the value\nof initial_max_path_id.\n\nIn a very long-lived system, where paths are created and released over\nand over again, and possibly where a large number of paths exist at a\nsingle time, is it possible that all the available path ID values are\nused up? Should an implementation wrap back to zero (effectively reusing\nPath IDs) of close and re-open in order to reset?\n\nFurther, 2.1 says:\n\n   *  initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a\n      variable-length integer specifying the maximum path ID an endpoint\n      is willing to maintain at connection initiation.  This value MUST\n      NOT exceed 2^32-1, the maximum allowed value for the path ID due\n      to restrictions on the nonce calculation (see Section 2.4).\n\nIf initial_max_path_id is set to 0x0f739bbc1b666d0d doesn't that exceed\n2^32-1?\n\n---\n\nQuestion from 2.5\n\nCan I attack the computation of the PTO? Perhaps by delaying messages to\nmake the RTT large?\n\nIf I can do this on just one path, then I can cause a key to continue to\nbe used for much longer than it would normally be (and that would apply\nacross all of the path/packet number spaces).\n\nIs this different from the single path case? Possibly.\nIn the single path case, the attack is immediately noticeable because\nthe quality delivered by the single path is degraded. In the multi-path\ncase, one path is degraded, but the overall behavior is, perhaps, not\nsignificantly changed.\n\nHey! This is just me musing.\n\n---\n\n3.\n\n   However, this document does not specify when a client\n   decides to initiate or close a path, or how multiple open paths are\n   used for sending.\n\nA forward pointer to Section 5 would be helpful.\n\n---\n\nSection 6\n\nI believe you need to tell IANA the \"status\" to mark in the registry and\nwhich range to make the allocations from.\n\n---\n\n6.1\n\nI believe you need to ask IANA to remove the provisional values from the\nregistry.\n\n---\n\nIt would be helpful to reviewers (including the IESG) to include an\nimplementation status section consistent with RFC 7942.\n\n== Nits ==\n\nidnits says\n\n  -- The document has examples using IPv4 documentation addresses according\n     to RFC6890, but does not use any IPv6 documentation addresses.  Maybe\n     there should be IPv6 examples, too?\n\n---\n\nAbstract\n\nYou should not \"propose\" anything. This is a protocol spec, so you\nshould \"define\" or \"specify\" things.\n\n---\n\n2.\n\ns/as specified in Section Section 2.4/as specified in Section 2.4/\n\n---\n\n2.2\n\nYou have a \"smart\" apostrophe.\n\n---\n\n5.4\n\ns/are not send/are not sent/\ns/over which path acknowledgement/over which path acknowledgements/\ns/needs to consider cases/need to consider cases/",
       "createdAt": "2025-12-16T00:23:47Z",
-      "updatedAt": "2025-12-20T21:45:06Z",
+      "updatedAt": "2025-12-27T02:48:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -15177,6 +15184,13 @@
           "body": "Discussion: there is a short thread discussing this on the QUIC mailing list:\n\n- [Christian's response](https://mailarchive.ietf.org/arch/msg/quic/y-ZuoVM3Oj3bJ1XiF-P8ZBLEDDw/)\n- [Adrian's reply](https://mailarchive.ietf.org/arch/msg/quic/p0KnExn1NkMur0UgX21cTC9_oNw/)\n- [Lucas' comment](https://mailarchive.ietf.org/arch/msg/quic/-Asf1j7C-2HIUBWVcQ69bm0Xdmg/)\n\n",
           "createdAt": "2025-12-20T21:45:06Z",
           "updatedAt": "2025-12-20T21:45:06Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am reviewing the email thread, and I think this boils down to a few points:\n\n- Management, in general: \"It would be best if the document included an Operational Considerations\nsection following the guidance in draft-ietf-opsawg-rfc5706bis. But\nthere is currently no immediate requirement to do that.\"\nAfter discussion: Mainly adding a pointer (to RFC 9312). Probably adding a note\nthat consideration needs to be given to the concurrency of multi-path.\n\n- Management issue, incremental deployment. OK, transport parameter negotiation does that but, you could\n add to the end of the quote you cited as \"... thus enabling incremental deployment of implementations of this specification.\"\n(That is, in section 2, after \"If either of the endpoints does not advertise \nthe initial_max_path_id transport parameter, then both endpoints MUST \nNOT use any frame or mechanism defined in this document.\")\n\n- Management issue, configuration of max path ID. \"If, on the other hand, this is an implementation choice\nand it is not already sufficiently clear, then adding something along the lines of what you say would help.\n\n- Management issue: QLOG. This is a tricky one. Should we mention availability of QLOG for management. See comment by @LPardue : _\"I don't think we need to make any mention of qlog really. There's no active work on a standard schema for multipath and I don't think speculating on one helps matters. The format is extensible and deployments can add whatever things they like.\"_ \n_\"Speaking with more of a QUIC WG chair hat on, I'm not particularly fond of the idea of setting a precedent that extensions to QUIC need to provide vague statements about logging when none of the already published specs from the QUIC WG do.\"_\n\n- Management issue, application using paths that are not monitored.\nSolution, \"Pretty much the same as if the peers had \nestablished two end-to-end connections on two separate paths, one \nmonitored, one not.\" But: possibly to point out this possibility.\n\n- Limits on path ID to 32 bits: remove the errant text in the nonce computation \"composed of the least\nsignificant 32 bits of the path ID\". Should be \"composed of 32 bits of the path ID\"\n\n- Confusion between TP type and TP value: solved in IANA PR\n\n- Computation of PTO, attack: do nothing\n\n- IANA discussion: solved in IANA PR\n\n- IPv6 addresses in diagrams: do nothing.\n\nI could prepare a PR along those lines.",
+          "createdAt": "2025-12-27T02:48:34Z",
+          "updatedAt": "2025-12-27T02:48:34Z"
         }
       ]
     },
@@ -15192,9 +15206,17 @@
       "labels": [],
       "body": "Document: draft-ietf-quic-multipath\nTitle: Managing multiple paths for a QUIC connection\nReviewer: Meral Shirazipour\nReview result: Ready with Nits\n\nI am the assigned Gen-ART reviewer for this draft. The General Area\nReview Team (Gen-ART) reviews all IETF documents being processed\nby the IESG for the IETF Chair.  Please treat these comments just\nlike any other last call comments.\n\nFor more information, please see the FAQ at\n\n[<https://wiki.ietf.org/en/group/gen/GenArtFAQ>](https://wiki.ietf.org/en/group/gen/GenArtFAQ).\n\nDocument: draft-ietf-quic-multipath-18\nReviewer: Meral Shirazipour\nReview Date: 2025-12-19\nIETF LC End Date: 2025-12-22\nIESG Telechat date: Not scheduled for a telechat\n\nSummary:This draft is ready to be published as Standards Track RFC, no other\ncomment than those on the list.\n\nMajor issues:\n\nMinor issues:\n\nNits/editorial comments:\n[Page 20], 4.2, \"in section Section 3.4\"-->\"in Section 3.4\"\n\n[Page 29], 5.4, \"use the the delays\"-->\"use the delays\"\n\n[Page 30], 5.4, \"acknowledgements are not send\"-->\"acknowledgements are not\nsent\"\n\n[Page 32], 5.9, \"more redunancy\"-->\"more redundancy\"",
       "createdAt": "2025-12-20T21:28:06Z",
-      "updatedAt": "2025-12-20T21:28:06Z",
+      "updatedAt": "2025-12-27T02:01:48Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The nits listed here will be fixed in PR #628",
+          "createdAt": "2025-12-27T02:01:48Z",
+          "updatedAt": "2025-12-27T02:01:48Z"
+        }
+      ]
     },
     {
       "number": 629,
@@ -15208,7 +15230,38 @@
       "labels": [],
       "body": "\n\nDocument: draft-ietf-quic-multipath\nTitle: Managing multiple paths for a QUIC connection\nReviewer: Carsten Bormann\nReview result: Ready with Nits\n\n[Insert ARTART boilerplate here]\n\nThis specification builds on QUIC's capabilities for connection\nmigration to use multiple paths simultaneously for a single\nconnection.\nIt provides a mechanism for managing state necessary for running the\nQUIC protocol with multiple concurrent paths, but deliberately leaves\naddress discovery, scheduling of packets over multiple paths, and\ncongestion control out of scope.\n\nIt is refreshing to see that the mechanism for multipath is being\nspecified before the obvious blanks (congestion control, scheduling)\ncan be filled in in a normative way.\n\nThe word \u201capplication\u201d occurs about a dozen times, often in constructs\nsuch as \u201csuit the needs of the application\u201d.\nFor example, the \"[...]decision to setup or tear down paths are\nassumed to be handled by the application\" (introduction).\nThis reader expects some considerable innovation in how these needs\nand decisions are communicated to the QUIC implementation, or, where\nthe application is in control, modulated by the state of the QUIC\nimplementation.\n\n## General editorial\n\nIn some places, the document is heavy on passive usage.\nOn the passive sentences, it is not always clear to a new reader who\nthe actor is, or whether the verb is actually used as an adjective\n(e.g., see last sentence of 3.1.2).\n\n## Minor\n\n2.1:\nPath ID is supposed to be an unsigned integer < 2**32, but then 2.4\ntalks about the \u201cleast significant 32 bits of path_id\u201d.\n(It is also confusing that the term \u201cvalue\u201d is used for both the type,\nwhich is a 60-bit number during the experiment phase, and the value of\nthe transport parameter.)\n\n3.2.1: Is the \u201cmaximum path ID limit\u201d discussed here related to\ninitial_max_path_id/MAX_PATH_ID?\nIs the \u201cactive path limit\u201d the same thing?\n4.7 has a \u201cmaximum path ID that was allowed\u201d \u2014 by whom?\n(Maybe it would be worth to introduce clear terms for the most\nrecently unilaterally declared [ignoring non-monotonic MAX_PATH\nmessages] and the combined value state.)\n\nThis reader does not understand how concurrent allocation on the\nshared number space of path IDs is managed.\nDo the peer applications have to run some protocol to agree on how\nwhich path ID is used for what?\nWhat happens when this protocol and the protocol specified here run\nout of sync?\nWho controls the parameters (e.g., diffserv markings) used with a\nspecific path ID?\n\n4.3 and elsewhere (3 times):\ns/monotonically increasing/strictly increasing/\n\n5.4:\nWhat is \u201cconnection control\u201d in this context?\n\n6:\nWhen the allocations are inserted into the registry, the specification\nlinks need to mention the RFC number (RFC XXXX).\n\n7.2:\nWhere QUIC has arrived at rather heavy normative amplification limits\n(good!), this section is at the level of \u201cmight consider\u201d.\n(Maybe we need to understand potential attacks more before they can be\neffectively mitigated, but this looks like it is introducing a period\nof instability.)\n\n## Nits\n\nA couple dozen nits are addressed in\nhttps://github.com/quicwg/multipath/pull/628\n\n(This includes internally consistent spelling for \"acknowledgements\",\nusing the spelling from RFC 7322.)\n\n7.3:\n\u201cThis specification changes the AEAD calculation\u201d:\nI hope not.\nIt changes the calculation of the *input* to the AEAD.\n\n\n\n",
       "createdAt": "2025-12-23T01:24:42Z",
-      "updatedAt": "2025-12-23T01:24:42Z",
+      "updatedAt": "2025-12-28T00:28:54Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The discussion on the mailing list is not conclusive, but I note the following:\n\n2.1 -> Limits on path ID to 32 bits: remove the errant text in the nonce computation \"composed of the least\nsignificant 32 bits of the path ID\". Should be \"composed of 32 bits of the path ID\"\n\nBlocked frame: Reference to \u201cactive path limit\u201d when discussing blocked frame, should be Max Path ID.\nWe have a concept of \"MAximum Path ID limit\" that should probably be eliminated or clarified -- beside, the name is terrible, we cannot have both a maximum and a limit.\n\nSection 3 and 3.1 do not state that only the client can create a path. Yet, as Carsten points out,\nthis is very much baked in the protocol. If we allowed both peers to open paths, we would need some\nkind of conflict avoidance or conflict resolution. I suggest that we state clearly the \"only client\" limitation, and replace peer by client when discussion of \"peer can open a path\".\n\nWe speak about diffserv marking in 5.2, thus Carsten's question, who decide to use them?\nThat's never stated, but for me this is clearly \"the application\". Thus, section 5.2 should\ninclude a clarification that (1) this is experimental and (2) the decision belongs to the application, probably using transport API.\n\nIn section 5.4, replace connection control by congestion control.\n\nAmplification issues. Text is a bit fuzzy. Carsten says \"this looks like it is introducing a period\nof instability\"... See if we can improve.",
+          "createdAt": "2025-12-27T05:05:05Z",
+          "updatedAt": "2025-12-27T05:05:05Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The \"client only\" part is controversial, so I opened issue #631 to discuss how to respond.",
+          "createdAt": "2025-12-28T00:28:54Z",
+          "updatedAt": "2025-12-28T00:28:54Z"
+        }
+      ]
+    },
+    {
+      "number": 631,
+      "id": "I_kwDOGNtpaM7gbDdD",
+      "title": "Stating that only the client can open new paths, or explain competition",
+      "url": "https://github.com/quicwg/multipath/issues/631",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Carsten's review (issue #629) points an issue with the current draft: on one hand, we never say that only the client can open a new path; on the other hand, we do not say what happens if the client and the server open a new path simultaneously. We have two options: state that we inherit the restriction from RFC 9000 and that only the client can open new paths; or, explain what happens if the server tries to open a path.\n\nMandating that only the client creates paths is the simplest solution, even if it is not the most satisfactory. We could simply simply write that \"_attempts by servers to open paths is not supported. It is likely to fail if the client is behind a NAT, and would result in undefined behavior if client and server simultaneously try to open the same path ID._\" We would then rely on future extensions, such as [peer-to-peer coordinated NAT traversal](https://www.ietf.org/archive/id/draft-seemann-quic-nat-traversal-01.html), to lift that restriction.",
+      "createdAt": "2025-12-28T00:14:06Z",
+      "updatedAt": "2025-12-28T00:14:06Z",
       "closedAt": null,
       "comments": []
     }
@@ -68202,7 +68255,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-22T07:10:39Z",
-      "updatedAt": "2025-12-23T05:53:07Z",
+      "updatedAt": "2025-12-27T02:03:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
@@ -68213,7 +68266,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have verified that the fixes proposed here will also sole the nits listed in the Gen Art review (issue #627)",
+          "createdAt": "2025-12-27T02:03:11Z",
+          "updatedAt": "2025-12-27T02:03:11Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOGNtpaM7W8scy",
@@ -68242,6 +68303,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 630,
+      "id": "PR_kwDOGNtpaM66q7bw",
+      "title": "Parameter frame and error types to desired values",
+      "url": "https://github.com/quicwg/multipath/pull/630",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR updates the values of transport parameter type, frame types and error types to the values that were agreed in issue #625.\r\nIt also removes the references to provisional assignments, and makes sure that the description of all frames introduce the parameter types in the same manner used in RFC 9000.\r\nThe PR also solves one of the issue noted by Adrian Farrel (issue #626) about confusion between TP type and TP value -- because that was directly tied to the way we reference types, and solving that in a different PR would create a merge conflict.",
+      "createdAt": "2025-12-27T01:48:58Z",
+      "updatedAt": "2025-12-27T02:16:02Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "iana-final-numbers",
+      "headRefOid": "ab75c677a02423d0990200a933241857f64a9498",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
