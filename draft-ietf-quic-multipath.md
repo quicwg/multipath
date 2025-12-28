@@ -306,7 +306,7 @@ consecutive key updates ({{Section 6.5 of QUIC-TLS}}).
 When this specification is used, endpoints SHOULD wait for at least three times
 the largest Probe Timeout (PTO) (see {{Section 6.2 of QUIC-RECOVERY}})
 among all the paths before initiating a new key update
-after receiving an acknowledgement that confirms the receipt of the previous key
+after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
 which used three times the PTO of the sole single path.
 
@@ -715,7 +715,7 @@ Client                                                      Server
 {: #fig-example-path-close1 title="Example of closing a path."}
 
 Note that if the PATH_ABANDON frame is instead sent on the to-be-abandoned path,
-the last acknowledgement still needs to be sent on a different path
+the last acknowledgment still needs to be sent on a different path
 as no further packets can be sent on the abandoned path after the
 PATH_ABANDON frame.
 
@@ -1224,25 +1224,25 @@ the endpoint can keep the same congestion control and RTT measurement state.
 ## Computing Path RTT {#compute-rtt}
 
 PATH_ACK frames indicate which path the acknowledged packets were sent on,
-but they could be received through any open path. If successive acknowledgements are received
+but they could be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
 which could result in poor performance depending, e.g., on the used connection control.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
-per path ID. However, depending on which path acknowledgements are
+per path ID. However, depending on which path acknowledgments are
 sent, the actual RTT of a path cannot be calculated or might not be
 the right value to be used.
 
 Instead of using the real RTT of a path, it is recommended to consider
 the sum of two one-way delays: the delay
 on the packet sending path and the delay on the return path chosen
-for the acknowledgements.  When different paths have different
+for the acknowledgments.  When different paths have different
 characteristics, the delays can vary
 widely. Consider for example a multipath transmission using both a
 terrestrial path, with a latency of 50ms in each direction, and a
 geostationary satellite path, with a latency of 300ms in each
 direction.  The sum of the two one-way delays will depend on the combination
-of paths used for the packet transmission and the acknowledgement transmission,
+of paths used for the packet transmission and the acknowledgment transmission,
 as shown in {{fig-example-ack-delay}}.
 
 ACK Path \ Data path         | Terrestrial   | Satellite
@@ -1252,7 +1252,7 @@ Satellite   | 350ms  | 600ms
 {: #fig-example-ack-delay title="Example of ACK delays using multiple paths"}
 
 The computed values reflect both the state of the network path and the
-scheduling decisions of the acknowledgement sender. If we
+scheduling decisions of the acknowledgment sender. If we
 assume that the PATH_ACK will be sent over the terrestrial
 link, because this decision provides the best response time, the
 computed RTT value for the satellite path will be about 350ms. This is
@@ -1261,31 +1261,31 @@ the satellite channel, but it is still the right value for computing
 for example the PTO timeout: if a PATH_ACK is not received after more
 than 350ms, either the packet or its PATH_ACK were probably lost.
 
-The simplest implementation is to use the delays measured when receiving new packet acknowledgements
+The simplest implementation is to use the delays measured when receiving new packet acknowledgments
 to compute smoothed_rtt and rttvar per
 {{Section 5.3 of QUIC-RECOVERY}} regardless of the path through which PATH_ACK frames are
 received. This approach will provide good results
-as long as acknowledgements are sent consistently over one path.
-If at any time the acknowledgement sender revisits its sending preferences,
-this can also change the paths that are used to send acknowledgements.
+as long as acknowledgments are sent consistently over one path.
+If at any time the acknowledgment sender revisits its sending preferences,
+this can also change the paths that are used to send acknowledgments.
 However, this is not very
 different from route changes on a single path.
 The RTT, RTT variance and PTO estimates will rapidly converge to
 reflect the new conditions.
 There is one exception: the minimum RTT, which is also
 a known challenge when route changes occurs on a single path.
-An acknowledgement receiver
+An acknowledgment receiver
 can, however, remember the path over which the PATH_ACK that produced
 the minimum RTT was received, and restart the minimum RTT computation
-if that acknowledgement path changes or is abandoned.
-If acknowledgements are not sent consistently over one path, the
-acknowledgement receiver can monitor over which path acknowledgements
-are received and only use samples for acknowledgements received on the same
+if that acknowledgment path changes or is abandoned.
+If acknowledgments are not sent consistently over one path, the
+acknowledgment receiver can monitor over which path acknowledgments
+are received and only use samples for acknowledgments received on the same
 path on which the data was sent, if any.
 
 
 Further, congestion control functions that rely on delay estimates needs
-to consider cases where acknowledgements are sent over multiple paths
+to consider cases where acknowledgments are sent over multiple paths
 with different delays explicitly.
 
 ## Packet Scheduling {#packet-scheduling}
@@ -1342,7 +1342,7 @@ smaller STREAM frames might need to be sent instead.
 An implementation should follow the mechanism specified in {{QUIC-RECOVERY}}
 for detecting packet loss on each individual path. A special case happens when
 the PTO timer expires. According to {{QUIC-RECOVERY}}, no packet will be declared
-lost until either the packet sender receives a new acknowledgement for this path,
+lost until either the packet sender receives a new acknowledgment for this path,
 or the path itself is finally declared broken. This cautious process minimizes
 the risk of spurious retransmissions, but it might cause significant delivery delay
 for the frames contained in these "lost packets".
@@ -1556,7 +1556,7 @@ This specification changes the AEAD calculation by using the path ID as part of
 AEAD nonce (see {{nonce}}). To ensure unique nonces, path IDs
 are limited to 32 bits and cannot be reused for another path of the same connection.
 
-# Acknowledgements
+# Acknowledgments
 
 This document is a collaboration of authors that combines work from
 three proposals. Further authors of one of the original proposals are Qing An and Zhenyu Li.
