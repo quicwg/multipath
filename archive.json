@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-28T01:15:26.572978+00:00",
+  "timestamp": "2025-12-30T01:07:34.063193+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -68255,13 +68255,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-22T07:10:39Z",
-      "updatedAt": "2025-12-27T02:03:11Z",
+      "updatedAt": "2025-12-28T18:24:50Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
       "headRepository": "cabo/quic-multipath",
       "headRefName": "artart-nits",
-      "headRefOid": "2dd73f567722e83d74c1b4dcf52582cabb28cf69",
+      "headRefOid": "519acd2595bc9138d749e220fc59ad16685cb2ef",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -68273,6 +68273,13 @@
           "body": "I have verified that the fixes proposed here will also sole the nits listed in the Gen Art review (issue #627)",
           "createdAt": "2025-12-27T02:03:11Z",
           "updatedAt": "2025-12-27T02:03:11Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "NONE",
+          "body": "It's not my language, so I don't care, but I do want it to be consistent.\r\n\r\nmain has 21 occurrences of the word, 6 of which use acknowledgment and 15 of which use acknowledgement.  The PR changes the minority (and follows RFC 7322 in that).  Of course, the authors can agree to change all 21 to acknowledgment.  Changing back just one doesn't make sense, so I changed the other 20 ones as well.",
+          "createdAt": "2025-12-28T07:04:00Z",
+          "updatedAt": "2025-12-28T18:24:50Z"
         }
       ],
       "reviews": [
@@ -68301,6 +68308,46 @@
           "createdAt": "2025-12-23T05:53:07Z",
           "updatedAt": "2025-12-23T05:53:07Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7XcR6N",
+          "commit": {
+            "abbreviatedOid": "2dd73f5"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-28T04:32:50Z",
+          "updatedAt": "2025-12-28T04:32:50Z",
+          "comments": [
+            {
+              "originalPosition": 69,
+              "body": "Not that I have a strong preference, but FWIW, RFC 9000 uses \"acknowledgment.\"",
+              "createdAt": "2025-12-28T04:32:50Z",
+              "updatedAt": "2025-12-28T04:32:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7XcZY0",
+          "commit": {
+            "abbreviatedOid": "2dd73f5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-12-28T06:40:11Z",
+          "updatedAt": "2025-12-28T06:40:11Z",
+          "comments": [
+            {
+              "originalPosition": 69,
+              "body": "```suggestion\r\nAs multipath support is unknown during the handshake, acknowledgments of\r\n```\r\n@kazuho is right. Internet standards, including TCP-IP, consistently use \"acknowledgements\"",
+              "createdAt": "2025-12-28T06:40:11Z",
+              "updatedAt": "2025-12-28T06:40:11Z"
+            }
+          ]
         }
       ]
     },
