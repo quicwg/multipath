@@ -190,7 +190,7 @@ only be sent in 1-RTT packets.
 
 The new transport parameter is defined as follows:
 
-- initial_max_path_id (current version uses 0x0f739bbc1b666d0d): a
+- initial_max_path_id (parameter ID 0x3e): parameter value is a
   variable-length integer specifying the maximum path ID
   an endpoint is willing to maintain at connection initiation.
   This value MUST NOT exceed 2<sup>32</sup>-1, the maximum allowed value for the path ID due to
@@ -774,10 +774,10 @@ MUST silently ignore the frame.
 
 ## PATH_ACK Frame {#mp-ack-frame}
 
-The PATH_ACK frame (types TBD-00 and TBD-01)
+The PATH_ACK frame (types 0x3e and 0x3f)
 is an extension of the ACK frame specified in {{Section 19.3 of QUIC-TRANSPORT}}. It is
 used to acknowledge packets that were sent on different paths, as
-each path has its own packet number space. If the frame type is TBD-01, PATH_ACK frames
+each path has its own packet number space. If the frame type is 0x3f, PATH_ACK frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.
 
@@ -785,8 +785,7 @@ PATH_ACK frame is formatted as shown in {{fig-mp-ack-format}}.
 
 ~~~
   PATH_ACK Frame {
-    Type (i) = TBD-00..TBD-01
-         (experiments use  0x15228c00-0x15228c01),
+    Type (i) = 0x3e..0x3f,
     Path Identifier (i),
     Largest Acknowledged (i),
     ACK Delay (i),
@@ -814,7 +813,7 @@ PATH_ABANDON frames are formatted as shown in {{fig-path-abandon-format}}.
 
 ~~~
   PATH_ABANDON Frame {
-    Type (i) = TBD-02 (experiments use 0x15228c05),
+    Type (i) = 0x3e75,
     Path Identifier (i),
     Error Code (i),
   }
@@ -843,20 +842,20 @@ QUIC transport error codes are 62-bit unsigned integers
 NO_ERROR(0x0), the following QUIC error codes are defined
 for use in the PATH_ABANDON frame:
 
-APPLICATION_ABANDON_PATH (TBD-10):
+APPLICATION_ABANDON_PATH (0x3e):
 : The endpoint is abandoning the path at the
   request of the application.
 
-PATH_RESOURCE_LIMIT_REACHED (TBD-11):
+PATH_RESOURCE_LIMIT_REACHED (0x3e75):
 : The endpoint is abandoning the path because
   it cannot allocate sufficient resources to maintain it.
 
-PATH_UNSTABLE_OR_POOR (TBD-12):
+PATH_UNSTABLE_OR_POOR (0x3e76):
 : The endpoint is abandoning the path because
   the used interface is observed to be unstable or performance is considered poor. This condition can occur, e.g.,
   due to frequent handover events during high-speed mobility or due to a weak wireless signal.
 
-NO_CID_AVAILABLE_FOR_PATH (TBD-13):
+NO_CID_AVAILABLE_FOR_PATH (0x3e77):
 : The endpoint is abandoning the path due to
   the lack of a connection ID for this path.
   This might occur when the peer initiates a new path
@@ -865,28 +864,28 @@ NO_CID_AVAILABLE_FOR_PATH (TBD-13):
 
 ## PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames {#path-backup-available-frame}
 
-PATH_STATUS_AVAILABLE frames are used by endpoints to inform the peer
+PATH_STATUS_AVAILABLE frames (type=0x3e77) are used by endpoints to inform the peer
 that the indicated path is available for sending.
 
 PATH_STATUS_AVAILABLE frames are formatted as shown in {{fig-path-available-format}}.
 
 ~~~
   PATH_STATUS_AVAILABLE Frame {
-    Type (i) = TBD-04 (experiments use 0x15228c08),
+    Type (i) = 0x3e77,
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
 ~~~
 {: #fig-path-available-format title="PATH_STATUS_AVAILABLE Frame Format"}
 
-PATH_STATUS_BACKUP frames are used by endpoints to inform the peer
+PATH_STATUS_BACKUP frames (type=0x3e76) are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.
 
 PATH_STATUS_BACKUP frames are formatted as shown in {{fig-path-backup-format}}.
 
 ~~~
   PATH_STATUS_BACKUP Frame {
-    Type (i) = TBD-03 (experiments use 0x15228c07)
+    Type (i) = 0x3e76
     Path Identifier (i),
     Path Status Sequence Number (i),
   }
@@ -932,7 +931,7 @@ before or during path initiation.
 
 ## PATH_NEW_CONNECTION_ID frame {#mp-new-conn-id-frame}
 
-The PATH_NEW_CONNECTION_ID frame (type=TBD-05)
+The PATH_NEW_CONNECTION_ID frame (type=0x3e78)
 is an extension of the NEW_CONNECTION_ID frame specified in
 {{Section 19.15 of QUIC-TRANSPORT}}.
 It is used to provide its peer with alternative connection IDs for 1-RTT packets
@@ -943,7 +942,7 @@ PATH_NEW_CONNECTION_ID frames are formatted as shown in {{fig-mp-connection-id-f
 
 ~~~
 PATH_NEW_CONNECTION_ID Frame {
-  Type (i) = TBD-05 (experiments use 0x15228c09),
+  Type (i) = 0x3e78,
   Path Identifier (i),
   Sequence Number (i),
   Retire Prior To (i),
@@ -983,7 +982,7 @@ for NEW_CONNECTION_ID frame is only applied for path ID 0.
 
 ## PATH_RETIRE_CONNECTION_ID frame {#mp-retire-conn-id-frame}
 
-The PATH_RETIRE_CONNECTION_ID frame (TBD-06)
+The PATH_RETIRE_CONNECTION_ID frame (type=0x3e79)
 is an extension of the RETIRE_CONNECTION_ID frame specified in
 {{Section 19.16 of QUIC-TRANSPORT}}. It is used
 to indicate that an endpoint will no longer use a connection ID for a specific path ID
@@ -998,7 +997,7 @@ PATH_RETIRE_CONNECTION_ID frames are formatted as shown in {{fig-mp-retire-conne
 
 ~~~
 PATH_RETIRE_CONNECTION_ID Frame {
-  Type (i) = TBD-06 (experiments use 0x15228c0a),
+  Type (i) = 0x3e79,
   Path Identifier (i),
   Sequence Number (i),
 }
@@ -1028,14 +1027,14 @@ processing of a RETIRE_CONNECTION_ID frame is only applied for path ID 0.
 
 ## MAX_PATH_ID frame {#max-paths-frame}
 
-A MAX_PATH_ID frame (type=0x15228c0c) informs the peer of the maximum path ID
+A MAX_PATH_ID frame (type=0x3e7a) informs the peer of the maximum path ID
 it is permitted to use.
 
 MAX_PATH_ID frames are formatted as shown in {{fig-max-paths-frame-format}}.
 
 ~~~
 MAX_PATH_ID Frame {
-  Type (i) = TBD-07 (experiments use 0x15228c0c),
+  Type (i) = 0x3e7a,
   Maximum Path Identifier (i),
 }
 ~~~
@@ -1062,11 +1061,11 @@ and no more recent MAX_PATH_ID frame has been sent in the meantime.
 
 ## PATHS_BLOCKED and PATH_CIDS_BLOCKED frames {#paths-and-cids-blocked-frame}
 
-A sender can send a PATHS_BLOCKED frame (type=0x15228c0d) when
+A sender can send a PATHS_BLOCKED frame (type=0x3e7b) when
 it wishes to open a path but is unable to do so due to the maximum path ID
 limit set by its peer.
 
-A sender can send a PATH_CIDS_BLOCKED frame (type=0x15228c0e) when
+A sender can send a PATH_CIDS_BLOCKED frame (type=0x3e7c) when
 it wishes to open a path with a valid path ID or change the connection ID on an established path
 but is unable to do so because there are no unused connection IDs available
 for the corresponding path ID.
@@ -1084,7 +1083,7 @@ PATHS_BLOCKED frames are formatted as shown in {{fig-paths-blocked-frame-format}
 
 ~~~
 PATHS_BLOCKED Frame {
-  Type (i) = TBD-08 (experiments use 0x15228c0d),
+  Type (i) = 0x3e7b,
   Maximum Path Identifier (i),
 }
 ~~~
@@ -1102,7 +1101,7 @@ PATH_CIDS_BLOCKED frames are formatted as shown in {{fig-path-cid-blocked-frame-
 
 ~~~
 PATH_CIDS_BLOCKED Frame {
-  Type (i) = TBD-09 (experiments use 0x15228c0e),
+  Type (i) = 0x3e7c,
   Path Identifier (i),
   Next Sequence Number (i),
 }
@@ -1411,7 +1410,7 @@ the "QUIC Transport Parameters" registry.
 
 Value | Parameter Name.     | Specification
 ------|---------------------|-----------------
-TBD   | initial_max_path_id | {{nego}}
+0x3e  | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -1419,17 +1418,17 @@ The following frame types defined in {{frame-types}} should be added to
 the "QUIC Frame Types" registry.
 
 
-Value           | Frame Type Name          | Specification
-----------------|--------------------------|-----------------
-TBD-00 - TBD-01 | PATH_ACK                 | {{mp-ack-frame}}
-TBD-02          | PATH_ABANDON             | {{path-abandon-frame}}
-TBD-03          | PATH_STATUS_BACKUP       | {{path-backup-available-frame}}
-TBD-04          | PATH_STATUS_AVAILABLE    | {{path-backup-available-frame}}
-TBD-05          | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
-TBD-06          | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-TBD-07          | MAX_PATH_ID              | {{max-paths-frame}}
-TBD-08          | PATHS_BLOCKED            | {{paths-and-cids-blocked-frame}}
-TBD-09          | PATH_CIDS_BLOCKED        | {{paths-and-cids-blocked-frame}}
+Value       | Frame Type Name          | Specification
+------------|--------------------------|-----------------
+0x3e - 0x3f | PATH_ACK                 | {{mp-ack-frame}}
+0x3e75      | PATH_ABANDON             | {{path-abandon-frame}}
+0x3e76      | PATH_STATUS_BACKUP       | {{path-backup-available-frame}}
+0x3e77      | PATH_STATUS_AVAILABLE    | {{path-backup-available-frame}}
+0x3e78      | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
+0x3e79      | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
+0x3e7a      | MAX_PATH_ID              | {{max-paths-frame}}
+0x3e7b      | PATHS_BLOCKED            | {{paths-and-cids-blocked-frame}}
+0x3e7c      | PATH_CIDS_BLOCKED        | {{paths-and-cids-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
@@ -1437,53 +1436,11 @@ be added to the "QUIC Transport Error Codes" registry.
 
 |Value                       | Code                  | Description                   | Specification
 |----------------------------|-----------------------|-------------------------------|-------------------
-|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
-|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
-|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}
-|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
+|0x3e | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
+|0x3e75 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+|0x3e76 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}
+|0x3e77 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
-
-## Values used in experiments
-
-RFC Editor's Note: Please remove this section prior to publication of
-a final version of this document.
-
-The experiments use the value defined in {{transport-parameters-exp}} for the transport parameter
-defined in this document.
-
-| Parameter Name.     | Value              |
-|---------------------|--------------------|
-| initial_max_path_id | 0x0f739bbc1b666d0d |
-{: #transport-parameters-exp title="Experimental Transport Parameter Value"}
-
-
-The experiments use the values defined in {{frame-types-exp}} for the additional frame types
-defined in this document.
-
-| Frame Type Name  | Value used in experiments |
-|------------------|---------------------------|
-| PATH_ACK | 0x15228c00-0x15228c01 |
-| PATH_ABANDON | 0x15228c05 |
-| PATH_STATUS_BACKUP | 0x15228c07 |
-| PATH_STATUS_AVAILABLE | 0x15228c08 |
-| PATH_NEW_CONNECTION_ID | 0x15228c09 |
-| PATH_RETIRE_CONNECTION_ID | 0x15228c0a |
-| MAX_PATH_ID | 0x15228c0c |
-| PATHS_BLOCKED | 0x15228c0d |
-| PATH_CIDS_BLOCKED | 0x15228c0e |
-{: #frame-types-exp title="Experimental values for additions to QUIC Frame Types Entries"}
-
-
-The experiments use the error code values defined in {{tab-error-code-exp}}.
-
-|Error code  | Value used in experiments |
-|-------|--------------------|
-|APPLICATION_ABANDON_PATH | 0x004150504142414e  |
-|PATH_RESOURCE_LIMIT_REACHED| 0x0052534c494d4954  |
-|PATH_UNSTABLE_OR_POOR| 0x00554e5f494e5446  |
-|NO_CID_AVAILABLE_FOR_PATH| 0x004e4f5f4349445f  |
-{: #tab-error-code-exp title="Error Codes Values for Multipath QUIC experiments"}
-
 
 # Security Considerations
 
