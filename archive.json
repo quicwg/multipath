@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-06T01:08:55.924365+00:00",
+  "timestamp": "2026-01-08T01:09:17.108692+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15261,7 +15261,7 @@
       "labels": [],
       "body": "Carsten's review (issue #629) points an issue with the current draft: on one hand, we never say that only the client can open a new path; on the other hand, we do not say what happens if the client and the server open a new path simultaneously. We have two options: state that we inherit the restriction from RFC 9000 and that only the client can open new paths; or, explain what happens if the server tries to open a path.\n\nMandating that only the client creates paths is the simplest solution, even if it is not the most satisfactory. We could simply simply write that \"_attempts by servers to open paths is not supported. It is likely to fail if the client is behind a NAT, and would result in undefined behavior if client and server simultaneously try to open the same path ID._\" We would then rely on future extensions, such as [peer-to-peer coordinated NAT traversal](https://www.ietf.org/archive/id/draft-seemann-quic-nat-traversal-01.html), to lift that restriction.",
       "createdAt": "2025-12-28T00:14:06Z",
-      "updatedAt": "2026-01-05T15:39:44Z",
+      "updatedAt": "2026-01-07T19:20:32Z",
       "closedAt": null,
       "comments": [
         {
@@ -15270,6 +15270,13 @@
           "body": " _Originally posted by @huitema in [#629](https://github.com/quicwg/multipath/issues/629#issuecomment-3694326294)_:\n\n> The \"client only\" part is controversial, so I opened issue #631 to discuss how to respond. \n\nCould you give some context why this was considered controversial, are you referring to #329/#331?\n\n---\n\nI think it would be nice to allow server side migration, but looking at #329 , #331 and #354, one obstacle is how to negotiate MAX_PATH_ID. This may be too big of a change at this stage?\n\n> *\"attempts by servers to open paths is not supported. It is likely to fail if the client is behind a NAT, and would result in undefined behavior if client and server simultaneously try to open the same path ID.\"*\n\nMaybe we could reintroduce the \"even\" path IDs for clients and phrase the restriction as: *\"attempts by servers to open paths is not supported. Protocol extension may use odd path IDs on the server side for server side path initiation.\"*?\n\nSide note, with my path-aware-networking hat on, I would argue that server side path migration can be quite useful even if the client's network address doesn't change (no NAT migration), instead only the route between endpoints would change, or the server could announce a preferred address later during the connection.\n\n\n",
           "createdAt": "2026-01-05T15:37:49Z",
           "updatedAt": "2026-01-05T15:39:44Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We have written this draft with the constraint that paths are only started by the client -- see for example Marten Seeman's [post](https://seemann.io/posts/2024-10-26---p2p-quic/). I understand that we have scenarios that work better if paths can be opened by the server as well, but yes, explicitly supporting that would be too much of a change. \n\nThe problem is that we have a bit of a muddle. The text dances around the issue a bit, does not actually write that the server SHOULD NOT attempt to initiate paths, yet does not provide any mechanism to resolve conflicts if both client and server open a path at the same time with different characteristics. I think that we have to formally acknowledge the restriction.",
+          "createdAt": "2026-01-07T19:20:32Z",
+          "updatedAt": "2026-01-07T19:20:32Z"
         }
       ]
     }
