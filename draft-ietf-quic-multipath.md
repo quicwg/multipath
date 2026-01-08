@@ -59,6 +59,7 @@ normative:
 
 informative:
   RFC6356:
+  RFC9312:
   OLIA:
     title: "MPTCP is not pareto-optimal: performance issues and
 a possible solution"
@@ -155,6 +156,12 @@ Simultaneous path usage generally, however, needs more consideration
 than specified in this document to avoid negative performance
 impacts, e.g., when stream data is distributed over multiple paths with
 different delays.
+
+The operation considerations for QUIC are addressed in {{RFC9312}}.
+They apply to QUIC connections using the extensions defined in this
+document. An additional complexity is that applications might use a combination
+of monitored and non-monitored paths, but that complexity already
+exit when using path migration as defined in {{QUIC-TRANSPORT}}.
 
 ## Conventions and Definitions {#definition}
 
@@ -277,8 +284,8 @@ IV with the packet number and with the 32 bits of the
 path ID. In order to guarantee the uniqueness of the nonce, the path ID
 is limited to a max value of 2<sup>32</sup>-1, as specified in {{nego}}.
 
-To calculate the nonce, a 96-bit path-and-packet-number is composed of the least
-significant 32 bits of the path ID in network byte order,
+To calculate the nonce, a 96-bit path-and-packet-number is composed of the
+32 bits of the path ID in network byte order,
 two zero bits, and the 62 bits of the reconstructed QUIC packet number in
 network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
