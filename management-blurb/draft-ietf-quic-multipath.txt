@@ -234,6 +234,9 @@ Table of Contents
    Section 4, the new frames defined in this document can only be sent
    in 1-RTT packets.
 
+   The transport parameter negotiation enables incremental deployment of
+   implementations of the multipath extension.
+
 2.1.  initial_max_path_id Transport Parameter
 
    The new transport parameter is defined as follows:
