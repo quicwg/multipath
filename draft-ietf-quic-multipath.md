@@ -193,6 +193,9 @@ and new paths can be used, as specified in {{path-management}}.
 As specified in {{frames}}, the new frames defined in this document can
 only be sent in 1-RTT packets.
 
+The transport parameter negotiation enables incremental deployment of implementations
+of the multipath extension.
+
 ## initial_max_path_id Transport Parameter {#nego}
 
 The new transport parameter is defined as follows:
