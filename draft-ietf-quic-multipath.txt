@@ -173,7 +173,7 @@ Table of Contents
    created by a client.
 
    This extension does not cover address discovery and management.
-   Addresses and the actual decision to setup or tear down paths are
+   Addresses and the actual decision to set up or tear down paths are
    assumed to be handled by the application.  But this document does not
    prevent future extensions from defining mechanisms to cope with the
    remaining scenarios.
@@ -183,7 +183,7 @@ Table of Contents
    packets.  As these differ depending on application requirements, only
    some basic implementation guidance is discussed in Section 5.  This
    extension can be used with different scheduling algorithms that,
-   e.g., can range from support for failover to simulatenous use of the
+   e.g., can range from support for failover to simultaneous use of the
    aggregated capacity across all open paths.  There are currently no
    IETF specifications that define scheduling algorithms for
    simultaneously (i.e., concurrently) using multiple paths.
@@ -207,7 +207,7 @@ Table of Contents
    this document uses the term "path", it refers to the notion of
    "network path" used in [QUIC-TRANSPORT].
 
-   The packet diagrams in this document uses the conventions defined in
+   The packet diagrams in this document use the conventions defined in
    Section 1.3 of [QUIC-TRANSPORT], including the notation (i) to denote
    variable-length integers, encoded as specified in Section 16 of
    [QUIC-TRANSPORT].
@@ -222,10 +222,10 @@ Table of Contents
    the initial_max_path_id transport parameter for use in a subsequent
    connection.  If both endpoints advertise the initial_max_path_id
    transport parameter, once the handshake is completed a new AEAD usage
-   applies to all 1-RTT packets, as specified in Section Section 2.4,
-   and new paths can be used, as specified in Section Section 3.  As
-   specified in Section 4, the new frames defined in this document can
-   only be sent in 1-RTT packets.
+   applies to all 1-RTT packets, as specified in Section 2.4, and new
+   paths can be used, as specified in Section 3.  As specified in
+   Section 4, the new frames defined in this document can only be sent
+   in 1-RTT packets.
 
 2.1.  initial_max_path_id Transport Parameter
 
@@ -264,7 +264,7 @@ Table of Contents
    Cipher suites with a nonce shorter than 12 bytes cannot be used
    together with the multipath extension.  If such a cipher suite is
    selected and the use of the multipath extension is supported,
-   endpoints MUST abort the handshake with a an error of type
+   endpoints MUST abort the handshake with an error of type
    TRANSPORT_PARAMETER_ERROR.
 
    The initial_max_path_id parameter MUST NOT be remembered for use in a
@@ -281,7 +281,7 @@ Table of Contents
    If an endpoint receives a disable_active_migration transport
    parameter, it is forbidden to establish new paths to the peer's
    handshake address.  However, establishment of additional paths to
-   other peer addresses (e.g., carried by peer’s preferred_address) is
+   other peer addresses (e.g., carried by peer's preferred_address) is
    immediately valid.
 
    If the server uses the preferred_address transport parameter, clients
@@ -322,7 +322,7 @@ Table of Contents
    extension is used by combining the packet protection IV with the
    packet number and with the 32 bits of the path ID.  In order to
    guarantee the uniqueness of the nonce, the path ID is limited to a
-   max value of 2^32-1, as specified in Section 2.1
+   max value of 2^32-1, as specified in Section 2.1.
 
    To calculate the nonce, a 96-bit path-and-packet-number is composed
    of the least significant 32 bits of the path ID in network byte
@@ -392,7 +392,7 @@ Table of Contents
    least one unused, common path ID, as the same path ID is used in both
    directions.
 
-   This documents specfies path initiation (see Section 3.1), issuing
+   This document specifies path initiation (see Section 3.1), issuing
    and retirement of per-path connection IDs (see Section 3.2), path
    status management (see Section 3.3) and path closure (see
    Section 3.4).  However, this document does not specify when a client
@@ -458,11 +458,11 @@ Table of Contents
    PATH_ABANDON on another path, as specified in Section 3.4.
 
    An endpoint that has no active connection ID for this path or lacks
-   other resource to immediately configure a new path could delay
+   other resources to immediately configure a new path could delay
    sending the PATH_RESPONSE until sufficient resources are available.
    Long delays might cause the peer to repeat the PATH_CHALLENGE and
    eventually send a PATH_ABANDON, in which case the procedures
-   specified in Section Section 3.4 apply.
+   specified in Section 3.4 apply.
 
    PATH_ACK frames (see Section 4.1) can be returned on any path.  If
    the PATH_ACK is preferred to be sent on the same path as the
@@ -528,7 +528,7 @@ Table of Contents
    containing non-probing frames on a new (validated) path, however,
    using the same path ID as on the old path.  When the multipath
    extension is negotiated, the reception of any packet, no matter if
-   "probing " or "non-probing", on a new path with a new, so far unused
+   "probing" or "non-probing", on a new path with a new, so far unused
    path ID does not impact the path status of any existing path.
    Therefore, any frame can be sent on a new path with a new path ID at
    any time as long as the anti-amplification limits (see
@@ -635,7 +635,7 @@ Table of Contents
    provide new connection IDs for that path, if still open, using
    PATH_NEW_CONNECTION_ID frames.
 
-   While it it expected that the peer provides at least one unused
+   While it is expected that the peer provides at least one unused
    connection ID for all active paths using the PATH_NEW_CONNECTION_ID
    after retirement of an old connection ID, an endpoint MAY send a
    PATH_CIDS_BLOCKED (see Section 4.7) if it wants to change the
@@ -659,7 +659,7 @@ Table of Contents
    An endpoint can send PATH_STATUS_BACKUP and PATH_STATUS_AVAILABLE
    frames (see Section 4.3) to inform the peer that it should send
    packets on the paths with the preference expressed by these frames.
-   Note that an endpoint might not follow the peer’s advertisements, but
+   Note that an endpoint might not follow the peer's advertisements, but
    these frames are still a clear signal of the peer's preference of
    path usage.
 
@@ -777,8 +777,8 @@ Table of Contents
    0.  It sends the PATH_ABANDON frame to terminate the path with path
    ID 0 on the path with path ID 1 using the connection ID S1.  After
    receiving the PATH_ABANDON frame for path ID 0, the server also sends
-   a PATH_ABANDON frame with path ID 0 together with an PATH_ACK frame
-   on the same path using connection ID C1.
+   a PATH_ABANDON frame with path ID 0 together with a PATH_ACK frame on
+   the same path using connection ID C1.
 
    Client                                                      Server
 
@@ -792,7 +792,7 @@ Table of Contents
                     Figure 2: Example of closing a path.
 
    Note that if the PATH_ABANDON frame is instead sent on the to-be-
-   abandoned path, the last acknowledgment still needs to be send on a
+   abandoned path, the last acknowledgment still needs to be sent on a
    different path as no further packets can be sent on the abandoned
    path after the PATH_ABANDON frame.
 
@@ -800,7 +800,7 @@ Table of Contents
 
    Due to network delays, packets sent on an abandoned path can arrive
    well after the connection IDs have been retired.  If not recognized
-   as bound to the local connection, such packet triggers the peer to
+   as bound to the local connection, such a packet triggers the peer to
    send a Stateless Reset packet.  The requirement to retain knowledge
    of connection ID and about the packet number space for 3 PTOs after
    receiving a PATH_ABANDON frame, as specified in Section 3.4 above, is
@@ -908,7 +908,7 @@ Table of Contents
    PATH_ABANDON frames are ack-eliciting.  If a packet containing a
    PATH_ABANDON frame is considered lost, the peer SHOULD repeat it.
 
-   Use of the PATH_ABANDON frame is specified in section Section 3.4.
+   Use of the PATH_ABANDON frame is specified in Section 3.4.
 
 4.2.1.  Error Codes
 
@@ -926,9 +926,9 @@ Table of Contents
 
    PATH_UNSTABLE_OR_POOR (0x3e76):  The endpoint is abandoning the path
       because the used interface is observed to be unstable or
-      performance is consider poor.  This condition can occur, e.g., due
-      to frequent handover events during high-speed mobility or due to a
-      weak wireless signal.
+      performance is considered poor.  This condition can occur, e.g.,
+      due to frequent handover events during high-speed mobility or due
+      to a weak wireless signal.
 
    NO_CID_AVAILABLE_FOR_PATH (0x3e77):  The endpoint is abandoning the
       path due to the lack of a connection ID for this path.  This might
@@ -1200,7 +1200,7 @@ Table of Contents
    PROTOCOL_VIOLATION.
 
    PATHS_BLOCKED and PATH_CIDS_BLOCKED frames are ack-eliciting and MAY
-   be retransmitted if the path is still blocked when the lost is
+   be retransmitted if the path is still blocked when the loss is
    detected.
 
 5.  Implementation Considerations
@@ -1290,7 +1290,7 @@ Table of Contents
    paths) share the same bottleneck, using a standard congestion control
    scheme could result in an unfair distribution of the bandwidth with
    the multipath connection getting more bandwidth than competing single
-   paths connections.  Multipath TCP uses the linked increased algorithm
+   paths connections.  Multipath TCP uses the linked increases algorithm
    (LIA) congestion control scheme specified in [RFC6356] to solve this
    problem.  This scheme can immediately be adapted to Multipath QUIC.
    Other coupled congestion control schemes have been proposed for
@@ -1311,10 +1311,10 @@ Table of Contents
    sent on, but they could be received through any open path.  If
    successive acknowledgments are received on different paths, the
    measured RTT samples can fluctuate widely, which could result in poor
-   performance depending e.g., on the used connection control.
+   performance depending, e.g., on the used connection control.
 
    Congestion control state as defined in [QUIC-RECOVERY] is kept per
-   path ID.  However, depending on which path acknowledgements are sent,
+   path ID.  However, depending on which path acknowledgments are sent,
    the actual RTT of a path cannot be calculated or might not be the
    right value to be used.
 
@@ -1327,7 +1327,7 @@ Table of Contents
    of 50ms in each direction, and a geostationary satellite path, with a
    latency of 300ms in each direction.  The sum of the two one-way
    delays will depend on the combination of paths used for the packet
-   transmission and the acknowledgement transmission, as shown in
+   transmission and the acknowledgment transmission, as shown in
    Table 1.
 
             +======================+=============+===========+
@@ -1342,7 +1342,7 @@ Table of Contents
                                   paths
 
    The computed values reflect both the state of the network path and
-   the scheduling decisions of the acknowledgement sender.  If we assume
+   the scheduling decisions of the acknowledgment sender.  If we assume
    that the PATH_ACK will be sent over the terrestrial link, because
    this decision provides the best response time, the computed RTT value
    for the satellite path will be about 350ms.  This is lower than the
@@ -1351,29 +1351,28 @@ Table of Contents
    the PTO timeout: if a PATH_ACK is not received after more than 350ms,
    either the packet or its PATH_ACK were probably lost.
 
-   The simplest implementation is to use the the delays measured when
-   receiving new packet acknowledgements to compute smoothed_rtt and
+   The simplest implementation is to use the delays measured when
+   receiving new packet acknowledgments to compute smoothed_rtt and
    rttvar per Section 5.3 of [QUIC-RECOVERY] regardless of the path
    through which PATH_ACK frames are received.  This approach will
-   provide good results as long as acknowledgements are sent
-   consistently over one path.  If at any time the acknowledgement
-   sender revisits its sending preferences, this can also change the
-   paths that are used to send acknowledgements.  However, this is not
-   very different from route changes on a single path.  The RTT, RTT
-   variance and PTO estimates will rapidly converge to reflect the new
-   conditions.  There is one exception: the minimum RTT, which is also a
-   known challenge when route changes occurs on a single path.  An
-   acknowledgement receiver can, however, remember the path over which
-   the PATH_ACK that produced the minimum RTT was received, and restart
-   the minimum RTT computation if that acknowledgement path changes or
-   is abandoned.  If acknowledgements are not send consistently over one
-   path, the acknowledgement receiver can monitor over which path
-   acknowledgement are received and only use samples for
-   acknowledgements received on the same path than the data was sent, if
-   any.
+   provide good results as long as acknowledgments are sent consistently
+   over one path.  If at any time the acknowledgment sender revisits its
+   sending preferences, this can also change the paths that are used to
+   send acknowledgments.  However, this is not very different from route
+   changes on a single path.  The RTT, RTT variance and PTO estimates
+   will rapidly converge to reflect the new conditions.  There is one
+   exception: the minimum RTT, which is also a known challenge when
+   route changes occurs on a single path.  An acknowledgment receiver
+   can, however, remember the path over which the PATH_ACK that produced
+   the minimum RTT was received, and restart the minimum RTT computation
+   if that acknowledgment path changes or is abandoned.  If
+   acknowledgments are not sent consistently over one path, the
+   acknowledgment receiver can monitor over which path acknowledgments
+   are received and only use samples for acknowledgments received on the
+   same path on which the data was sent, if any.
 
    Further, congestion control functions that rely on delay estimates
-   needs to consider cases where acknowledgements are sent over multiple
+   needs to consider cases where acknowledgments are sent over multiple
    paths with different delays explicitly.
 
 5.5.  Packet Scheduling
@@ -1433,7 +1432,7 @@ Table of Contents
    [QUIC-RECOVERY] for detecting packet loss on each individual path.  A
    special case happens when the PTO timer expires.  According to
    [QUIC-RECOVERY], no packet will be declared lost until either the
-   packet sender receives a new acknowledgement for this path, or the
+   packet sender receives a new acknowledgment for this path, or the
    path itself is finally declared broken.  This cautious process
    minimizes the risk of spurious retransmissions, but it might cause
    significant delivery delay for the frames contained in these "lost
@@ -1475,15 +1474,15 @@ Table of Contents
    recommend sending keep-alives as it can create unnecessary overhead,
    especially if there are other, actively used paths.
 
-   Section 5.3 of [QUIC-TRANSPORT] defines an optional keep alive
+   Section 5.3 of [QUIC-TRANSPORT] defines an optional keep-alive
    process.  This process can be applied to each path separately
    depending on application needs.  Some applications could decide to
    not keep any not-actively used path alive, keep only one additional
-   path alive, or multiple paths, e.g., for more redunancy.  As
+   path alive, or multiple paths, e.g., for more redundancy.  As
    discussed in Section 10.1.2 of [QUIC-TRANSPORT], the keep-alive
    interval needs to incorporate timeouts in middleboxes on the path.
 
-   If a path was not actively used for a while and no keep alives have
+   If a path was not actively used for a while and no keep-alives have
    been sent, an endpoint can probe it before switching to active use if
    there are still other paths that are currently usable.
 
