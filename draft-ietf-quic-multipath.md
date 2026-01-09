@@ -1175,7 +1175,7 @@ that match streams to paths, so that for example data frames for
 low priority streams are sent over low priority paths.
 Since these paths use different path IDs, they can be managed
 independently to suit the needs of the application. (The application
-would need some way to manage how client and server use differentiated services
+would need to manage how client and server use differentiated services
 on a path. This is not specified in this document.)
 
 There might be cases in which paths are created with different 4-tuples,
