@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-08T01:09:17.108692+00:00",
+  "timestamp": "2026-01-11T01:16:01.057899+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15053,15 +15053,15 @@
       "id": "I_kwDOGNtpaM7dkh_E",
       "title": "Agree of required size for IANA parameters",
       "url": "https://github.com/quicwg/multipath/issues/625",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "We have a request from IANA to specify the required size of parameters. I am inclined to answer with the following:\n\nValue | Transport Parameter Name.     | Desired length\n------|---------------------|-----------------\nTBD   | initial_max_path_id | 8 bits: Will be used in a large fraction of handshakes\n\nValue           | Frame Type Name          | Desired length\n----------------|--------------------------|-----------------\nTBD-00 - TBD-01 | PATH_ACK                 | 8 bits: could be used as frequently as QUIC ACKs\nTBD-02          | PATH_ABANDON             | 8 bits would be nice, 16 bits probably OK: used once per path\nTBD-03          | PATH_STATUS_BACKUP       | 16 bits: used a few times per path\nTBD-04          | PATH_STATUS_AVAILABLE    | 16 bits: used a few times per path\nTBD-05          | PATH_NEW_CONNECTION_ID   | 8 bits would be nice, 16  bits probably OK. N times per path\nTBD-06          | PATH_RETIRE_CONNECTION_ID| either 8 or 16. Used less often than  PATH_NEW_CONNECTION_ID\nTBD-07          | MAX_PATH_ID              | 8 bits would be nice, 16  bits probably OK. Used about once per path\nTBD-08          | PATHS_BLOCKED            | 16 bits, maybe 32: used only in error conditions\nTBD-09          | PATH_CIDS_BLOCKED        | 16 bits, maybe 32: used only in error conditions\n\n|Value                       | Error Code                  | Description                   | Desired length\n|----------------------------|-----------------------|-------------------------------|-------------------\n|TBD-10 | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | 8 bits would be nice, 16 bits probably OK. Once per path\n|TBD-11 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | 16 bits, 32 probably OK, error condition\n|TBD-12 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | 16 bits, 32 probably OK, error condition\n|TBD-13 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | 16 bits, 32  probably OK, error condition\n",
       "createdAt": "2025-12-11T01:27:04Z",
-      "updatedAt": "2025-12-27T01:53:15Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-08T16:37:51Z",
+      "closedAt": "2026-01-08T16:37:51Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -15160,6 +15160,13 @@
           "body": "PR #630 applies the values to the document, so the next draft can be easily processed by IANA.",
           "createdAt": "2025-12-27T01:53:15Z",
           "updatedAt": "2025-12-27T01:53:15Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Solved in PR #630 ",
+          "createdAt": "2026-01-08T16:37:51Z",
+          "updatedAt": "2026-01-08T16:37:51Z"
         }
       ]
     },
@@ -15199,15 +15206,15 @@
       "id": "I_kwDOGNtpaM7fiyRr",
       "title": "draft-ietf-quic-multipath-18 ietf last call Genart review",
       "url": "https://github.com/quicwg/multipath/issues/627",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Document: draft-ietf-quic-multipath\nTitle: Managing multiple paths for a QUIC connection\nReviewer: Meral Shirazipour\nReview result: Ready with Nits\n\nI am the assigned Gen-ART reviewer for this draft. The General Area\nReview Team (Gen-ART) reviews all IETF documents being processed\nby the IESG for the IETF Chair.  Please treat these comments just\nlike any other last call comments.\n\nFor more information, please see the FAQ at\n\n[<https://wiki.ietf.org/en/group/gen/GenArtFAQ>](https://wiki.ietf.org/en/group/gen/GenArtFAQ).\n\nDocument: draft-ietf-quic-multipath-18\nReviewer: Meral Shirazipour\nReview Date: 2025-12-19\nIETF LC End Date: 2025-12-22\nIESG Telechat date: Not scheduled for a telechat\n\nSummary:This draft is ready to be published as Standards Track RFC, no other\ncomment than those on the list.\n\nMajor issues:\n\nMinor issues:\n\nNits/editorial comments:\n[Page 20], 4.2, \"in section Section 3.4\"-->\"in Section 3.4\"\n\n[Page 29], 5.4, \"use the the delays\"-->\"use the delays\"\n\n[Page 30], 5.4, \"acknowledgements are not send\"-->\"acknowledgements are not\nsent\"\n\n[Page 32], 5.9, \"more redunancy\"-->\"more redundancy\"",
       "createdAt": "2025-12-20T21:28:06Z",
-      "updatedAt": "2025-12-27T02:01:48Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-08T16:36:46Z",
+      "closedAt": "2026-01-08T16:36:46Z",
       "comments": [
         {
           "author": "huitema",
@@ -15215,6 +15222,13 @@
           "body": "The nits listed here will be fixed in PR #628",
           "createdAt": "2025-12-27T02:01:48Z",
           "updatedAt": "2025-12-27T02:01:48Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fixed by PR 628.",
+          "createdAt": "2026-01-08T16:36:46Z",
+          "updatedAt": "2026-01-08T16:36:46Z"
         }
       ]
     },
@@ -15261,7 +15275,7 @@
       "labels": [],
       "body": "Carsten's review (issue #629) points an issue with the current draft: on one hand, we never say that only the client can open a new path; on the other hand, we do not say what happens if the client and the server open a new path simultaneously. We have two options: state that we inherit the restriction from RFC 9000 and that only the client can open new paths; or, explain what happens if the server tries to open a path.\n\nMandating that only the client creates paths is the simplest solution, even if it is not the most satisfactory. We could simply simply write that \"_attempts by servers to open paths is not supported. It is likely to fail if the client is behind a NAT, and would result in undefined behavior if client and server simultaneously try to open the same path ID._\" We would then rely on future extensions, such as [peer-to-peer coordinated NAT traversal](https://www.ietf.org/archive/id/draft-seemann-quic-nat-traversal-01.html), to lift that restriction.",
       "createdAt": "2025-12-28T00:14:06Z",
-      "updatedAt": "2026-01-07T19:20:32Z",
+      "updatedAt": "2026-01-08T20:26:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -15277,6 +15291,20 @@
           "body": "We have written this draft with the constraint that paths are only started by the client -- see for example Marten Seeman's [post](https://seemann.io/posts/2024-10-26---p2p-quic/). I understand that we have scenarios that work better if paths can be opened by the server as well, but yes, explicitly supporting that would be too much of a change. \n\nThe problem is that we have a bit of a muddle. The text dances around the issue a bit, does not actually write that the server SHOULD NOT attempt to initiate paths, yet does not provide any mechanism to resolve conflicts if both client and server open a path at the same time with different characteristics. I think that we have to formally acknowledge the restriction.",
           "createdAt": "2026-01-07T19:20:32Z",
           "updatedAt": "2026-01-07T19:20:32Z"
+        },
+        {
+          "author": "flub",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "It has always been my understanding that only clients can open new paths. I think explicitly clarifying this would help. I think currently half the wording in 3.1 is explicit about client/server and half the wording is vague about \"endpoint\" or \"peer\".\n\nI'm not sure why you would chose SHOULD NOT, what stops this from being a MUST NOT?\n\nAs pointed out the current mechanism makes it really hard for the server and client to pick path IDs that agree and the whole draft seems to be written with the assumption that only the client chooses those. We noticed this when we were implementing https://datatracker.ietf.org/doc/draft-seemann-quic-nat-traversal/ where we had to make the server perform holepunching using off-path PATH_CHALLENGEs of an already open path ID instead of immediately using the intended path ID because of how difficult this coordination is otherwise.",
+          "createdAt": "2026-01-08T09:00:15Z",
+          "updatedAt": "2026-01-08T09:00:15Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@flub yes, this is indeed the issue. Stating clearly that only the client opens path will probably save implementers a lot of headaches.\n\nBy the way, yes, we do have an issue with the handling of sacrificial \"bubbles\" in NAT traversal. Maybe we need to somehow create a special packet type, or maybe a special frame type, so we avoid confusion with path creation or NAT traversal.",
+          "createdAt": "2026-01-08T20:17:35Z",
+          "updatedAt": "2026-01-08T20:26:09Z"
         }
       ]
     }
@@ -68263,24 +68291,26 @@
       "id": "PR_kwDOGNtpaM66FDQ3",
       "title": "nits from ARTART review",
       "url": "https://github.com/quicwg/multipath/pull/628",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "cabo",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-12-22T07:10:39Z",
-      "updatedAt": "2025-12-28T18:24:50Z",
+      "updatedAt": "2026-01-08T16:32:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
+      "baseRefOid": "b5ae213e7bb740f57b92ef6b24e3f291b5f59db9",
       "headRepository": "cabo/quic-multipath",
       "headRefName": "artart-nits",
-      "headRefOid": "519acd2595bc9138d749e220fc59ad16685cb2ef",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "8474ffe08d0215ad2aa8dfe24c53b92493d9e37e",
+      "closedAt": "2026-01-08T16:32:32Z",
+      "mergedAt": "2026-01-08T16:32:32Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e"
+      },
       "comments": [
         {
           "author": "huitema",
@@ -68291,7 +68321,7 @@
         },
         {
           "author": "cabo",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "It's not my language, so I don't care, but I do want it to be consistent.\r\n\r\nmain has 21 occurrences of the word, 6 of which use acknowledgment and 15 of which use acknowledgement.  The PR changes the minority (and follows RFC 7322 in that).  Of course, the authors can agree to change all 21 to acknowledgment.  Changing back just one doesn't make sense, so I changed the other 20 ones as well.",
           "createdAt": "2025-12-28T07:04:00Z",
           "updatedAt": "2025-12-28T18:24:50Z"
@@ -68371,26 +68401,276 @@
       "id": "PR_kwDOGNtpaM66q7bw",
       "title": "Parameter frame and error types to desired values",
       "url": "https://github.com/quicwg/multipath/pull/630",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This PR updates the values of transport parameter type, frame types and error types to the values that were agreed in issue #625.\r\nIt also removes the references to provisional assignments, and makes sure that the description of all frames introduce the parameter types in the same manner used in RFC 9000.\r\nThe PR also solves one of the issue noted by Adrian Farrel (issue #626) about confusion between TP type and TP value -- because that was directly tied to the way we reference types, and solving that in a different PR would create a merge conflict.",
       "createdAt": "2025-12-27T01:48:58Z",
-      "updatedAt": "2025-12-27T02:16:02Z",
+      "updatedAt": "2026-01-08T16:28:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "483c62acdcfda747c55b7b0e1a1ba62622e2bd86",
       "headRepository": "quicwg/multipath",
       "headRefName": "iana-final-numbers",
-      "headRefOid": "ab75c677a02423d0990200a933241857f64a9498",
+      "headRefOid": "dc7db1f98b03756259f866a6156fbef07c68fd91",
+      "closedAt": "2026-01-08T16:28:46Z",
+      "mergedAt": "2026-01-08T16:28:45Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "b5ae213e7bb740f57b92ef6b24e3f291b5f59db9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7Y0D9v",
+          "commit": {
+            "abbreviatedOid": "ab75c67"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good to me. The choice of these values is practical and elegant.",
+          "createdAt": "2026-01-08T03:28:31Z",
+          "updatedAt": "2026-01-08T03:28:31Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7Y0Zlr",
+          "commit": {
+            "abbreviatedOid": "ab75c67"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "LG (with the point below).",
+          "createdAt": "2026-01-08T04:36:23Z",
+          "updatedAt": "2026-01-08T04:37:37Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\n- initial_max_path_id (parameter ID 0x3e): parameter value is a\n```\nIIUC \"Transport Parameter ID\" is the term used in RFC 9000.",
+              "createdAt": "2026-01-08T04:36:23Z",
+              "updatedAt": "2026-01-08T04:37:37Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 632,
+      "id": "PR_kwDOGNtpaM68MSBk",
+      "title": "Address management concerns",
+      "url": "https://github.com/quicwg/multipath/pull/632",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR addresses the concerns expressed in the Operation Directorate review (see issue #626), adding a short paragraph in the Introduction with a pointer to RFC 9312, as well as a minor edit. The paragraph also addresses the issue of application mixing managed and unmanaged (not monitored) paths noted in the review.\r\n\r\nAs suggested in the review and discussion, this PR also add a not on transport parameter negotiation enabling incremental deployment.\r\n\r\nThe review suggested specifying that the initial number of path and the subsequent increments of the number are specified by the application \"if not already obvious\". This PR does snot add specific text here, because it should indeed be obvious that the numbers are set by the \"endpoint\", i.e., the combination of QUIC stack and application code. Going further than that would require discussion of how code is implemented, which would probably go beyond the scope of the document.\r\n\r\nThe PR fixes an editorial issue, replacing the statement that the nonce includes \"the least significant 32 bits\" of the path ID by \"the 32 bits\" of the path ID, which is cleared.\r\n\r\nThe other editorial suggestion are already addressed in PR #628 and #630.",
+      "createdAt": "2026-01-08T20:07:23Z",
+      "updatedAt": "2026-01-09T20:39:26Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "management-blurb",
+      "headRefOid": "1fa8013437cc0e686fb35dffeef6ff0ded5f8257",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7ZJYPv",
+          "commit": {
+            "abbreviatedOid": "e41a2c5"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T09:31:42Z",
+          "updatedAt": "2026-01-09T09:31:42Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "/exit/exists/ ?",
+              "createdAt": "2026-01-09T09:31:42Z",
+              "updatedAt": "2026-01-09T09:31:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZKaxA",
+          "commit": {
+            "abbreviatedOid": "e41a2c5"
+          },
+          "author": "AdrianFarrel",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T10:43:02Z",
+          "updatedAt": "2026-01-09T10:43:02Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "s/operation/operational/",
+              "createdAt": "2026-01-09T10:43:02Z",
+              "updatedAt": "2026-01-09T10:43:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZKbOJ",
+          "commit": {
+            "abbreviatedOid": "e41a2c5"
+          },
+          "author": "AdrianFarrel",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T10:43:38Z",
+          "updatedAt": "2026-01-09T10:43:38Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "s/They apply/They also apply/",
+              "createdAt": "2026-01-09T10:43:38Z",
+              "updatedAt": "2026-01-09T10:43:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZSeae",
+          "commit": {
+            "abbreviatedOid": "e41a2c5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T20:37:35Z",
+          "updatedAt": "2026-01-09T20:37:35Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "OK.",
+              "createdAt": "2026-01-09T20:37:35Z",
+              "updatedAt": "2026-01-09T20:37:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZSekS",
+          "commit": {
+            "abbreviatedOid": "e41a2c5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T20:37:51Z",
+          "updatedAt": "2026-01-09T20:37:51Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Yes indeed. Sorry.",
+              "createdAt": "2026-01-09T20:37:51Z",
+              "updatedAt": "2026-01-09T20:37:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZSesU",
+          "commit": {
+            "abbreviatedOid": "e41a2c5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T20:38:04Z",
+          "updatedAt": "2026-01-09T20:38:04Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Good catch!",
+              "createdAt": "2026-01-09T20:38:04Z",
+              "updatedAt": "2026-01-09T20:38:04Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 633,
+      "id": "PR_kwDOGNtpaM68N50Z",
+      "title": "Address ART review feedback",
+      "url": "https://github.com/quicwg/multipath/pull/633",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Address feedback from ART review:\r\n\r\n- clarify that paths MUST be open by client endpoint\r\n- replace \"active path limit\" reference in discussion of blocked frame by \"maximum path ID limit\"\r\n- clarify that there is no explicit support in the document to manage creation of path with diffserv controls (as mentioned in 5.2)\r\n- replace stray reference to \"connection control\" by \"congestion control\"\r\n\r\nNote that the use of 32 bit for nonce is addressed in another PR.",
+      "createdAt": "2026-01-08T22:48:04Z",
+      "updatedAt": "2026-01-09T20:31:13Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "address-art-review",
+      "headRefOid": "873ebd377cf4bf6bb65adc9a54d657343b238abf",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7ZJXg7",
+          "commit": {
+            "abbreviatedOid": "0608039"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T09:30:53Z",
+          "updatedAt": "2026-01-09T09:30:54Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "Perhaps: /some way// ... it just needs to indicate/manage this.",
+              "createdAt": "2026-01-09T09:30:54Z",
+              "updatedAt": "2026-01-09T09:30:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZSawq",
+          "commit": {
+            "abbreviatedOid": "0608039"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-09T20:31:13Z",
+          "updatedAt": "2026-01-09T20:31:13Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "Yes, applying the suggestion.",
+              "createdAt": "2026-01-09T20:31:13Z",
+              "updatedAt": "2026-01-09T20:31:13Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
