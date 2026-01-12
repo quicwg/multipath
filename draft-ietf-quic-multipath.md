@@ -161,7 +161,7 @@ The operational considerations for QUIC are addressed in {{RFC9312}}.
 They also apply to QUIC connections using the extensions defined in this
 document. An additional complexity is that applications might use a combination
 of monitored and non-monitored paths, but that complexity already
-exist when using path migration as defined in {{QUIC-TRANSPORT}}.
+exists when using path migration as defined in {{QUIC-TRANSPORT}}.
 
 ## Conventions and Definitions {#definition}
 
