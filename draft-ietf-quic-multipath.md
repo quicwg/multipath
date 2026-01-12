@@ -1228,7 +1228,7 @@ the endpoint can keep the same congestion control and RTT measurement state.
 PATH_ACK frames indicate which path the acknowledged packets were sent on,
 but they could be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
-which could result in poor performance depending for example on the congestion control
+which could result in poor performance depending on, for example, the congestion control
 algorithm.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
