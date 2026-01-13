@@ -343,7 +343,8 @@ times the largest PTO among all paths.
 
 After completing the handshake indicating
 multipath support, endpoints can start using multiple paths.
-An endpoint can open a new path when both endpoints
+Paths MUST only be opened by the client endpoint.
+The client can open a new path when both endpoints
 have issued available connection IDs for at least one unused, common path ID,
 as the same path ID is used in both directions.
 
@@ -554,7 +555,7 @@ Receipt of a frame with a greater path ID is a connection error as specified
 in {{frames}}.
 
 When an endpoint finds it has not enough available unused path IDs,
-it SHOULD either send a MAX_PATH_ID frame to increase the active path limit
+it SHOULD either send a MAX_PATH_ID frame to increase the maximum path ID limit
 (when limited by the sender) or a PATHS_BLOCKED frame
 (see {{paths-and-cids-blocked-frame}}) to inform the peer that
 its current limit prevented the creation of the new path.
@@ -1183,7 +1184,9 @@ This could be done in conjunction with scheduling algorithms
 that match streams to paths, so that for example data frames for
 low priority streams are sent over low priority paths.
 Since these paths use different path IDs, they can be managed
-independently to suit the needs of the application.
+independently to suit the needs of the application. (The application
+would need to manage how client and server use differentiated services
+on a path. This is not specified in this document.)
 
 There might be cases in which paths are created with different 4-tuples,
 but end up using the same 4-tuples as a consequence of path
@@ -1235,7 +1238,8 @@ the endpoint can keep the same congestion control and RTT measurement state.
 PATH_ACK frames indicate which path the acknowledged packets were sent on,
 but they could be received through any open path. If successive acknowledgments are received
 on different paths, the measured RTT samples can fluctuate widely,
-which could result in poor performance depending, e.g., on the used connection control.
+which could result in poor performance depending on, for example, the congestion control
+algorithm.
 
 Congestion control state as defined in {{QUIC-RECOVERY}} is kept
 per path ID. However, depending on which path acknowledgments are
