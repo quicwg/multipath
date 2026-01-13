@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 12 July 2026                             Uber Technologies Inc.
+Expires: 17 July 2026                             Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 12 July 2026                             Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                          8 January 2026
+                                                         13 January 2026
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 July 2026.
+   This Internet-Draft will expire on 17 July 2026.
 
 Copyright Notice
 
@@ -195,6 +195,13 @@ Table of Contents
    document to avoid negative performance impacts, e.g., when stream
    data is distributed over multiple paths with different delays.
 
+   The operational considerations for QUIC are addressed in [RFC9312].
+   They also apply to QUIC connections using the extensions defined in
+   this document.  An additional complexity is that applications might
+   use a combination of monitored and non-monitored paths, but that
+   complexity already exists when using path migration as defined in
+   [QUIC-TRANSPORT].
+
 1.1.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -226,6 +233,9 @@ Table of Contents
    paths can be used, as specified in Section 3.  As specified in
    Section 4, the new frames defined in this document can only be sent
    in 1-RTT packets.
+
+   The transport parameter negotiation enables incremental deployment of
+   implementations of the multipath extension.
 
 2.1.  initial_max_path_id Transport Parameter
 
@@ -325,14 +335,14 @@ Table of Contents
    max value of 2^32-1, as specified in Section 2.1.
 
    To calculate the nonce, a 96-bit path-and-packet-number is composed
-   of the least significant 32 bits of the path ID in network byte
-   order, two zero bits, and the 62 bits of the reconstructed QUIC
-   packet number in network byte order.  The IV length is equal to the
-   nonce length.  If the IV is larger than 96 bits, the path-and-packet-
-   number is left-padded with zeros to the size of the IV.  The
-   exclusive OR of the padded packet number and the IV forms the AEAD
-   nonce.  An AEAD algorithm where the nonce length is less than 12
-   bytes cannot be used with the QUIC multipath extension.
+   of the 32 bits of the path ID in network byte order, two zero bits,
+   and the 62 bits of the reconstructed QUIC packet number in network
+   byte order.  The IV length is equal to the nonce length.  If the IV
+   is larger than 96 bits, the path-and-packet-number is left-padded
+   with zeros to the size of the IV.  The exclusive OR of the padded
+   packet number and the IV forms the AEAD nonce.  An AEAD algorithm
+   where the nonce length is less than 12 bytes cannot be used with the
+   QUIC multipath extension.
 
    For example, assuming the IV value is 0x6b26114b9cba2b63a9e8dd4f, the
    path ID is 3, and the packet number is 54321 (hex value 0xd431), the
@@ -1710,6 +1720,10 @@ Table of Contents
               Congestion Control for Multipath Transport Protocols",
               RFC 6356, DOI 10.17487/RFC6356, October 2011,
               <https://www.rfc-editor.org/rfc/rfc6356>.
+
+   [RFC9312]  Kühlewind, M. and B. Trammell, "Manageability of the QUIC
+              Transport Protocol", RFC 9312, DOI 10.17487/RFC9312,
+              September 2022, <https://www.rfc-editor.org/rfc/rfc9312>.
 
    [RFC9743]  Duke, M., Ed. and G. Fairhurst, Ed., "Specifying New
               Congestion Control Algorithms", BCP 133, RFC 9743,
