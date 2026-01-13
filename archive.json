@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-11T01:16:01.057899+00:00",
+  "timestamp": "2026-01-13T01:06:04.858891+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15275,7 +15275,7 @@
       "labels": [],
       "body": "Carsten's review (issue #629) points an issue with the current draft: on one hand, we never say that only the client can open a new path; on the other hand, we do not say what happens if the client and the server open a new path simultaneously. We have two options: state that we inherit the restriction from RFC 9000 and that only the client can open new paths; or, explain what happens if the server tries to open a path.\n\nMandating that only the client creates paths is the simplest solution, even if it is not the most satisfactory. We could simply simply write that \"_attempts by servers to open paths is not supported. It is likely to fail if the client is behind a NAT, and would result in undefined behavior if client and server simultaneously try to open the same path ID._\" We would then rely on future extensions, such as [peer-to-peer coordinated NAT traversal](https://www.ietf.org/archive/id/draft-seemann-quic-nat-traversal-01.html), to lift that restriction.",
       "createdAt": "2025-12-28T00:14:06Z",
-      "updatedAt": "2026-01-08T20:26:09Z",
+      "updatedAt": "2026-01-12T16:47:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -15305,6 +15305,13 @@
           "body": "@flub yes, this is indeed the issue. Stating clearly that only the client opens path will probably save implementers a lot of headaches.\n\nBy the way, yes, we do have an issue with the handling of sacrificial \"bubbles\" in NAT traversal. Maybe we need to somehow create a special packet type, or maybe a special frame type, so we avoid confusion with path creation or NAT traversal.",
           "createdAt": "2026-01-08T20:17:35Z",
           "updatedAt": "2026-01-08T20:26:09Z"
+        },
+        {
+          "author": "BillGageIETF",
+          "authorAssociation": "NONE",
+          "body": "An alternative would be to define a new frame type that allows the server to advertise an alternate address to the client. The client MAY open a new path using the advertised address.\n\nI proposed something like this in https://www.ietf.org/archive/id/draft-gage-quic-pathmgmt-05.html#name-address-advertisement",
+          "createdAt": "2026-01-12T16:47:36Z",
+          "updatedAt": "2026-01-12T16:47:36Z"
         }
       ]
     }
@@ -68470,13 +68477,13 @@
       "labels": [],
       "body": "This PR addresses the concerns expressed in the Operation Directorate review (see issue #626), adding a short paragraph in the Introduction with a pointer to RFC 9312, as well as a minor edit. The paragraph also addresses the issue of application mixing managed and unmanaged (not monitored) paths noted in the review.\r\n\r\nAs suggested in the review and discussion, this PR also add a not on transport parameter negotiation enabling incremental deployment.\r\n\r\nThe review suggested specifying that the initial number of path and the subsequent increments of the number are specified by the application \"if not already obvious\". This PR does snot add specific text here, because it should indeed be obvious that the numbers are set by the \"endpoint\", i.e., the combination of QUIC stack and application code. Going further than that would require discussion of how code is implemented, which would probably go beyond the scope of the document.\r\n\r\nThe PR fixes an editorial issue, replacing the statement that the nonce includes \"the least significant 32 bits\" of the path ID by \"the 32 bits\" of the path ID, which is cleared.\r\n\r\nThe other editorial suggestion are already addressed in PR #628 and #630.",
       "createdAt": "2026-01-08T20:07:23Z",
-      "updatedAt": "2026-01-09T20:39:26Z",
+      "updatedAt": "2026-01-12T17:29:12Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e",
       "headRepository": "quicwg/multipath",
       "headRefName": "management-blurb",
-      "headRefOid": "1fa8013437cc0e686fb35dffeef6ff0ded5f8257",
+      "headRefOid": "6b9292d7b2a2271f38a5911c35893681c1ab4350",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -68602,6 +68609,52 @@
               "updatedAt": "2026-01-09T20:38:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZgS2Q",
+          "commit": {
+            "abbreviatedOid": "1fa8013"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-12T04:09:30Z",
+          "updatedAt": "2026-01-12T04:09:30Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZlFDj",
+          "commit": {
+            "abbreviatedOid": "1fa8013"
+          },
+          "author": "kazuho",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-12T11:42:35Z",
+          "updatedAt": "2026-01-12T11:42:35Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZoPAU",
+          "commit": {
+            "abbreviatedOid": "1fa8013"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Only a minot nit.",
+          "createdAt": "2026-01-12T14:58:37Z",
+          "updatedAt": "2026-01-12T15:00:38Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nexists when using path migration as defined in {{QUIC-TRANSPORT}}.\r\n```",
+              "createdAt": "2026-01-12T14:58:37Z",
+              "updatedAt": "2026-01-12T15:00:38Z"
+            }
+          ]
         }
       ]
     },
@@ -68617,13 +68670,13 @@
       "labels": [],
       "body": "Address feedback from ART review:\r\n\r\n- clarify that paths MUST be open by client endpoint\r\n- replace \"active path limit\" reference in discussion of blocked frame by \"maximum path ID limit\"\r\n- clarify that there is no explicit support in the document to manage creation of path with diffserv controls (as mentioned in 5.2)\r\n- replace stray reference to \"connection control\" by \"congestion control\"\r\n\r\nNote that the use of 32 bit for nonce is addressed in another PR.",
       "createdAt": "2026-01-08T22:48:04Z",
-      "updatedAt": "2026-01-09T20:31:13Z",
+      "updatedAt": "2026-01-12T20:20:15Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e",
       "headRepository": "quicwg/multipath",
       "headRefName": "address-art-review",
-      "headRefOid": "873ebd377cf4bf6bb65adc9a54d657343b238abf",
+      "headRefOid": "5d78f724e7448b5517232aa8e7a4f573d05bcbd2",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -68669,6 +68722,39 @@
               "updatedAt": "2026-01-09T20:31:13Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZjQfU",
+          "commit": {
+            "abbreviatedOid": "873ebd3"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Small nits.",
+          "createdAt": "2026-01-12T09:42:21Z",
+          "updatedAt": "2026-01-12T09:46:43Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "```suggestion\r\nwhich could result in poor performance depending on, for example, the congestion control\r\n```",
+              "createdAt": "2026-01-12T09:42:21Z",
+              "updatedAt": "2026-01-12T09:46:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ZoTjE",
+          "commit": {
+            "abbreviatedOid": "873ebd3"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks OK, with minor nit of Yanmei.",
+          "createdAt": "2026-01-12T15:02:15Z",
+          "updatedAt": "2026-01-12T15:02:15Z",
+          "comments": []
         }
       ]
     }
