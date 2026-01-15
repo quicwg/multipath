@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-13T01:06:04.858891+00:00",
+  "timestamp": "2026-01-15T01:08:04.767723+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -68470,24 +68470,26 @@
       "id": "PR_kwDOGNtpaM68MSBk",
       "title": "Address management concerns",
       "url": "https://github.com/quicwg/multipath/pull/632",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This PR addresses the concerns expressed in the Operation Directorate review (see issue #626), adding a short paragraph in the Introduction with a pointer to RFC 9312, as well as a minor edit. The paragraph also addresses the issue of application mixing managed and unmanaged (not monitored) paths noted in the review.\r\n\r\nAs suggested in the review and discussion, this PR also add a not on transport parameter negotiation enabling incremental deployment.\r\n\r\nThe review suggested specifying that the initial number of path and the subsequent increments of the number are specified by the application \"if not already obvious\". This PR does snot add specific text here, because it should indeed be obvious that the numbers are set by the \"endpoint\", i.e., the combination of QUIC stack and application code. Going further than that would require discussion of how code is implemented, which would probably go beyond the scope of the document.\r\n\r\nThe PR fixes an editorial issue, replacing the statement that the nonce includes \"the least significant 32 bits\" of the path ID by \"the 32 bits\" of the path ID, which is cleared.\r\n\r\nThe other editorial suggestion are already addressed in PR #628 and #630.",
       "createdAt": "2026-01-08T20:07:23Z",
-      "updatedAt": "2026-01-12T17:29:12Z",
+      "updatedAt": "2026-01-13T01:07:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e",
       "headRepository": "quicwg/multipath",
       "headRefName": "management-blurb",
       "headRefOid": "6b9292d7b2a2271f38a5911c35893681c1ab4350",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-01-13T01:06:59Z",
+      "mergedAt": "2026-01-13T01:06:59Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "a0e427dbcdbf670c459e9a527730a6b76cee3786"
+      },
       "comments": [],
       "reviews": [
         {
@@ -68663,24 +68665,26 @@
       "id": "PR_kwDOGNtpaM68N50Z",
       "title": "Address ART review feedback",
       "url": "https://github.com/quicwg/multipath/pull/633",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Address feedback from ART review:\r\n\r\n- clarify that paths MUST be open by client endpoint\r\n- replace \"active path limit\" reference in discussion of blocked frame by \"maximum path ID limit\"\r\n- clarify that there is no explicit support in the document to manage creation of path with diffserv controls (as mentioned in 5.2)\r\n- replace stray reference to \"connection control\" by \"congestion control\"\r\n\r\nNote that the use of 32 bit for nonce is addressed in another PR.",
       "createdAt": "2026-01-08T22:48:04Z",
-      "updatedAt": "2026-01-12T20:20:15Z",
+      "updatedAt": "2026-01-13T01:07:43Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "d45e1dc671da6f2a328bb3e6d6b0b3d196c5965e",
       "headRepository": "quicwg/multipath",
       "headRefName": "address-art-review",
       "headRefOid": "5d78f724e7448b5517232aa8e7a4f573d05bcbd2",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-01-13T01:07:38Z",
+      "mergedAt": "2026-01-13T01:07:38Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "f8b28074dd56d86c347e1c00a9b076885327bd13"
+      },
       "comments": [],
       "reviews": [
         {
