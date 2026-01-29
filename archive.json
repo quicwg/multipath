@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-18T01:15:06.580828+00:00",
+  "timestamp": "2026-01-29T01:20:47.060884+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -68779,6 +68779,46 @@
           "body": "Looks OK, with minor nit of Yanmei.",
           "createdAt": "2026-01-12T15:02:15Z",
           "updatedAt": "2026-01-12T15:02:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 634,
+      "id": "PR_kwDOGNtpaM6_5pf9",
+      "title": "Update organization affiliation for Olivier Bonaventure",
+      "url": "https://github.com/quicwg/multipath/pull/634",
+      "state": "OPEN",
+      "author": "obonaventure",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-28T16:35:16Z",
+      "updatedAt": "2026-01-28T19:03:31Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "f8b28074dd56d86c347e1c00a9b076885327bd13",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "obonaventure-patch-1",
+      "headRefOid": "8f18fc2755637b4f767ad7ac18cfd4fa83245203",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7dpEXF",
+          "commit": {
+            "abbreviatedOid": "8f18fc2"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "No objection, but a comment: you also have the option to add an acknowledgement of the funding institute in the \"acknowledgement\" session, as in \"The work of Olivier Bonaventure on the multipath option for QUIC was supported by the Walloon ExceLlence Research Institute (WELRI).\" (With or without the funky writing of excellence.) Your pick.",
+          "createdAt": "2026-01-28T19:03:31Z",
+          "updatedAt": "2026-01-28T19:03:31Z",
           "comments": []
         }
       ]
