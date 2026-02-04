@@ -267,7 +267,7 @@ ACK frames when used with the multipath extension acknowledge packets for the pa
 As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.
 
-After the handshake concluded with support for the multipath extension,
+After the handshake concludes with support for the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
 including for so far unacknowledged 0-RTT packets using path ID 0.
 Endpoints MUST still process ACK frames that acknowledge 0-RTT packets or 1-RTT packets.
@@ -318,7 +318,7 @@ the largest Probe Timeout (PTO) (see {{Section 6.2 of QUIC-RECOVERY}})
 among all the paths before initiating a new key update
 after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in {{QUIC-TLS}}
-which used three times the PTO of the sole single path.
+which used three times the PTO of the single path.
 
 As packets that arrive after their decryption key has been discarded will be dropped,
 the choice of three times the largest PTO is a trade-off: Longer delays
@@ -419,7 +419,7 @@ path validation.
 If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
-As the used path ID is anyway consumed,
+As the used path ID is consumed either way,
 the endpoint MUST explicitly close the path, as specified in
 {{path-close}}.
 
@@ -465,7 +465,7 @@ In this example the path ID 1 is used which is the smallest unused path ID avail
 as recommended in {{consume-retire-cid}}.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path when sending the PATH_CHALLENGE frame.
-The server replies with a PATH_RESPONSE bundled with the PATH_ACK using connection ID S1
+The server replies with a PATH_RESPONSE bundled with the PATH_ACK using connection ID C1
 associated with the same path ID.
 
 ### Relation to Probing and Migration
@@ -554,7 +554,7 @@ or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame 
 Receipt of a frame with a greater path ID is a connection error as specified
 in {{frames}}.
 
-When an endpoint finds it has not enough available unused path IDs,
+When an endpoint cannot open a path because there are no unused path IDs,
 it SHOULD either send a MAX_PATH_ID frame to increase the maximum path ID limit
 (when limited by the sender) or a PATHS_BLOCKED frame
 (see {{paths-and-cids-blocked-frame}}) to inform the peer that
@@ -695,7 +695,7 @@ connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. Alternatively, a client MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly,
-the server MAY wait for a short, limited time such as one PTO if a
+the server MAY wait for a short, limited time such as one PTO too see if a
 packet is received on a new path before sending the
 CONNECTION_CLOSE frame.
 
@@ -1150,7 +1150,7 @@ This is a major difference from
 {{QUIC-TRANSPORT}}, which only defines three number spaces (Initial,
 Handshake and Application data packets).
 
-For any given path, connection ID rotation, NAT rebinding, or client initiated migration
+For any given path, connection ID rotation, NAT rebinding, or client-initiated migration
 as specified in {{QUIC-TRANSPORT}} might occur, like on a single path.
 These events do not change the path ID, and do not affect the packet number
 space associated with the path.
@@ -1171,7 +1171,7 @@ multiple open paths instead.
 
 Servers observing a 4-tuple change will
 perform path validation (see {{Section 9 of QUIC-TRANSPORT}}).
-If path validation process succeeds, the endpoints set
+If path validation process succeeds, the endpoints reset
 the path's congestion controller and round-trip time
 estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
 
@@ -1229,7 +1229,7 @@ are advised to follow BCP 133; see {{Section 7.10 of ?RFC9743}}.
 
 {{Section 5.1.2 of QUIC-TRANSPORT}} indicates that an endpoint
 can change the connection ID it uses to another available one
-at any time during the connection. As such, a sole change of the Connection
+at any time during the connection. As such, a change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.
 
@@ -1462,7 +1462,7 @@ The multipath extension retains all security properties of {{QUIC-TRANSPORT}} an
 but requires some additional consideration regarding:
 
 - potential additional resource usage for per-path connection IDs and multiple concurrent path contexts;
-- a potentially increased amplification risk for denial of service attacks if multiple paths are used simultaneously;
+- a potentially increased amplification risk for denial-of-service attacks if multiple paths are used simultaneously;
 - changes to the nonce calculation due to the use of multiple packet number spaces.
 
 
