@@ -1498,9 +1498,9 @@ travel through common network paths in an attempt to overwhelm a target.
 {{QUIC-TRANSPORT}} only allows the use of one path
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
-This extension, allows for multiple open paths that could in theory be migrated
+This extension allows for multiple open paths that could in theory be migrated
 all at the same time. Further, multiple paths could be initialized
-simultaneously. 
+simultaneously.
 
 Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
@@ -1511,7 +1511,7 @@ However, the use of multipath does not change the
 anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}.
 The attacker would need to send a separate challenge on each path
 used in the attack, and the amplification limits would apply to the
-amount of data sent that path. The attacker could get the same effect
+amount of data sent by the server on that path. The attacker could get the same effect
 by opening many QUIC connections and conducting the attack on each of them,
 without negotiating the multipath option.
 
