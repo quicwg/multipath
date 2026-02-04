@@ -1175,7 +1175,7 @@ If path validation process succeeds, the endpoints reset
 the path's congestion controller and round-trip time
 estimator according to {{Section 9.4 of QUIC-TRANSPORT}}.
 
-## Using Multiple Paths on the Same 4-tuple
+## Using Multiple Paths on the Same 4-tuple {#same-tuple-n-paths}
 
 It is possible to create paths that
 refer to the same 4-tuple. For example, endpoints might want
@@ -1370,7 +1370,8 @@ An implementation should take care to handle different PMTU sizes across
 multiple paths. As specified in {{Section 14.3 of QUIC-TRANSPORT}} the
 DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
 Note that with the multipath extension multiple paths could use the same 4-tuple
-but might have different MPS.
+but might have different MPS due to other factors (see {{same-tuple-n-paths}}).
+
 One simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to
 each path, which could also help to simplify retransmission processing.
 
@@ -1497,17 +1498,22 @@ travel through common network paths in an attempt to overwhelm a target.
 {{QUIC-TRANSPORT}} only allows the use of one path
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
-This extension, however, allows for multiple open paths that could in theory be migrated
+This extension, allows for multiple open paths that could in theory be migrated
 all at the same time. Further, multiple paths could be initialized
-simultaneously.
-The anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}
-limit the amplification risk for a given path,
-but multiple paths could be used to further amplify an attack.
+simultaneously. 
 
 Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
+
+However, the use of multipath does not change the
+anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}.
+The attacker would need to send a separate challenge on each path
+used in the attack, and the amplification limits would apply to the
+amount of data sent that path. The attacker could get the same effect
+by opening many QUIC connections and conducting the attack on each of them,
+without negotiating the multipath option.
 
 ## Cryptographic Handshake and AEAD Nonce
 
