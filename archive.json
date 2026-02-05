@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-29T01:20:47.060884+00:00",
+  "timestamp": "2026-02-05T01:20:40.168665+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15289,7 +15289,7 @@
       "labels": [],
       "body": "Carsten's review (issue #629) points an issue with the current draft: on one hand, we never say that only the client can open a new path; on the other hand, we do not say what happens if the client and the server open a new path simultaneously. We have two options: state that we inherit the restriction from RFC 9000 and that only the client can open new paths; or, explain what happens if the server tries to open a path.\n\nMandating that only the client creates paths is the simplest solution, even if it is not the most satisfactory. We could simply simply write that \"_attempts by servers to open paths is not supported. It is likely to fail if the client is behind a NAT, and would result in undefined behavior if client and server simultaneously try to open the same path ID._\" We would then rely on future extensions, such as [peer-to-peer coordinated NAT traversal](https://www.ietf.org/archive/id/draft-seemann-quic-nat-traversal-01.html), to lift that restriction.",
       "createdAt": "2025-12-28T00:14:06Z",
-      "updatedAt": "2026-01-15T06:56:08Z",
+      "updatedAt": "2026-02-03T20:03:15Z",
       "closedAt": "2026-01-15T06:56:08Z",
       "comments": [
         {
@@ -15333,6 +15333,144 @@
           "body": "Solved by PR #633 ",
           "createdAt": "2026-01-15T06:56:08Z",
           "updatedAt": "2026-01-15T06:56:08Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Just for the sake of completeness, we still have issue #47 which was discussed a couple of times in the group with the conclusion to leave this to a future extension (given that we would anyway need another transport parameter to indicate the server path limit as discussed in more detail in #329).\n\nI personally don't think the extra MUST that was added to restrict to client initiated path was needed. I guess non-normative language would have been sufficient but no problem this way either...",
+          "createdAt": "2026-02-03T20:03:15Z",
+          "updatedAt": "2026-02-03T20:03:15Z"
+        }
+      ]
+    },
+    {
+      "number": 637,
+      "id": "I_kwDOGNtpaM7oGEsw",
+      "title": "Manage memory, should we do better than N paths times M connection IDs",
+      "url": "https://github.com/quicwg/multipath/issues/637",
+      "state": "CLOSED",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From [Mike Bishop's IESG review](https://mailarchive.ietf.org/arch/msg/quic/CDIlYE3_YsexZFZSQ84IhV2aChY/):\n\n### Section 2.2, paragraph 1\n```\n     When the QUIC multipath extension is used, the\n     active_connection_id_limit transport parameter [QUIC-TRANSPORT]\n     limits the maximum number of active connection IDs per path.  As\n     defined in Section 5.1.1 of [QUIC-TRANSPORT] connection IDs that are\n     issued and not retired are considered active.\n```\nThis seems to present a conundrum to clients trying to manage their memory\nconsumption. active_connection_id_limit can't be changed after the handshake. So\nif a constrained implementation wants to manage no more than N CIDs total, but\nalso supports multipath, it cannot advertise N for this value, because its total\nmemory commitment is active_connection_id_limit x the current maximum number of\npaths.\n\nBut if it takes the conservative approach and advertises N / M for\nactive_connection_id_limit, then when it establishes a non-multipath QUIC\nconnection, it will be understating its willingness to handle CIDs and therefore\nhampering its ability to rotate/migrate.\n\nDid the WG discuss this and reach consensus on reusing the transport parameter\ndespite this challenge? I would have expected either a transport parameter that\nsupersedes active_connection_id_limit when multipath is negotiated, or some\npost-handshake way to adjust the limit.",
+      "createdAt": "2026-02-04T00:38:26Z",
+      "updatedAt": "2026-02-04T19:10:07Z",
+      "closedAt": "2026-02-04T19:10:06Z",
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "From the mailing list discussion:\n\n\nThe `active_connection_id_limit` is set to enable migrations of paths,\nand the limit will restrain how many potential 4-tuple can be tested in\nparallel for a migration attempt. You argue that if multipath is\nnegotiated, endpoints would use creation of new paths in preference to\nmigrations of existing paths, and thus could use a lower limit when\nmultipath is negotiated. However, we do not have any data about that. We\nhave at least one example with \"preferred address migration\" of a\nscenario that requires path migration even if multipath is supported.\nAnother example would be NAT rebinding of an existing path.\n\nSo yes, we could speculate that having separate negotiation of two\nparameters would result in lower resource consumption. However, this is\nspeculation, and it is hard to quantify how much resource this would\nactually save. The protocol is complex enough, we tried not to introduce\ncomplexity if the requirement is fuzzy, which is why we did not define a\nseparate option.\n\n> But if it takes the conservative approach and advertises N / M for\n> active_connection_id_limit, then when it establishes a non-multipath QUIC\n> connection, it will be understating its willingness to handle CIDs and therefore\n> hampering its ability to rotate/migrate.\n>\n> Did the WG discuss this and reach consensus on reusing the transport parameter\n> despite this challenge? I would have expected either a transport parameter that\n> supersedes active_connection_id_limit when multipath is negotiated, or some\n> post-handshake way to adjust the limit.\n\nThis point was not discussed, and did not appear to be an actual problem\nin any of the interop tests.\n\nI suspect that most memory limited implementations will converge to a\nsmall limit, between 2 and 4 per path, satisfying both multipath and\nmost unipath scenarios. The one exception may be P2P extensions, but\nagain we do not have a lot of experience. If the \"ICE in QUIC\" scenarios\nturn out to require many CIDs, then perhaps we can think of extensions\nto allow larger number of parallel tests as part of these designs.\n\n[MB] I agree it's speculative, and it's encouraging that this hasn't been an issue in existing constrained tests. I worry about relying on extensions as an escape hatch, though, because a constrained implementation that would only do multipath with some hypothetical extension can't know whether it's supported before negotiating multipath. _That said, it could always advertise a maximum path ID of 0 and only increase from there after seeing what else the negotiation agrees on._\n\n",
+          "createdAt": "2026-02-04T00:41:33Z",
+          "updatedAt": "2026-02-04T00:41:33Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think this particular issue can be closed with no action, based Mike's last comment.",
+          "createdAt": "2026-02-04T00:42:17Z",
+          "updatedAt": "2026-02-04T00:44:07Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Closing as duplicate of #332 ",
+          "createdAt": "2026-02-04T19:10:06Z",
+          "updatedAt": "2026-02-04T19:10:06Z"
+        }
+      ]
+    },
+    {
+      "number": 638,
+      "id": "I_kwDOGNtpaM7oGJmM",
+      "title": "Discuss how we can have two path with the same tuple and different PMTU/MPS",
+      "url": "https://github.com/quicwg/multipath/issues/638",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From [Mike Bishop's IESG review](https://mailarchive.ietf.org/arch/msg/quic/CDIlYE3_YsexZFZSQ84IhV2aChY/):\n\n### Section 5.8, paragraph 1\n```\n     [QUIC-TRANSPORT] the DPLPMTUD Maximum Packet Size (MPS) is maintained\n     for each combination of local and remote IP addresses.  Note that\n     with the multipath extension multiple paths could use the same\n     4-tuple but might have different MPS.  One simple option, if the\n```\nHow would two paths with \"the same 4-tuple\" ever have a different \"combination\nof local and remote IP address\"? Isn't that a subset of the 4-tuple by\ndefinition?",
+      "createdAt": "2026-02-04T00:45:50Z",
+      "updatedAt": "2026-02-04T01:01:21Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "From the email discussion:\n\nIf they have different diffserv class of service, for example.\n\n[MB] If different DiffServ classes could have different maximum packet sizes, let's be more explicit that we're saying Section 14.3's 2-tuple logic is insufficiently granular. Right now, it reads like a contradiction, hence my confusion. Perhaps something like:\n\n\"An implementation should take care to handle different PMTU sizes across multiple paths. In Section 14.3 of [QUIC-TRANSPORT] the DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses. However, with the multipath extension multiple paths could use the same 4-tuple but might have a different MPS due to other factors (see Section 5.2). Each path's PMTU can (SHOULD?) be probed and tracked separately, even when the path shares a 4-tuple with an existing path.\n\nIf the PMTUs are similar, an implementation could apply the minimum PMTU of all paths to each path, which might simplify retransmission processing.\"",
+          "createdAt": "2026-02-04T01:00:28Z",
+          "updatedAt": "2026-02-04T01:00:28Z"
+        }
+      ]
+    },
+    {
+      "number": 639,
+      "id": "I_kwDOGNtpaM7oGVZD",
+      "title": "Is it too restrictive to say that the client MUST validate the peer's address before sending?",
+      "url": "https://github.com/quicwg/multipath/issues/639",
+      "state": "CLOSED",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From [Mike Bishop's IESG review](https://mailarchive.ietf.org/arch/msg/quic/CDIlYE3_YsexZFZSQ84IhV2aChY/):\n\n### Section 3.1, paragraph 2\n```\n     A client that wants to use a new path MUST validate the peer's\n     address before sending any data as described in Section 8.2 of\n     [QUIC-TRANSPORT], unless it has previously validated the 4-tuple used\n     for that path.\n```\nCan you point me to the text in Section 8.2 of RFC 9000 you're referencing for\nthis prohibition on sending data? What I find there is:\n\n> An endpoint MAY include other frames with the PATH_CHALLENGE and PATH_RESPONSE\n> frames used for path validation.\n\n...and more explicitly in Section 9.3:\n\n> An endpoint MAY send data to an unvalidated peer address, but it MUST protect\n> against potential attacks as described in Sections 9.3.1 and 9.3.2.\n\nIn fact, in Section 3.1.2 of this document, \"any frame can be sent on a new path\nwith a new path ID at any time....\"",
+      "createdAt": "2026-02-04T01:04:09Z",
+      "updatedAt": "2026-02-04T19:43:23Z",
+      "closedAt": "2026-02-04T19:43:23Z",
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "From the email discussion:\n\n\nThe intent is definitely to follow RFC 9000 here. Do you have a\nsuggestion for improving the text?\n\n[MB] This is effectively analogous to the anti-amplification limit \u2014 we don't want a malicious server to tell the client to start sending to some other address, then generate a large amount of attack traffic. The cap on such traffic in the initial handshake is the ICW; given that each new path gets a fresh congestion controller, the same would apply here. I think there's also an implied preference for existing paths if they're available, and the document already has terms for that concept.\n\nPerhaps: \"A client that wants to use a new path MUST validate the peer's address. Until the peer address is validated, the client SHOULD treat the new path as \"backup,\" i.e. less preferred than any available and usable paths.\"\n\nThat might also suggest being very explicit in Section 5.3 that each path still has a distinct congestion controller even if the paths share a 4-tuple.",
+          "createdAt": "2026-02-04T01:05:11Z",
+          "updatedAt": "2026-02-04T01:05:11Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This was already discussed in issue #390, and the current text comes from PR #442, which reflects the consensus of the working group, including Mike's comment at the time.\n\nClosing with no action.",
+          "createdAt": "2026-02-04T19:43:23Z",
+          "updatedAt": "2026-02-04T19:43:23Z"
+        }
+      ]
+    },
+    {
+      "number": 640,
+      "id": "I_kwDOGNtpaM7oGXWf",
+      "title": "Should the amplification limit be per peer address",
+      "url": "https://github.com/quicwg/multipath/issues/640",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From [Mike Bishop's IESG review](https://mailarchive.ietf.org/arch/msg/quic/CDIlYE3_YsexZFZSQ84IhV2aChY/):\n\n### Section 7.2, paragraph 2\n```\n     Further, multiple paths could be initialized simultaneously.  The\n     anti-amplification limits as specified in Section 8 of\n     [QUIC-TRANSPORT] limit the amplification risk for a given path, but\n     multiple paths could be used to further amplify an attack.\n```\nWhy then is the anti-amplification limit per-path rather than per-address?\n",
+      "createdAt": "2026-02-04T01:07:24Z",
+      "updatedAt": "2026-02-04T19:21:38Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "From the email discussion:\n\nWe never have the concept of per-address limit. Asking implementations\nto perform special treatment per IP address would be rather error prone,\ngiven NATs. We could investigate other limits, such as limiting the\nnumber of concurrent path establishment, but I think we really need\nimplementation experience before writing more rules.\n\n[MB] I'm not sure that's how I read RFC 9000. It frames the anti-amplification limit as being with regard to an unvalidated *address*: \"Therefore, after receiving packets from an address that is not yet validated, an endpoint MUST limit the amount of data it sends to the unvalidated address to three times the amount of data received from that address. This limit on the size of responses is known as the anti-amplification limit.\"",
+          "createdAt": "2026-02-04T01:08:31Z",
+          "updatedAt": "2026-02-04T01:08:31Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@MikeBishop I don't like the per-address limit, because it is imprecise. By default, address means the IP+port tuple. An attacker could use multiple port numbers to overwhelm a target, or can even use multiple IP addresses to target a subnet. I think the safe posture is to \"limit the back scatter\".\n\nNote that the back-scatter is also an attack against the QUIC server itself. Sending isolated packets to a new address requires as much resource as sending a packet train using UDP GSO. If the concern is back scatter, the proper solution is to rate limit the number of path management packets.\n\nIf the concern is the volume of traffic, a possible defense is for the server to not pad the packets containing its own path challenges or responses -- RFC 9000 says that's OK, you can just verify the MTU later. Or the server applying an amplification limit 1 instead of 3, which effectively means only sending 1 challenge in response to 1 challenge or another packet.\n\nMy problem is that all that is research. I am wary of proposing solutions that are unproven.\n\n\n\n",
+          "createdAt": "2026-02-04T01:55:39Z",
+          "updatedAt": "2026-02-04T01:55:39Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In email, @mirjak  pointed out that this was already discussed in issue #564.\n\nI think that the issue behind @MikeBishop comment is the text in the security section that says:\n\n~~~\nThe anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}\nlimit the amplification risk for a given path,\nbut multiple paths could be used to further amplify an attack.\n~~~\n\nThis is loose language, because the use of multiple path does not change the amplification factor. We should change that to avoid further discussions. As @mirjak says, \"the amplification multiplier is still 3. You send 1 path challenge and can trigger 3 packets; or you send N path challenges and trigger Nx3 packets. This is also similar when trying to open N QUIC connections in parallel and there is no limit for that.\"\n\n\n\n",
+          "createdAt": "2026-02-04T19:21:38Z",
+          "updatedAt": "2026-02-04T19:21:38Z"
         }
       ]
     }
@@ -68326,7 +68464,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-12-22T07:10:39Z",
-      "updatedAt": "2026-01-08T16:32:32Z",
+      "updatedAt": "2026-02-03T20:03:46Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b5ae213e7bb740f57b92ef6b24e3f291b5f59db9",
@@ -68353,6 +68491,13 @@
           "body": "It's not my language, so I don't care, but I do want it to be consistent.\r\n\r\nmain has 21 occurrences of the word, 6 of which use acknowledgment and 15 of which use acknowledgement.  The PR changes the minority (and follows RFC 7322 in that).  Of course, the authors can agree to change all 21 to acknowledgment.  Changing back just one doesn't make sense, so I changed the other 20 ones as well.",
           "createdAt": "2025-12-28T07:04:00Z",
           "updatedAt": "2025-12-28T18:24:50Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks a lot @cabo for the thorough review!",
+          "createdAt": "2026-02-03T19:42:02Z",
+          "updatedAt": "2026-02-03T20:03:46Z"
         }
       ],
       "reviews": [
@@ -68822,6 +68967,58 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 635,
+      "id": "PR_kwDOGNtpaM7BU7jC",
+      "title": "Response to IANA requests",
+      "url": "https://github.com/quicwg/multipath/pull/635",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "IANA requested two changes in the IANA Consideration Section:\r\n\r\n-  Please update the values to indicate that they're suggested/TBD. In a table, we'd expect to see something like \"0x3e75 (suggested)\" or \"TBD0x3e75\".\r\n- We understand that all 14 permanent registrations listed in the document are replacing the corresponding provisional registrations, which should be removed. However, we've made four provisional registrations for versions -05 and -06 of this document that aren't included here. Should they be left in place, referring to those older versions of the I-D? Should this document deprecate/obsolete/remove them?\r\n\r\nThe PR adds a \"(suggested)\" command after each of the requested values, and provides a complete list of the provisional registrations that should be removed.",
+      "createdAt": "2026-02-04T00:11:30Z",
+      "updatedAt": "2026-02-04T00:11:53Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "f8b28074dd56d86c347e1c00a9b076885327bd13",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "iana-deprecate",
+      "headRefOid": "00b6b33e6cece0e7d5046157dc8b30af6c22462f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 636,
+      "id": "PR_kwDOGNtpaM7BVIvG",
+      "title": "Address the review by Mike Bishop",
+      "url": "https://github.com/quicwg/multipath/pull/636",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR addresses the comments by Mike Bishop [in his IESG review](https://mailarchive.ietf.org/arch/msg/quic/CDIlYE3_YsexZFZSQ84IhV2aChY/).\r\n\r\nClose #638\r\nClose #640",
+      "createdAt": "2026-02-04T00:35:25Z",
+      "updatedAt": "2026-02-04T20:11:01Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "f8b28074dd56d86c347e1c00a9b076885327bd13",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "evequefou-edits",
+      "headRefOid": "2e42d32c9ba0bbae829bf463d58da518d562ef10",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
