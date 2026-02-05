@@ -5,16 +5,16 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 17 July 2026                             Uber Technologies Inc.
+Expires: 9 August 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
-                                                  UCLouvain and Tessares
+                                                     UCLouvain and WELRI
                                                               C. Huitema
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         13 January 2026
+                                                         5 February 2026
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 July 2026.
+   This Internet-Draft will expire on 9 August 2026.
 
 Copyright Notice
 
@@ -1762,7 +1762,7 @@ Authors' Addresses
 
 
    Olivier Bonaventure
-   UCLouvain and Tessares
+   UCLouvain and WELRI
    Email: olivier.bonaventure@uclouvain.be
 
 
