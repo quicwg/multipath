@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 8 August 2026                            Uber Technologies Inc.
+Expires: 9 August 2026                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 8 August 2026                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         4 February 2026
+                                                         5 February 2026
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 August 2026.
+   This Internet-Draft will expire on 9 August 2026.
 
 Copyright Notice
 
@@ -773,8 +773,8 @@ Table of Contents
    to open a new path, if available, and only initiate connection
    closure if path validation fails or a CONNECTION_CLOSE frame is
    received from the server.  Similarly, the server MAY wait for a
-   short, limited time such as one PTO too see if a packet is received
-   on a new path before sending the CONNECTION_CLOSE frame.
+   short, limited time such as one PTO to see if a packet is received on
+   a new path before sending the CONNECTION_CLOSE frame.
 
    Note that other explicit closing mechanisms of [QUIC-TRANSPORT] still
    apply on the whole connection.  In particular, the reception of
