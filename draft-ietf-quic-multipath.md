@@ -37,7 +37,7 @@ author:
 -
    ins: O. Bonaventure
    name: Olivier Bonaventure
-   org: UCLouvain and Tessares
+   org: UCLouvain and WELRI
    email: olivier.bonaventure@uclouvain.be
 -
    ins: C. Huitema
