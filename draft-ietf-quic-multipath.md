@@ -1504,7 +1504,8 @@ Further, multiple paths could be initialized simultaneously, limited by the maxi
 number of allowed paths.
 
 
-Therefore, endpoints need to limit the maximum number of paths and might consider
+Therefore, endpoints are advised to keep the maximum number of paths small
+and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.
