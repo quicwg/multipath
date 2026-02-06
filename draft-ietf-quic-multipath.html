@@ -1057,7 +1057,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 9 August 2026</td>
+<td class="center">Expires 10 August 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-05" class="published">5 February 2026</time>
+<time datetime="2026-02-06" class="published">6 February 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-09">9 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-08-10">10 August 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1149,7 +1149,7 @@ how applications using QUIC schedule traffic over multiple paths.<a href="#secti
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 10 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1321,6 +1321,11 @@ how applications using QUIC schedule traffic over multiple paths.<a href="#secti
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-removing-provisional-regist" class="internal xref">Removing Provisional Registrations</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
@@ -2870,17 +2875,19 @@ that are currently usable.<a href="#section-5.9-5" class="pilcrow">¶</a></p>
       <h2 id="name-iana-considerations">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-6-1">This document defines a new transport parameter to
+<p id="section-6-1">Note to IANA: the values marked below as "suggested" are the values
+that we would like to see assigned.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">This document defines a new transport parameter to
 enable simultaneous use of multiple paths within one QUIC connection.
 Further, it specifies new frame types for path management and new error codes
-when a path is abandoned.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">The current draft defines provisional values for experiments,
+when a path is abandoned.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">The current draft defines provisional values for experiments,
 but, if the draft is approved, IANA is requested to allocate short values
 as permanent with "IETF" as change controller and
 the QUIC WG as contact to the respective registries under
-<a href="https://www.iana.org/assignments/quic/quic.xhtml">https://www.iana.org/assignments/quic/quic.xhtml</a>.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">The following entry in <a href="#transport-parameters" class="auto internal xref">Table 2</a> should be added to
-the "QUIC Transport Parameters" registry.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<a href="https://www.iana.org/assignments/quic/quic.xhtml">https://www.iana.org/assignments/quic/quic.xhtml</a>.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">The following entry in <a href="#transport-parameters" class="auto internal xref">Table 2</a> should be added to
+the "QUIC Transport Parameters" registry.<a href="#section-6-4" class="pilcrow">¶</a></p>
 <span id="name-addition-to-quic-transport-"></span><div id="transport-parameters">
 <table class="center" id="table-2">
         <caption>
@@ -2896,7 +2903,7 @@ the "QUIC Transport Parameters" registry.<a href="#section-6-3" class="pilcrow">
         </thead>
         <tbody>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">initial_max_path_id</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#nego" class="auto internal xref">Section 2.1</a>
@@ -2905,8 +2912,8 @@ the "QUIC Transport Parameters" registry.<a href="#section-6-3" class="pilcrow">
         </tbody>
       </table>
 </div>
-<p id="section-6-5">The following frame types defined in <a href="#frame-types" class="auto internal xref">Table 3</a> should be added to
-the "QUIC Frame Types" registry.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">The following frame types defined in <a href="#frame-types" class="auto internal xref">Table 3</a> should be added to
+the "QUIC Frame Types" registry.<a href="#section-6-6" class="pilcrow">¶</a></p>
 <span id="name-addition-to-quic-frame-type"></span><div id="frame-types">
 <table class="center" id="table-3">
         <caption>
@@ -2922,63 +2929,63 @@ the "QUIC Frame Types" registry.<a href="#section-6-5" class="pilcrow">¶</a></p
         </thead>
         <tbody>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e - 0x3f</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e - 0x3f (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_ACK</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#mp-ack-frame" class="auto internal xref">Section 4.1</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e75</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e75 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_ABANDON</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#path-abandon-frame" class="auto internal xref">Section 4.2</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e76</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e76 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_STATUS_BACKUP</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e77</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e77 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_STATUS_AVAILABLE</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#path-backup-available-frame" class="auto internal xref">Section 4.3</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e78</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e78 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_NEW_CONNECTION_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e79</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e79 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_RETIRE_CONNECTION_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#mp-retire-conn-id-frame" class="auto internal xref">Section 4.5</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e7a</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e7a (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">MAX_PATH_ID</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#max-paths-frame" class="auto internal xref">Section 4.6</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e7b</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e7b (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATHS_BLOCKED</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e7c</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e7c (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_CIDS_BLOCKED</td>
             <td class="text-left" rowspan="1" colspan="1">
               <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>
@@ -2987,8 +2994,8 @@ the "QUIC Frame Types" registry.<a href="#section-6-5" class="pilcrow">¶</a></p
         </tbody>
       </table>
 </div>
-<p id="section-6-7">The following transport error code defined in <a href="#tab-error-code" class="auto internal xref">Table 4</a> are to
-be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-7" class="pilcrow">¶</a></p>
+<p id="section-6-8">The following transport error code defined in <a href="#tab-error-code" class="auto internal xref">Table 4</a> are to
+be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-8" class="pilcrow">¶</a></p>
 <span id="name-error-codes-for-multipath-q"></span><div id="tab-error-code">
 <table class="center" id="table-4">
         <caption>
@@ -3005,7 +3012,7 @@ be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-7" cla
         </thead>
         <tbody>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">APPLICATION_ABANDON_PATH</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned at the application's request</td>
             <td class="text-left" rowspan="1" colspan="1">
@@ -3013,7 +3020,7 @@ be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-7" cla
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e75</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e75 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_RESOURCE_LIMIT_REACHED</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned due to resource limitations in the transport</td>
             <td class="text-left" rowspan="1" colspan="1">
@@ -3021,7 +3028,7 @@ be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-7" cla
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e76</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e76 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">PATH_UNSTABLE_OR_POOR</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned due to unstable interfaces or poor performance</td>
             <td class="text-left" rowspan="1" colspan="1">
@@ -3029,7 +3036,7 @@ be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-7" cla
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">0x3e77</td>
+            <td class="text-left" rowspan="1" colspan="1">0x3e77 (suggested)</td>
             <td class="text-left" rowspan="1" colspan="1">NO_CID_AVAILABLE_FOR_PATH</td>
             <td class="text-left" rowspan="1" colspan="1">Path abandoned due to no available connection IDs for the path</td>
             <td class="text-left" rowspan="1" colspan="1">
@@ -3038,6 +3045,165 @@ be added to the "QUIC Transport Error Codes" registry.<a href="#section-6-7" cla
           </tr>
         </tbody>
       </table>
+</div>
+<div id="removing-provisional-registrations">
+<section id="section-6.1">
+        <h3 id="name-removing-provisional-regist">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-removing-provisional-regist" class="section-name selfRef">Removing Provisional Registrations</a>
+        </h3>
+<p id="section-6.1-1">RFC Editor's Note: Please remove this section prior to publication of
+a final version of this document.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">The values noted here were provisionally registered during the development
+of this draft. The provisonal registrations should be deleted when the
+final version of this document.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">The following entries were provisionally registered in the registry of QUIC
+transport parameters:<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<span id="name-provisional-quic-transport-"></span><div id="transport-parameters-exp">
+<table class="center" id="table-5">
+          <caption>
+<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#name-provisional-quic-transport-" class="selfRef">Provisional QUIC transport parameters</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Parameter Name.</th>
+              <th class="text-left" rowspan="1" colspan="1">Registered for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x0f739bbc1b666d0d</td>
+              <td class="text-left" rowspan="1" colspan="1">initial_max_path_id</td>
+              <td class="text-left" rowspan="1" colspan="1">draft 15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x0f739bbc1b666d05</td>
+              <td class="text-left" rowspan="1" colspan="1">enable_multipath</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-05</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x0f739bbc1b666d06</td>
+              <td class="text-left" rowspan="1" colspan="1">enable_multipath</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-06</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<p id="section-6.1-5">The following entries were provisionally registered in the registry of QUIC
+Frame Types:<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+<span id="name-provisional-quic-frame-type"></span><div id="frame-types-exp">
+<table class="center" id="table-6">
+          <caption>
+<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#name-provisional-quic-frame-type" class="selfRef">Provisional QUIC frame types</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Frame Type Name</th>
+              <th class="text-left" rowspan="1" colspan="1">Registered for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c00-0x15228c01</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_ACK</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c05</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_ABANDON</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c06</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_STATUS</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-05</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c07</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_STATUS_BACKUP</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c08</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_STATUS_AVAILABLE</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c09</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_NEW_CONNECTION_ID</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c0a</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_RETIRE_CONNECTION_ID</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c0c</td>
+              <td class="text-left" rowspan="1" colspan="1">MAX_PATH_ID</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c0d</td>
+              <td class="text-left" rowspan="1" colspan="1">PATHS_BLOCKED</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x15228c0e</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_CIDS_BLOCKED</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<p id="section-6.1-7">The following entries were provisionally registered in the registry of QUIC
+Transport Error Codes:<a href="#section-6.1-7" class="pilcrow">¶</a></p>
+<span id="name-provisional-quic-transport-e"></span><div id="error-codes-exp">
+<table class="center" id="table-7">
+          <caption>
+<a href="#table-7" class="selfRef">Table 7</a>:
+<a href="#name-provisional-quic-transport-e" class="selfRef">Provisional QUIC transport error codes</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Transport Error Code</th>
+              <th class="text-left" rowspan="1" colspan="1">Registered for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x004150504142414e</td>
+              <td class="text-left" rowspan="1" colspan="1">APPLICATION_ABANDON_PATH</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x004e4f5f4349445f</td>
+              <td class="text-left" rowspan="1" colspan="1">NO_CID_AVAILABLE_FOR_PATH</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x0052534c494d4954</td>
+              <td class="text-left" rowspan="1" colspan="1">PATH_RESOURCE_LIMIT_REACHED</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x00554e5f494e5446</td>
+              <td class="text-left" rowspan="1" colspan="1">APPLICATION_ABANDON_PATH</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-15</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">0x1001d76d3ded42f3</td>
+              <td class="text-left" rowspan="1" colspan="1">MP_PROTOCOL_VIOLATION</td>
+              <td class="text-left" rowspan="1" colspan="1">draft-05</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+</section>
 </div>
 </section>
 </div>
