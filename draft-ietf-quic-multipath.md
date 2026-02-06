@@ -297,7 +297,14 @@ is less than 12 bytes cannot be used with the QUIC multipath extension.
 
 For example, assuming the IV value is `0x6b26114b9cba2b63a9e8dd4f`,
 the path ID is `3`, and the packet number is `54321` (hex value `0xd431`),
-the nonce will be set to `0x6b2611489cba2b63a9e8097e`.
+the nonce will be set to `0x6b2611489cba2b63a9e8097e`, as illustrated in the
+following table:
+
+| Type                 | Value                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| padded packet number | 0x3 (32 bits) + 0x0 (2 bits) + 0xd431 (62 bits)            |
+| IV                   | 0x6b26114b9cba2b63a9e8dd4f (96 bits with optional padding) |
+| AEAD nonce           | 0x6b2611489cba2b63a9e8097e                                 |
 
 ## Key Phase Update Process {#multipath-key-update}
 
@@ -1574,8 +1581,8 @@ The limits as discussed on {{Appendix B of QUIC-TLS}}
 apply to the total number of packets sent on all paths,
 not each path separately.
 
-This specification changes the AEAD calculation by using the path ID as part of
-AEAD nonce (see {{nonce}}). To ensure unique nonces, path IDs
+This specification changes the AEAD nonce calculation by including the path ID
+as part of the calculation (see {{nonce}}). To ensure unique nonces, path IDs
 are limited to 32 bits and cannot be reused for another path of the same connection.
 
 # Acknowledgments
