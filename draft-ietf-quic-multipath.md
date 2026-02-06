@@ -1499,8 +1499,10 @@ travel through common network paths in an attempt to overwhelm a target.
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
 This extension allows for multiple open paths that could in theory be migrated
-all at the same time. Further, multiple paths could be initialized
-simultaneously.
+all at the same time, still limited by number of issued connection IDs for each path.
+Further, multiple paths could be initialized simultaneously, limited by the maximum
+number of allowed paths.
+
 
 Therefore, endpoints need to limit the maximum number of paths and might consider
 additional measures to limit the number of concurrent path validation processes
