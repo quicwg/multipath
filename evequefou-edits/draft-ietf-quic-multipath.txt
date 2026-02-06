@@ -1645,10 +1645,11 @@ Table of Contents
    paths could be initialized simultaneously, limited by the maximum
    number of allowed paths.
 
-   Therefore, endpoints need to limit the maximum number of paths and
-   might consider additional measures to limit the number of concurrent
-   path validation processes e.g., by pacing them out or limiting the
-   number of path initiation attempts over a certain time period.
+   Therefore, endpoints are advised to keep the maximum number of paths
+   small and might consider additional measures to limit the number of
+   concurrent path validation processes e.g., by pacing them out or
+   limiting the number of path initiation attempts over a certain time
+   period.
 
    However, the use of multipath does not change the anti-amplification
    limits as specified in Section 8 of [QUIC-TRANSPORT].  The attacker

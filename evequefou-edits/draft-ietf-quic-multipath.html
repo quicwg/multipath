@@ -3099,7 +3099,8 @@ This extension allows for multiple open paths that could in theory be migrated
 all at the same time, still limited by number of issued connection IDs for each path.
 Further, multiple paths could be initialized simultaneously, limited by the maximum
 number of allowed paths.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.2-3">Therefore, endpoints need to limit the maximum number of paths and might consider
+<p id="section-7.2-3">Therefore, endpoints are advised to keep the maximum number of paths small
+and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
