@@ -1408,6 +1408,9 @@ that are currently usable.
 
 # IANA Considerations
 
+Note to IANA: the values marked below as "suggested" are the values
+that we would like to see assigned.
+
 This document defines a new transport parameter to
 enable simultaneous use of multiple paths within one QUIC connection.
 Further, it specifies new frame types for path management and new error codes
@@ -1424,7 +1427,7 @@ the "QUIC Transport Parameters" registry.
 
 Value | Parameter Name.     | Specification
 ------|---------------------|-----------------
-0x3e  | initial_max_path_id | {{nego}}
+0x3e (suggested)  | initial_max_path_id | {{nego}}
 {: #transport-parameters title="Addition to QUIC Transport Parameters Entries"}
 
 
@@ -1434,15 +1437,15 @@ the "QUIC Frame Types" registry.
 
 Value       | Frame Type Name          | Specification
 ------------|--------------------------|-----------------
-0x3e - 0x3f | PATH_ACK                 | {{mp-ack-frame}}
-0x3e75      | PATH_ABANDON             | {{path-abandon-frame}}
-0x3e76      | PATH_STATUS_BACKUP       | {{path-backup-available-frame}}
-0x3e77      | PATH_STATUS_AVAILABLE    | {{path-backup-available-frame}}
-0x3e78      | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
-0x3e79      | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
-0x3e7a      | MAX_PATH_ID              | {{max-paths-frame}}
-0x3e7b      | PATHS_BLOCKED            | {{paths-and-cids-blocked-frame}}
-0x3e7c      | PATH_CIDS_BLOCKED        | {{paths-and-cids-blocked-frame}}
+0x3e - 0x3f (suggested) | PATH_ACK                 | {{mp-ack-frame}}
+0x3e75 (suggested)      | PATH_ABANDON             | {{path-abandon-frame}}
+0x3e76 (suggested)      | PATH_STATUS_BACKUP       | {{path-backup-available-frame}}
+0x3e77 (suggested)      | PATH_STATUS_AVAILABLE    | {{path-backup-available-frame}}
+0x3e78 (suggested)      | PATH_NEW_CONNECTION_ID   | {{mp-new-conn-id-frame}}
+0x3e79 (suggested)      | PATH_RETIRE_CONNECTION_ID| {{mp-retire-conn-id-frame}}
+0x3e7a (suggested)      | MAX_PATH_ID              | {{max-paths-frame}}
+0x3e7b (suggested)      | PATHS_BLOCKED            | {{paths-and-cids-blocked-frame}}
+0x3e7c (suggested)      | PATH_CIDS_BLOCKED        | {{paths-and-cids-blocked-frame}}
 {: #frame-types title="Addition to QUIC Frame Types Entries"}
 
 The following transport error code defined in {{tab-error-code}} are to
@@ -1450,11 +1453,59 @@ be added to the "QUIC Transport Error Codes" registry.
 
 |Value                       | Code                  | Description                   | Specification
 |----------------------------|-----------------------|-------------------------------|-------------------
-|0x3e | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
-|0x3e75 | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
-|0x3e76 | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}
-|0x3e77 | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
+|0x3e (suggested) | APPLICATION_ABANDON_PATH | Path abandoned at the application's request | {{error-codes}}
+|0x3e75 (suggested) | PATH_RESOURCE_LIMIT_REACHED | Path abandoned due to resource limitations in the transport | {{error-codes}}
+|0x3e76 (suggested) | PATH_UNSTABLE_OR_POOR | Path abandoned due to unstable interfaces or poor performance | {{error-codes}}
+|0x3e77 (suggested) | NO_CID_AVAILABLE_FOR_PATH | Path abandoned due to no available connection IDs for the path | {{error-codes}}
 {: #tab-error-code title="Error Codes for Multipath QUIC"}
+
+## Removing Provisional Registrations
+
+RFC Editor's Note: Please remove this section prior to publication of
+a final version of this document.
+
+The values noted here were provisionally registered during the development
+of this draft. The provisonal registrations should be deleted when the
+final version of this document.
+
+The following entries were provisionally registered in the registry of QUIC
+transport parameters:
+
+| Value              | Parameter Name.     | Registered for  |
+|--------------------|---------------------|-----------------|
+| 0x0f739bbc1b666d0d | initial_max_path_id | draft 15        |
+| 0x0f739bbc1b666d05 | enable_multipath    | draft-05        |
+| 0x0f739bbc1b666d06 | enable_multipath    | draft-06        |
+{: #transport-parameters-exp title="Provisional QUIC transport parameters" }
+
+The following entries were provisionally registered in the registry of QUIC
+Frame Types:
+
+| Value                 | Frame Type Name           | Registered for |
+|-----------------------|---------------------------|----------------|
+| 0x15228c00-0x15228c01 | PATH_ACK                  | draft-15       |
+| 0x15228c05            | PATH_ABANDON              | draft-15       |
+| 0x15228c06            | PATH_STATUS               | draft-05       |
+| 0x15228c07            | PATH_STATUS_BACKUP        | draft-15       |
+| 0x15228c08            | PATH_STATUS_AVAILABLE     | draft-15       |
+| 0x15228c09            | PATH_NEW_CONNECTION_ID    | draft-15       |
+| 0x15228c0a            | PATH_RETIRE_CONNECTION_ID | draft-15       |
+| 0x15228c0c            | MAX_PATH_ID               | draft-15       |
+| 0x15228c0d            | PATHS_BLOCKED             | draft-15       |
+| 0x15228c0e            | PATH_CIDS_BLOCKED         | draft-15       |
+{: #frame-types-exp title="Provisional QUIC frame types" }
+
+The following entries were provisionally registered in the registry of QUIC
+Transport Error Codes:
+
+| Value              | Transport Error Code        | Registered for |
+|--------------------|-----------------------------|----------------|
+| 0x004150504142414e | APPLICATION_ABANDON_PATH    | draft-15       |
+| 0x004e4f5f4349445f | NO_CID_AVAILABLE_FOR_PATH   | draft-15       |
+| 0x0052534c494d4954 | PATH_RESOURCE_LIMIT_REACHED | draft-15       |
+| 0x00554e5f494e5446 | APPLICATION_ABANDON_PATH    | draft-15       |
+| 0x1001d76d3ded42f3 | MP_PROTOCOL_VIOLATION       | draft-05       |
+{: #error-codes-exp title="Provisional QUIC transport error codes" }
 
 # Security Considerations
 
