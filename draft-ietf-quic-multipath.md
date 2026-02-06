@@ -83,8 +83,9 @@ Emerging networking experiments and technologies, ACM"
 
 This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection.
-It proposes a standard way to create, delete, and manage paths using identifiers.
-It does not specify address discovery or management, nor
+It proposes a standard way to create, delete, and manage paths.
+A path is determined by an explicit path identifier in this extension.
+This document does not specify address discovery or management, nor
 how applications using QUIC schedule traffic over multiple paths.
 
 --- middle
@@ -102,7 +103,8 @@ a new preferred path, and, if successful, to release resources
 associated with the old path. The multipath extension specified in this document
 builds on this mechanism but introduces a path identifier, or path ID,
 to manage connection IDs and packet number spaces per path, enabling the use
-of multiple paths simultaneously.
+of multiple paths simultaneously. As such, a path in this extension is defined
+by its path ID. Note that it therefore is possible to have multiple paths/paths ID for the same 4-tuple.
 
 The connection ID of a packet binds the packet to a path ID, and therefore
 to a packet number space. That means each connection ID is associated with exactly one path ID
