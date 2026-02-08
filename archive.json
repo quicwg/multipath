@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-05T01:20:40.168665+00:00",
+  "timestamp": "2026-02-08T01:56:46.537832+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15471,6 +15471,30 @@
           "body": "In email, @mirjak  pointed out that this was already discussed in issue #564.\n\nI think that the issue behind @MikeBishop comment is the text in the security section that says:\n\n~~~\nThe anti-amplification limits as specified in {{Section 8 of QUIC-TRANSPORT}}\nlimit the amplification risk for a given path,\nbut multiple paths could be used to further amplify an attack.\n~~~\n\nThis is loose language, because the use of multiple path does not change the amplification factor. We should change that to avoid further discussions. As @mirjak says, \"the amplification multiplier is still 3. You send 1 path challenge and can trigger 3 packets; or you send N path challenges and trigger Nx3 packets. This is also similar when trying to open N QUIC connections in parallel and there is no limit for that.\"\n\n\n\n",
           "createdAt": "2026-02-04T19:21:38Z",
           "updatedAt": "2026-02-04T19:21:38Z"
+        }
+      ]
+    },
+    {
+      "number": 643,
+      "id": "I_kwDOGNtpaM7o3nFu",
+      "title": "Improve description of nonce calculation",
+      "url": "https://github.com/quicwg/multipath/issues/643",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From [Deb Cooley's IESG review](https://mailarchive.ietf.org/arch/msg/quic/h7B9tq9Chgu3kyruLP-AUx2McE8/):\n\nI did spend an inordinate amount of time looking at the difference in the\nRFC9001 AEAD nonce and the AEAD nonce in this draft.  I do believe that one\n*could* make this clearer.  I'll only give one suggestion.\n\nSection 2.4, last paragraph:  This example would be easier to see/understand in\na table/figure form with the IV, path ID, two bits of 0, packet number, and\nXOR'd result all lined up in three rows.\n\nSection 7.3, last para: This specification does not change how the 'AEAD'\nworks.  It does change the calculation of the AEAD nonce that is an input to\nthe algorithm.  I would change the first sentence to:  'This specification\nchanges the AEAD nonce calculation by including the path ID as part of the\ncalculation.'  Otherwise, the paragraph is inaccurate.  [Thanks to Carsten\nBormann for this.  I (obviously) agree with him.]",
+      "createdAt": "2026-02-06T13:55:11Z",
+      "updatedAt": "2026-02-06T18:58:18Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I just wish we had actually received a review from the security directorate. This is indeed a key point of the design, and Deb's suggestions make sense.",
+          "createdAt": "2026-02-06T18:58:18Z",
+          "updatedAt": "2026-02-06T18:58:18Z"
         }
       ]
     }
@@ -68933,24 +68957,26 @@
       "id": "PR_kwDOGNtpaM6_5pf9",
       "title": "Update organization affiliation for Olivier Bonaventure",
       "url": "https://github.com/quicwg/multipath/pull/634",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "obonaventure",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-01-28T16:35:16Z",
-      "updatedAt": "2026-01-28T19:03:31Z",
+      "updatedAt": "2026-02-05T18:25:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "f8b28074dd56d86c347e1c00a9b076885327bd13",
       "headRepository": "quicwg/multipath",
       "headRefName": "obonaventure-patch-1",
       "headRefOid": "8f18fc2755637b4f767ad7ac18cfd4fa83245203",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-02-05T18:25:52Z",
+      "mergedAt": "2026-02-05T18:25:52Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "779ca62594f363f3d2a6ca5f48a8394ee6166b91"
+      },
       "comments": [],
       "reviews": [
         {
@@ -68965,6 +68991,19 @@
           "createdAt": "2026-01-28T19:03:31Z",
           "updatedAt": "2026-01-28T19:03:31Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7fzi7e",
+          "commit": {
+            "abbreviatedOid": "8f18fc2"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-02-05T06:39:11Z",
+          "updatedAt": "2026-02-05T06:39:11Z",
+          "comments": []
         }
       ]
     },
@@ -68973,26 +69012,55 @@
       "id": "PR_kwDOGNtpaM7BU7jC",
       "title": "Response to IANA requests",
       "url": "https://github.com/quicwg/multipath/pull/635",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "IANA requested two changes in the IANA Consideration Section:\r\n\r\n-  Please update the values to indicate that they're suggested/TBD. In a table, we'd expect to see something like \"0x3e75 (suggested)\" or \"TBD0x3e75\".\r\n- We understand that all 14 permanent registrations listed in the document are replacing the corresponding provisional registrations, which should be removed. However, we've made four provisional registrations for versions -05 and -06 of this document that aren't included here. Should they be left in place, referring to those older versions of the I-D? Should this document deprecate/obsolete/remove them?\r\n\r\nThe PR adds a \"(suggested)\" command after each of the requested values, and provides a complete list of the provisional registrations that should be removed.",
       "createdAt": "2026-02-04T00:11:30Z",
-      "updatedAt": "2026-02-04T00:11:53Z",
+      "updatedAt": "2026-02-06T01:26:35Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "f8b28074dd56d86c347e1c00a9b076885327bd13",
       "headRepository": "quicwg/multipath",
       "headRefName": "iana-deprecate",
       "headRefOid": "00b6b33e6cece0e7d5046157dc8b30af6c22462f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-02-06T01:26:35Z",
+      "mergedAt": "2026-02-06T01:26:35Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "b1629bb388a053a0c35f5a0c56bdde54e2917451"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7fzdLl",
+          "commit": {
+            "abbreviatedOid": "00b6b33"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-02-05T06:29:45Z",
+          "updatedAt": "2026-02-05T06:29:45Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7fzjMw",
+          "commit": {
+            "abbreviatedOid": "00b6b33"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-02-05T06:39:36Z",
+          "updatedAt": "2026-02-05T06:39:36Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 636,
@@ -69006,19 +69074,254 @@
       "labels": [],
       "body": "This PR addresses the comments by Mike Bishop [in his IESG review](https://mailarchive.ietf.org/arch/msg/quic/CDIlYE3_YsexZFZSQ84IhV2aChY/).\r\n\r\nClose #638\r\nClose #640",
       "createdAt": "2026-02-04T00:35:25Z",
-      "updatedAt": "2026-02-04T20:11:01Z",
+      "updatedAt": "2026-02-06T18:44:31Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "f8b28074dd56d86c347e1c00a9b076885327bd13",
       "headRepository": "quicwg/multipath",
       "headRefName": "evequefou-edits",
-      "headRefOid": "2e42d32c9ba0bbae829bf463d58da518d562ef10",
+      "headRefOid": "be204713ca4008bf32313f4844ac77780aaadd15",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree that the current text is actually not correct because it does not increase the amplification risk. I proposed some more small edits to explicit point out the existing limits. @huitema please have another look!",
+          "createdAt": "2026-02-06T12:13:25Z",
+          "updatedAt": "2026-02-06T12:13:25Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7fzjyr",
+          "commit": {
+            "abbreviatedOid": "2e42d32"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Looks overall good, with just a nit.",
+          "createdAt": "2026-02-05T06:40:14Z",
+          "updatedAt": "2026-02-05T06:41:30Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "```suggestion\nthe server MAY wait for a short, limited time such as one PTO to see if a\n```",
+              "createdAt": "2026-02-05T06:40:14Z",
+              "updatedAt": "2026-02-05T06:41:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7f0Ysc",
+          "commit": {
+            "abbreviatedOid": "f1891c1"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good. Just one nit.",
+          "createdAt": "2026-02-05T07:45:49Z",
+          "updatedAt": "2026-02-05T07:49:42Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "```suggestion\nthe server MAY wait for a short, limited time such as one PTO, to see if a\n```",
+              "createdAt": "2026-02-05T07:45:49Z",
+              "updatedAt": "2026-02-05T07:49:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7gRs4G",
+          "commit": {
+            "abbreviatedOid": "299304f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-06T12:11:14Z",
+          "updatedAt": "2026-02-06T12:11:14Z",
+          "comments": [
+            {
+              "originalPosition": 112,
+              "body": "```suggestion\nall at the same time, still limited by number of issued connection IDs for each path.\nFurther, multiple paths could be initialized simultaneously, limited by the maximum\nnumber of allowed paths.\n\n```",
+              "createdAt": "2026-02-06T12:11:14Z",
+              "updatedAt": "2026-02-06T12:11:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7gRtbu",
+          "commit": {
+            "abbreviatedOid": "299304f"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-06T12:11:55Z",
+          "updatedAt": "2026-02-06T12:11:55Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "```suggestion\nTherefore, endpoints are advised to keep the maximum number of paths small\nand might consider\n```",
+              "createdAt": "2026-02-06T12:11:55Z",
+              "updatedAt": "2026-02-06T12:12:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 641,
+      "id": "PR_kwDOGNtpaM7B_lsw",
+      "title": "Comments by Med (use \"define\" and remove redundant MUST)",
+      "url": "https://github.com/quicwg/multipath/pull/641",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-02-06T13:10:05Z",
+      "updatedAt": "2026-02-06T18:48:38Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "b1629bb388a053a0c35f5a0c56bdde54e2917451",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-4",
+      "headRefOid": "ede775d5fc469ccfb8002db28724e4911675ec5b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7gY9NY",
+          "commit": {
+            "abbreviatedOid": "ede775d"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Yes, that's a straightforward fix.",
+          "createdAt": "2026-02-06T18:48:38Z",
+          "updatedAt": "2026-02-06T18:48:38Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 642,
+      "id": "PR_kwDOGNtpaM7B_pii",
+      "title": "Proposal to \"define\" path a bit better",
+      "url": "https://github.com/quicwg/multipath/pull/642",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "based on Med's review/discuss",
+      "createdAt": "2026-02-06T13:13:46Z",
+      "updatedAt": "2026-02-06T18:54:27Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "b1629bb388a053a0c35f5a0c56bdde54e2917451",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-5",
+      "headRefOid": "2040f67db39fb5731c592db37a20fdaec71a0ed7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7gZBUd",
+          "commit": {
+            "abbreviatedOid": "2040f67"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I agree in principle, but I think we can do a bit better in the abstract, see suggestion.",
+          "createdAt": "2026-02-06T18:53:45Z",
+          "updatedAt": "2026-02-06T18:54:27Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "We need something like that, but the words don't feel right. \nHow about:\n```\nIt proposes to define paths using path identifiers, and defines a\nstandard way to create, delete, and manage paths using these identifiers.\n```\n",
+              "createdAt": "2026-02-06T18:53:45Z",
+              "updatedAt": "2026-02-06T18:54:27Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 644,
+      "id": "PR_kwDOGNtpaM7CAjNg",
+      "title": "Improve Nonce description",
+      "url": "https://github.com/quicwg/multipath/pull/644",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a first try for a table but not sure that helps much... Or was the request to show the table in bits...?",
+      "createdAt": "2026-02-06T14:14:39Z",
+      "updatedAt": "2026-02-06T19:22:15Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "b1629bb388a053a0c35f5a0c56bdde54e2917451",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-6",
+      "headRefOid": "e2644eab4016bdf990a888ae5948be3d5bddd1aa",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7gZWII",
+          "commit": {
+            "abbreviatedOid": "e2644ea"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "Yes, we need something like that. But I think using a formal specification would be better than using an ASCII diagram. The interested reader ought to be familiar with the specification language used in TLS 1.3, and indeed also used throughout our draft.",
+          "createdAt": "2026-02-06T19:19:36Z",
+          "updatedAt": "2026-02-06T19:22:15Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "\n```Suggestion\nnetwork byte order, as illustrated in {{fig-path-and-packet-number}} using the conventions of TLS 1.3.\nThe IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number\n```",
+              "createdAt": "2026-02-06T19:19:36Z",
+              "updatedAt": "2026-02-06T19:22:15Z"
+            },
+            {
+              "originalPosition": 1,
+              "body": "I don't think that using an ASCII schema works well. I would rather use a description that uses the conventions of TLS 1.3.\r\n\r\n```Suggestion\r\n\r\n~~~\r\n  Path And Packet Number {\r\n    Path Identifier (32),\r\n    Zeroes (2) = 0b00,\r\n    Packet Number (62)\r\n  }\r\n~~~\r\n{: #fig-path-and-packet-number title=\"96 Bits Path-And-Packet-Number\"}\r\n\r\n```\r\n\r\n\r\n",
+              "createdAt": "2026-02-06T19:19:41Z",
+              "updatedAt": "2026-02-07T07:23:42Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "I would suggest keeping the existing text, up to \"the nonce will be set to `0x6b2611489cba2b63a9e8097e`.\" And not adding the ASCII table.",
+              "createdAt": "2026-02-06T19:19:46Z",
+              "updatedAt": "2026-02-06T19:22:15Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
