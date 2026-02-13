@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 13 August 2026                           Uber Technologies Inc.
+Expires: 17 August 2026                           Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 13 August 2026                           Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         9 February 2026
+                                                        13 February 2026
 
 
              Managing multiple paths for a QUIC connection
@@ -24,10 +24,10 @@ Abstract
 
    This document specifies a multipath extension for the QUIC protocol
    to enable the simultaneous usage of multiple paths for a single
-   connection.  It defines a standard way to create, delete, and manage
-   paths using identifiers.  It does not specify address discovery or
-   management, nor how applications using QUIC schedule traffic over
-   multiple paths.
+   connection.  It introduces explicit path identifiers to create,
+   delete, and manage multiple paths.  This document does not specify
+   address discovery or management, nor how applications using QUIC
+   schedule traffic over multiple paths.
 
 Discussion Venues
 
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 August 2026.
+   This Internet-Draft will expire on 17 August 2026.
 
 Copyright Notice
 
@@ -139,7 +139,9 @@ Table of Contents
    The multipath extension specified in this document builds on this
    mechanism but introduces a path identifier, or path ID, to manage
    connection IDs and packet number spaces per path, enabling the use of
-   multiple paths simultaneously.
+   multiple paths simultaneously.  As such, a path in this extension is
+   defined by its path ID.  Note that it therefore is possible to have
+   multiple paths/paths ID for the same 4-tuple.
 
    The connection ID of a packet binds the packet to a path ID, and
    therefore to a packet number space.  That means each connection ID is
