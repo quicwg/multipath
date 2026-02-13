@@ -1405,9 +1405,10 @@ signaling of preferred path usage in <a href="#path-state" class="auto internal 
 removal of paths that have been abandoned in <a href="#path-close" class="auto internal xref">Section 3.4</a>.
 Note that in this extension, a QUIC server does not initiate the creation
 of a path, but it has to validate a new path created by a client.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">This extension does not cover address discovery and management. Addresses
-and the actual decision to set up or tear down paths are assumed
-to be handled by the application. But this document does not prevent future extensions from
+<p id="section-1-7">This extension does not cover address discovery and management.
+The extension specified in this document can be used as it if address
+management and the actual decision to set up or tear down paths are
+handled by the application. This document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <p id="section-1-8">Further, this document does not specify scheduling algorithms that define
 how multiple, simultaneously open paths are used to send packets.
