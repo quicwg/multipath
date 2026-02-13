@@ -329,10 +329,10 @@ Table of Contents
    use of a nonce, N, formed by combining the packet protection IV with
    the packet number.  When multiple packet number spaces are used, the
    packet number alone would not guarantee the uniqueness of the nonce.
-   Therefore, the nonce N is calculated for 1-RTT if the multipath
-   extension is used by combining the packet protection IV with the
-   packet number and with the 32 bits of the path ID.  In order to
-   guarantee the uniqueness of the nonce, the path ID is limited to a
+   Therefore, the nonce N is calculated for 1-RTT packets if the
+   multipath extension is used by combining the packet protection IV
+   with the packet number and with the 32 bits of the path ID.  In order
+   to guarantee the uniqueness of the nonce, the path ID is limited to a
    max value of 2^32-1, as specified in Section 2.1.
 
    To calculate the nonce, a 96-bit Path-and-Packet-Number (PPN) is
