@@ -335,43 +335,42 @@ Table of Contents
    guarantee the uniqueness of the nonce, the path ID is limited to a
    max value of 2^32-1, as specified in Section 2.1.
 
-   To calculate the nonce, a 96-bit path-and-packet-number is composed
-   of the 32 bits of the path ID in network byte order, two zero bits,
-   and the 62 bits of the reconstructed QUIC packet number in network
-   byte order, as illustrated in Figure 1 using the conventions of TLS
-   1.3.  The IV length is equal to the nonce length.  If the IV is
-   larger than 96 bits, the path-and-packet-number is left-padded with
-   zeros to the size of the IV.  The exclusive OR of the padded packet
-   number and the IV forms the AEAD nonce.  An AEAD algorithm where the
-   nonce length is less than 12 bytes cannot be used with the QUIC
-   multipath extension.
+   To calculate the nonce, a 96-bit Path-and-Packet-Number (PPN) is
+   composed of the 32 bits of the path ID in network byte order, two
+   zero bits, and the 62 bits of the reconstructed QUIC packet number in
+   network byte order, as illustrated in Figure 1.
 
-     Path And Packet Number {
-       Path Identifier (32),
+     PPN {
+       Path ID (32),
        Zeroes (2) = 0b00,
        Packet Number (62)
      }
 
                   Figure 1: 96 Bits Path-And-Packet-Number
 
+   The IV length is equal to the nonce length.  If the IV is larger than
+   96 bits, the path-and-packet-number is left-padded with zeros to the
+   size of the IV.  The exclusive OR of the padded packet number and the
+   IV forms the AEAD nonce.  An AEAD algorithm where the nonce length is
+   less than 12 bytes cannot be used with the QUIC multipath extension.
+   The following figure illustrates this for a 96-bits IV.
+
+   IV(12);
+   N(12) = IV xor PPN;
+
+                        Figure 2: Nonce Calculation
+
    For example, assuming the IV value is 0x6b26114b9cba2b63a9e8dd4f, the
    path ID is 3, and the packet number is 54321 (hex value 0xd431), the
-   nonce will be set to 0x6b2611489cba2b63a9e8097e, as illustrated in
-   the following table:
+   nonce will be set to 0x6b2611489cba2b63a9e8097e, as illustrated
+   below:
 
-         +======================+================================+
-         | Type                 | Value                          |
-         +======================+================================+
-         | padded packet number | 0x3 (32 bits) + 0x0 (2 bits) + |
-         |                      | 0xd431 (62 bits)               |
-         +----------------------+--------------------------------+
-         | IV                   | 0x6b26114b9cba2b63a9e8dd4f (96 |
-         |                      | bits with optional padding)    |
-         +----------------------+--------------------------------+
-         | AEAD nonce           | 0x6b2611489cba2b63a9e8097e     |
-         +----------------------+--------------------------------+
+      IV:      6b26114b9cba2b63a9e8dd4f
+   ⊕  PPN:     00000003000000000000d431
+   ------------------------------------
+      Nonce:   6b2611489cba2b63a9e8097e
 
-                                  Table 1
+                    Figure 3: Example Nonce Calculation
 
 2.5.  Key Phase Update Process
 
@@ -536,9 +535,9 @@ Table of Contents
       1-RTT[1]: DCID=S1, PATH_RESPONSE[Y],
                PATH_ACK[PathID=1, PN=0], ... -->
 
-                Figure 2: Example of new path establishment
+                Figure 4: Example of new path establishment
 
-   In Figure 2, the endpoints first exchange new available connection
+   In Figure 4, the endpoints first exchange new available connection
    IDs with the PATH_NEW_CONNECTION_ID frame, as further explained in
    Section 3.2.  In this example, the client provides one connection ID
    (C1 with path ID 1), and server provides two connection IDs (S1 with
@@ -825,7 +824,7 @@ Table of Contents
                                               PATH_ACK[PATH ID=1, PN=X]
    1-RTT[U]: DCID=S1 PATH_ACK[path ID=1, PN=Y] ->
 
-                    Figure 3: Example of closing a path.
+                    Figure 5: Example of closing a path.
 
    Note that if the PATH_ABANDON frame is instead sent on the to-be-
    abandoned path, the last acknowledgment still needs to be sent on a
@@ -894,7 +893,7 @@ Table of Contents
    frames also contain the sum of QUIC packets with associated ECN marks
    received on the acknowledged packet number space up to this point.
 
-   PATH_ACK frame is formatted as shown in Figure 4.
+   PATH_ACK frame is formatted as shown in Figure 6.
 
      PATH_ACK Frame {
        Type (i) = 0x3e..0x3f,
@@ -907,7 +906,7 @@ Table of Contents
        [ECN Counts (..)],
      }
 
-                      Figure 4: PATH_ACK Frame Format
+                      Figure 6: PATH_ACK Frame Format
 
    Compared to the ACK frame specified in [QUIC-TRANSPORT], the
    following field is added:
@@ -922,7 +921,7 @@ Table of Contents
    PATH_ABANDON frame is sent on a path, the path can no longer be used
    for sending.
 
-   PATH_ABANDON frames are formatted as shown in Figure 5.
+   PATH_ABANDON frames are formatted as shown in Figure 7.
 
      PATH_ABANDON Frame {
        Type (i) = 0x3e75,
@@ -930,7 +929,7 @@ Table of Contents
        Error Code (i),
      }
 
-                    Figure 5: PATH_ABANDON Frame Format
+                    Figure 7: PATH_ABANDON Frame Format
 
    PATH_ABANDON frames contain the following fields:
 
@@ -977,7 +976,7 @@ Table of Contents
    PATH_STATUS_AVAILABLE frames (type=0x3e77) are used by endpoints to
    inform the peer that the indicated path is available for sending.
 
-   PATH_STATUS_AVAILABLE frames are formatted as shown in Figure 6.
+   PATH_STATUS_AVAILABLE frames are formatted as shown in Figure 8.
 
      PATH_STATUS_AVAILABLE Frame {
        Type (i) = 0x3e77,
@@ -985,13 +984,13 @@ Table of Contents
        Path Status Sequence Number (i),
      }
 
-                Figure 6: PATH_STATUS_AVAILABLE Frame Format
+                Figure 8: PATH_STATUS_AVAILABLE Frame Format
 
    PATH_STATUS_BACKUP frames (type=0x3e76) are used by endpoints to
    inform the peer about its preference to not use the indicated path
    for sending.
 
-   PATH_STATUS_BACKUP frames are formatted as shown in Figure 7.
+   PATH_STATUS_BACKUP frames are formatted as shown in Figure 9.
 
      PATH_STATUS_BACKUP Frame {
        Type (i) = 0x3e76
@@ -999,7 +998,7 @@ Table of Contents
        Path Status Sequence Number (i),
      }
 
-                 Figure 7: PATH_STATUS_BACKUP Frame Format
+                 Figure 9: PATH_STATUS_BACKUP Frame Format
 
    Both PATH_STATUS_AVAILABLE and PATH_STATUS_BACKUP frames contain the
    following fields:
@@ -1051,7 +1050,7 @@ Table of Contents
    linkability when migrating on that path; see also Section 9.5 of
    [QUIC-TRANSPORT].
 
-   PATH_NEW_CONNECTION_ID frames are formatted as shown in Figure 8.
+   PATH_NEW_CONNECTION_ID frames are formatted as shown in Figure 10.
 
    PATH_NEW_CONNECTION_ID Frame {
      Type (i) = 0x3e78,
@@ -1063,7 +1062,7 @@ Table of Contents
      Stateless Reset Token (128),
    }
 
-               Figure 8: PATH_NEW_CONNECTION_ID Frame Format
+               Figure 10: PATH_NEW_CONNECTION_ID Frame Format
 
    Compared to the NEW_CONNECTION_ID frame specified in Section 19.15 of
    [QUIC-TRANSPORT], the following field is added:
@@ -1105,7 +1104,7 @@ Table of Contents
    been abandoned.  New path-specific connection IDs can be delivered to
    a peer using the PATH_NEW_CONNECTION_ID frame (see Section 4.4).
 
-   PATH_RETIRE_CONNECTION_ID frames are formatted as shown in Figure 9.
+   PATH_RETIRE_CONNECTION_ID frames are formatted as shown in Figure 11.
 
    PATH_RETIRE_CONNECTION_ID Frame {
      Type (i) = 0x3e79,
@@ -1113,7 +1112,7 @@ Table of Contents
      Sequence Number (i),
    }
 
-              Figure 9: PATH_RETIRE_CONNECTION_ID Frame Format
+             Figure 11: PATH_RETIRE_CONNECTION_ID Frame Format
 
    Compared to the RETIRE_CONNECTION_ID frame specified in Section 19.16
    of [QUIC-TRANSPORT], the following field is added:
@@ -1140,14 +1139,14 @@ Table of Contents
    A MAX_PATH_ID frame (type=0x3e7a) informs the peer of the maximum
    path ID it is permitted to use.
 
-   MAX_PATH_ID frames are formatted as shown in Figure 10.
+   MAX_PATH_ID frames are formatted as shown in Figure 12.
 
    MAX_PATH_ID Frame {
      Type (i) = 0x3e7a,
      Maximum Path Identifier (i),
    }
 
-                    Figure 10: MAX_PATH_ID Frame Format
+                    Figure 12: MAX_PATH_ID Frame Format
 
    MAX_PATH_ID frames contain the following field:
 
@@ -1192,14 +1191,14 @@ Table of Contents
    likely a deliberate decision by the peer and repeating the
    PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.
 
-   PATHS_BLOCKED frames are formatted as shown in Figure 11.
+   PATHS_BLOCKED frames are formatted as shown in Figure 13.
 
    PATHS_BLOCKED Frame {
      Type (i) = 0x3e7b,
      Maximum Path Identifier (i),
    }
 
-                   Figure 11: PATHS_BLOCKED Frame Format
+                   Figure 13: PATHS_BLOCKED Frame Format
 
    PATHS_BLOCKED frames contain the following field:
 
@@ -1208,7 +1207,7 @@ Table of Contents
       If the received value is lower than the currently allowed maximum
       value, this frame can be ignored.
 
-   PATH_CIDS_BLOCKED frames are formatted as shown in Figure 12.
+   PATH_CIDS_BLOCKED frames are formatted as shown in Figure 14.
 
    PATH_CIDS_BLOCKED Frame {
      Type (i) = 0x3e7c,
@@ -1216,7 +1215,7 @@ Table of Contents
      Next Sequence Number (i),
    }
 
-                 Figure 12: PATH_CIDS_BLOCKED Frame Format
+                 Figure 14: PATH_CIDS_BLOCKED Frame Format
 
    PATH_CIDS_BLOCKED frames contain the following fields:
 
@@ -1367,7 +1366,7 @@ Table of Contents
    latency of 300ms in each direction.  The sum of the two one-way
    delays will depend on the combination of paths used for the packet
    transmission and the acknowledgment transmission, as shown in
-   Table 2.
+   Table 1.
 
             +======================+=============+===========+
             | ACK Path \ Data path | Terrestrial | Satellite |
@@ -1377,7 +1376,7 @@ Table of Contents
             | Satellite            | 350ms       | 600ms     |
             +----------------------+-------------+-----------+
 
-              Table 2: Example of ACK delays using multiple
+              Table 1: Example of ACK delays using multiple
                                   paths
 
    The computed values reflect both the state of the network path and
@@ -1542,7 +1541,7 @@ Table of Contents
    https://www.iana.org/assignments/quic/quic.xhtml
    (https://www.iana.org/assignments/quic/quic.xhtml).
 
-   The following entry in Table 3 should be added to the "QUIC Transport
+   The following entry in Table 2 should be added to the "QUIC Transport
    Parameters" registry.
 
         +==================+=====================+===============+
@@ -1551,9 +1550,9 @@ Table of Contents
         | 0x3e (suggested) | initial_max_path_id | Section 2.1   |
         +------------------+---------------------+---------------+
 
-          Table 3: Addition to QUIC Transport Parameters Entries
+          Table 2: Addition to QUIC Transport Parameters Entries
 
-   The following frame types defined in Table 4 should be added to the
+   The following frame types defined in Table 3 should be added to the
    "QUIC Frame Types" registry.
 
         +=============+===========================+===============+
@@ -1587,9 +1586,9 @@ Table of Contents
         | (suggested) |                           |               |
         +-------------+---------------------------+---------------+
 
-               Table 4: Addition to QUIC Frame Types Entries
+               Table 3: Addition to QUIC Frame Types Entries
 
-   The following transport error code defined in Table 5 are to be added
+   The following transport error code defined in Table 4 are to be added
    to the "QUIC Transport Error Codes" registry.
 
    +===========+===========================+=============+=============+
@@ -1624,7 +1623,7 @@ Table of Contents
    |           |                           |path         |             |
    +-----------+---------------------------+-------------+-------------+
 
-                  Table 5: Error Codes for Multipath QUIC
+                  Table 4: Error Codes for Multipath QUIC
 
 6.1.  Removing Provisional Registrations
 
@@ -1648,7 +1647,7 @@ Table of Contents
        | 0x0f739bbc1b666d06 | enable_multipath    | draft-06       |
        +--------------------+---------------------+----------------+
 
-               Table 6: Provisional QUIC transport parameters
+               Table 5: Provisional QUIC transport parameters
 
    The following entries were provisionally registered in the registry
    of QUIC Frame Types:
@@ -1678,7 +1677,7 @@ Table of Contents
     | 0x15228c0e            | PATH_CIDS_BLOCKED         | draft-15   |
     +-----------------------+---------------------------+------------+
 
-                  Table 7: Provisional QUIC frame types
+                  Table 6: Provisional QUIC frame types
 
    The following entries were provisionally registered in the registry
    of QUIC Transport Error Codes:
@@ -1698,7 +1697,7 @@ Table of Contents
    | 0x1001d76d3ded42f3 | MP_PROTOCOL_VIOLATION       | draft-05       |
    +--------------------+-----------------------------+----------------+
 
-              Table 8: Provisional QUIC transport error codes
+              Table 7: Provisional QUIC transport error codes
 
 7.  Security Considerations
 
