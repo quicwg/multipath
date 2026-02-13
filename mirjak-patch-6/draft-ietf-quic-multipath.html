@@ -174,7 +174,7 @@ how applications using QUIC schedule traffic over multiple paths.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -182,7 +182,8 @@ how applications using QUIC schedule traffic over multiple paths.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 }
 
 @font-face {
@@ -1057,7 +1058,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 10 August 2026</td>
+<td class="center">Expires 17 August 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1071,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-06" class="published">6 February 2026</time>
+<time datetime="2026-02-13" class="published">13 February 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-10">10 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-08-17">17 August 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1149,7 +1150,7 @@ how applications using QUIC schedule traffic over multiple paths.<a href="#secti
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 10 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 17 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1573,10 +1574,25 @@ network byte order. The IV length is equal to the nonce length. If the IV is lar
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
 packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
 is less than 12 bytes cannot be used with the QUIC multipath extension.<a href="#section-2.4-2" class="pilcrow">¶</a></p>
-<p id="section-2.4-3">For example, assuming the IV value is <code>0x6b26114b9cba2b63a9e8dd4f</code>,
+<span id="name-96-bits-path-and-packet-num"></span><div id="fig-path-and-packet-number">
+<figure id="figure-1">
+          <div class="alignLeft art-text artwork" id="section-2.4-3.1">
+<pre>
+  Path And Packet Number {
+    Path Identifier (32),
+    Zeroes (2) = 0b00,
+    Packet Number (62)
+  }
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-96-bits-path-and-packet-num" class="selfRef">96 Bits Path-And-Packet-Number</a>
+          </figcaption></figure>
+</div>
+<p id="section-2.4-4">For example, assuming the IV value is <code>0x6b26114b9cba2b63a9e8dd4f</code>,
 the path ID is <code>3</code>, and the packet number is <code>54321</code> (hex value <code>0xd431</code>),
 the nonce will be set to <code>0x6b2611489cba2b63a9e8097e</code>, as illustrated in the
-following table:<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+following table:<a href="#section-2.4-4" class="pilcrow">¶</a></p>
 <table class="center" id="table-1">
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
@@ -1752,7 +1768,7 @@ indicated an initial_max_path_id value of at least 2, which means
 both endpoints can use path IDs 0, 1, and 2. Note that
 path ID 0 is already used for the initial path.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
 <span id="name-example-of-new-path-establi"></span><div id="fig-example-new-path">
-<figure id="figure-1">
+<figure id="figure-2">
             <div class="alignLeft art-text artwork" id="section-3.1.1-2.1">
 <pre>
    Client                                                  Server
@@ -1774,11 +1790,11 @@ path ID 0 is already used for the initial path.<a href="#section-3.1.1-1" class=
 
 </pre>
 </div>
-<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-example-of-new-path-establi" class="selfRef">Example of new path establishment</a>
             </figcaption></figure>
 </div>
-<p id="section-3.1.1-3">In <a href="#fig-example-new-path" class="auto internal xref">Figure 1</a>, the endpoints first exchange
+<p id="section-3.1.1-3">In <a href="#fig-example-new-path" class="auto internal xref">Figure 2</a>, the endpoints first exchange
 new available connection IDs with the PATH_NEW_CONNECTION_ID frame,
 as further explained in <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>.
 In this example, the client provides one connection ID (C1 with
@@ -2045,7 +2061,7 @@ the PATH_ABANDON frame for path ID 0, the server also sends a
 PATH_ABANDON frame with path ID 0 together with a PATH_ACK frame
 on the same path using connection ID C1.<a href="#section-3.4.1-1" class="pilcrow">¶</a></p>
 <span id="name-example-of-closing-a-path"></span><div id="fig-example-path-close1">
-<figure id="figure-2">
+<figure id="figure-3">
             <div class="alignLeft art-text artwork" id="section-3.4.1-2.1">
 <pre>
 Client                                                      Server
@@ -2058,7 +2074,7 @@ Client                                                      Server
 1-RTT[U]: DCID=S1 PATH_ACK[path ID=1, PN=Y] -&gt;
 </pre>
 </div>
-<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-example-of-closing-a-path" class="selfRef">Example of closing a path.</a>
             </figcaption></figure>
 </div>
@@ -2140,9 +2156,9 @@ used to acknowledge packets that were sent on different paths, as
 each path has its own packet number space. If the frame type is 0x3f, PATH_ACK frames
 also contain the sum of QUIC packets with associated ECN marks received
 on the acknowledged packet number space up to this point.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">PATH_ACK frame is formatted as shown in <a href="#fig-mp-ack-format" class="auto internal xref">Figure 3</a>.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">PATH_ACK frame is formatted as shown in <a href="#fig-mp-ack-format" class="auto internal xref">Figure 4</a>.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <span id="name-path_ack-frame-format"></span><div id="fig-mp-ack-format">
-<figure id="figure-3">
+<figure id="figure-4">
           <div class="alignLeft art-text artwork" id="section-4.1-3.1">
 <pre>
   PATH_ACK Frame {
@@ -2157,7 +2173,7 @@ on the acknowledged packet number space up to this point.<a href="#section-4.1-1
   }
 </pre>
 </div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-path_ack-frame-format" class="selfRef">PATH_ACK Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2180,9 +2196,9 @@ which are acknowledged by the PATH_ACK frame.<a href="#section-4.1-5.2.1" class=
         </h3>
 <p id="section-4.2-1">The PATH_ABANDON frame informs the peer to abandon a path.
 After the PATH_ABANDON frame is sent on a path, the path can no longer be used for sending.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">PATH_ABANDON frames are formatted as shown in <a href="#fig-path-abandon-format" class="auto internal xref">Figure 4</a>.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">PATH_ABANDON frames are formatted as shown in <a href="#fig-path-abandon-format" class="auto internal xref">Figure 5</a>.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <span id="name-path_abandon-frame-format"></span><div id="fig-path-abandon-format">
-<figure id="figure-4">
+<figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-4.2-3.1">
 <pre>
   PATH_ABANDON Frame {
@@ -2192,7 +2208,7 @@ After the PATH_ABANDON frame is sent on a path, the path can no longer be used f
   }
 </pre>
 </div>
-<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
 <a href="#name-path_abandon-frame-format" class="selfRef">PATH_ABANDON Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2264,9 +2280,9 @@ but has not provided a corresponding connection ID for the path ID
         </h3>
 <p id="section-4.3-1">PATH_STATUS_AVAILABLE frames (type=0x3e77) are used by endpoints to inform the peer
 that the indicated path is available for sending.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">PATH_STATUS_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 5</a>.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">PATH_STATUS_AVAILABLE frames are formatted as shown in <a href="#fig-path-available-format" class="auto internal xref">Figure 6</a>.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <span id="name-path_status_available-frame"></span><div id="fig-path-available-format">
-<figure id="figure-5">
+<figure id="figure-6">
           <div class="alignLeft art-text artwork" id="section-4.3-3.1">
 <pre>
   PATH_STATUS_AVAILABLE Frame {
@@ -2276,15 +2292,15 @@ that the indicated path is available for sending.<a href="#section-4.3-1" class=
   }
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-path_status_available-frame" class="selfRef">PATH_STATUS_AVAILABLE Frame Format</a>
           </figcaption></figure>
 </div>
 <p id="section-4.3-4">PATH_STATUS_BACKUP frames (type=0x3e76) are used by endpoints to inform the peer
 about its preference to not use the indicated path for sending.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.3-5">PATH_STATUS_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" class="auto internal xref">Figure 6</a>.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.3-5">PATH_STATUS_BACKUP frames are formatted as shown in <a href="#fig-path-backup-format" class="auto internal xref">Figure 7</a>.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
 <span id="name-path_status_backup-frame-fo"></span><div id="fig-path-backup-format">
-<figure id="figure-6">
+<figure id="figure-7">
           <div class="alignLeft art-text artwork" id="section-4.3-6.1">
 <pre>
   PATH_STATUS_BACKUP Frame {
@@ -2294,7 +2310,7 @@ about its preference to not use the indicated path for sending.<a href="#section
   }
 </pre>
 </div>
-<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
 <a href="#name-path_status_backup-frame-fo" class="selfRef">PATH_STATUS_BACKUP Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2348,9 +2364,9 @@ is an extension of the NEW_CONNECTION_ID frame specified in
 It is used to provide its peer with alternative connection IDs for 1-RTT packets
 for a specific path. The peer can then use a different connection ID on the same path
 to break linkability when migrating on that path; see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.4-2">PATH_NEW_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-connection-id-frame-format" class="auto internal xref">Figure 7</a>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">PATH_NEW_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 <span id="name-path_new_connection_id-frame"></span><div id="fig-mp-connection-id-frame-format">
-<figure id="figure-7">
+<figure id="figure-8">
           <div class="alignLeft art-text artwork" id="section-4.4-3.1">
 <pre>
 PATH_NEW_CONNECTION_ID Frame {
@@ -2364,7 +2380,7 @@ PATH_NEW_CONNECTION_ID Frame {
 }
 </pre>
 </div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
 <a href="#name-path_new_connection_id-frame" class="selfRef">PATH_NEW_CONNECTION_ID Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2411,9 +2427,9 @@ Sending a PATH_RETIRE_CONNECTION_ID frame also serves as a request to the peer
 to send additional connection IDs for this path (see also <span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1" class="relref">Section 5.1</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>),
 unless the path specified by the path ID has been abandoned. New path-specific connection IDs can be
 delivered to a peer using the PATH_NEW_CONNECTION_ID frame (see <a href="#mp-new-conn-id-frame" class="auto internal xref">Section 4.4</a>).<a href="#section-4.5-1" class="pilcrow">¶</a></p>
-<p id="section-4.5-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 8</a>.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">PATH_RETIRE_CONNECTION_ID frames are formatted as shown in <a href="#fig-mp-retire-connection-id-frame-format" class="auto internal xref">Figure 9</a>.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
 <span id="name-path_retire_connection_id-fr"></span><div id="fig-mp-retire-connection-id-frame-format">
-<figure id="figure-8">
+<figure id="figure-9">
           <div class="alignLeft art-text artwork" id="section-4.5-3.1">
 <pre>
 PATH_RETIRE_CONNECTION_ID Frame {
@@ -2423,7 +2439,7 @@ PATH_RETIRE_CONNECTION_ID Frame {
 }
 </pre>
 </div>
-<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
 <a href="#name-path_retire_connection_id-fr" class="selfRef">PATH_RETIRE_CONNECTION_ID Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2457,9 +2473,9 @@ processing of a RETIRE_CONNECTION_ID frame is only applied for path ID 0.<a href
         </h3>
 <p id="section-4.6-1">A MAX_PATH_ID frame (type=0x3e7a) informs the peer of the maximum path ID
 it is permitted to use.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
-<p id="section-4.6-2">MAX_PATH_ID frames are formatted as shown in <a href="#fig-max-paths-frame-format" class="auto internal xref">Figure 9</a>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
+<p id="section-4.6-2">MAX_PATH_ID frames are formatted as shown in <a href="#fig-max-paths-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
 <span id="name-max_path_id-frame-format"></span><div id="fig-max-paths-frame-format">
-<figure id="figure-9">
+<figure id="figure-10">
           <div class="alignLeft art-text artwork" id="section-4.6-3.1">
 <pre>
 MAX_PATH_ID Frame {
@@ -2468,7 +2484,7 @@ MAX_PATH_ID Frame {
 }
 </pre>
 </div>
-<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
 <a href="#name-max_path_id-frame-format" class="selfRef">MAX_PATH_ID Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2513,9 +2529,9 @@ or the absence of unused connection IDs prevented the creation or the usage of p
 If the successful reception of a PATHS_BLOCKED/PATH_CIDS_BLOCKED frame was acknowledged but
 no action is taken by the peer, this is likely a deliberate decision by the peer and
 repeating the PATHS_BLOCKED/PATH_CIDS_BLOCKED frame will not change that.<a href="#section-4.7-3" class="pilcrow">¶</a></p>
-<p id="section-4.7-4">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 10</a>.<a href="#section-4.7-4" class="pilcrow">¶</a></p>
+<p id="section-4.7-4">PATHS_BLOCKED frames are formatted as shown in <a href="#fig-paths-blocked-frame-format" class="auto internal xref">Figure 11</a>.<a href="#section-4.7-4" class="pilcrow">¶</a></p>
 <span id="name-paths_blocked-frame-format"></span><div id="fig-paths-blocked-frame-format">
-<figure id="figure-10">
+<figure id="figure-11">
           <div class="alignLeft art-text artwork" id="section-4.7-5.1">
 <pre>
 PATHS_BLOCKED Frame {
@@ -2524,7 +2540,7 @@ PATHS_BLOCKED Frame {
 }
 </pre>
 </div>
-<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
 <a href="#name-paths_blocked-frame-format" class="selfRef">PATHS_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
@@ -2538,9 +2554,9 @@ the currently allowed maximum value, this frame can be ignored.<a href="#section
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.7-8">PATH_CIDS_BLOCKED frames are formatted as shown in <a href="#fig-path-cid-blocked-frame-format" class="auto internal xref">Figure 11</a>.<a href="#section-4.7-8" class="pilcrow">¶</a></p>
+<p id="section-4.7-8">PATH_CIDS_BLOCKED frames are formatted as shown in <a href="#fig-path-cid-blocked-frame-format" class="auto internal xref">Figure 12</a>.<a href="#section-4.7-8" class="pilcrow">¶</a></p>
 <span id="name-path_cids_blocked-frame-for"></span><div id="fig-path-cid-blocked-frame-format">
-<figure id="figure-11">
+<figure id="figure-12">
           <div class="alignLeft art-text artwork" id="section-4.7-9.1">
 <pre>
 PATH_CIDS_BLOCKED Frame {
@@ -2550,7 +2566,7 @@ PATH_CIDS_BLOCKED Frame {
 }
 </pre>
 </div>
-<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
+<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
 <a href="#name-path_cids_blocked-frame-for" class="selfRef">PATH_CIDS_BLOCKED Frame Format</a>
           </figcaption></figure>
 </div>
