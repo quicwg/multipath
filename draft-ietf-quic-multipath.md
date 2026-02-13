@@ -281,7 +281,7 @@ the sender might prefer to send ACK frames.
 the use of a nonce, N, formed by combining the packet protection IV
 with the packet number. When multiple packet number spaces are used,
 the packet number alone would not guarantee the uniqueness of the nonce.
-Therefore, the nonce N is calculated for 1-RTT if the multipath extension is used
+Therefore, the nonce N is calculated for 1-RTT packets if the multipath extension is used
 by combining the packet protection
 IV with the packet number and with the 32 bits of the
 path ID. In order to guarantee the uniqueness of the nonce, the path ID
