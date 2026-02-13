@@ -14,7 +14,7 @@
 <meta content="
        This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection.
-It proposes a standard way to create, delete, and manage paths.
+It defines a standard way to create, delete, and manage paths.
 A path is determined by an explicit path identifier in this extension.
 This document does not specify address discovery or management, nor
 how applications using QUIC schedule traffic over multiple paths. 
@@ -175,7 +175,7 @@ how applications using QUIC schedule traffic over multiple paths.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -183,7 +183,8 @@ how applications using QUIC schedule traffic over multiple paths.
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 }
 
 @font-face {
@@ -1058,7 +1059,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Liu, et al.</td>
-<td class="center">Expires 10 August 2026</td>
+<td class="center">Expires 17 August 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1071,12 +1072,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-quic-multipath-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-06" class="published">6 February 2026</time>
+<time datetime="2026-02-13" class="published">13 February 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-10">10 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-08-17">17 August 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1116,7 +1117,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document specifies a multipath extension for the QUIC protocol to
 enable the simultaneous usage of multiple paths for a single connection.
-It proposes a standard way to create, delete, and manage paths.
+It defines a standard way to create, delete, and manage paths.
 A path is determined by an explicit path identifier in this extension.
 This document does not specify address discovery or management, nor
 how applications using QUIC schedule traffic over multiple paths.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
@@ -1151,7 +1152,7 @@ how applications using QUIC schedule traffic over multiple paths.<a href="#secti
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 10 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 17 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1461,8 +1462,7 @@ variable-length integers, encoded as specified in <span><a href="https://rfc-edi
 to indicate the support of the multipath extension.
 If either of the endpoints does not advertise the initial_max_path_id transport
 parameter, then both endpoints MUST NOT use any frame or
-mechanism defined in this document. Endpoints MUST NOT remember the value
-of the initial_max_path_id transport parameter for use in a subsequent connection.
+mechanism defined in this document.
 If both endpoints advertise the initial_max_path_id transport parameter, once the handshake is completed
 a new AEAD usage applies to all 1-RTT packets, as specified in <a href="#nonce" class="auto internal xref">Section 2.4</a>,
 and new paths can be used, as specified in <a href="#path-management" class="auto internal xref">Section 3</a>.
@@ -1546,7 +1546,7 @@ contains the path ID to identify the path-specific packet number space.
 ACK frames when used with the multipath extension acknowledge packets for the path with path ID 0.
 As multipath support is unknown during the handshake, acknowledgments of
 Initial and Handshake packets are sent using ACK frames.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">After the handshake concluded with support for the multipath extension,
+<p id="section-2.3-2">After the handshake concludes with support for the multipath extension,
 endpoints SHOULD use PATH_ACK frames instead of ACK frames,
 including for so far unacknowledged 0-RTT packets using path ID 0.
 Endpoints MUST still process ACK frames that acknowledge 0-RTT packets or 1-RTT packets.
@@ -1601,7 +1601,7 @@ the largest Probe Timeout (PTO) (see <span><a href="https://rfc-editor.org/rfc/r
 among all the paths before initiating a new key update
 after receiving an acknowledgment that confirms the receipt of the previous key
 update. This interval is different from that in <span>[<a href="#QUIC-TLS" class="cite xref">QUIC-TLS</a>]</span>
-which used three times the PTO of the sole single path.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
+which used three times the PTO of the single path.<a href="#section-2.5-3" class="pilcrow">¶</a></p>
 <p id="section-2.5-4">As packets that arrive after their decryption key has been discarded will be dropped,
 the choice of three times the largest PTO is a trade-off: Longer delays
 reduce the probability of losing packets but keeping old keys
@@ -1718,7 +1718,7 @@ path validation.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
 <p id="section-3.1-10">If validation succeeds, the client can continue to use the path.
 If validation fails, the client MUST NOT use the path and can
 remove any status associated to the path initiation attempt.
-As the used path ID is anyway consumed,
+As the used path ID is consumed either way,
 the endpoint MUST explicitly close the path, as specified in
 <a href="#path-close" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
 <div id="path-establishment-example">
@@ -1770,7 +1770,7 @@ In this example the path ID 1 is used which is the smallest unused path ID avail
 as recommended in <a href="#consume-retire-cid" class="auto internal xref">Section 3.2</a>.
 Respectively, the client chooses the connection ID S1
 as the Destination Connection ID of the new path when sending the PATH_CHALLENGE frame.
-The server replies with a PATH_RESPONSE bundled with the PATH_ACK using connection ID S1
+The server replies with a PATH_RESPONSE bundled with the PATH_ACK using connection ID C1
 associated with the same path ID.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1867,7 +1867,7 @@ the Maximum Path Identifier field in MAX_PATH_ID frames (see <a href="#max-paths
 or the value of initial_max_path_id transport parameter if no MAX_PATH_ID frame was received yet.
 Receipt of a frame with a greater path ID is a connection error as specified
 in <a href="#frames" class="auto internal xref">Section 4</a>.<a href="#section-3.2.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-7">When an endpoint finds it has not enough available unused path IDs,
+<p id="section-3.2.1-7">When an endpoint cannot open a path because there are no unused path IDs,
 it SHOULD either send a MAX_PATH_ID frame to increase the maximum path ID limit
 (when limited by the sender) or a PATHS_BLOCKED frame
 (see <a href="#paths-and-cids-blocked-frame" class="auto internal xref">Section 4.7</a>) to inform the peer that
@@ -2005,7 +2005,7 @@ connection, the receiving peer SHOULD send a CONNECTION_CLOSE frame
 and enter the closing state. Alternatively, a client MAY instead try to open a new path, if
 available, and only initiate connection closure if path validation fails
 or a CONNECTION_CLOSE frame is received from the server. Similarly,
-the server MAY wait for a short, limited time such as one PTO if a
+the server MAY wait for a short, limited time such as one PTO, to see if a
 packet is received on a new path before sending the
 CONNECTION_CLOSE frame.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
 <p id="section-3.4-9">Note that other explicit closing mechanisms of <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> still
@@ -2573,7 +2573,7 @@ path uses a separate packet number space.
 This is a major difference from
 <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>, which only defines three number spaces (Initial,
 Handshake and Application data packets).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">For any given path, connection ID rotation, NAT rebinding, or client initiated migration
+<p id="section-5.1-2">For any given path, connection ID rotation, NAT rebinding, or client-initiated migration
 as specified in <span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> might occur, like on a single path.
 These events do not change the path ID, and do not affect the packet number
 space associated with the path.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
@@ -2591,12 +2591,12 @@ could lead to switching between different paths, it should rather maintain
 multiple open paths instead.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.1-5">Servers observing a 4-tuple change will
 perform path validation (see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>).
-If path validation process succeeds, the endpoints set
+If path validation process succeeds, the endpoints reset
 the path's congestion controller and round-trip time
 estimator according to <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.4" class="relref">Section 9.4</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="using-multiple-paths-on-the-same-4-tuple">
+<div id="same-tuple-n-paths">
 <section id="section-5.2">
         <h3 id="name-using-multiple-paths-on-the">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-using-multiple-paths-on-the" class="section-name selfRef">Using Multiple Paths on the Same 4-tuple</a>
@@ -2664,7 +2664,7 @@ Designers of congestion control algorithms specialized for Multipath QUIC
 are advised to follow BCP 133; see <span><a href="https://rfc-editor.org/rfc/rfc9743#section-7.10" class="relref">Section 7.10</a> of [<a href="#RFC9743" class="cite xref">RFC9743</a>]</span>.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.3-3"><span><a href="https://rfc-editor.org/rfc/rfc9000#section-5.1.2" class="relref">Section 5.1.2</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> indicates that an endpoint
 can change the connection ID it uses to another available one
-at any time during the connection. As such, a sole change of the Connection
+at any time during the connection. As such, a change of the Connection
 ID without any change in the address does not indicate a path change and
 the endpoint can keep the same congestion control and RTT measurement state.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 </section>
@@ -2835,9 +2835,9 @@ paths allows.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
 multiple paths. As specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-14.3" class="relref">Section 14.3</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> the
 DPLPMTUD Maximum Packet Size (MPS) is maintained for each combination of local and remote IP addresses.
 Note that with the multipath extension multiple paths could use the same 4-tuple
-but might have different MPS.
-One simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to
-each path, which could also help to simplify retransmission processing.<a href="#section-5.8-1" class="pilcrow">¶</a></p>
+but might have different MPS due to other factors (see <a href="#same-tuple-n-paths" class="auto internal xref">Section 5.2</a>).<a href="#section-5.8-1" class="pilcrow">¶</a></p>
+<p id="section-5.8-2">One simple option, if the PMTUs are similar, is to apply the minimum PMTU of all paths to
+each path, which could also help to simplify retransmission processing.<a href="#section-5.8-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="idle-time-close">
@@ -3222,7 +3222,7 @@ but requires some additional consideration regarding:<a href="#section-7-1" clas
           <p id="section-7-2.1.1">potential additional resource usage for per-path connection IDs and multiple concurrent path contexts;<a href="#section-7-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-7-2.2">
-          <p id="section-7-2.2.1">a potentially increased amplification risk for denial of service attacks if multiple paths are used simultaneously;<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-7-2.2.1">a potentially increased amplification risk for denial-of-service attacks if multiple paths are used simultaneously;<a href="#section-7-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-7-2.3">
           <p id="section-7-2.3.1">changes to the nonce calculation due to the use of multiple packet number spaces.<a href="#section-7-2.3.1" class="pilcrow">¶</a></p>
@@ -3264,16 +3264,22 @@ travel through common network paths in an attempt to overwhelm a target.<a href=
 <p id="section-7.2-2"><span>[<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span> only allows the use of one path
 and the number of concurrent path validation attempts is
 limited by number of issued connection IDs.
-This extension, however, allows for multiple open paths that could in theory be migrated
-all at the same time. Further, multiple paths could be initialized
-simultaneously.
-The anti-amplification limits as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>
-limit the amplification risk for a given path,
-but multiple paths could be used to further amplify an attack.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.2-3">Therefore, endpoints need to limit the maximum number of paths and might consider
+This extension allows for multiple open paths that could in theory be migrated
+all at the same time, still limited by number of issued connection IDs for each path.
+Further, multiple paths could be initialized simultaneously, limited by the maximum
+number of allowed paths.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">Therefore, endpoints are advised to keep the maximum number of paths small
+and might consider
 additional measures to limit the number of concurrent path validation processes
 e.g., by pacing them out or limiting the number of path initiation attempts
 over a certain time period.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-4">However, the use of multipath does not change the
+anti-amplification limits as specified in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-8" class="relref">Section 8</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>.
+The attacker would need to send a separate challenge on each path
+used in the attack, and the amplification limits would apply to the
+amount of data sent by the server on that path. The attacker could get the same effect
+by opening many QUIC connections and conducting the attack on each of them,
+without negotiating the multipath option.<a href="#section-7.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="cryptographic-handshake-and-aead-nonce">
