@@ -133,9 +133,10 @@ removal of paths that have been abandoned in {{path-close}}.
 Note that in this extension, a QUIC server does not initiate the creation
 of a path, but it has to validate a new path created by a client.
 
-This extension does not cover address discovery and management. Addresses
-and the actual decision to set up or tear down paths are assumed
-to be handled by the application. But this document does not prevent future extensions from
+This extension does not cover address discovery and management. 
+The extension specificed in this document can be used as it if address
+management and the actual decision to set up or tear down paths are
+handled by the application. This document does not prevent future extensions from
 defining mechanisms to cope with the remaining scenarios.
 
 Further, this document does not specify scheduling algorithms that define
