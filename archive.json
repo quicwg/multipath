@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-10T01:49:13.774328+00:00",
+  "timestamp": "2026-02-15T01:29:01.743755+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -69226,24 +69226,26 @@
       "id": "PR_kwDOGNtpaM7B_pii",
       "title": "Proposal to \"define\" path a bit better",
       "url": "https://github.com/quicwg/multipath/pull/642",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "based on Med's review/discuss",
       "createdAt": "2026-02-06T13:13:46Z",
-      "updatedAt": "2026-02-06T18:54:27Z",
+      "updatedAt": "2026-02-13T17:27:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
-      "baseRefOid": "b1629bb388a053a0c35f5a0c56bdde54e2917451",
+      "baseRefOid": "fa7290b2f147fd54f526062ee54f7bc09d8c469d",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-5",
-      "headRefOid": "2040f67db39fb5731c592db37a20fdaec71a0ed7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "43ae3d49ac0052189997137e920612ae69014e8d",
+      "closedAt": "2026-02-13T17:27:11Z",
+      "mergedAt": "2026-02-13T17:27:11Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "3a6a6ac0c5b1dcd2436bb7e11af3d8cb6b0cf8db"
+      },
       "comments": [],
       "reviews": [
         {
@@ -69265,6 +69267,72 @@
               "updatedAt": "2026-02-06T18:54:27Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7g2SfQ",
+          "commit": {
+            "abbreviatedOid": "2040f67"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-09T09:57:49Z",
+          "updatedAt": "2026-02-13T11:05:12Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "\"proposes to define\" also doesn't sounds great.\n\nMaybe just:\n\n> It introduces the concept of explicit path identifiers that are used to define a standard way to create, delete, and manage paths.\n\nOr even just:\n\n> It introduces explicit path identifiers to create, delete, and manage multiple paths.\n\n?",
+              "createdAt": "2026-02-09T09:57:49Z",
+              "updatedAt": "2026-02-13T17:24:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iZMHN",
+          "commit": {
+            "abbreviatedOid": "2040f67"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T16:37:25Z",
+          "updatedAt": "2026-02-13T16:37:25Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Either way. The second one is more concise.",
+              "createdAt": "2026-02-13T16:37:25Z",
+              "updatedAt": "2026-02-13T16:37:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iZqrM",
+          "commit": {
+            "abbreviatedOid": "4d3e466"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T16:59:29Z",
+          "updatedAt": "2026-02-13T17:00:43Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Second version is fine.",
+              "createdAt": "2026-02-13T16:59:29Z",
+              "updatedAt": "2026-02-13T17:00:43Z"
+            },
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\nIt introduces explicit path identifiers to create, delete, and manage multiple paths.\n```",
+              "createdAt": "2026-02-13T17:00:24Z",
+              "updatedAt": "2026-02-13T17:00:43Z"
+            }
+          ]
         }
       ]
     },
@@ -69280,13 +69348,13 @@
       "labels": [],
       "body": "This is a first try for a table but not sure that helps much... Or was the request to show the table in bits...?",
       "createdAt": "2026-02-06T14:14:39Z",
-      "updatedAt": "2026-02-06T19:22:15Z",
+      "updatedAt": "2026-02-13T17:33:39Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b1629bb388a053a0c35f5a0c56bdde54e2917451",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
-      "headRefOid": "e2644eab4016bdf990a888ae5948be3d5bddd1aa",
+      "headRefOid": "f1237b5e190a9631de0f6ea6ce0fac38fdc4581b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -69322,6 +69390,181 @@
               "body": "I would suggest keeping the existing text, up to \"the nonce will be set to `0x6b2611489cba2b63a9e8097e`.\" And not adding the ASCII table.",
               "createdAt": "2026-02-06T19:19:46Z",
               "updatedAt": "2026-02-06T19:22:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iTEfj",
+          "commit": {
+            "abbreviatedOid": "bce3c44"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T11:01:25Z",
+          "updatedAt": "2026-02-13T11:01:25Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "```suggestion\nTherefore, the nonce N is calculated for 1-RTT packets if the multipath extension is used\n```",
+              "createdAt": "2026-02-13T11:01:25Z",
+              "updatedAt": "2026-02-13T11:01:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iZISa",
+          "commit": {
+            "abbreviatedOid": "90fbea8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T16:34:27Z",
+          "updatedAt": "2026-02-13T16:34:28Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "I would prefer that we call this figure from the text, adding somewhere something like `as illustrated in {{fig-path-and-packet-number}} ` or `see {{fig-path-and-packet-number}}` ",
+              "createdAt": "2026-02-13T16:34:27Z",
+              "updatedAt": "2026-02-13T16:34:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iaPw-",
+          "commit": {
+            "abbreviatedOid": "f1237b5"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T17:28:08Z",
+          "updatedAt": "2026-02-13T17:28:08Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "That is there in the text. See above!",
+              "createdAt": "2026-02-13T17:28:08Z",
+              "updatedAt": "2026-02-13T17:28:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iaXIC",
+          "commit": {
+            "abbreviatedOid": "90fbea8"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T17:33:11Z",
+          "updatedAt": "2026-02-13T17:33:12Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "Yes, got it. I was confused with the way github presented it.",
+              "createdAt": "2026-02-13T17:33:12Z",
+              "updatedAt": "2026-02-13T17:33:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iaXzI",
+          "commit": {
+            "abbreviatedOid": "f1237b5"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2026-02-13T17:33:39Z",
+          "updatedAt": "2026-02-13T17:33:39Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 645,
+      "id": "PR_kwDOGNtpaM7DlzrI",
+      "title": "Clarify that only this extension needs address management in the app",
+      "url": "https://github.com/quicwg/multipath/pull/645",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a small editorial change based on Med's IESG review to make it more clear that address management doesn't have to in the application for future extension.",
+      "createdAt": "2026-02-13T15:52:38Z",
+      "updatedAt": "2026-02-13T17:27:28Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "fa7290b2f147fd54f526062ee54f7bc09d8c469d",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-7",
+      "headRefOid": "83be03ef9c6a7c224fe3c7e61f32146a82ab64c8",
+      "closedAt": "2026-02-13T17:27:28Z",
+      "mergedAt": "2026-02-13T17:27:28Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "31bcf62a88f0c80120d502575636c1e339363c1a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7iYafn",
+          "commit": {
+            "abbreviatedOid": "dfde57a"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-13T15:56:01Z",
+          "updatedAt": "2026-02-13T15:56:02Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\nThis extension does not cover address discovery and management.\n```",
+              "createdAt": "2026-02-13T15:56:02Z",
+              "updatedAt": "2026-02-13T15:56:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iZPX5",
+          "commit": {
+            "abbreviatedOid": "c5ee715"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Yes.",
+          "createdAt": "2026-02-13T16:39:25Z",
+          "updatedAt": "2026-02-13T16:39:25Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7iZt3N",
+          "commit": {
+            "abbreviatedOid": "c5ee715"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Minor nit.",
+          "createdAt": "2026-02-13T17:01:59Z",
+          "updatedAt": "2026-02-13T17:02:18Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\nThe extension specified in this document can be used as it if address\n```",
+              "createdAt": "2026-02-13T17:01:59Z",
+              "updatedAt": "2026-02-13T17:02:18Z"
             }
           ]
         }
