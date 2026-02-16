@@ -344,10 +344,11 @@ times the largest PTO among all paths.
 
 After completing the handshake indicating
 multipath support, endpoints can start using multiple paths.
-Paths MUST only be opened by the client endpoint.
-The client can open a new path when both endpoints
+An endpoint can open a new path when both endpoints
 have issued available connection IDs for at least one unused, common path ID,
 as the same path ID is used in both directions.
+Note that simultaneous path opening by both endpoints can
+have unexpected results, see {{coop-path-opening}}.
 
 This document specifies path initiation (see {{path-initiation}}),
 issuing and retirement of per-path connection IDs (see
@@ -505,6 +506,17 @@ a server SHOULD issue tokens that are capable of validating
 any of the previously validated addresses. Including more addresses increases the
 probability that the token will be useful in the future, but at the cost of a larger token.
 Further guidance on token usage can be found in {{Section 8.1.3 of QUIC-TRANSPORT}}.
+
+### Coordination of path opening {#coop-path-opening}
+
+Simultaneous opening of the same path can have unpredictable results. If both
+endpoints simultaneously try to open paths using the same path-id and using
+different 4-tuples, they cannot predict which of the two proposed 4-tuples
+will be selected, and in some cases the path setup could fail.
+
+These problems can be avoided if only the client attempts to create new paths, or
+if the application includes mechanisms to coordinate the opening of paths
+between client and server. Such mechanisms are out of the scope of the present document.
 
 ## Handling Connection IDs {#consume-retire-cid}
 
