@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-15T01:29:01.743755+00:00",
+  "timestamp": "2026-02-17T01:24:11.399181+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -69500,7 +69500,7 @@
       "labels": [],
       "body": "This is a small editorial change based on Med's IESG review to make it more clear that address management doesn't have to in the application for future extension.",
       "createdAt": "2026-02-13T15:52:38Z",
-      "updatedAt": "2026-02-13T17:27:28Z",
+      "updatedAt": "2026-02-16T15:25:11Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "fa7290b2f147fd54f526062ee54f7bc09d8c469d",
@@ -69567,8 +69567,54 @@
               "updatedAt": "2026-02-13T17:02:18Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jDCYm",
+          "commit": {
+            "abbreviatedOid": "83be03e"
+          },
+          "author": "gorryfair",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-16T15:25:11Z",
+          "updatedAt": "2026-02-16T15:25:11Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "maybe remove:/it/ ?",
+              "createdAt": "2026-02-16T15:25:11Z",
+              "updatedAt": "2026-02-16T15:25:11Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 646,
+      "id": "PR_kwDOGNtpaM7EK1wm",
+      "title": "Rework the simulatenous path opening",
+      "url": "https://github.com/quicwg/multipath/pull/646",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Revert the change in the first paragraph of section 3 that were introduced in PR #633.\r\n\r\nReplace these changes by a warning that acknowledge the coordination issue flagged in the ART review by @cabo (see issue #631). Remove the normative language (only client MUST) as adding that would require explicit consensus from the WG.\r\nInstead, add a short section explaining that path opening without coordination could have unexpected results, that coordination is not necessary if only the clients open paths, and that other scenarios require coordination by the application.",
+      "createdAt": "2026-02-16T18:44:03Z",
+      "updatedAt": "2026-02-16T18:44:28Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "31bcf62a88f0c80120d502575636c1e339363c1a",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "path-create-by-endpoints",
+      "headRefOid": "6a42f26d926f267a32bf2a999aebc86199f11757",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
