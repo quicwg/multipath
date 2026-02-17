@@ -348,7 +348,8 @@ An endpoint can open a new path when both endpoints
 have issued available connection IDs for at least one unused, common path ID,
 as the same path ID is used in both directions.
 Note that simultaneous path opening by both endpoints can
-have unexpected results, see {{coop-path-opening}}.
+have unexpected results, see {{coop-path-opening}}; this is not an issue
+if paths are only opened by the client.
 
 This document specifies path initiation (see {{path-initiation}}),
 issuing and retirement of per-path connection IDs (see
