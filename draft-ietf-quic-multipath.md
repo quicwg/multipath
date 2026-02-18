@@ -344,7 +344,8 @@ times the largest PTO among all paths.
 
 After completing the handshake indicating
 multipath support, endpoints can start using multiple paths.
-Paths MUST only be opened by the client endpoint.
+In accordance with {{Section 9 of QUIC-TRANSPORT}},
+this extension only enables clients to open a new path.
 The client can open a new path when both endpoints
 have issued available connection IDs for at least one unused, common path ID,
 as the same path ID is used in both directions.
