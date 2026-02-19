@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-17T01:24:11.399181+00:00",
+  "timestamp": "2026-02-19T01:26:03.199603+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -69595,26 +69595,355 @@
       "id": "PR_kwDOGNtpaM7EK1wm",
       "title": "Rework the simulatenous path opening",
       "url": "https://github.com/quicwg/multipath/pull/646",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Revert the change in the first paragraph of section 3 that were introduced in PR #633.\r\n\r\nReplace these changes by a warning that acknowledge the coordination issue flagged in the ART review by @cabo (see issue #631). Remove the normative language (only client MUST) as adding that would require explicit consensus from the WG.\r\nInstead, add a short section explaining that path opening without coordination could have unexpected results, that coordination is not necessary if only the clients open paths, and that other scenarios require coordination by the application.",
       "createdAt": "2026-02-16T18:44:03Z",
-      "updatedAt": "2026-02-16T18:44:28Z",
+      "updatedAt": "2026-02-18T20:39:19Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "31bcf62a88f0c80120d502575636c1e339363c1a",
       "headRepository": "quicwg/multipath",
       "headRefName": "path-create-by-endpoints",
-      "headRefOid": "6a42f26d926f267a32bf2a999aebc86199f11757",
+      "headRefOid": "b8f66e0b45995d4527bbef889c7bde10d0f4fb4e",
+      "closedAt": "2026-02-18T20:39:19Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Abandoning this approach -- too much text, too much discussion.",
+          "createdAt": "2026-02-18T20:39:19Z",
+          "updatedAt": "2026-02-18T20:39:19Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7jaog8",
+          "commit": {
+            "abbreviatedOid": "6a42f26"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-17T17:49:07Z",
+          "updatedAt": "2026-02-17T17:49:08Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```Suggestion\nhave unexpected results, see {{coop-path-opening}}; this is not an issue\nif paths are only opened by the client.\n```",
+              "createdAt": "2026-02-17T17:49:07Z",
+              "updatedAt": "2026-02-17T17:49:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7joN5o",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T10:12:13Z",
+          "updatedAt": "2026-02-18T10:12:13Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "I would be more explicit here that this spec assumes only the client to open new paths and that allowing both endpoints to open new path would require coordination of the the path ID selection which is not covered by this spec and left for a future extension.",
+              "createdAt": "2026-02-18T10:12:13Z",
+              "updatedAt": "2026-02-18T10:12:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7joUUP",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T10:17:26Z",
+          "updatedAt": "2026-02-18T10:17:26Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "If I think I have an open path with a certain path ID and I receive a packet with the same path ID but a different 4-tuple, this will be seen as a migration event. As actually only the client is allow to migrate, the server will see that as a migration event und use the 4-tuple of the client. However, not sure if we ever specified what the client would do in this case...? Or does RFC9000 what the client does if it receives a packet with a valid CID but a new 4-tuple from the server? I guess it should simply drop it?\n\nSo I guess in theory this actually works and there is no problem...?",
+              "createdAt": "2026-02-18T10:17:26Z",
+              "updatedAt": "2026-02-18T10:17:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jvC0v",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T15:57:48Z",
+          "updatedAt": "2026-02-18T15:57:48Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "Section 9 of RFC 9000 says:\r\n\r\n_This document limits migration of connections to new client addresses, except as described in [Section 9.6](https://datatracker.ietf.org/doc/html/rfc9000#preferred-address). Clients are responsible for initiating all migrations. Servers do not send non-probing packets (see [Section 9.1](https://datatracker.ietf.org/doc/html/rfc9000#probing)) toward a client address until they see a non-probing packet from that address. If a client receives packets from an unknown server address, the client MUST discard these packets._\r\n(Section Section 9.6 defines the preferred address migration.)\r\n\r\nSo, we could legitimately just quote RFC9000 section 9, and just say \"only the client\". But I get the argument that the WG did not say that, and there are multiple reasons to loosen the requirement -- mobile servers, peer-to-peer, etc. \r\n\r\nNote that RFC 9000 also says that both endpoints may probe new address, i.e., send path challenges. There is a contradiction between the client discarding packets from unknown addresses and the server being authorized to probe new addresses.\r\n\r\nBut if you want to suggest new text, please do!\r\n\r\n",
+              "createdAt": "2026-02-18T15:57:48Z",
+              "updatedAt": "2026-02-18T15:57:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jvNZ4",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T16:04:40Z",
+          "updatedAt": "2026-02-18T16:04:40Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "You only get to \"no problem\" if you make a series of guesses.\r\n\r\nThe only hard specification we have is that a PATH Response MUST be sent on the same 4-tuple as the PATH CHALLENGE, and otherwise ignored. Otherwise, who knows how implementations will handle that. The sequence will be:\r\n\r\n- Send path challenge on path X with tuple A\r\n- Receive a path challenge on path X with tuple B (or not, if the peer's challenge is lost)\r\n- If received, send a path response on path X with tuple B\r\n- Receive a path response on path X with tuple A (or not, if the peer's challenge is lost)\r\n- Validate the path, send data, etc.\r\n- Maybe, receive a path challenge on path X with tuple B (because it was repeated after loss)\r\n\r\nMany variations. I can guarantee that some will end up validating tuple A, other with tuple B. Given various models of packet loss, this is not deterministic.",
+              "createdAt": "2026-02-18T16:04:40Z",
+              "updatedAt": "2026-02-18T16:04:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jveVA",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T16:16:47Z",
+          "updatedAt": "2026-02-18T16:16:47Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "I don't think there is a contradiction: you can sent probing packets on validated paths to e.g. probe connectivity. However, as long as the client does not send a non-probing packet, the path/4-tuple is not \"active\" (I don't think this term is used). In RFC9000 you only have one active path at a time where you are allowed to send non-probing/data packet but you can have multiple validated paths where both endpoints can send probing packets.",
+              "createdAt": "2026-02-18T16:16:47Z",
+              "updatedAt": "2026-02-18T16:19:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jvooJ",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T16:24:17Z",
+          "updatedAt": "2026-02-18T16:24:17Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "because the same path ID is used, this is treated as migration as specified in RFC9000 which means the behavior at client and server would be different.\r\n\r\nThe client:\r\n- sends a path challenge on path X with tuple A\r\n- it then receives a path challenge on path X with tuple B; as path X is already in use, this is migration from an unknown address and the client drops the packet\r\n- the client then receives the path response from the server and the path is open\r\n\r\nThe server:\r\n- sends a path challenge on path X with tuple B\r\n- it then receives a path challenges on path X with tuple A. This is considers a mitigation event by the sever and the server sends a path response on tuple A.",
+              "createdAt": "2026-02-18T16:24:17Z",
+              "updatedAt": "2026-02-18T16:24:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jx56O",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:21:18Z",
+          "updatedAt": "2026-02-18T18:21:19Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "The strict reading of RFC 9000 is that the client drops the packets arriving from unknown 4-tuple. With that strict reading, the server cannot send path challenges for addresses that the client has not used before. This effectively prevents path creation by the server.\r\n\r\nWe may want to reinterpret that by saying that the client should process packets arriving from unknown addresses as long as they are arriving on a new path. We may want to drop the requirement altogether. I would argue that we don't really have WG consensus to do that. It would require coordination for the allocation of path ID. It would also require mitigation of attacks by on-path attackers, who could capture a legit server packet and resend it to the client from a different address. That's why I wrote the simple \"MUST only by clients\" -- it is in line with unmodified RFC 9000, and it is very simple.\r\n\r\nMaybe we should just keep the existing text and be done...",
+              "createdAt": "2026-02-18T18:21:18Z",
+              "updatedAt": "2026-02-18T18:21:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jx_V6",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:26:20Z",
+          "updatedAt": "2026-02-18T18:26:20Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "My only question was if we really need a normative MUST, or if we can just say something like \"inline with RFC9000, this extension only enables clients to open a new path\" or something like this?",
+              "createdAt": "2026-02-18T18:26:20Z",
+              "updatedAt": "2026-02-18T18:26:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jyDRD",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:30:10Z",
+          "updatedAt": "2026-02-18T18:30:11Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "Your requirement to \"prevent server initiated migration\" is not really mentioned in the text. It is in RFC 9000, but it is a blunt statement that applies to all paths. We would need to explicitly update it, saying that it applies only within the context of a single path-ID. I think that this loosening of the rule should be explicit. However, the WG very much decided not to do that, and I think that's better left for an extension.\r\n\r\nEven with your reading of the scenario, there is still uncertainty on the server side: the path creation by the server would succeed and select tuple B if the client does not start a path at the same time; it would select tuple A if the client performed an uncoordinated opening. That's certainly meeting the definition of uncertainty.",
+              "createdAt": "2026-02-18T18:30:10Z",
+              "updatedAt": "2026-02-18T18:30:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jyMhJ",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:39:17Z",
+          "updatedAt": "2026-02-18T18:39:17Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "Sure. Do you want to drop the uncertainty discussion entirely?",
+              "createdAt": "2026-02-18T18:39:17Z",
+              "updatedAt": "2026-02-18T18:39:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jyNQE",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:39:59Z",
+          "updatedAt": "2026-02-18T18:39:59Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "If we have no consensus on this text, better drop it.",
+              "createdAt": "2026-02-18T18:39:59Z",
+              "updatedAt": "2026-02-18T18:39:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jyNhk",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:40:16Z",
+          "updatedAt": "2026-02-18T18:40:16Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I'm not saying that we should enable server-initiated open in this spec. But I also don't think we need normative language to prevent it any further because it doesn't break anything. I would expect that a client inline with RFC9000 drops all packets from an unknown IP address, this includes both packets with a new or already used path ID. however, if not that's actually also not an interoperability problem, which is another reason why I think we don't need normative language.",
+              "createdAt": "2026-02-18T18:40:16Z",
+              "updatedAt": "2026-02-18T18:40:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7jycHj",
+          "commit": {
+            "abbreviatedOid": "b8f66e0"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-18T18:54:15Z",
+          "updatedAt": "2026-02-18T18:54:15Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "@mirjak please check PR #647, a much more modest approach to the problem than this PR. If you approve #647, I will close this PR.",
+              "createdAt": "2026-02-18T18:54:15Z",
+              "updatedAt": "2026-02-18T18:54:15Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 647,
+      "id": "PR_kwDOGNtpaM7EsYaX",
+      "title": "Modest update of multipath creation",
+      "url": "https://github.com/quicwg/multipath/pull/647",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is another take than PR #646 on the resolution of issue #631. Instead of a lengthy discussion of the details of uncertainty, simply replace the \"MUST\" statement in \"Paths MUST only be opened by the client endpoint\" by a reference to RFC 9000.",
+      "createdAt": "2026-02-18T18:51:40Z",
+      "updatedAt": "2026-02-18T19:39:40Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "31bcf62a88f0c80120d502575636c1e339363c1a",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "path-create-take-two",
+      "headRefOid": "d214300d76a3fdf55a94dd1068a7331402a2ebb8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7jzNNj",
+          "commit": {
+            "abbreviatedOid": "d214300"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I like this approach more.",
+          "createdAt": "2026-02-18T19:39:40Z",
+          "updatedAt": "2026-02-18T19:39:40Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
