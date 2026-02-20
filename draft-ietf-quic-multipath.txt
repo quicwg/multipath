@@ -422,11 +422,11 @@ Table of Contents
 3.  Path Management
 
    After completing the handshake indicating multipath support,
-   endpoints can start using multiple paths.  Paths MUST only be opened
-   by the client endpoint.  The client can open a new path when both
-   endpoints have issued available connection IDs for at least one
-   unused, common path ID, as the same path ID is used in both
-   directions.
+   endpoints can start using multiple paths.  In accordance with
+   Section 9 of [QUIC-TRANSPORT], this extension only enables clients to
+   open a new path.  The client can open a new path when both endpoints
+   have issued available connection IDs for at least one unused, common
+   path ID, as the same path ID is used in both directions.
 
    This document specifies path initiation (see Section 3.1), issuing
    and retirement of per-path connection IDs (see Section 3.2), path

@@ -1676,7 +1676,8 @@ times the largest PTO among all paths.<a href="#section-2.6-1" class="pilcrow">Â
       </h2>
 <p id="section-3-1">After completing the handshake indicating
 multipath support, endpoints can start using multiple paths.
-Paths MUST only be opened by the client endpoint.
+In accordance with <span><a href="https://rfc-editor.org/rfc/rfc9000#section-9" class="relref">Section 9</a> of [<a href="#QUIC-TRANSPORT" class="cite xref">QUIC-TRANSPORT</a>]</span>,
+this extension only enables clients to open a new path.
 The client can open a new path when both endpoints
 have issued available connection IDs for at least one unused, common path ID,
 as the same path ID is used in both directions.<a href="#section-3-1" class="pilcrow">Â¶</a></p>
