@@ -282,23 +282,50 @@ the sender might prefer to send ACK frames.
 the use of a nonce, N, formed by combining the packet protection IV
 with the packet number. When multiple packet number spaces are used,
 the packet number alone would not guarantee the uniqueness of the nonce.
-Therefore, the nonce N is calculated for 1-RTT if the multipath extension is used
+Therefore, the nonce N is calculated for 1-RTT packets if the multipath extension is used
 by combining the packet protection
 IV with the packet number and with the 32 bits of the
 path ID. In order to guarantee the uniqueness of the nonce, the path ID
 is limited to a max value of 2<sup>32</sup>-1, as specified in {{nego}}.
 
-To calculate the nonce, a 96-bit path-and-packet-number is composed of the
+To calculate the nonce, a 96-bit Path-and-Packet-Number (PPN) is composed of the
 32 bits of the path ID in network byte order,
 two zero bits, and the 62 bits of the reconstructed QUIC packet number in
-network byte order. The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
+network byte order, as illustrated in {{fig-path-and-packet-number}}.
+
+~~~
+  PPN {
+    Path ID (32),
+    Zeroes (2) = 0b00,
+    Packet Number (62)
+  }
+~~~
+{: #fig-path-and-packet-number title="96 Bits Path-And-Packet-Number"}
+
+The IV length is equal to the nonce length. If the IV is larger than 96 bits, the path-and-packet-number
 is left-padded with zeros to the size of the IV. The exclusive OR of the padded
 packet number and the IV forms the AEAD nonce. An AEAD algorithm where the nonce length
-is less than 12 bytes cannot be used with the QUIC multipath extension.
+is less than 12 bytes cannot be used with the QUIC multipath extension. The following
+figure illustrates this for a 96-bits IV.
+
+~~~
+IV(12);
+N(12) = IV xor PPN;
+~~~
+{: #fig-nonce-calculation title="Nonce Calculation"}
 
 For example, assuming the IV value is `0x6b26114b9cba2b63a9e8dd4f`,
 the path ID is `3`, and the packet number is `54321` (hex value `0xd431`),
-the nonce will be set to `0x6b2611489cba2b63a9e8097e`.
+the nonce will be set to `0x6b2611489cba2b63a9e8097e`, as illustrated below:
+
+~~~
+   IV:      6b26114b9cba2b63a9e8dd4f
+⊕  PPN:     00000003000000000000d431
+------------------------------------
+   Nonce:   6b2611489cba2b63a9e8097e
+~~~
+{: #fig-example-nonce title="Example Nonce Calculation"}
+
 
 ## Key Phase Update Process {#multipath-key-update}
 
@@ -1584,8 +1611,8 @@ The limits as discussed on {{Appendix B of QUIC-TLS}}
 apply to the total number of packets sent on all paths,
 not each path separately.
 
-This specification changes the AEAD calculation by using the path ID as part of
-AEAD nonce (see {{nonce}}). To ensure unique nonces, path IDs
+This specification changes the AEAD nonce calculation by including the path ID
+as part of the calculation (see {{nonce}}). To ensure unique nonces, path IDs
 are limited to 32 bits and cannot be reused for another path of the same connection.
 
 # Acknowledgments
