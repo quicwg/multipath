@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-19T01:26:03.199603+00:00",
+  "timestamp": "2026-02-22T01:25:23.581232+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -69341,24 +69341,26 @@
       "id": "PR_kwDOGNtpaM7CAjNg",
       "title": "Improve Nonce description",
       "url": "https://github.com/quicwg/multipath/pull/644",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This is a first try for a table but not sure that helps much... Or was the request to show the table in bits...?",
       "createdAt": "2026-02-06T14:14:39Z",
-      "updatedAt": "2026-02-13T17:33:39Z",
+      "updatedAt": "2026-02-20T20:07:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "b1629bb388a053a0c35f5a0c56bdde54e2917451",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
       "headRefOid": "f1237b5e190a9631de0f6ea6ce0fac38fdc4581b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-02-20T20:07:05Z",
+      "mergedAt": "2026-02-20T20:07:04Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "be914ac335696b80b7a7ebbdd6ecf16d19cef388"
+      },
       "comments": [],
       "reviews": [
         {
@@ -69484,6 +69486,19 @@
           "body": "Looks good.",
           "createdAt": "2026-02-13T17:33:39Z",
           "updatedAt": "2026-02-13T17:33:39Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ka20v",
+          "commit": {
+            "abbreviatedOid": "f1237b5"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Ok.",
+          "createdAt": "2026-02-20T14:14:55Z",
+          "updatedAt": "2026-02-20T14:14:55Z",
           "comments": []
         }
       ]
@@ -69910,24 +69925,26 @@
       "id": "PR_kwDOGNtpaM7EsYaX",
       "title": "Modest update of multipath creation",
       "url": "https://github.com/quicwg/multipath/pull/647",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "huitema",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "This is another take than PR #646 on the resolution of issue #631. Instead of a lengthy discussion of the details of uncertainty, simply replace the \"MUST\" statement in \"Paths MUST only be opened by the client endpoint\" by a reference to RFC 9000.",
       "createdAt": "2026-02-18T18:51:40Z",
-      "updatedAt": "2026-02-18T19:39:40Z",
+      "updatedAt": "2026-02-20T20:07:52Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "31bcf62a88f0c80120d502575636c1e339363c1a",
       "headRepository": "quicwg/multipath",
       "headRefName": "path-create-take-two",
       "headRefOid": "d214300d76a3fdf55a94dd1068a7331402a2ebb8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-02-20T20:07:41Z",
+      "mergedAt": "2026-02-20T20:07:41Z",
+      "mergedBy": "huitema",
+      "mergeCommit": {
+        "oid": "e003ccb35f675fa8dfba4c307799ca1254063d20"
+      },
       "comments": [],
       "reviews": [
         {
@@ -69941,6 +69958,19 @@
           "body": "I like this approach more.",
           "createdAt": "2026-02-18T19:39:40Z",
           "updatedAt": "2026-02-18T19:39:40Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7ka3g6",
+          "commit": {
+            "abbreviatedOid": "d214300"
+          },
+          "author": "qdeconinck",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Yes, this is better.",
+          "createdAt": "2026-02-20T14:15:25Z",
+          "updatedAt": "2026-02-20T14:15:25Z",
           "comments": []
         }
       ]
