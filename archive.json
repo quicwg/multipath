@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-22T01:25:23.581232+00:00",
+  "timestamp": "2026-02-26T01:23:02.259310+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15479,15 +15479,15 @@
       "id": "I_kwDOGNtpaM7o3nFu",
       "title": "Improve description of nonce calculation",
       "url": "https://github.com/quicwg/multipath/issues/643",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "From [Deb Cooley's IESG review](https://mailarchive.ietf.org/arch/msg/quic/h7B9tq9Chgu3kyruLP-AUx2McE8/):\n\nI did spend an inordinate amount of time looking at the difference in the\nRFC9001 AEAD nonce and the AEAD nonce in this draft.  I do believe that one\n*could* make this clearer.  I'll only give one suggestion.\n\nSection 2.4, last paragraph:  This example would be easier to see/understand in\na table/figure form with the IV, path ID, two bits of 0, packet number, and\nXOR'd result all lined up in three rows.\n\nSection 7.3, last para: This specification does not change how the 'AEAD'\nworks.  It does change the calculation of the AEAD nonce that is an input to\nthe algorithm.  I would change the first sentence to:  'This specification\nchanges the AEAD nonce calculation by including the path ID as part of the\ncalculation.'  Otherwise, the paragraph is inaccurate.  [Thanks to Carsten\nBormann for this.  I (obviously) agree with him.]",
       "createdAt": "2026-02-06T13:55:11Z",
-      "updatedAt": "2026-02-06T18:58:18Z",
-      "closedAt": null,
+      "updatedAt": "2026-02-24T15:03:43Z",
+      "closedAt": "2026-02-24T15:03:43Z",
       "comments": [
         {
           "author": "huitema",
@@ -15495,6 +15495,13 @@
           "body": "I just wish we had actually received a review from the security directorate. This is indeed a key point of the design, and Deb's suggestions make sense.",
           "createdAt": "2026-02-06T18:58:18Z",
           "updatedAt": "2026-02-06T18:58:18Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "PR #644 merged",
+          "createdAt": "2026-02-24T15:03:43Z",
+          "updatedAt": "2026-02-24T15:03:43Z"
         }
       ]
     }
