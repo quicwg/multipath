@@ -1228,6 +1228,10 @@ source and destination ports:
 * Server sends packet from address 198.51.100.1 to client address 192.0.2.1, with Connection ID indicating path ID 2.
 * Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.
 
+(For simplicity, this example uses IPv4 addresses but would work similarly for
+IPv6 addresses; however, migration of only one endpoint from one address family
+to the other does of course not work.)
+
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
 endpoint could want to close one of them.
