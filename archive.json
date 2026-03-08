@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-05T01:23:03.256819+00:00",
+  "timestamp": "2026-03-08T01:24:22.838133+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -70047,13 +70047,60 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-03-04T16:17:07Z",
-      "updatedAt": "2026-03-04T16:17:07Z",
+      "updatedAt": "2026-03-05T09:31:24Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e003ccb35f675fa8dfba4c307799ca1254063d20",
       "headRepository": "mariosbf/multipath",
       "headRefName": "main",
-      "headRefOid": "4ce794fe090e7baca196232c429a4b2b6258e8c3",
+      "headRefOid": "0285ec827dc530e00b2267afcaf80635c72876a5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7oJ8tN",
+          "commit": {
+            "abbreviatedOid": "4ce794f"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "See suggestion.",
+          "createdAt": "2026-03-05T08:54:47Z",
+          "updatedAt": "2026-03-05T08:55:07Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "That would be the wrong fix. I think what we meant to  say was:\n```suggestion\nThe extension specified in this document can be used as is if address\n```",
+              "createdAt": "2026-03-05T08:54:47Z",
+              "updatedAt": "2026-03-05T08:55:07Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 650,
+      "id": "PR_kwDOGNtpaM7IOnXX",
+      "title": "Comment on IPv4 path migration example",
+      "url": "https://github.com/quicwg/multipath/pull/650",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The IESG review from Eric Vyncke asked about the use of only ipv4 addresses in the migration examples.  This PR adds a note on IPv6 addresses based on further feedback from Gorry.",
+      "createdAt": "2026-03-05T14:55:51Z",
+      "updatedAt": "2026-03-05T14:55:51Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "e003ccb35f675fa8dfba4c307799ca1254063d20",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-8",
+      "headRefOid": "c7cf00525a76746e44762b4675a83b663bed75e7",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
