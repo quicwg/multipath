@@ -403,7 +403,7 @@ MUST use a connection ID associated to the same path ID as used in the packet
 received by the endpoint when it intends to send packets on the same path.
 
 A client that wants to use a
-new path MUST validate the peer's address before sending any data
+new path MUST validate the peer's address
 as described in {{Section 8.2 of QUIC-TRANSPORT}},
 unless it has previously validated the 4-tuple used for that path.
 
