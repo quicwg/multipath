@@ -176,7 +176,7 @@ Table of Contents
    created by a client.
 
    This extension does not cover address discovery and management.  The
-   extension specified in this document can be used as it if address
+   extension specified in this document can be used as is if address
    management and the actual decision to set up or tear down paths are
    handled by the application.  This document does not prevent future
    extensions from defining mechanisms to cope with the remaining
