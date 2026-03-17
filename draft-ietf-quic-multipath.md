@@ -1229,8 +1229,7 @@ source and destination ports:
 * Client receives the packet, recognizes a path migration, updates the source address of path 2 to 192.0.2.1.
 
 (For simplicity, this example uses IPv4 addresses but would work similarly for
-IPv6 addresses; however, migration of only one endpoint from one address family
-to the other does of course not work.)
+IPv6 addresses.)
 
 Such unintentional use of the same 4-tuple on different paths ought to
 be rare. When they happen, the two paths would be redundant, and the
