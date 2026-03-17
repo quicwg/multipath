@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-08T01:24:22.838133+00:00",
+  "timestamp": "2026-03-17T01:24:35.921166+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -69987,24 +69987,26 @@
       "id": "PR_kwDOGNtpaM7Hj5FD",
       "title": "remove \"before sending any data\" in validation requirement",
       "url": "https://github.com/quicwg/multipath/pull/648",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This should address the last [discuss by Mike Bishop](https://mailarchive.ietf.org/arch/msg/quic/QXaqnCti1uX77xEHrLQbcNf8QQ4/).",
       "createdAt": "2026-03-03T09:58:26Z",
-      "updatedAt": "2026-03-04T03:56:29Z",
+      "updatedAt": "2026-03-15T05:31:17Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e003ccb35f675fa8dfba4c307799ca1254063d20",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-6",
       "headRefOid": "4094973c2f07581d8aa1ae041e3ca1d92d25f295",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-03-15T05:31:17Z",
+      "mergedAt": "2026-03-15T05:31:17Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "1bf92f7a1446d679e8cd509375f7f9453176afbe"
+      },
       "comments": [],
       "reviews": [
         {
@@ -70040,24 +70042,26 @@
       "id": "PR_kwDOGNtpaM7H6-9n",
       "title": "Fix minor typo",
       "url": "https://github.com/quicwg/multipath/pull/649",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mariosbf",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-03-04T16:17:07Z",
-      "updatedAt": "2026-03-05T09:31:24Z",
+      "updatedAt": "2026-03-15T05:32:14Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e003ccb35f675fa8dfba4c307799ca1254063d20",
       "headRepository": "mariosbf/multipath",
       "headRefName": "main",
       "headRefOid": "0285ec827dc530e00b2267afcaf80635c72876a5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-03-15T05:32:14Z",
+      "mergedAt": "2026-03-15T05:32:14Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "c16ff7fa1116da7582b8adb81e9277a204fdce22"
+      },
       "comments": [],
       "reviews": [
         {
@@ -70094,7 +70098,7 @@
       "labels": [],
       "body": "The IESG review from Eric Vyncke asked about the use of only ipv4 addresses in the migration examples.  This PR adds a note on IPv6 addresses based on further feedback from Gorry.",
       "createdAt": "2026-03-05T14:55:51Z",
-      "updatedAt": "2026-03-05T14:55:51Z",
+      "updatedAt": "2026-03-15T15:01:06Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e003ccb35f675fa8dfba4c307799ca1254063d20",
@@ -70105,8 +70109,50 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Although I approve the review, I'm considering scenes which mobile clients only have IPv6 address under cellular but IPv4 address under Wi-Fi. Servers can apply both IPv4 and IPv6 addresses using preferred address. \r\n\r\nDo we need to add guidance or another example on this scene?",
+          "createdAt": "2026-03-15T08:09:52Z",
+          "updatedAt": "2026-03-15T08:09:52Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I must say that I agree with @Yanmei-Liu. We are responding to an editorial comment, so maybe we should avoid saying anything that could be construed as a protocol clarification. Maybe just say:\r\n\r\n(For simplicity, this example uses IPv4 addresses but would work similarly for\r\nIPv6 addresses.)\r\n",
+          "createdAt": "2026-03-15T15:01:06Z",
+          "updatedAt": "2026-03-15T15:01:06Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOGNtpaM7rbNAc",
+          "commit": {
+            "abbreviatedOid": "c7cf005"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "OK.",
+          "createdAt": "2026-03-15T06:52:08Z",
+          "updatedAt": "2026-03-15T06:52:08Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7rbhJQ",
+          "commit": {
+            "abbreviatedOid": "c7cf005"
+          },
+          "author": "Yanmei-Liu",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-15T08:04:23Z",
+          "updatedAt": "2026-03-15T08:04:23Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
