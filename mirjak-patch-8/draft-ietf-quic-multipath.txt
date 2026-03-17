@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 6 September 2026                         Uber Technologies Inc.
+Expires: 18 September 2026                        Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 6 September 2026                         Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                            5 March 2026
+                                                           17 March 2026
 
 
              Managing multiple paths for a QUIC connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 September 2026.
+   This Internet-Draft will expire on 18 September 2026.
 
 Copyright Notice
 
@@ -1308,8 +1308,7 @@ Table of Contents
       the source address of path 2 to 192.0.2.1.
 
    (For simplicity, this example uses IPv4 addresses but would work
-   similarly for IPv6 addresses; however, migration of only one endpoint
-   from one address family to the other does of course not work.)
+   similarly for IPv6 addresses.)
 
    Such unintentional use of the same 4-tuple on different paths ought
    to be rare.  When they happen, the two paths would be redundant, and
