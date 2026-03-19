@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-17T01:24:35.921166+00:00",
+  "timestamp": "2026-03-19T01:28:21.381217+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -70091,24 +70091,26 @@
       "id": "PR_kwDOGNtpaM7IOnXX",
       "title": "Comment on IPv4 path migration example",
       "url": "https://github.com/quicwg/multipath/pull/650",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The IESG review from Eric Vyncke asked about the use of only ipv4 addresses in the migration examples.  This PR adds a note on IPv6 addresses based on further feedback from Gorry.",
       "createdAt": "2026-03-05T14:55:51Z",
-      "updatedAt": "2026-03-15T15:01:06Z",
+      "updatedAt": "2026-03-17T09:30:44Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "e003ccb35f675fa8dfba4c307799ca1254063d20",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-8",
-      "headRefOid": "c7cf00525a76746e44762b4675a83b663bed75e7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "dd954532efc9a5354124270ad9bad2b23f60cf8b",
+      "closedAt": "2026-03-17T09:30:44Z",
+      "mergedAt": "2026-03-17T09:30:44Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "01f825926d8817d564416b9819e35f98f56f6e77"
+      },
       "comments": [
         {
           "author": "Yanmei-Liu",
@@ -70150,6 +70152,59 @@
           "body": "",
           "createdAt": "2026-03-15T08:04:23Z",
           "updatedAt": "2026-03-15T08:04:23Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7r5tlC",
+          "commit": {
+            "abbreviatedOid": "c7cf005"
+          },
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-17T02:03:22Z",
+          "updatedAt": "2026-03-17T02:03:22Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\n(For simplicity, this example uses IPv4 addresses but would work similarly for\nIPv6 addresses.)\n```",
+              "createdAt": "2026-03-17T02:03:22Z",
+              "updatedAt": "2026-03-17T02:03:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7r6zMN",
+          "commit": {
+            "abbreviatedOid": "c7cf005"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-17T04:11:02Z",
+          "updatedAt": "2026-03-17T04:11:02Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Yes.",
+              "createdAt": "2026-03-17T04:11:02Z",
+              "updatedAt": "2026-03-17T04:11:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOGNtpaM7r6zjP",
+          "commit": {
+            "abbreviatedOid": "c7cf005"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "I approve Mirja's suggestion.",
+          "createdAt": "2026-03-17T04:11:46Z",
+          "updatedAt": "2026-03-17T04:11:46Z",
           "comments": []
         }
       ]
