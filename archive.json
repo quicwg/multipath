@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-19T01:28:21.381217+00:00",
+  "timestamp": "2026-04-02T01:43:32.617007+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15502,6 +15502,37 @@
           "body": "PR #644 merged",
           "createdAt": "2026-02-24T15:03:43Z",
           "updatedAt": "2026-02-24T15:03:43Z"
+        }
+      ]
+    },
+    {
+      "number": 651,
+      "id": "I_kwDOGNtpaM75gNiH",
+      "title": "Is PATH_RETIRE_CONNECTION_ID ack-eliciting",
+      "url": "https://github.com/quicwg/multipath/issues/651",
+      "state": "OPEN",
+      "author": "flub",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "All new frames other than PATH_ACK and PATH_RETIRE_CONNECTION_ID are explicitly designated as ack-eliciting in section 4. For PATH_ACK this is expected, for PATH_RETIRE_CONNECTION_ID this is surprising. The corresponding RETIRE_CONNECTION_ID frame in RFC9000 is ack-eliciting.\n\nIs this an oversight or was this done on purpose? If the latter perhaps a justification might be helpful.",
+      "createdAt": "2026-04-01T10:50:25Z",
+      "updatedAt": "2026-04-01T16:38:44Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "It is an oversight. All the other ACK-eliciting frames have a statement such as:\n\n```\nMAX_PATH_ID frames are ack-eliciting and SHOULD be retransmitted when lost and no more recent MAX_PATH_ID frame has been sent in the meantime.\n```\n\nThe corresponding statement for PATH_CONNECTION_ID and PATH_RETIRE_CONNECTION_ID would be \n\n```\nPATH_CONNECTION_ID frames are ack-eliciting and SHOULD be retransmitted when lost and the path has not been abandoned in the meantime.\n```\n\nOf course, it is a bit late in the process to change the text!",
+          "createdAt": "2026-04-01T16:20:54Z",
+          "updatedAt": "2026-04-01T16:20:54Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The document says:\n\n> \"The PATH_NEW_CONNECTION_ID frame (type=0x3e78) is an extension of the NEW_CONNECTION_ID frame specified in [Section 19.15](https://rfc-editor.org/rfc/rfc9000#section-19.15) of [[QUIC-TRANSPORT](https://quicwg.org/multipath/draft-ietf-quic-multipath.html#QUIC-TRANSPORT)].\"\n\nThis is intended to say that this frame inherits all properties from NEW_CONNECTION_ID (expect any differences indicated explicitly below). Therefore we didn't explicitly state that it is ACK-eliciting. This wasn't an oversight as it covered by RFC9000. However, I guess we could have noted that anyway more explicitly to make it even more clear...\n",
+          "createdAt": "2026-04-01T16:38:44Z",
+          "updatedAt": "2026-04-01T16:38:44Z"
         }
       ]
     }
