@@ -1627,3 +1627,5 @@ three proposals. Further authors of one of the original proposals are Qing An an
 Thanks to Marten Seemann, Kazuho Oku, Martin Thomson, Magnus Westerlund, Mike Bishop,
 Lucas Pardue, Michael Eriksson, Yu Zhu, Gorry Fairhurst, Tilmann Zäschke, and Tommy Pauly
 for their thorough reviews and valuable contributions.
+
+Thanks for IETF last call reviews to Carsten Bormann (artart), Antoine Fressancourt (intdir), Adrian Farrel (opsdir), and Meral Shirazipour (genart).
