@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-09T01:27:33.077530+00:00",
+  "timestamp": "2026-04-26T02:01:50.039155+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -15510,15 +15510,15 @@
       "id": "I_kwDOGNtpaM75gNiH",
       "title": "Is PATH_RETIRE_CONNECTION_ID ack-eliciting",
       "url": "https://github.com/quicwg/multipath/issues/651",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "flub",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "All new frames other than PATH_ACK and PATH_RETIRE_CONNECTION_ID are explicitly designated as ack-eliciting in section 4. For PATH_ACK this is expected, for PATH_RETIRE_CONNECTION_ID this is surprising. The corresponding RETIRE_CONNECTION_ID frame in RFC9000 is ack-eliciting.\n\nIs this an oversight or was this done on purpose? If the latter perhaps a justification might be helpful.",
       "createdAt": "2026-04-01T10:50:25Z",
-      "updatedAt": "2026-04-07T03:21:55Z",
-      "closedAt": null,
+      "updatedAt": "2026-04-24T08:24:50Z",
+      "closedAt": "2026-04-24T08:24:49Z",
       "comments": [
         {
           "author": "huitema",
@@ -15540,6 +15540,13 @@
           "body": "+1 for clarity. Adding the proposed text would make the ack-eliciting behavior explicit and consistent with other frames in Section 4.\n\n> PATH_CONNECTION_ID frames are ack-eliciting and SHOULD be retransmitted when lost and the path has not been abandoned in the meantime.",
           "createdAt": "2026-04-07T03:21:55Z",
           "updatedAt": "2026-04-07T03:21:55Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If we add something it should not be normative, as the normative reference is in RFC9000. However, after some discussion with the authors we decided that this is not needed. Closing the issue now. Thanks for raising it anyway; hope this could be clarified!",
+          "createdAt": "2026-04-24T08:24:49Z",
+          "updatedAt": "2026-04-24T08:24:49Z"
         }
       ]
     }
@@ -70246,6 +70253,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 652,
+      "id": "PR_kwDOGNtpaM7VRkeg",
+      "title": "ack to IETF last call reviews",
+      "url": "https://github.com/quicwg/multipath/pull/652",
+      "state": "OPEN",
+      "author": "mirjak",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-04-24T08:59:26Z",
+      "updatedAt": "2026-04-24T08:59:26Z",
+      "baseRepository": "quicwg/multipath",
+      "baseRefName": "main",
+      "baseRefOid": "01f825926d8817d564416b9819e35f98f56f6e77",
+      "headRepository": "quicwg/multipath",
+      "headRefName": "mirjak-patch-9",
+      "headRefOid": "5a094afb057d236f80b9c17b48e4d2bd3e7836b8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
