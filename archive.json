@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-26T02:01:50.039155+00:00",
+  "timestamp": "2026-05-14T02:31:27.191963+00:00",
   "repo": "quicwg/multipath",
   "labels": [
     {
@@ -70259,25 +70259,35 @@
       "id": "PR_kwDOGNtpaM7VRkeg",
       "title": "ack to IETF last call reviews",
       "url": "https://github.com/quicwg/multipath/pull/652",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mirjak",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-04-24T08:59:26Z",
-      "updatedAt": "2026-04-24T08:59:26Z",
+      "updatedAt": "2026-05-12T11:12:32Z",
       "baseRepository": "quicwg/multipath",
       "baseRefName": "main",
       "baseRefOid": "01f825926d8817d564416b9819e35f98f56f6e77",
       "headRepository": "quicwg/multipath",
       "headRefName": "mirjak-patch-9",
       "headRefOid": "5a094afb057d236f80b9c17b48e4d2bd3e7836b8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2026-05-12T11:12:32Z",
+      "mergedAt": "2026-05-12T11:12:32Z",
+      "mergedBy": "mirjak",
+      "mergeCommit": {
+        "oid": "0c2197495cc26f8092a5a67900b2ec11b9c989d2"
+      },
+      "comments": [
+        {
+          "author": "mirjak",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This addition was communicated to the RPC and will be integrated for the final RFC.",
+          "createdAt": "2026-05-12T11:12:28Z",
+          "updatedAt": "2026-05-12T11:12:28Z"
+        }
+      ],
       "reviews": []
     }
   ]
