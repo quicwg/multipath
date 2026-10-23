@@ -5,7 +5,7 @@
 QUIC Working Group                                  刘彦梅 (Y. Liu), Ed.
 Internet-Draft                                              Alibaba Inc.
 Intended status: Standards Track                          马云飞 (Y. Ma)
-Expires: 25 April 2027                            Uber Technologies Inc.
+Expires: 26 April 2027                            Uber Technologies Inc.
                                                       Q. De Coninck, Ed.
                                               University of Mons (UMONS)
                                                           O. Bonaventure
@@ -14,7 +14,7 @@ Expires: 25 April 2027                            Uber Technologies Inc.
                                                     Private Octopus Inc.
                                                       M. Kuehlewind, Ed.
                                                                 Ericsson
-                                                         22 October 2026
+                                                         23 October 2026
 
 
              Managing Multiple Paths for a QUIC Connection
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 April 2027.
+   This Internet-Draft will expire on 26 April 2027.
 
 Copyright Notice
 
@@ -1712,26 +1712,26 @@ Table of Contents
    [QUIC-RECOVERY]
               Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
               and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
-              May 2021, <https://www.rfc-editor.org/info/rfc9002>.
+              May 2021, <https://www.rfc-editor.org/rfc/rfc9002>.
 
    [QUIC-TLS] Thomson, M., Ed. and S. Turner, Ed., "Using TLS to Secure
               QUIC", RFC 9001, DOI 10.17487/RFC9001, May 2021,
-              <https://www.rfc-editor.org/info/rfc9001>.
+              <https://www.rfc-editor.org/rfc/rfc9001>.
 
    [QUIC-TRANSPORT]
               Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
-              <https://www.rfc-editor.org/info/rfc9000>.
+              <https://www.rfc-editor.org/rfc/rfc9000>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
 8.2.  Informative References
 
@@ -1746,21 +1746,21 @@ Table of Contents
    [RFC2475]  Blake, S., Black, D., Carlson, M., Davies, E., Wang, Z.,
               and W. Weiss, "An Architecture for Differentiated
               Services", RFC 2475, DOI 10.17487/RFC2475, December 1998,
-              <https://www.rfc-editor.org/info/rfc2475>.
+              <https://www.rfc-editor.org/rfc/rfc2475>.
 
    [RFC6356]  Raiciu, C., Handley, M., and D. Wischik, "Coupled
               Congestion Control for Multipath Transport Protocols",
               RFC 6356, DOI 10.17487/RFC6356, October 2011,
-              <https://www.rfc-editor.org/info/rfc6356>.
+              <https://www.rfc-editor.org/rfc/rfc6356>.
 
    [RFC9312]  Kühlewind, M. and B. Trammell, "Manageability of the QUIC
               Transport Protocol", RFC 9312, DOI 10.17487/RFC9312,
-              September 2022, <https://www.rfc-editor.org/info/rfc9312>.
+              September 2022, <https://www.rfc-editor.org/rfc/rfc9312>.
 
    [RFC9743]  Duke, M., Ed. and G. Fairhurst, Ed., "Specifying New
               Congestion Control Algorithms", BCP 133, RFC 9743,
               DOI 10.17487/RFC9743, March 2025,
-              <https://www.rfc-editor.org/info/rfc9743>.
+              <https://www.rfc-editor.org/rfc/rfc9743>.
 
 Acknowledgments
 
