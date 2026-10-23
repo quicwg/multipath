@@ -1,6 +1,4 @@
 LIBDIR := lib
-# Match the RFC Editor's canonical links for RFC references.
-override XML2RFC_RFC_BASE_URL := https://www.rfc-editor.org/info/
 include $(LIBDIR)/main.mk
 
 $(LIBDIR)/main.mk:
